@@ -240,7 +240,7 @@ valueLoader( ULONG64 address, ULONG size )
     {    
         boost::python::dict     arr;
             
-        for ( int i = 0; i < size / sizeof(valType); ++i )
+        for ( unsigned int i = 0; i < size / sizeof(valType); ++i )
         {
             valType  v;          
             if ( !loadMemory( address + i * sizeof(valType), &v, sizeof(v) ) )

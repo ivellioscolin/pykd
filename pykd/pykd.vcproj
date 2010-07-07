@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x86\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS"
 				GeneratePreprocessedFile="0"
 				KeepComments="false"
@@ -68,7 +68,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="dbgeng.lib engextcpp.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(DBG_SDK_ROOT)\lib\i386&quot;;&quot;$(PYTHON_ROOT)\libs&quot;;&quot;$(BOOST_ROOT)\stage\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(DBG_SDK_ROOT)\lib\i386&quot;;&quot;$(PYTHON_ROOT)\x86\libs&quot;;&quot;$(BOOST_ROOT)\stage\lib&quot;"
 				ModuleDefinitionFile="pykd.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -125,7 +125,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x64\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS"
 				GeneratePreprocessedFile="0"
 				KeepComments="false"
@@ -150,7 +150,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="dbgeng.lib engextcpp.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(DBG_SDK_ROOT)\lib\amd64&quot;;&quot;$(PYTHON_ROOT)\libs&quot;;&quot;$(BOOST_ROOT)\stage64\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(DBG_SDK_ROOT)\lib\amd64&quot;;&quot;$(PYTHON_ROOT)\x64\libs&quot;;&quot;$(BOOST_ROOT)\stage64\lib&quot;"
 				ModuleDefinitionFile="pykd.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -206,7 +206,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x86\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -227,7 +227,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="dbgeng.lib engextcpp.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(DBG_SDK_ROOT)\lib\i386&quot;;&quot;$(PYTHON_ROOT)\libs&quot;;&quot;$(BOOST_ROOT)\stage\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(DBG_SDK_ROOT)\lib\i386&quot;;&quot;$(PYTHON_ROOT)\x86\libs&quot;;&quot;$(BOOST_ROOT)\stage\lib&quot;"
 				ModuleDefinitionFile="pykd.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -286,7 +286,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x64\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -307,7 +307,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="dbgeng.lib engextcpp.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(DBG_SDK_ROOT)\lib\amd64&quot;;&quot;$(PYTHON_ROOT)\libs&quot;;&quot;$(BOOST_ROOT)\stage64\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(DBG_SDK_ROOT)\lib\amd64&quot;;&quot;$(PYTHON_ROOT)\x64\libs&quot;;&quot;$(BOOST_ROOT)\stage64\lib&quot;"
 				ModuleDefinitionFile="pykd.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
