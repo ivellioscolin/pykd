@@ -6,11 +6,11 @@ using namespace std;
 
 void DbgPrint::dprint( const string&  str )
 {
-	g_Ext->Out( str.c_str() );
+	g_Ext->Dml( str.c_str() );
 }
 
 void DbgPrint::dprintln( const std::string&  str )
 {
-    g_Ext->Out( str.c_str() );
-    g_Ext->Out( "\r\n" );
+    g_Ext->Dml( str.c_str() );
+    g_Ext->Dml( "\r\n" );
 }
