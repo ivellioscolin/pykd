@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
-#include <engextcpp.hpp>
-
+#include "dbgext.h"
 #include "dbgcmd.h"
 #include "dbgexcept.h"
 
@@ -104,9 +103,9 @@ dbgCommand( const std::string &command )
 
     try {
     
-        OutputReader    outReader(  g_Ext->m_Client );
+        OutputReader    outReader(  dbgExt->client );
     
-        hres = g_Ext->m_Control->Execute( DEBUG_OUTCTL_THIS_CLIENT, command.c_str(), 0 );
+        hres = dbgExt->control->Execute( DEBUG_OUTCTL_THIS_CLIENT, command.c_str(), 0 );
         if ( FAILED( hres ) )
             throw  DbgException( "IDebugControl::Execute  failed" ); 
         
@@ -114,11 +113,11 @@ dbgCommand( const std::string &command )
     }    
 	catch( std::exception  &e )
 	{
-		g_Ext->Out( "pykd error: %s\n", e.what() );
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
 	}
 	catch(...)
 	{
-		g_Ext->Out( "pykd unexpected error\n" );
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}	
 	
 	return "error"; 

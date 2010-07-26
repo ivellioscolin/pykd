@@ -1,16 +1,22 @@
 #include "stdafx.h"
+
+#include <iostream>
+
 #include "dbgprint.h"
-#include <engextcpp.hpp>
+#include "dbgext.h"
 
 using namespace std;
 
 void DbgPrint::dprint( const string&  str )
 {
-	g_Ext->Dml( str.c_str() );
+    HRESULT  hres = dbgExt->control->ControlledOutput( DEBUG_OUTCTL_AMBIENT_DML, DEBUG_OUTPUT_NORMAL, str.c_str() );
+    if ( FAILED( hres ) )
+        std::cout << str;        
 }
 
 void DbgPrint::dprintln( const std::string&  str )
 {
-    g_Ext->Dml( str.c_str() );
-    g_Ext->Dml( "\r\n" );
+    DbgPrint::dprint( str );
+    DbgPrint::dprint( "\r\n" );
 }
+

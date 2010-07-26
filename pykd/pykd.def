@@ -3,4 +3,4 @@ EXPORTS
 	DebugExtensionUninitialize
 
 	info
-	exec
+	py

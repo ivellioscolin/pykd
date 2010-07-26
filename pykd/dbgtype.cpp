@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
-#include <engextcpp.hpp>
-
+#include "dbgext.h"
 #include "dbgtype.h"
 #include "dbgexcept.h"
 #include "dbgmem.h"
@@ -76,12 +75,12 @@ loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG6
             return valueLoader<void*>( address, ptrSize() );
         }
         
-        hres = g_Ext->m_Symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
+        hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
   		if ( FAILED( hres ) )
 			throw  DbgException( "IDebugSymbol::GetModuleByModuleName  failed" ); 
 			
         ULONG        typeId;
-        hres = g_Ext->m_Symbols->GetTypeId( moduleBase, typeName.c_str(), &typeId );
+        hres = dbgExt->symbols->GetTypeId( moduleBase, typeName.c_str(), &typeId );
 		if ( FAILED( hres ) )
 			throw  DbgException( "IDebugSymbol::GetTypeId  failed" ); 
 			
@@ -91,23 +90,23 @@ loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG6
         for ( ULONG   i = 0; ; ++i )
         {
             char   fieldName[100];
-            hres = g_Ext->m_Symbols2->GetFieldName( moduleBase, typeId, i, fieldName, sizeof(fieldName), NULL );
+            hres = dbgExt->symbols2->GetFieldName( moduleBase, typeId, i, fieldName, sizeof(fieldName), NULL );
             
             if ( FAILED( hres ) )
                 break;  
             
             ULONG   fieldTypeId;
             ULONG   fieldOffset;
-            hres = g_Ext->m_Symbols3->GetFieldTypeAndOffset( moduleBase, typeId, fieldName, &fieldTypeId, &fieldOffset );
+            hres = dbgExt->symbols3->GetFieldTypeAndOffset( moduleBase, typeId, fieldName, &fieldTypeId, &fieldOffset );
             
             if ( FAILED( hres ) )
                 throw  DbgException( "IDebugSymbol3::GetFieldTypeAndOffset  failed" ); 
             
             char    fieldTypeName[100];
-            hres = g_Ext->m_Symbols->GetTypeName( moduleBase, fieldTypeId, fieldTypeName, sizeof(fieldTypeName), NULL );
+            hres = dbgExt->symbols->GetTypeName( moduleBase, fieldTypeId, fieldTypeName, sizeof(fieldTypeName), NULL );
             
             ULONG   fieldSize;
-            hres = g_Ext->m_Symbols->GetTypeSize( moduleBase, fieldTypeId, &fieldSize );
+            hres = dbgExt->symbols->GetTypeSize( moduleBase, fieldTypeId, &fieldSize );
             
             if ( FAILED( hres ) )
                throw  DbgException( "IDebugSymbol::GetTypeName  failed" ); 
@@ -127,11 +126,11 @@ loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG6
 			
 	catch( std::exception  &e )
 	{
-		g_Ext->Out( "pykd error: %s\n", e.what() );
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
 	}
 	catch(...)
 	{
-		g_Ext->Out( "pykd unexpected error\n" );
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}	
 	
 	return boost::python::str( "VAR_ERR" );	
@@ -148,29 +147,29 @@ containingRecord( ULONG64 address, const std::string &moduleName, const std::str
         
         ULONG64         moduleBase;
         
-        hres = g_Ext->m_Symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
+        hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
   		if ( FAILED( hres ) )
 			throw  DbgException( "IDebugSymbol::GetModuleByModuleName  failed" ); 
 			
         ULONG        typeId;
-        hres = g_Ext->m_Symbols->GetTypeId( moduleBase, typeName.c_str(), &typeId );
+        hres = dbgExt->symbols->GetTypeId( moduleBase, typeName.c_str(), &typeId );
 		if ( FAILED( hres ) )
 			throw  DbgException( "IDebugSymbol::GetTypeId  failed" ); 			
 		
         ULONG       fieldTypeId;
         ULONG       fieldOffset;
-        hres = g_Ext->m_Symbols3->GetFieldTypeAndOffset( moduleBase, typeId, fieldName.c_str(), &fieldTypeId, &fieldOffset );   
+        hres = dbgExt->symbols3->GetFieldTypeAndOffset( moduleBase, typeId, fieldName.c_str(), &fieldTypeId, &fieldOffset );   
         
         return loadTypedVar( moduleName, typeName, address - fieldOffset );
     }		
 			
 	catch( std::exception  &e )
 	{
-		g_Ext->Out( "pykd error: %s\n", e.what() );
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
 	}
 	catch(...)
 	{
-		g_Ext->Out( "pykd unexpected error\n" );
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}	
 	
 	return boost::python::str( "VAR_ERR" );	

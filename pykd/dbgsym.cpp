@@ -1,9 +1,9 @@
 #include "stdafx.h"
 
-#include <engextcpp.hpp>
-
+#include "dbgext.h"
 #include "dbgsym.h"
 #include "dbgexcept.h"
+#include "dbgprint.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -22,7 +22,7 @@ findSymbolForAddress( ULONG64 addr )
             
         ULONG     moduleIndex;
         ULONG64   moduleBase;            
-        hres = g_Ext->m_Symbols->GetModuleByOffset( addr, 0, &moduleIndex, &moduleBase );
+        hres = dbgExt->symbols->GetModuleByOffset( addr, 0, &moduleIndex, &moduleBase );
     
         if ( FAILED( hres ) )
         {
@@ -30,14 +30,14 @@ findSymbolForAddress( ULONG64 addr )
         }         
         
         char   moduleName[0x100];
-        hres = g_Ext->m_Symbols2->GetModuleNameString( DEBUG_MODNAME_MODULE, moduleIndex, moduleBase, 
+        hres =  dbgExt->symbols2->GetModuleNameString( DEBUG_MODNAME_MODULE, moduleIndex, moduleBase, 
                     moduleName, sizeof( moduleName ), NULL );
                     
         if ( FAILED( hres ) )
              throw DbgException( "IDebugSymbol2::GetModuleNameString  failed" );           
     
         ULONG   entries = 0;
-        hres = g_Ext->m_Symbols3->GetSymbolEntriesByOffset( addr, 0, &debugId, &displace, 1, &entries );
+        hres =  dbgExt->symbols3->GetSymbolEntriesByOffset( addr, 0, &debugId, &displace, 1, &entries );
         if ( FAILED( hres ) )
              throw DbgException( "IDebugSymbol3::GetSymbolEntriesByOffset  failed" );
              
@@ -50,7 +50,7 @@ findSymbolForAddress( ULONG64 addr )
         }            
                           
         char      symbolName[0x100];             
-        hres = g_Ext->m_Symbols3->GetSymbolEntryString( &debugId, 0, symbolName, sizeof(symbolName ), NULL );   
+        hres =  dbgExt->symbols3->GetSymbolEntryString( &debugId, 0, symbolName, sizeof(symbolName ), NULL );   
         if ( FAILED( hres ) )
              throw DbgException( "IDebugSymbol3::GetSymbolEntryString  failed" );  
              
@@ -60,11 +60,11 @@ findSymbolForAddress( ULONG64 addr )
     }
 	catch( std::exception  &e )
 	{
-		g_Ext->Out( "pykd error: %s\n", e.what() );
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
 	}
 	catch(...)
 	{
-		g_Ext->Out( "pykd unexpected error\n" );
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}	 
 	
 	return boost::python::object( addr );
@@ -84,7 +84,7 @@ findAddressForSymbol( const std::string  &moduleName, const std::string  &symbol
         ModuleSymName += symbolName;
     
         ULONG64    offset = 0ULL;
-        hres = g_Ext->m_Symbols->GetOffsetByName( ModuleSymName.c_str(), &offset );
+        hres = dbgExt->symbols->GetOffsetByName( ModuleSymName.c_str(), &offset );
         if ( FAILED( hres ) )
              throw DbgException( "IDebugSymbol::GetOffsetByName  failed" );                
         
@@ -92,11 +92,11 @@ findAddressForSymbol( const std::string  &moduleName, const std::string  &symbol
     }
     catch( std::exception  &e )
 	{
-		g_Ext->Out( "pykd error: %s\n", e.what() );
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
 	}
 	catch(...)
 	{
-		g_Ext->Out( "pykd unexpected error\n" );
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}	 
 	
 	return (ULONG64)~0;

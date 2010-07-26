@@ -15,8 +15,9 @@ public:
         m_base( 0 ),
         m_end( 0 )     
     {}           
-
-    dbgModuleClass( ULONG64 base, ULONG size ) :
+    
+    dbgModuleClass( const std::string &name, ULONG64 base, ULONG size ) :
+        m_name( name ),
         m_base( base ),
         m_end( base + size )
     {}    
@@ -39,11 +40,21 @@ public:
         return m_base <= addr && addr <= m_end;
     }
     
+    std::string
+    getName() const {
+        return m_name;    
+    }    
+    
+    void
+    reloadSymbols();
     
 private:
 
-    ULONG64    m_base;
-    ULONG64    m_end;        
+    ULONG64         m_base;
+    
+    ULONG64         m_end;        
+    
+    std::string     m_name;
 };
 
 /////////////////////////////////////////////////////////////////////////////////

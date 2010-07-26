@@ -9,7 +9,8 @@ class DbgPrint {
 public:
 
 	static void dprint( const std::string&  str );
-	
+
 	static void dprintln( const std::string&  str );
+
 };
 

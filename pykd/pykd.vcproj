@@ -66,7 +66,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dbgeng.lib engextcpp.lib"
+				AdditionalDependencies="dbgeng.lib "
+				OutputFile="$(OutDir)\$(ProjectName).pyd"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(DBG_SDK_ROOT)\lib\i386&quot;;&quot;$(PYTHON_ROOT)\x86\libs&quot;;&quot;$(BOOST_ROOT)\stage\lib&quot;"
 				ModuleDefinitionFile="pykd.def"
@@ -149,6 +150,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="dbgeng.lib engextcpp.lib"
+				OutputFile="$(OutDir)\$(ProjectName).pyd"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(DBG_SDK_ROOT)\lib\amd64&quot;;&quot;$(PYTHON_ROOT)\x64\libs&quot;;&quot;$(BOOST_ROOT)\stage64\lib&quot;"
 				ModuleDefinitionFile="pykd.def"
@@ -225,7 +227,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dbgeng.lib engextcpp.lib"
+				AdditionalDependencies="dbgeng.lib"
+				OutputFile="$(OutDir)\$(ProjectName).pyd"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(DBG_SDK_ROOT)\lib\i386&quot;;&quot;$(PYTHON_ROOT)\x86\libs&quot;;&quot;$(BOOST_ROOT)\stage\lib&quot;"
 				ModuleDefinitionFile="pykd.def"
@@ -305,7 +308,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dbgeng.lib engextcpp.lib"
+				AdditionalDependencies="dbgeng.lib"
+				OutputFile="$(OutDir)\$(ProjectName).pyd"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(DBG_SDK_ROOT)\lib\amd64&quot;;&quot;$(PYTHON_ROOT)\x64\libs&quot;;&quot;$(BOOST_ROOT)\stage64\lib&quot;"
 				ModuleDefinitionFile="pykd.def"
@@ -354,6 +358,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgdump.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgext.cpp"
 				>
 			</File>
@@ -371,6 +379,10 @@
 			</File>
 			<File
 				RelativePath=".\dbgreg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgsession.cpp"
 				>
 			</File>
 			<File
@@ -436,7 +448,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgdump.h"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgexcept.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgext.h"
 				>
 			</File>
 			<File
@@ -453,6 +473,10 @@
 			</File>
 			<File
 				RelativePath=".\dbgreg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgsession.h"
 				>
 			</File>
 			<File

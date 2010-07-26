@@ -1,12 +1,13 @@
 #include "stdafx.h"
 
-#include <engextcpp.hpp>
+#include <wdbgexts.h>
 
 #include <boost/python.hpp>
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
 #include <boost/python/def.hpp>
 
+#include "dbgext.h"
 #include "dbgprint.h"
 #include "dbgreg.h"
 #include "dbgtype.h"    
@@ -15,13 +16,24 @@
 #include "dbgmem.h"
 #include "dbgsystem.h"
 #include "dbgcmd.h"
+#include "dbgdump.h"
+#include "dbgexcept.h"
+#include "dbgsession.h"
+
+/////////////////////////////////////////////////////////////////////////////////
+
+DbgExt    *dbgExt = NULL;
 
 /////////////////////////////////////////////////////////////////////////////////
 
 BOOST_PYTHON_MODULE( pykd )
 {
+    boost::python::def( "createSession", &dbgCreateSession );
+    boost::python::def( "isSessionStart", &dbgIsSessionStart );
+    boost::python::def( "symbolsPath", &dbgSymPath );
     boost::python::def( "dprint", &DbgPrint::dprint );
     boost::python::def( "dprintln", &DbgPrint::dprintln );
+    boost::python::def( "loadDump", &dbgLoadDump );
     boost::python::def( "dbgCommand", &dbgCommand );
     boost::python::def( "is64bitSystem", is64bitSystem );
     boost::python::def( "reg", &loadRegister );
@@ -36,82 +48,82 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::class_<typedVarClass>( "typedVarClass" )
         .def("getAddress", &typedVarClass::getAddress );
     boost::python::class_<dbgModuleClass>( "dbgModuleClass" )
-        .add_property("begin", &dbgModuleClass::getBegin )
-        .add_property("end", &dbgModuleClass::getEnd )
+        .def("begin", &dbgModuleClass::getBegin )
+        .def("end", &dbgModuleClass::getEnd )
+        .def("name", &dbgModuleClass::getName )
         .def("contain", &dbgModuleClass::contain );
 }    
 
 /////////////////////////////////////////////////////////////////////////////////
 
-class EXT_CLASS : public ExtExtension
+HRESULT
+CALLBACK
+DebugExtensionInitialize(
+    OUT PULONG  Version,
+    OUT PULONG  Flags )
 {
-public:
-
-	virtual HRESULT Initialize(void) {
-	
-		HRESULT  hr = ExtExtension::Initialize();
-		if ( FAILED( hr ) )
-		    return hr;
-		    
-        Py_Initialize();
-
-        PyImport_AppendInittab("pykd",initpykd );
-        
-        return   hr;
-	}
-	
-    virtual void Uninitialize(void) {
+    *Version = DEBUG_EXTENSION_VERSION( 1, 0 );
+    *Flags = 0;
+     
+    PyImport_AppendInittab("pykd", initpykd ); 
+       
+    Py_Initialize();
     
-        Py_Finalize();  
-    }   
-	
-
-public:
-	EXT_COMMAND_METHOD( info );
-	EXT_COMMAND_METHOD( exec );
-};
-
-EXT_DECLARE_GLOBALS();
-
-/////////////////////////////////////////////////////////////////////////////////
-
-EXT_COMMAND(
-	info,
-	"Python Info",
-	"" )
+    dbgSessionStarted = true;                
+    
+    return S_OK; 
+}
+    
+    
+VOID
+CALLBACK
+DebugExtensionUninitialize()
 {
-	Out( "Python Info" );
+    Py_Finalize();  
 }
 
-/////////////////////////////////////////////////////////////////////////////////
 
-EXT_COMMAND(
-    exec,
-    "Execute python code",
-    "{f;b;;quite mode}{;x}" )
+void
+SetupDebugEngine( IDebugClient4 *client, DbgExt *dbgExt  )
 {
-    bool   fromFile = false;
-
-	if ( HasArg( "f" ) )
-			fromFile = true;
+    client->QueryInterface( __uuidof(IDebugClient), (void **)&dbgExt->client );
+    client->QueryInterface( __uuidof(IDebugClient4), (void **)&dbgExt->client4 );
+    
+    
+    client->QueryInterface( __uuidof(IDebugControl), (void **)&dbgExt->control );
+    
+    client->QueryInterface( __uuidof(IDebugRegisters), (void **)&dbgExt->registers );
+    
+    client->QueryInterface( __uuidof(IDebugSymbols), (void ** )&dbgExt->symbols );
+    client->QueryInterface( __uuidof(IDebugSymbols2), (void ** )&dbgExt->symbols2 );    
+    client->QueryInterface( __uuidof(IDebugSymbols3), (void ** )&dbgExt->symbols3 );      
+    
+    client->QueryInterface( __uuidof(IDebugDataSpaces), (void **)&dbgExt->dataSpaces );
+    
+}
+    
+/////////////////////////////////////////////////////////////////////////////////    
+    
+HRESULT 
+CALLBACK
+py( PDEBUG_CLIENT4 client, PCSTR args)
+{
 			
     try {
     
-
+        DbgExt      ext = { 0 };
+    
+        SetupDebugEngine( client, &ext );  
+        dbgExt = &ext;        
+        
         boost::python::object       main =  boost::python::import("__main__");
 
         boost::python::object       global(main.attr("__dict__"));
 
         boost::python::object       result;
         
-        if ( fromFile )
-        {
-            result =  boost::python::exec_file(  GetUnnamedArgStr( 0 ), global, global );
-        }
-        else
-        {
-            result =  boost::python::exec( GetUnnamedArgStr( 0 ), global, global );
-        }     
+        result =  boost::python::exec_file( args, global, global );
+     
     }
     catch( boost::python::error_already_set const & )
     {
@@ -135,9 +147,10 @@ EXT_COMMAND(
     }    
     catch(...)
     {           
-    }       
-
-  
- }  
+    }     
+    
+    return S_OK;  
+}
 
 /////////////////////////////////////////////////////////////////////////////////  
+
