@@ -32,6 +32,9 @@ loadArray( ULONG64 address, ULONG  number )
  	return boost::python::object();
 }
 
+boost::python::object
+loadPtrArray( ULONG64 address, ULONG  number );
+
 bool
 compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length );
 

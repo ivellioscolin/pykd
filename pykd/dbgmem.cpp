@@ -3,6 +3,7 @@
 #include "dbgext.h"
 #include "dbgexcept.h"
 #include "dbgmem.h"
+#include "dbgsystem.h"
 
 using namespace std;
 
@@ -85,6 +86,53 @@ compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length )
     delete[] m2;
     
     return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+boost::python::object
+loadPtrArray( ULONG64 address, ULONG  number )
+{
+    if ( is64bitSystem() )
+    {
+        ULONG64   *buffer = new ULONG64[ number ];
+        
+        if ( loadMemory( address, buffer, number*sizeof(ULONG64) ) )
+        {
+            boost::python::dict    arr;
+        
+            for ( ULONG  i = 0; i < number; ++i )
+                arr[i] = buffer[i];
+                
+            delete[]  buffer;            
+            
+            return   arr;
+        }
+       
+        delete[]  buffer;
+        
+ 	    return boost::python::object();    
+    }
+    else
+    {
+        ULONG   *buffer = new ULONG[ number ];
+        
+        if ( loadMemory( address, buffer, number*sizeof(ULONG) ) )
+        {
+            boost::python::dict    arr;
+        
+            for ( ULONG  i = 0; i < number; ++i )
+                arr[i] = addr64( buffer[i] );
+                
+            delete[]  buffer;            
+            
+            return   arr;
+        }
+       
+        delete[]  buffer;
+        
+ 	    return boost::python::object();       
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

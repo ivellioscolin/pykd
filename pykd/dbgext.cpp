@@ -47,7 +47,12 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "loadBytes", &loadArray<unsigned char> );
     boost::python::def( "loadWords", &loadArray<unsigned short> );
     boost::python::def( "loadDWords", &loadArray<unsigned long> );
-    boost::python::def( "loadQWords", &loadArray<__int64> );
+    boost::python::def( "loadQWords", &loadArray<unsigned __int64> );
+    boost::python::def( "loadSignBytes", &loadArray<char> );
+    boost::python::def( "loadSignWords", &loadArray<short> );
+    boost::python::def( "loadSignDWords", &loadArray<long> );
+    boost::python::def( "loadSignQWords", &loadArray<__int64> );
+    boost::python::def( "loadPtrs", &loadPtrArray );
     boost::python::def( "compareMemory", &compareMemory );
     boost::python::class_<typedVarClass>( "typedVarClass" )
         .def("getAddress", &typedVarClass::getAddress );
