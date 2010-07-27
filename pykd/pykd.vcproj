@@ -149,7 +149,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dbgeng.lib engextcpp.lib"
+				AdditionalDependencies="dbgeng.lib"
 				OutputFile="$(OutDir)\$(ProjectName).pyd"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(DBG_SDK_ROOT)\lib\amd64&quot;;&quot;$(PYTHON_ROOT)\x64\libs&quot;;&quot;$(BOOST_ROOT)\stage64\lib&quot;"

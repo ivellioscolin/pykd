@@ -44,6 +44,10 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "getOffset", &findAddressForSymbol );
     boost::python::def( "findModule", &findModule );
     boost::python::def( "addr64", &addr64 );
+    boost::python::def( "loadBytes", &loadArray<unsigned char> );
+    boost::python::def( "loadWords", &loadArray<unsigned short> );
+    boost::python::def( "loadDWords", &loadArray<unsigned long> );
+    boost::python::def( "loadQWords", &loadArray<__int64> );
     boost::python::def( "compareMemory", &compareMemory );
     boost::python::class_<typedVarClass>( "typedVarClass" )
         .def("getAddress", &typedVarClass::getAddress );
