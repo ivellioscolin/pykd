@@ -69,12 +69,7 @@ loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG6
     try {
         
         ULONG64         moduleBase;
-        
-        if ( typeName.find("*") < typeName.size() )
-        {
-            return valueLoader<void*>( address, ptrSize() );
-        }
-        
+
         hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
   		if ( FAILED( hres ) )
 			throw  DbgException( "IDebugSymbol::GetModuleByModuleName  failed" ); 
@@ -83,7 +78,7 @@ loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG6
         hres = dbgExt->symbols->GetTypeId( moduleBase, typeName.c_str(), &typeId );
 		if ( FAILED( hres ) )
 			throw  DbgException( "IDebugSymbol::GetTypeId  failed" ); 
-			
+				
         typedVarClass		      temp( address );
 		boost::python::object     var( temp );
 					
@@ -117,7 +112,16 @@ loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG6
             }   
             else
             {
-                var.attr( fieldName ) = loadTypedVar( moduleName, fieldTypeName, address + fieldOffset );
+                std::string    fieldTypeNameStr( fieldTypeName );
+            
+                if ( fieldTypeNameStr.find("*") < fieldTypeNameStr.size() )
+                {
+                     var.attr( fieldName ) = valueLoader<void*>( address + fieldOffset, fieldSize );
+                }     
+                else
+                {
+                     var.attr( fieldName ) = loadTypedVar( moduleName, fieldTypeName, address + fieldOffset );
+                }                     
             }               
         }
         

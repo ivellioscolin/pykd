@@ -32,6 +32,24 @@ loadArray( ULONG64 address, ULONG  number )
  	return boost::python::object();
 }
 
+template<typename T>
+boost::python::object
+loadByPtr( ULONG64 address )
+{
+    T   value;
+    
+    if ( loadMemory( address, &value, sizeof(T) ) )
+    {
+        return boost::python::object( value );
+    }    
+    
+    return boost::python::object();
+}
+
+boost::python::object
+loadPtrByPtr( ULONG64 address );
+
+
 boost::python::object
 loadPtrArray( ULONG64 address, ULONG  number );
 
