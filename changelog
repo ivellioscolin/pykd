@@ -1,0 +1,8 @@
+version 0.0.3   28/07/2010
+
+[!] bugfix: typedVar
+[+] routines for loading integer value by pointer ( PtrByte, PtrSignByte, PtrWord ... ) added
+[+] routines for loading array with sign extending( loadSignBytes, loadSignWords ... ) added
+[+] routines for loading array ( loadBytes, loadWords ... ) added
+[+] ssdt.py sample added
+[+] idt.py sample added
