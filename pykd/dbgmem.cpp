@@ -161,3 +161,75 @@ loadPtrByPtr( ULONG64 address )
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+boost::python::object
+loadUnicodeStr( ULONG64 address )
+{
+    USHORT   length;
+    USHORT   maximumLength;
+    ULONG64  buffer = 0;
+    
+    wchar_t  *str = NULL;
+    char     *ansiStr = NULL;
+    
+    do {
+    
+        if ( !loadMemory( address, &length, sizeof( length ) ) )
+            break;
+            
+        if ( length == 0 )
+            break;            
+            
+        address += sizeof( length );
+            
+        if ( !loadMemory( address, &maximumLength, sizeof( maximumLength ) ) )          
+            break;
+           
+        address += sizeof( maximumLength );
+        
+        if ( is64bitSystem() )
+        {
+            if ( !loadMemory( address, &buffer, 8 ) )
+                break;
+                
+            address += 8;                
+        }
+        else
+        {
+            if ( !loadMemory( address, &buffer, 4 ) )
+                break;        
+                
+            buffer = addr64( buffer ); 
+            
+            address += 4;               
+        }    
+        
+        str = new wchar_t[ length/2 ];
+        
+        if ( !loadMemory( buffer, str, length ) )
+            break;
+            
+        ansiStr = new char [ length/2 ];
+            
+        WideCharToMultiByte( CP_ACP, 0, str, length/2, ansiStr, length/2, NULL, NULL );
+
+        std::string     strVal ( ansiStr, length/2 );
+            
+        delete[] str;
+        delete[] ansiStr;
+        
+        return boost::python::object( strVal );
+    
+    } while( FALSE );
+    
+    if ( str )
+        delete[] str;
+        
+    if ( ansiStr )
+        delete[] ansiStr;        
+    
+    return boost::python::object( "" );
+    
+}
+
+///////////////////////////////////////////////////////////////////////////////////

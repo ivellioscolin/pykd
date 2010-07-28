@@ -53,6 +53,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "loadSignDWords", &loadArray<long> );
     boost::python::def( "loadSignQWords", &loadArray<__int64> );
     boost::python::def( "loadPtrs", &loadPtrArray );
+    boost::python::def( "loadUnicodeString", &loadUnicodeStr );
     boost::python::def( "PtrByte", &loadByPtr<unsigned char> );
     boost::python::def( "PtrSignByte", &loadByPtr<char> );
     boost::python::def( "PtrWord", &loadByPtr<unsigned short> );
