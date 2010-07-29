@@ -137,27 +137,20 @@ loadPtrArray( ULONG64 address, ULONG  number )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-boost::python::object
+ULONG64
 loadPtrByPtr( ULONG64 address )
 {
+    ULONG64    value = 0;
+
     if ( is64bitSystem() )
-    {
-        ULONG64    value;
-        
-        if ( loadMemory( address, &value, sizeof(ULONG64) ) )
-            return   boost::python::object( value );
-   
- 	    return boost::python::object();    
-    }
+        loadMemory( address, &value, sizeof(ULONG64) );
     else
     {
-        ULONG   value;
-        
         if ( loadMemory( address, &value, sizeof(ULONG) ) )
-            return   boost::python::object( addr64( value ) );
-        
- 	    return boost::python::object();       
+              value = addr64( value );
     }
+    
+    return value;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

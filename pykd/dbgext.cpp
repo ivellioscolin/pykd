@@ -42,6 +42,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "is64bitSystem", is64bitSystem );
     boost::python::def( "reg", &loadRegister );
     boost::python::def( "typedVar", &loadTypedVar );
+    boost::python::def( "typedVarList", &loadTypedVarList );
     boost::python::def( "containingRecord", &containingRecord );
     boost::python::def( "loadModule", &loadModule );
     boost::python::def( "findSymbol", &findSymbolForAddress );

@@ -47,9 +47,13 @@ basicTypeNames[] = {
     "short", 
     "unsigned long",
     "long",
+    "int",
+    "unsigned int",
     "<function>",
     "void",
-    "double"
+    "double",
+    "int64",
+    "unsigned int64"
 };
     
 basicTypeLoader     basicTypeLoaders[] = {
@@ -59,9 +63,14 @@ basicTypeLoader     basicTypeLoaders[] = {
     valueLoader<short>,
     valueLoader<unsigned long>,
     valueLoader<long>,
+    valueLoader<int>,
+    valueLoader<unsigned int>,
     valueLoader<void*>,
     voidLoader,
-    valueLoader<double> };
+    valueLoader<double>,
+    valueLoader<__int64>,
+    valueLoader<unsigned __int64>
+     };
 
 ///////////////////////////////////////////////////////////////////////////////////
 //
@@ -103,6 +112,10 @@ loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG6
             
             char    fieldTypeName[100];
             hres = dbgExt->symbols->GetTypeName( moduleBase, fieldTypeId, fieldTypeName, sizeof(fieldTypeName), NULL );
+            
+            std::string     fieldTypeNameStr( fieldTypeName );
+            if ( fieldTypeNameStr == "__unnamed"  ||  fieldTypeNameStr == "<unnamed-tag>" )
+                continue;                
             
             ULONG   fieldSize;
             hres = dbgExt->symbols->GetTypeSize( moduleBase, fieldTypeId, &fieldSize );
@@ -181,6 +194,23 @@ containingRecord( ULONG64 address, const std::string &moduleName, const std::str
 	}	
 	
 	return boost::python::str( "VAR_ERR" );	
+}
+
+///////////////////////////////////////////////////////////////////////////////////	
+
+boost::python::object
+loadTypedVarList( ULONG64 address, const std::string &moduleName, const std::string &typeName, const std::string &listEntryName )
+{
+    ULONG64     entryAddress = 0;
+    
+    boost::python::list    objList;
+    
+    for( entryAddress = loadPtrByPtr( address ); entryAddress != address; entryAddress = loadPtrByPtr( entryAddress ) )
+    {
+        objList.append( containingRecord( entryAddress, moduleName, typeName, listEntryName ) );  
+    }
+    
+    return objList;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////		

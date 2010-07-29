@@ -9,6 +9,10 @@
 bool
 loadMemory( ULONG64 address, PVOID dest, ULONG length );
 
+ULONG64
+loadPtrByPtr( ULONG64 address );
+
+
 template<typename T>
 boost::python::object
 loadArray( ULONG64 address, ULONG  number )
@@ -45,9 +49,6 @@ loadByPtr( ULONG64 address )
     
     return boost::python::object();
 }
-
-boost::python::object
-loadPtrByPtr( ULONG64 address );
 
 boost::python::object
 loadPtrArray( ULONG64 address, ULONG  number );
