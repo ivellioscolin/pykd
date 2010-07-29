@@ -36,7 +36,7 @@ def getObjectInDir( dirObj, objName ):
 
               if name.lower() == dirSubName.lower():
 
-                if objHeader.Type == PtrPtr( nt.ObpDirectoryObjectType ):
+                if objHeader.Type == ptrPtr( nt.ObpDirectoryObjectType ):
                     return getObjectInDir( typedVar( "nt", "_OBJECT_DIRECTORY", dirEntry.Object), objSubName )			 
                 else:
                     return  dirEntry.Object
@@ -57,7 +57,7 @@ def getObjectByName( objName ):
     if objName[0] != '\\':
 	return
 
-    rootDir = typedVar( "nt", "_OBJECT_DIRECTORY", PtrPtr( nt.ObpRootDirectoryObject ) )
+    rootDir = typedVar( "nt", "_OBJECT_DIRECTORY", ptrPtr( nt.ObpRootDirectoryObject ) )
    
     return getObjectInDir( rootDir, objName[1:] )
 
@@ -69,14 +69,14 @@ def printDrvMajorTable( drvName ):
      drvObjPtr = getObjectByName( objName )
     
      if drvObjPtr == None:
-        print "object not found"
+        dprintln( "object not found" )
         return
  
      drvObj = typedVar( "nt", "_DRIVER_OBJECT", drvObjPtr )
 
      
      for i,k in drvObj.MajorFunction.items():
-       print "MajorFunction[%d] = %s" % ( i, findSymbol( k ) ) 
+       dprintln( "MajorFunction[%d] = %s" % ( i, findSymbol( k ) ) )
 
 
 

@@ -2,10 +2,14 @@
 
 #include <wdbgexts.h>
 
+#include <vector>
+#include <string>
+
 #include <boost/python.hpp>
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
 #include <boost/python/def.hpp>
+#include <boost/tokenizer.hpp>
 
 #include "dbgext.h"
 #include "dbgprint.h"
@@ -54,15 +58,16 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "loadSignQWords", &loadArray<__int64> );
     boost::python::def( "loadPtrs", &loadPtrArray );
     boost::python::def( "loadUnicodeString", &loadUnicodeStr );
-    boost::python::def( "PtrByte", &loadByPtr<unsigned char> );
-    boost::python::def( "PtrSignByte", &loadByPtr<char> );
-    boost::python::def( "PtrWord", &loadByPtr<unsigned short> );
-    boost::python::def( "PtrSignWord", &loadByPtr<short> );
-    boost::python::def( "PtrDWord", &loadByPtr<unsigned long> );
-    boost::python::def( "PtrSignDWord", &loadByPtr<long> );
-    boost::python::def( "PtrQWord", &loadByPtr<unsigned __int64> );
-    boost::python::def( "PtrSignQWord", &loadByPtr<__int64> );
-    boost::python::def( "PtrPtr", &loadPtrByPtr );    
+    boost::python::def( "loadAnsiString", &loadAnsiStr );    
+    boost::python::def( "ptrByte", &loadByPtr<unsigned char> );
+    boost::python::def( "ptrSignByte", &loadByPtr<char> );
+    boost::python::def( "ptrWord", &loadByPtr<unsigned short> );
+    boost::python::def( "ptrSignWord", &loadByPtr<short> );
+    boost::python::def( "ptrDWord", &loadByPtr<unsigned long> );
+    boost::python::def( "ptrSignDWord", &loadByPtr<long> );
+    boost::python::def( "ptrQWord", &loadByPtr<unsigned __int64> );
+    boost::python::def( "ptrSignQWord", &loadByPtr<__int64> );
+    boost::python::def( "ptrPtr", &loadPtrByPtr );    
     boost::python::def( "compareMemory", &compareMemory );
     boost::python::class_<typedVarClass>( "typedVarClass" )
         .def("getAddress", &typedVarClass::getAddress );
@@ -141,7 +146,40 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
 
         boost::python::object       result;
         
-        result =  boost::python::exec_file( args, global, global );
+        // разбор параметров
+        typedef  boost::char_separator<char>            char_separator_t;
+        typedef  boost::tokenizer< char_separator_t >   char_tokenizer_t;  
+        
+        std::string                 argsStr( args );
+        
+        char_tokenizer_t            token( argsStr , char_separator_t( " \t" ) );
+        std::vector<std::string>    argsList;
+        
+        for ( char_tokenizer_t::iterator   it = token.begin(); it != token.end(); ++it )
+            argsList.push_back( *it );
+            
+        if ( argsList.size() == 0 )
+            return S_OK;            
+            
+        if ( argsList.size() > 1 )     
+        {
+            char    **pythonArgs = new char* [ argsList.size() - 1 ];
+         
+            for ( size_t  i = 0; i < argsList.size() - 1; ++i )
+                pythonArgs[i] = const_cast<char*>( argsList[i+1].c_str() );
+                
+            PySys_SetArgv( (int)argsList.size() - 1, pythonArgs );
+
+            delete[]  pythonArgs;
+        }            
+        else
+        {
+            char   *emptyParam = "";
+        
+            PySys_SetArgv( 1, &emptyParam );
+        }       
+        
+        result =  boost::python::exec_file( argsList[0].c_str(), global, global );
      
     }
     catch( boost::python::error_already_set const & )

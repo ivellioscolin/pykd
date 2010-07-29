@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <map>
+
 #include "dbgext.h"
 #include "dbgtype.h"
 #include "dbgexcept.h"
@@ -46,7 +48,8 @@ basicTypeNames[] = {
     "unsigned long",
     "long",
     "<function>",
-    "void" 
+    "void",
+    "double"
 };
     
 basicTypeLoader     basicTypeLoaders[] = {
@@ -57,7 +60,8 @@ basicTypeLoader     basicTypeLoaders[] = {
     valueLoader<unsigned long>,
     valueLoader<long>,
     valueLoader<void*>,
-    voidLoader };
+    voidLoader,
+    valueLoader<double> };
 
 ///////////////////////////////////////////////////////////////////////////////////
 //

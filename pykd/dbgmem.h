@@ -55,6 +55,9 @@ loadPtrArray( ULONG64 address, ULONG  number );
 boost::python::object
 loadUnicodeStr( ULONG64 address );
 
+boost::python::object
+loadAnsiStr( ULONG64 address );
+
 bool
 compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length );
 

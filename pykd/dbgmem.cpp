@@ -233,3 +233,66 @@ loadUnicodeStr( ULONG64 address )
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+boost::python::object
+loadAnsiStr( ULONG64 address )
+{
+    USHORT   length;
+    USHORT   maximumLength;
+    ULONG64  buffer = 0;
+    
+    char     *ansiStr = NULL;
+    
+    do {
+    
+        if ( !loadMemory( address, &length, sizeof( length ) ) )
+            break;
+            
+        if ( length == 0 )
+            break;            
+            
+        address += sizeof( length );
+            
+        if ( !loadMemory( address, &maximumLength, sizeof( maximumLength ) ) )          
+            break;
+           
+        address += sizeof( maximumLength );
+        
+        if ( is64bitSystem() )
+        {
+            if ( !loadMemory( address, &buffer, 8 ) )
+                break;
+                
+            address += 8;                
+        }
+        else
+        {
+            if ( !loadMemory( address, &buffer, 4 ) )
+                break;        
+                
+            buffer = addr64( buffer ); 
+            
+            address += 4;               
+        }    
+        
+       
+        ansiStr = new char [ length/2 ];        
+        
+        if ( !loadMemory( buffer, ansiStr, length ) )
+            break;
+
+        std::string     strVal ( ansiStr, length/2 );
+            
+        delete[] ansiStr;
+        
+        return boost::python::object( strVal );
+    
+    } while( FALSE );
+    
+    if ( ansiStr )
+        delete[] ansiStr;        
+    
+    return boost::python::object( "" );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
