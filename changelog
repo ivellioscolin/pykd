@@ -1,3 +1,9 @@
+version 0.0.5   03/08/2010
+
+[!] fixed: issue #6769 ( Args parsing is not supporting quoting )
+[+] added: proclist.py sample
+[+] added: loadTypedVarList routine
+[!] fixed: typedVar
 
 version 0.0.4   29/07/2010
 
