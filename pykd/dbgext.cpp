@@ -148,16 +148,19 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
         boost::python::object       result;
         
         // разбор параметров
-        typedef  boost::char_separator<char>            char_separator_t;
+        typedef  boost::escaped_list_separator<char>    char_separator_t;
         typedef  boost::tokenizer< char_separator_t >   char_tokenizer_t;  
         
         std::string                 argsStr( args );
         
-        char_tokenizer_t            token( argsStr , char_separator_t( " \t" ) );
+        char_tokenizer_t            token( argsStr , char_separator_t( "\\", " \t", "\"" ) );
         std::vector<std::string>    argsList;
         
         for ( char_tokenizer_t::iterator   it = token.begin(); it != token.end(); ++it )
-            argsList.push_back( *it );
+        {
+            if ( *it != "" )
+                argsList.push_back( *it );
+        }            
             
         if ( argsList.size() == 0 )
             return S_OK;            
