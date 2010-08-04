@@ -23,10 +23,37 @@
 #include "dbgdump.h"
 #include "dbgexcept.h"
 #include "dbgsession.h"
+#include "dbgcallback.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
+// указатель на текущйи интерфейс
 DbgExt    *dbgExt = NULL;
+
+
+/////////////////////////////////////////////////////////////////////////////////
+
+class WindbgGlobalSession 
+{
+public:
+
+    WindbgGlobalSession() {
+        interactiveMode = false;
+        main = boost::python::import("__main__");
+    }
+    
+    boost::python::object
+    global() {
+        return main.attr("__dict__");
+    }
+
+private:
+   
+    boost::python::object       main;
+   
+};   
+
+WindbgGlobalSession     *windbgGlobalSession = NULL; 
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -94,6 +121,8 @@ DebugExtensionInitialize(
        
     Py_Initialize();
     
+    windbgGlobalSession = new WindbgGlobalSession();
+    
     dbgSessionStarted = true;                
     
     return S_OK; 
@@ -104,6 +133,9 @@ VOID
 CALLBACK
 DebugExtensionUninitialize()
 {
+    delete windbgGlobalSession;
+    windbgGlobalSession = NULL;
+
     Py_Finalize();  
 }
 
@@ -215,3 +247,104 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
 
 /////////////////////////////////////////////////////////////////////////////////  
 
+HRESULT 
+CALLBACK
+pycmd( PDEBUG_CLIENT4 client, PCSTR args )
+{
+    try {
+    
+        DbgExt      ext = { 0 };
+    
+        SetupDebugEngine( client, &ext );  
+        dbgExt = &ext;   
+        
+        if ( !std::string( args ).empty() )
+        {
+            try {
+                boost::python::exec( args, windbgGlobalSession->global(), windbgGlobalSession->global() );
+            }                
+            catch( boost::python::error_already_set const & )
+            {
+                // ошибка в скрипте
+                PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL;
+                
+                PyErr_Fetch( &errtype, &errvalue, &traceback );
+                
+                if(errvalue != NULL) 
+                {
+                    PyObject *s = PyObject_Str(errvalue);
+                    
+                    DbgPrint::dprintln( PyString_AS_STRING( s ) );
+
+                    Py_DECREF(s);
+                }
+
+                Py_XDECREF(errvalue);
+                Py_XDECREF(errtype);
+                Py_XDECREF(traceback);        
+            }  
+        }
+        else
+        {
+            char        str[100];
+            ULONG       inputSize;
+            bool        stopInput = false;
+            
+            do {
+            
+                std::string     output;
+                
+                dbgExt->control->Output( DEBUG_OUTPUT_NORMAL, ">>>" );
+                    
+                do {    
+                                
+                    OutputReader        outputReader( dbgExt->client );                    
+                    
+                    HRESULT   hres = dbgExt->control->Input( str, sizeof(str), &inputSize );
+                
+                    if ( FAILED( hres ) || std::string( str ) == "" )
+                    {
+                       stopInput = true;
+                       break;
+                    }                       
+                    
+                } while( FALSE );                    
+                
+                if ( !stopInput )
+                    try {
+                        boost::python::exec( str, windbgGlobalSession->global(), windbgGlobalSession->global() );
+                    }
+                    catch( boost::python::error_already_set const & )
+                    {
+                        // ошибка в скрипте
+                        PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL;
+                        
+                        PyErr_Fetch( &errtype, &errvalue, &traceback );
+                        
+                        if(errvalue != NULL) 
+                        {
+                            PyObject *s = PyObject_Str(errvalue);
+                            
+                            DbgPrint::dprintln( PyString_AS_STRING( s ) );
+
+                            Py_DECREF(s);
+                        }
+
+                        Py_XDECREF(errvalue);
+                        Py_XDECREF(errtype);
+                        Py_XDECREF(traceback);        
+                    }  
+                    
+            } while( !stopInput );                                
+        }
+    }
+  
+    catch(...)
+    {           
+    }     
+    
+    return S_OK;          
+            
+}
+
+/////////////////////////////////////////////////////////////////////////////////  

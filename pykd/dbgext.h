@@ -16,8 +16,6 @@ struct DbgExt {
     IDebugSymbols3      *symbols3;   
     
     IDebugDataSpaces    *dataSpaces;
-    
-    
 };
 
 extern DbgExt    *dbgExt;
