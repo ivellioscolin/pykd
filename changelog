@@ -1,3 +1,10 @@
+version 0.0.6   09/08/2010
+
+[+] added: dbgExtensionClass class for calling windbg extension command from python script
+[!] bug fixed: issue #6812 ( windbg ext command !py does not work with full path )
+[+] added: !pycmd command for windbg extension
+
+
 version 0.0.5   03/08/2010
 
 [!] fixed: issue #6769 ( Args parsing is not supporting quoting )
