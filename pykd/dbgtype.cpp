@@ -80,6 +80,9 @@ loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG6
 	HRESULT      hres;
 
     try {
+    
+        if ( address == 0 )
+            return boost::python::object();
         
         ULONG64         moduleBase;
 

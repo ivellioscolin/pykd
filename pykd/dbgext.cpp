@@ -24,6 +24,7 @@
 #include "dbgexcept.h"
 #include "dbgsession.h"
 #include "dbgcallback.h"
+#include "dbgstack.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -96,6 +97,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "ptrSignQWord", &loadByPtr<__int64> );
     boost::python::def( "ptrPtr", &loadPtrByPtr );    
     boost::python::def( "compareMemory", &compareMemory );
+    boost::python::def( "getStack", &getStack );
     boost::python::class_<typedVarClass>( "typedVarClass" )
         .def("getAddress", &typedVarClass::getAddress );
     boost::python::class_<dbgModuleClass>( "dbgModuleClass" )
@@ -103,6 +105,11 @@ BOOST_PYTHON_MODULE( pykd )
         .def("end", &dbgModuleClass::getEnd )
         .def("name", &dbgModuleClass::getName )
         .def("contain", &dbgModuleClass::contain );
+    boost::python::class_<dbgExtensionClass>( 
+            "dbgExtensionClass",
+            "dbgExtensionClass",
+             boost::python::init<const char*>( boost::python::args("path"), "__init__  dbgExtensionClass" ) ) 
+        .def("call", &dbgExtensionClass::call );       
 }    
 
 /////////////////////////////////////////////////////////////////////////////////
