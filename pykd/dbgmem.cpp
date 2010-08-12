@@ -177,11 +177,13 @@ loadUnicodeStr( ULONG64 address )
             
         if ( !loadMemory( address, &maximumLength, sizeof( maximumLength ) ) )          
             break;
-           
-        address += sizeof( maximumLength );
+            
+        address += sizeof( maximumLength );            
         
         if ( is64bitSystem() )
         {
+            address += address % 8 ? ( 8 - address % 8 ) : 0 ;  // выравнивание на 8 байт
+        
             if ( !loadMemory( address, &buffer, 8 ) )
                 break;
                 
@@ -189,6 +191,8 @@ loadUnicodeStr( ULONG64 address )
         }
         else
         {
+            address += address % 4 ? ( 4 - address % 4 ) : 0 ;  // выравнивание на 8 байт
+        
             if ( !loadMemory( address, &buffer, 4 ) )
                 break;        
                 
@@ -253,6 +257,8 @@ loadAnsiStr( ULONG64 address )
         
         if ( is64bitSystem() )
         {
+            address += address % 8 ? ( 8 - address % 8 ) : 0;  // выравнивание на 8 байт
+        
             if ( !loadMemory( address, &buffer, 8 ) )
                 break;
                 
@@ -260,6 +266,8 @@ loadAnsiStr( ULONG64 address )
         }
         else
         {
+            address += address % 4 ? ( 4 - address % 4 ) : 0;  // выравнивание на 8 байт
+        
             if ( !loadMemory( address, &buffer, 4 ) )
                 break;        
                 
