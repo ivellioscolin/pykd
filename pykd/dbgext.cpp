@@ -86,7 +86,8 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "loadSignQWords", &loadArray<__int64> );
     boost::python::def( "loadPtrs", &loadPtrArray );
     boost::python::def( "loadUnicodeString", &loadUnicodeStr );
-    boost::python::def( "loadAnsiString", &loadAnsiStr );    
+    boost::python::def( "loadAnsiString", &loadAnsiStr );   
+    boost::python::def( "loadLinkedList", &loadLinkedList ); 
     boost::python::def( "ptrByte", &loadByPtr<unsigned char> );
     boost::python::def( "ptrSignByte", &loadByPtr<char> );
     boost::python::def( "ptrWord", &loadByPtr<unsigned short> );
@@ -98,6 +99,8 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "ptrPtr", &loadPtrByPtr );    
     boost::python::def( "compareMemory", &compareMemory );
     boost::python::def( "getStack", &getStack );
+    boost::python::def( "reloadSymbols", &reloadSymbols );
+    boost::python::def( "getPdbFile", &getPdbFile );
     boost::python::class_<typedVarClass>( "typedVarClass" )
         .def("getAddress", &typedVarClass::getAddress );
     boost::python::class_<dbgModuleClass>( "dbgModuleClass" )
@@ -163,6 +166,7 @@ SetupDebugEngine( IDebugClient4 *client, DbgExt *dbgExt  )
     
     client->QueryInterface( __uuidof(IDebugDataSpaces), (void **)&dbgExt->dataSpaces );
     
+    client->QueryInterface( __uuidof(IDebugAdvanced2), (void **)&dbgExt->advanced2 );
 }
     
 /////////////////////////////////////////////////////////////////////////////////    

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <dbgeng.h>
+#include <dbghelp.h>
 
 struct DbgExt {
 
@@ -16,6 +17,8 @@ struct DbgExt {
     IDebugSymbols3      *symbols3;   
     
     IDebugDataSpaces    *dataSpaces;
+    
+    IDebugAdvanced2     *advanced2;
 };
 
 extern DbgExt    *dbgExt;

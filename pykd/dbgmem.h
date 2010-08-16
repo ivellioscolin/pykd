@@ -65,4 +65,7 @@ compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length );
 ULONG64
 addr64( ULONG64  addr );
 
+boost::python::object
+loadLinkedList( ULONG64 address );
+
 /////////////////////////////////////////////////////////////////////////////////

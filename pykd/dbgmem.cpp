@@ -297,3 +297,18 @@ loadAnsiStr( ULONG64 address )
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+boost::python::object
+loadLinkedList( ULONG64 address )
+{
+    ULONG64     entryAddress = 0;
+    
+    boost::python::list    objList;
+    
+    for( entryAddress = loadPtrByPtr( address ); entryAddress != address; entryAddress = loadPtrByPtr( entryAddress ) )
+        objList.append( entryAddress );
+    
+    return objList;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
