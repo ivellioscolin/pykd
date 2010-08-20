@@ -1,3 +1,14 @@
+version 0.0.7   20/08/2010
+
+[+] added: getImplicitThread routine( get address of the current thread )
+[+] added: setImplicitThread routine ( change current thread context )
+[+] added: dbgStackFrameClass class ( information about stack frame )
+[+] added: getCurrentStack routine ( get current stack as collections of dbgStackFrameClass object )
+[+] added: loadLinkedList routine
+[+] added: getPdbFile routine
+[+] added: reloadSymbols
+[!] bug fixed: issue #6862 ( loadUnicodeString for x64 target does not work )
+
 version 0.0.6   09/08/2010
 
 [+] added: dbgExtensionClass class for calling windbg extension command from python script
