@@ -98,9 +98,11 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "ptrSignQWord", &loadByPtr<__int64> );
     boost::python::def( "ptrPtr", &loadPtrByPtr );    
     boost::python::def( "compareMemory", &compareMemory );
-    boost::python::def( "getStack", &getStack );
+    boost::python::def( "getCurrentStack", &getCurrentStack );
     boost::python::def( "reloadSymbols", &reloadSymbols );
     boost::python::def( "getPdbFile", &getPdbFile );
+    boost::python::def( "getImplicitThread", &getImplicitThread );
+    boost::python::def( "setImplicitThread", &setImplicitThread );
     boost::python::class_<typedVarClass>( "typedVarClass" )
         .def("getAddress", &typedVarClass::getAddress );
     boost::python::class_<dbgModuleClass>( "dbgModuleClass" )
@@ -112,7 +114,13 @@ BOOST_PYTHON_MODULE( pykd )
             "dbgExtensionClass",
             "dbgExtensionClass",
              boost::python::init<const char*>( boost::python::args("path"), "__init__  dbgExtensionClass" ) ) 
-        .def("call", &dbgExtensionClass::call );       
+        .def("call", &dbgExtensionClass::call );    
+    boost::python::class_<dbgStackFrameClass>( "dbgStackFrameClass", "dbgStackFrameClass" )
+        .def_readonly( "instructionOffset", &dbgStackFrameClass::InstructionOffset )
+        .def_readonly( "returnOffset", &dbgStackFrameClass::ReturnOffset )
+        .def_readonly( "frameOffset", &dbgStackFrameClass::FrameOffset )
+        .def_readonly( "stackOffset", &dbgStackFrameClass::StackOffset )
+        .def_readonly( "frameNumber", &dbgStackFrameClass::FrameNumber );
 }    
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -167,6 +175,8 @@ SetupDebugEngine( IDebugClient4 *client, DbgExt *dbgExt  )
     client->QueryInterface( __uuidof(IDebugDataSpaces), (void **)&dbgExt->dataSpaces );
     
     client->QueryInterface( __uuidof(IDebugAdvanced2), (void **)&dbgExt->advanced2 );
+    
+    client->QueryInterface( __uuidof(IDebugSystemObjects2), (void**)&dbgExt->system2 );
 }
     
 /////////////////////////////////////////////////////////////////////////////////    

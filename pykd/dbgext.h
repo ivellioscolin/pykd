@@ -5,20 +5,22 @@
 
 struct DbgExt {
 
-    IDebugClient        *client;
-    IDebugClient4       *client4;
+    IDebugClient            *client;
+    IDebugClient4           *client4;
     
-    IDebugControl       *control;
+    IDebugControl           *control;
     
-    IDebugRegisters     *registers;
+    IDebugRegisters         *registers;
     
-    IDebugSymbols       *symbols;
-    IDebugSymbols2      *symbols2;   
-    IDebugSymbols3      *symbols3;   
+    IDebugSymbols           *symbols;
+    IDebugSymbols2          *symbols2;   
+    IDebugSymbols3          *symbols3;   
     
-    IDebugDataSpaces    *dataSpaces;
+    IDebugDataSpaces        *dataSpaces;
     
-    IDebugAdvanced2     *advanced2;
+    IDebugAdvanced2         *advanced2;
+    
+    IDebugSystemObjects2    *system2;
 };
 
 extern DbgExt    *dbgExt;

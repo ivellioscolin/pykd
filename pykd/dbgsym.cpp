@@ -13,9 +13,6 @@ findSymbolForAddress( ULONG64 addr )
     HRESULT         hres;  
     
     try {
-    
-        DEBUG_MODULE_AND_ID     debugId;
-        ULONG64                 displace = 0;
         
         if ( *( (ULONG*)&addr + 1 ) == 0 )
             *( (ULONG*)&addr + 1 ) = 0xFFFFFFFF;        
@@ -36,11 +33,19 @@ findSymbolForAddress( ULONG64 addr )
         if ( FAILED( hres ) )
              throw DbgException( "IDebugSymbol2::GetModuleNameString  failed" );           
     
-        ULONG   entries = 0;
-        hres =  dbgExt->symbols3->GetSymbolEntriesByOffset( addr, 0, &debugId, &displace, 1, &entries );
+        char        symbolName[0x100];
+        ULONG64     displace = 0;
+        hres = dbgExt->symbols->GetNameByOffset( addr, symbolName, sizeof(symbolName), NULL, &displace );
         if ( FAILED( hres ) )
-             throw DbgException( "IDebugSymbol3::GetSymbolEntriesByOffset  failed" );
-             
+            throw DbgException( "IDebugSymbol::GetNameByOffset  failed" );    
+        
+        std::stringstream      ss;
+        displace == 0 ?  ss << symbolName : ss << symbolName << '+' << std::hex << displace;
+        
+        return boost::python::object( ss.str() );
+        
+        
+/*             
         std::stringstream      ss;             
              
         if ( entries == 0 )
@@ -55,7 +60,7 @@ findSymbolForAddress( ULONG64 addr )
              throw DbgException( "IDebugSymbol3::GetSymbolEntryString  failed" );  
              
         ss << moduleName << "!" << symbolName;
-        return boost::python::object( ss.str() );                                
+        return boost::python::object( ss.str() ); */                               
             
     }
 	catch( std::exception  &e )
