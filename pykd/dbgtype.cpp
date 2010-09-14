@@ -94,8 +94,13 @@ loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG6
         hres = dbgExt->symbols->GetTypeId( moduleBase, typeName.c_str(), &typeId );
 		if ( FAILED( hres ) )
 			throw  DbgException( "IDebugSymbol::GetTypeId  failed" ); 
+			
+        ULONG        typeSize;			
+        hres = dbgExt->symbols->GetTypeSize( moduleBase, typeId, &typeSize );	
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugSymbol::GetTypeSize failed" );			
 				
-        typedVarClass		      temp( address );
+        typedVarClass		      temp( address, typeSize );
 		boost::python::object     var( temp );
 					
         for ( ULONG   i = 0; ; ++i )
@@ -197,6 +202,44 @@ containingRecord( ULONG64 address, const std::string &moduleName, const std::str
 	}	
 	
 	return boost::python::str( "VAR_ERR" );	
+}
+
+///////////////////////////////////////////////////////////////////////////////////	
+
+ULONG
+sizeofType( const std::string &moduleName, const std::string &typeName )
+{
+	HRESULT     hres;
+	ULONG       typeSize = ~0;
+
+    try {
+    
+        ULONG64         moduleBase;
+
+        hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
+  		if ( FAILED( hres ) )
+			throw  DbgException( "IDebugSymbol::GetModuleByModuleName  failed" ); 
+			
+        ULONG        typeId;
+        hres = dbgExt->symbols->GetTypeId( moduleBase, typeName.c_str(), &typeId );
+		if ( FAILED( hres ) )
+			throw  DbgException( "IDebugSymbol::GetTypeId  failed" );
+			
+        hres = dbgExt->symbols->GetTypeSize( moduleBase, typeId, &typeSize );	
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugSymbol::GetTypeSize failed" );
+    }		
+			
+	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}	
+	
+	return typeSize;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////	

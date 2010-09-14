@@ -71,6 +71,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "typedVar", &loadTypedVar );
     boost::python::def( "typedVarList", &loadTypedVarList );
     boost::python::def( "containingRecord", &containingRecord );
+    boost::python::def( "sizeof", &sizeofType );
     boost::python::def( "loadModule", &loadModule );
     boost::python::def( "findSymbol", &findSymbolForAddress );
     boost::python::def( "getOffset", &findAddressForSymbol );
@@ -104,7 +105,8 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "getImplicitThread", &getImplicitThread );
     boost::python::def( "setImplicitThread", &setImplicitThread );
     boost::python::class_<typedVarClass>( "typedVarClass" )
-        .def("getAddress", &typedVarClass::getAddress );
+        .def("getAddress", &typedVarClass::getAddress )
+        .def("sizeof", &typedVarClass::size );
     boost::python::class_<dbgModuleClass>( "dbgModuleClass" )
         .def("begin", &dbgModuleClass::getBegin )
         .def("end", &dbgModuleClass::getEnd )

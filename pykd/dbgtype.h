@@ -14,8 +14,9 @@ public:
     typedVarClass()
     {}
     
-    typedVarClass( ULONG64 addr ) :
-        m_addr( addr )
+    typedVarClass( ULONG64 addr, ULONG size ) :
+        m_addr( addr ), 
+        m_size( size )
     {}
     
     ULONG64
@@ -23,9 +24,16 @@ public:
         return m_addr;
     }
     
+    ULONG
+    size() const {
+        return m_size;
+    }
+    
 private:
 
     ULONG64     m_addr;
+    
+    ULONG       m_size;
         
 };
 
@@ -39,6 +47,9 @@ loadTypedVarList( ULONG64 address, const std::string &moduleName, const std::str
 
 boost::python::object
 containingRecord( ULONG64 address, const std::string &moduleName, const std::string &typeName, const std::string &fieldName );
+
+ULONG
+sizeofType( const std::string &moduleName, const std::string &typeName );
 
 
 /////////////////////////////////////////////////////////////////////////////////
