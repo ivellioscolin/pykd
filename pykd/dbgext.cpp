@@ -67,6 +67,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "loadDump", &dbgLoadDump );
     boost::python::def( "dbgCommand", &dbgCommand );
     boost::python::def( "is64bitSystem", is64bitSystem );
+    boost::python::def( "ptrSize", ptrSize );
     boost::python::def( "reg", &loadRegister );
     boost::python::def( "typedVar", &loadTypedVar );
     boost::python::def( "typedVarList", &loadTypedVarList );
