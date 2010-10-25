@@ -25,6 +25,7 @@
 #include "dbgsession.h"
 #include "dbgcallback.h"
 #include "dbgstack.h"
+#include "dbgpath.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -188,7 +189,6 @@ HRESULT
 CALLBACK
 py( PDEBUG_CLIENT4 client, PCSTR args)
 {
-			
     try {
     
         DbgExt      ext = { 0 };
@@ -201,7 +201,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
         boost::python::object       global(main.attr("__dict__"));
 
         boost::python::object       result;
-        
+       
         // разбор параметров
         typedef  boost::escaped_list_separator<char>    char_separator_t;
         typedef  boost::tokenizer< char_separator_t >   char_tokenizer_t;  
@@ -236,31 +236,59 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
             char   *emptyParam = "";
         
             PySys_SetArgv( 1, &emptyParam );
-        }       
+        } 
         
-        result =  boost::python::exec_file( argsList[0].c_str(), global, global );
-     
-    }
-    catch( boost::python::error_already_set const & )
-    {
-        // ошибка в скрипте
-        PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL;
+        // найти путь к файлу
+        std::string     fullFileName;
+        std::string     filePath;
         
-        PyErr_Fetch( &errtype, &errvalue, &traceback );
-        
-        if(errvalue != NULL) 
+        if ( dbgPythonPath.findPath( argsList[0], fullFileName, filePath ) )
         {
-            PyObject *s = PyObject_Str(errvalue);
+            DWORD       oldCurDirLen = GetCurrentDirectoryA( 0, NULL );
+
+            char        *oldCurDirCstr = new char[ oldCurDirLen ];
             
-            DbgPrint::dprintln( PyString_AS_STRING( s ) );
+            GetCurrentDirectoryA( oldCurDirLen, oldCurDirCstr );
+            
+            SetCurrentDirectoryA( filePath.c_str() );
+            
+            try {                  
+        
+                result =  boost::python::exec_file( fullFileName.c_str(), global, global );
+                
+            }                
+            catch( boost::python::error_already_set const & )
+            {
+                // ошибка в скрипте
+                PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL;
+                
+                PyErr_Fetch( &errtype, &errvalue, &traceback );
+                
+                if(errvalue != NULL) 
+                {
+                    PyObject *s = PyObject_Str(errvalue);
+                    
+                    DbgPrint::dprintln( PyString_AS_STRING( s ) );
 
-            Py_DECREF(s);
+                    Py_DECREF(s);
+                }
+
+                Py_XDECREF(errvalue);
+                Py_XDECREF(errtype);
+                Py_XDECREF(traceback);        
+            }  
+            
+            SetCurrentDirectoryA( oldCurDirCstr );               
+            
+            delete[] oldCurDirCstr;
+                
         }
-
-        Py_XDECREF(errvalue);
-        Py_XDECREF(errtype);
-        Py_XDECREF(traceback);        
-    }    
+        else
+        {
+            DbgPrint::dprintln( "script file not found" ); 
+        }           
+    }
+   
     catch(...)
     {           
     }     
@@ -370,4 +398,20 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
             
 }
 
-/////////////////////////////////////////////////////////////////////////////////  
+///////////////////////////////////////////////////////////////////////////////// 
+
+HRESULT 
+CALLBACK
+pythonpath( PDEBUG_CLIENT4 client, PCSTR args )
+{
+    DbgExt      ext = { 0 };
+    
+    SetupDebugEngine( client, &ext );  
+    dbgExt = &ext;   
+
+    DbgPrint::dprintln( dbgPythonPath.getStr() );
+   
+    return S_OK;      
+}
+
+///////////////////////////////////////////////////////////////////////////////// 

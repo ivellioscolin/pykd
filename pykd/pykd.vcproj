@@ -376,6 +376,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgpath.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgprint.cpp"
 				>
 			</File>
@@ -475,6 +479,10 @@
 			</File>
 			<File
 				RelativePath=".\dbgmodule.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgpath.h"
 				>
 			</File>
 			<File

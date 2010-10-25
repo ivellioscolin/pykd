@@ -10,12 +10,12 @@ def loadSymbols():
    nt.PsActiveProcessHead = getOffset( "nt", "PsActiveProcessHead" )
 
 
-def printStacks():
+def processInfo():
 
     processList = typedVarList( nt.PsActiveProcessHead, "nt", "_EPROCESS", "ActiveProcessLinks"  )
 
     for process in processList:
-	dprintln( "".join( [ chr(i) for k, i in process.ImageFileName.items() ] ) )
+	dprintln( "".join( [ chr(i) for i in process.ImageFileName.values() ] ) )
 
     return
 
@@ -29,4 +29,4 @@ if __name__ == "__main__":
 
     loadSymbols()
 
-    printStacks()
+    processInfo()
