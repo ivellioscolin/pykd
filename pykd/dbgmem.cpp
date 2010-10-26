@@ -10,15 +10,25 @@ using namespace std;
 ///////////////////////////////////////////////////////////////////////////////////
 
 bool
-loadMemory( ULONG64 address, PVOID dest, ULONG length )
+loadMemory( ULONG64 address, PVOID dest, ULONG length, BOOLEAN phyAddr  )
 {
     address = addr64( address );
 
     try {
     
-        HRESULT     hres = dbgExt->dataSpaces->ReadVirtual( address, dest, length, NULL );
-        if ( FAILED( hres ) )
-           throw DbgException( "IDebugDataSpace::ReadVirtual  failed" );
+        if ( phyAddr == FALSE )
+        {
+            HRESULT     hres = dbgExt->dataSpaces->ReadVirtual( address, dest, length, NULL );
+            if ( FAILED( hres ) )
+               throw DbgException( "IDebugDataSpace::ReadVirtual  failed" );
+               
+        }
+        else
+        {
+             HRESULT     hres = dbgExt->dataSpaces->ReadPhysical( address, dest, length, NULL );
+             if ( FAILED( hres ) )
+                throw DbgException( "IDebugDataSpace::ReadPhysical  failed" ); 
+        }               
            
         return true;           
         
@@ -49,7 +59,7 @@ addr64( ULONG64  addr )
 ///////////////////////////////////////////////////////////////////////////////////
 
 bool
-compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length )
+compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, BOOLEAN phyAddr  )
 {
     HRESULT     hres;
     bool        result = false;
@@ -62,13 +72,27 @@ compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length )
    
     try {
     
-        hres = dbgExt->dataSpaces->ReadVirtual( addr1, m1, length, NULL );
-        if ( FAILED( hres ) )
-           throw DbgException( "IDebugDataSpace::ReadVirtual  failed" );
+        if ( phyAddr == FALSE )
+        { 
+    
+            hres = dbgExt->dataSpaces->ReadVirtual( addr1, m1, length, NULL );
+            if ( FAILED( hres ) )
+               throw DbgException( "IDebugDataSpace::ReadVirtual  failed" );
            
-        hres = dbgExt->dataSpaces->ReadVirtual( addr2, m2, length, NULL );
-        if ( FAILED( hres ) )
-           throw DbgException( "IDebugDataSpace::ReadVirtual  failed" );           
+            hres = dbgExt->dataSpaces->ReadVirtual( addr2, m2, length, NULL );
+            if ( FAILED( hres ) )
+                throw DbgException( "IDebugDataSpace::ReadVirtual  failed" );           
+        }
+        else
+        {
+            hres = dbgExt->dataSpaces->ReadPhysical( addr1, m1, length, NULL );
+            if ( FAILED( hres ) )
+               throw DbgException( "IDebugDataSpace::ReadPhysical  failed" );
+           
+            hres = dbgExt->dataSpaces->ReadPhysical( addr2, m2, length, NULL );
+            if ( FAILED( hres ) )
+                throw DbgException( "IDebugDataSpace::ReadPhysical  failed" );   
+        }                
            
         result = memcmp( m1, m2, length ) == 0;     
         
