@@ -1,3 +1,12 @@
+version 0.0.8   27/10/2010
+[+] added: physical memory read support ( for loadBytes, loadWords etc)
+[+] added: !pythonpath windbg command - print enviroment var $pythonpath
+[+] added: !py windbg command uses $pythonpath var for search scripts
+[+] added: ptrSize routine ( returns pointer's size at the target platform )
+[!] bug fixed: issue #7164 ( loadTypedVarList can fall in infinite loop )
+[+] added: sizeof routine ( returns size of type )
+[+] added: sizeof method for typedVarClass ( return size of var in memory )
+
 version 0.0.7   20/08/2010
 
 [+] added: getImplicitThread routine( get address of the current thread )
