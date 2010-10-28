@@ -62,7 +62,40 @@ DbgPythonPath::findPath(
     std::string  &fullFileName,
     std::string  &filePath ) const
 {
-    bool            result = false;
+    bool    pyExt = fileName.rfind( ".py" ) ==  fileName.length() - 3; 
+
+    // 1. »щем в рабочей директории
+    DWORD   bufSize =
+        SearchPathA(
+            NULL,
+            fileName.c_str(),
+            pyExt ? NULL : ".py",
+            0,
+            NULL,
+            NULL );  
+            
+    if ( bufSize > 0 )    
+    {
+        char    *fullFileNameCStr = new char[ bufSize ];
+        char    *partFileNameCStr = NULL;
+
+        SearchPathA(
+            NULL,
+            fileName.c_str(),
+            pyExt ? NULL : ".py",
+            bufSize,
+            fullFileNameCStr,
+            &partFileNameCStr );              
+
+        fullFileName = std::string( fullFileNameCStr );
+        filePath = std::string( fullFileNameCStr, partFileNameCStr );
+
+        delete[] fullFileNameCStr;
+
+        return true;        
+    }                
+            
+    // 2. »щем во всех директори€х, указанных в m_pathList
     
     std::vector<std::string>::const_iterator      it = m_pathList.begin();
     
@@ -72,7 +105,7 @@ DbgPythonPath::findPath(
             SearchPathA(
                 (*it).c_str(),
                 fileName.c_str(),
-                NULL,
+                 pyExt ? NULL : ".py",
                 0,
                 NULL,
                 NULL );          
@@ -85,7 +118,7 @@ DbgPythonPath::findPath(
             SearchPathA(
                 (*it).c_str(),
                 fileName.c_str(),
-                NULL,
+                pyExt ? NULL : ".py",
                 bufSize,
                 fullFileNameCStr,
                 &partFileNameCStr );              
@@ -95,24 +128,11 @@ DbgPythonPath::findPath(
             
             delete[] fullFileNameCStr;
             
-            result = true;
-            
-            break;
+            return true;
         }                  
     }
     
-    return result;
+    return false;
 }
     
 //////////////////////////////////////////////////////////////////////////////    
- 
- 
- 
-// DWORD SearchPath(
-//  LPCTSTR lpPath,
-//  LPCTSTR lpFileName,
-//  LPCTSTR lpExtension,
-//  DWORD nBufferLength,
-//  LPTSTR lpBuffer,
-//  LPTSTR* lpFilePart
-//);
