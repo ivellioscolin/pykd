@@ -2,6 +2,7 @@
 #
 #
 
+import sys
 from pykd import *
 
 def cr4( value = 0 ):
