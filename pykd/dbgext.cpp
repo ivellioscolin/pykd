@@ -10,6 +10,7 @@
 #include <boost/python/module.hpp>
 #include <boost/python/def.hpp>
 #include <boost/tokenizer.hpp>
+#include <boost/python/overloads.hpp>
 
 #include "dbgext.h"
 #include "dbgprint.h"
@@ -58,6 +59,17 @@ WindbgGlobalSession     *windbgGlobalSession = NULL;
 
 /////////////////////////////////////////////////////////////////////////////////
 
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadBytes, loadArray<unsigned char>, 2, 3 )
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadWords, loadArray<unsigned short>, 2, 3 )
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadDWords, loadArray<unsigned long>, 2, 3 )
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadQWords, loadArray<unsigned __int64> , 2, 3 )
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignBytes, loadArray<char> , 2, 3 )
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords, loadArray<short> , 2, 3 )
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords, loadArray<long> , 2, 3 )
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords, loadArray<__int64>, 2, 3 )
+
+BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemoryOver, compareMemory, 3, 4 )
+
 BOOST_PYTHON_MODULE( pykd )
 {
     boost::python::def( "createSession", &dbgCreateSession );
@@ -79,14 +91,14 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "getOffset", &findAddressForSymbol );
     boost::python::def( "findModule", &findModule );
     boost::python::def( "addr64", &addr64 );
-    boost::python::def( "loadBytes", &loadArray<unsigned char> );
-    boost::python::def( "loadWords", &loadArray<unsigned short> );
-    boost::python::def( "loadDWords", &loadArray<unsigned long> );
-    boost::python::def( "loadQWords", &loadArray<unsigned __int64> );
-    boost::python::def( "loadSignBytes", &loadArray<char> );
-    boost::python::def( "loadSignWords", &loadArray<short> );
-    boost::python::def( "loadSignDWords", &loadArray<long> );
-    boost::python::def( "loadSignQWords", &loadArray<__int64> );
+    boost::python::def( "loadBytes", loadArray<unsigned char>, loadBytes( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
+    boost::python::def( "loadWords", &loadArray<unsigned short>, loadWords( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
+    boost::python::def( "loadDWords", &loadArray<unsigned long>, loadDWords( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
+    boost::python::def( "loadQWords", &loadArray<unsigned __int64>, loadQWords( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
+    boost::python::def( "loadSignBytes", &loadArray<char>, loadSignBytes( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
+    boost::python::def( "loadSignWords", &loadArray<short>, loadSignWords( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
+    boost::python::def( "loadSignDWords", &loadArray<long>, loadSignDWords( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
+    boost::python::def( "loadSignQWords", &loadArray<__int64>, loadSignQWords( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
     boost::python::def( "loadPtrs", &loadPtrArray );
     boost::python::def( "loadUnicodeString", &loadUnicodeStr );
     boost::python::def( "loadAnsiString", &loadAnsiStr );   
@@ -100,7 +112,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "ptrQWord", &loadByPtr<unsigned __int64> );
     boost::python::def( "ptrSignQWord", &loadByPtr<__int64> );
     boost::python::def( "ptrPtr", &loadPtrByPtr );    
-    boost::python::def( "compareMemory", &compareMemory );
+    boost::python::def( "compareMemory", &compareMemory, compareMemoryOver( boost::python::args( "addr1", "addr2", "length", "phyAddr" ), "" ) );
     boost::python::def( "getCurrentStack", &getCurrentStack );
     boost::python::def( "reloadSymbols", &reloadSymbols );
     boost::python::def( "getPdbFile", &getPdbFile );
