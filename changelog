@@ -1,3 +1,11 @@
+version 0.0.9 03/11/2010
+[+] added: windbg snippet displaying GDT entries
+[+] added: windbg snippet displaying VMCS structure ( Intel-VT virtualization context )
+[!] bug fixed: issue #7528 ( loadBytes raises error "did not match C++ signature" )
+[+] added: windbg snippet displaying CR0 register
+[+] added: windbg snippet displaying CR4 register
+[+] added: !py windbg command can work without python script file extension ".py"
+
 version 0.0.8   27/10/2010
 [+] added: physical memory read support ( for loadBytes, loadWords etc)
 [+] added: !pythonpath windbg command - print enviroment var $pythonpath
