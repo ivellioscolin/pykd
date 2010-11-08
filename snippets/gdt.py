@@ -24,7 +24,7 @@ def printGdtEntry( addr ):
             base = ( ptrDWord( addr + 8 ) << 32 ) + base   
 
     if attr & 0x800:
-        limit = limit << 12 
+        limit = ( limit << 12 ) | 0xFFF
 
 
     dprint( "attr: %x ( " % attr  + "".join( [ ( attr & ( 1 << ( 12 - i ) ) ) and "1" or "0" for i in range(0,12) ] ) + " )" )
