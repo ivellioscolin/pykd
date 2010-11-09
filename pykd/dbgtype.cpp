@@ -99,9 +99,9 @@ loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG6
         hres = dbgExt->symbols->GetTypeSize( moduleBase, typeId, &typeSize );	
         if ( FAILED( hres ) )
             throw DbgException( "IDebugSymbol::GetTypeSize failed" );			
-				
+    				
         typedVarClass		      temp( address, typeSize );
-		boost::python::object     var( temp );
+	    boost::python::object     var( temp );
 					
         for ( ULONG   i = 0; ; ++i )
         {
@@ -137,18 +137,42 @@ loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG6
             }   
             else
             {
-                std::string    fieldTypeNameStr( fieldTypeName );
             
+                std::string    fieldTypeNameStr( fieldTypeName );
+                
                 if ( fieldTypeNameStr.find("*") < fieldTypeNameStr.size() )
                 {
                      var.attr( fieldName ) = valueLoader<void*>( address + fieldOffset, fieldSize );
-                }     
-                else
+                }  
+                else      
+                if ( fieldTypeNameStr.find("[]") < fieldTypeNameStr.size() )
+                {
+                    std::string     arrayElemType = std::string( fieldTypeNameStr, 0, fieldTypeNameStr.size() - 2 );
+
+                    ULONG        arrayElemTypeId;
+                    hres = dbgExt->symbols->GetTypeId( moduleBase, arrayElemType.c_str(), &arrayElemTypeId );
+		            if ( FAILED( hres ) )
+			            throw  DbgException( "IDebugSymbol::GetTypeId  failed" ); 
+            			
+                    ULONG        arayElemTypeSize;			
+                    hres = dbgExt->symbols->GetTypeSize( moduleBase, arrayElemTypeId, &arayElemTypeSize );	
+                    if ( FAILED( hres ) )
+                        throw DbgException( "IDebugSymbol::GetTypeSize failed" );
+                    
+                    boost::python::dict     arr;
+                    
+                    for ( unsigned int i = 0; i < typeSize / sizeof(arayElemTypeSize); ++i )
+                        arr[i] = loadTypedVar( moduleName, arrayElemType, address + fieldOffset + i * arayElemTypeSize );
+                    
+                    var.attr( fieldName ) = arr;      
+                    
+                }                
+                else   
                 {
                      var.attr( fieldName ) = loadTypedVar( moduleName, fieldTypeName, address + fieldOffset );
                 }                     
-            }               
-        }
+            }
+        }            
         
         return var; 
     }		
