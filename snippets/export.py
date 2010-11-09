@@ -22,6 +22,9 @@ def export( moduleName, mask = "*" ):
 
     dprintln( "Export RVA: %x  Size: %x" % ( ntHeader.OptionalHeader.DataDirectory[0].VirtualAddress, ntHeader.OptionalHeader.DataDirectory[0].Size  ) )
     dprintln( "========================" )
+
+    if ntHeader.OptionalHeader.DataDirectory[0].Size == 0:
+        return
     
     exportDirAddr = module.begin() + ntHeader.OptionalHeader.DataDirectory[0].VirtualAddress;
 
