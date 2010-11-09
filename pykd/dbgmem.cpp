@@ -323,6 +323,90 @@ loadAnsiStr( ULONG64 address )
 ///////////////////////////////////////////////////////////////////////////////////
 
 boost::python::object
+loadCStr( ULONG64 address )
+{
+    const   size_t              maxLength = 0x1000;
+    boost::python::object       strObj( std::string("") );
+
+    address = addr64( address );
+    
+    char*   buffer = new char[maxLength];
+
+    try {
+        
+        HRESULT     hres = 
+            dbgExt->dataSpaces4->ReadMultiByteStringVirtual(
+                address,
+                maxLength,
+                buffer,
+                maxLength,
+                NULL );
+        
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugDataSpace4::ReadMultiByteStringVirtual  failed" );
+                               
+        strObj = boost::python::object( std::string( buffer ) );
+    
+    } 
+	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}	            
+	
+	delete[] buffer;
+	
+	return strObj;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+boost::python::object
+loadWStr( ULONG64 address )
+{
+    const   size_t              maxLength = 0x1000;
+    boost::python::object       strObj( std::wstring(L"") );
+
+    address = addr64( address );
+    
+    wchar_t*   buffer = new wchar_t[maxLength];
+
+    try {
+        
+        HRESULT     hres = 
+            dbgExt->dataSpaces4->ReadUnicodeStringVirtualWide(
+                address,
+                maxLength*sizeof(wchar_t),
+                buffer,
+                maxLength,
+                NULL );
+        
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugDataSpace4::ReadUnicodeStringVirtualWide  failed" );
+                               
+        strObj = boost::python::object( std::wstring(buffer) );
+    
+    } 
+	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}	            
+	
+	delete[] buffer;
+	
+	return strObj;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+boost::python::object
 loadLinkedList( ULONG64 address )
 {
     ULONG64     entryAddress = 0;

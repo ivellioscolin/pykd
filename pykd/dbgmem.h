@@ -59,6 +59,12 @@ loadUnicodeStr( ULONG64 address );
 boost::python::object
 loadAnsiStr( ULONG64 address );
 
+boost::python::object
+loadCStr( ULONG64 address ); 
+
+boost::python::object
+loadWStr( ULONG64 address ); 
+
 bool
 compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, BOOLEAN phyAddr = FALSE );
 

@@ -102,6 +102,8 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "loadPtrs", &loadPtrArray );
     boost::python::def( "loadUnicodeString", &loadUnicodeStr );
     boost::python::def( "loadAnsiString", &loadAnsiStr );   
+    boost::python::def( "loadCStr", &loadCStr );
+    boost::python::def( "loadWStr", &loadWStr );
     boost::python::def( "loadLinkedList", &loadLinkedList ); 
     boost::python::def( "ptrByte", &loadByPtr<unsigned char> );
     boost::python::def( "ptrSignByte", &loadByPtr<char> );
@@ -189,6 +191,7 @@ SetupDebugEngine( IDebugClient4 *client, DbgExt *dbgExt  )
     client->QueryInterface( __uuidof(IDebugSymbols3), (void ** )&dbgExt->symbols3 );      
     
     client->QueryInterface( __uuidof(IDebugDataSpaces), (void **)&dbgExt->dataSpaces );
+    client->QueryInterface( __uuidof(IDebugDataSpaces4), (void **)&dbgExt->dataSpaces4 );
     
     client->QueryInterface( __uuidof(IDebugAdvanced2), (void **)&dbgExt->advanced2 );
     

@@ -17,6 +17,7 @@ struct DbgExt {
     IDebugSymbols3          *symbols3;   
     
     IDebugDataSpaces        *dataSpaces;
+    IDebugDataSpaces4       *dataSpaces4;
     
     IDebugAdvanced2         *advanced2;
     
