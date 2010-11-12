@@ -230,17 +230,8 @@ loadUnicodeStr( ULONG64 address )
         if ( !loadMemory( buffer, str, length ) )
             break;
             
-        ansiStr = new char [ length/2 ];
-            
-        WideCharToMultiByte( CP_ACP, 0, str, length/2, ansiStr, length/2, NULL, NULL );
-
-        std::string     strVal ( ansiStr, length/2 );
-            
-        delete[] str;
-        delete[] ansiStr;
-        
-        return boost::python::object( strVal );
-    
+        boost::python::object( std::wstring(str) );
+                    
     } while( FALSE );
     
     if ( str )
