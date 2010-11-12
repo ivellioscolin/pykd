@@ -51,7 +51,7 @@ ULONG64
 addr64( ULONG64  addr )
 {
     if ( *( (ULONG*)&addr + 1 ) == 0 )
-        *( (ULONG*)&addr + 1 ) = 0xFFFFFFFF;
+        return (ULONG64)(LONG)addr;
         
     return addr;        
 }
