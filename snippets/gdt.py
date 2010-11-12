@@ -9,9 +9,9 @@ from pykd import *
 def printGdtEntry( addr ):
 
     dprintln( "GDT Entry: %x" % addr )
-
+ 
     attr = ptrByte( addr + 5 ) + ( ( ptrByte( addr + 6 ) & 0xF0 ) << 4 )
-
+  
     limit = ptrWord( addr ) + ( ( ptrByte( addr + 6  ) & 0xF ) << 16 )
    
     base = ptrWord( addr + 2 ) + ( ptrByte( addr + 4) << 16 ) + ( ptrByte( addr + 7 ) << 24 )
@@ -58,7 +58,7 @@ if __name__ == "__main__":
                printGdtEntry( gdtr + ( reg( s ) & 0xFFF8 ) )
                dprintln("")              
        else:
-           printGdtEntry( gdtr + (  int( sys.argv[0], 16 ) & 0xFFF8 ) )
+           printGdtEntry( gdtr + ( int( sys.argv[0], 16 ) & 0xFFF8 ) )
 
    elif len( sys.argv )==2:
        printGdtEntry( int( sys.argv[0], 16 ) + ( int( sys.argv[1], 16 ) & 0xFFF8 ) )

@@ -1,3 +1,10 @@
+version 0.0.10 12/11/2010
+[!] updated: loadUnicodeStr routine returns unicode string ( instead of ansi string )
+[!] bug fixed: issue #7623 ( memory routines failed to work at wow64 application )
+[+] added: windbg snippet displaying list of export for module
+[+] added: loadCStr, loadWStr routine added ( loading c-style string )
+[!] typedVar routine fixed: loading array of complex type 
+
 version 0.0.9 03/11/2010
 [+] added: windbg snippet displaying GDT entries
 [+] added: windbg snippet displaying VMCS structure ( Intel-VT virtualization context )

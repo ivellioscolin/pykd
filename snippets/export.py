@@ -12,13 +12,21 @@ def export( moduleName, mask = "*" ):
     module = loadModule( moduleName )
     dprintln( "Module: " + moduleName + " base: %x" % module.begin() + " end: %x" % module.end() )
 
-    dosHeader = typedVar( "nt", "_IMAGE_DOS_HEADER", module.begin() )
+
+    systemModule = loadModule( "nt" )
+
+    if systemModule==None:
+        systemModule = loadModule( "ntdll" ) 	
+
+
+#    dosHeader = typedVar( systemModule.name(), "_IMAGE_DOS_HEADER", module.begin() )
+
 
     if is64bitSystem():
-        ntHeader = typedVar( "nt", "_IMAGE_NT_HEADERS64", module.begin() + dosHeader.e_lfanew )
+        ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS64", module.begin() + ptrDWord( module.begin() + 0x3c ) )
     else:
-        ntHeader = typedVar( "nt", "_IMAGE_NT_HEADERS", module.begin() + dosHeader.e_lfanew )
-    
+        ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+
 
     dprintln( "Export RVA: %x  Size: %x" % ( ntHeader.OptionalHeader.DataDirectory[0].VirtualAddress, ntHeader.OptionalHeader.DataDirectory[0].Size  ) )
     dprintln( "========================" )
