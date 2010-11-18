@@ -15,6 +15,8 @@ dbgCreateSession()
         
     SetupDebugEngine( client, &dbgGlobalSession );
     dbgExt = &dbgGlobalSession;
+    
+    dbgSessionStarted = true;
 }
 
 bool
