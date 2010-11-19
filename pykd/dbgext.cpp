@@ -27,6 +27,7 @@
 #include "dbgcallback.h"
 #include "dbgstack.h"
 #include "dbgpath.h"
+#include "dbginput.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -139,6 +140,11 @@ BOOST_PYTHON_MODULE( pykd )
         .def_readonly( "frameOffset", &dbgStackFrameClass::FrameOffset )
         .def_readonly( "stackOffset", &dbgStackFrameClass::StackOffset )
         .def_readonly( "frameNumber", &dbgStackFrameClass::FrameNumber );
+    boost::python::class_<dbgOut>( "windbgOut", "windbgOut" )
+        .def( "write", &dbgOut::write );
+    boost::python::class_<dbgIn>( "windbgIn", "windbgIn" )
+        .def( "readline", &dbgIn::readline );                
+        
 }    
 
 /////////////////////////////////////////////////////////////////////////////////
