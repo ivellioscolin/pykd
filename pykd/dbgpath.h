@@ -27,7 +27,7 @@ private:
 
 };
 
-extern DbgPythonPath&   dbgPythonPath;
+//extern DbgPythonPath&   dbgPythonPath;
 
 
 ///////////////////////////////////////////////////////////////////////////////

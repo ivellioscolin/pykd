@@ -3,13 +3,11 @@
 #include "dbgpath.h"
 
 #include <boost/tokenizer.hpp>
+#include <boost/python.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 
-DbgPythonPath   &dbgPythonPath = DbgPythonPath();
 
-
-///////////////////////////////////////////////////////////////////////////////
 
 DbgPythonPath::DbgPythonPath()
 {
@@ -62,6 +60,16 @@ DbgPythonPath::findPath(
     std::string  &fullFileName,
     std::string  &filePath ) const
 {
+    std::vector< std::string >      extPathList;
+
+    boost::python::object       sys = boost::python::import( "sys");
+
+    boost::python::list       pathList( sys.attr("path") );
+    
+    boost::python::ssize_t n = boost::python::len(pathList);
+    for(boost::python::ssize_t i=0;i<n;i++) 
+         extPathList.push_back(  boost::python::extract<std::string>( pathList[i] ) );
+
     bool    pyExt = fileName.rfind( ".py" ) ==  fileName.length() - 3; 
 
     // 1. »щем в рабочей директории
@@ -97,9 +105,9 @@ DbgPythonPath::findPath(
             
     // 2. »щем во всех директори€х, указанных в m_pathList
     
-    std::vector<std::string>::const_iterator      it = m_pathList.begin();
+    std::vector<std::string>::const_iterator      it = extPathList.begin();
     
-    for ( ; it != m_pathList.end(); ++it )
+    for ( ; it != extPathList.end(); ++it )
     {
         DWORD   bufSize =
             SearchPathA(

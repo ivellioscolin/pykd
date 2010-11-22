@@ -260,29 +260,22 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
         }            
             
         if ( argsList.size() == 0 )
-            return S_OK;            
+            return S_OK;      
             
-        if ( argsList.size() > 1 )     
-        {
-            char    **pythonArgs = new char* [ argsList.size() - 1 ];
-         
-            for ( size_t  i = 0; i < argsList.size() - 1; ++i )
-                pythonArgs[i] = const_cast<char*>( argsList[i+1].c_str() );
-                
-            PySys_SetArgv( (int)argsList.size() - 1, pythonArgs );
+        char    **pythonArgs = new char* [ argsList.size() ];
+     
+        for ( size_t  i = 0; i < argsList.size(); ++i )
+            pythonArgs[i] = const_cast<char*>( argsList[i].c_str() );
+            
+        PySys_SetArgv( (int)argsList.size(), pythonArgs );
 
-            delete[]  pythonArgs;
-        }            
-        else
-        {
-            char   *emptyParam = "";
-        
-            PySys_SetArgv( 1, &emptyParam );
-        } 
+        delete[]  pythonArgs;            
+
         
         // найти путь к файлу
         std::string     fullFileName;
         std::string     filePath;
+        DbgPythonPath   dbgPythonPath;
         
         if ( dbgPythonPath.findPath( argsList[0], fullFileName, filePath ) )
         {
@@ -453,7 +446,7 @@ pythonpath( PDEBUG_CLIENT4 client, PCSTR args )
     SetupDebugEngine( client, &ext );  
     dbgExt = &ext;   
 
-    DbgPrint::dprintln( dbgPythonPath.getStr() );
+    //DbgPrint::dprintln( dbgPythonPath.getStr() );
    
     return S_OK;      
 }
