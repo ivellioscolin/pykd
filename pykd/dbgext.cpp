@@ -42,7 +42,19 @@ class WindbgGlobalSession
 public:
 
     WindbgGlobalSession() {
+    
+        boost::python::import( "pykd" );
+        
         main = boost::python::import("__main__");
+        
+        // перенаправление стандартных потоков ВВ
+        boost::python::object       sys = boost::python::import( "sys");
+        
+        dbgOut                      dout;
+        sys.attr("stdout") = boost::python::object( dout );
+
+        dbgIn                       din;
+        sys.attr("stdin") = boost::python::object( din );          
     }
     
     boost::python::object
@@ -217,11 +229,20 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
         SetupDebugEngine( client, &ext );  
         dbgExt = &ext;        
         
+        boost::python::import( "pykd" ); 
+        
         boost::python::object       main =  boost::python::import("__main__");
 
         boost::python::object       global(main.attr("__dict__"));
+        
+        // перенаправление стандартных потоков ВВ
+        boost::python::object       sys = boost::python::import( "sys");
+        
+        dbgOut                      dout;
+        sys.attr("stdout") = boost::python::object( dout );
 
-        boost::python::object       result;
+        dbgIn                       din;
+        sys.attr("stdin") = boost::python::object( din );   
        
         // разбор параметров
         typedef  boost::escaped_list_separator<char>    char_separator_t;
@@ -274,6 +295,8 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
             SetCurrentDirectoryA( filePath.c_str() );
             
             try {                  
+            
+                boost::python::object       result;
         
                 result =  boost::python::exec_file( fullFileName.c_str(), global, global );
                 
