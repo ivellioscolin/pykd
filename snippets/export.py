@@ -52,15 +52,11 @@ if __name__ == "__main__":
         print "script is launch out of windbg"
         quit( 0 )
 
-    if len( sys.argv ) == 1:
-
-        if sys.argv[0]=="":
-            dprintln( "module name not found" )
-        else:      
-            export( sys.argv[0] )
-
+    if len (sys.argv)<=0:
+        dprintln( "usage: !py export module_name ( export mask )" )
+    elif len( sys.argv ) == 2:
+        export( sys.argv[1] )
     else:
-     
-        export( sys.argv[0], sys.argv[1] )
+        export( sys.argv[1], sys.argv[2] )
 
        

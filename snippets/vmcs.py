@@ -188,7 +188,7 @@ if __name__ == "__main__":
        print "script is launch out of windbg"
        quit( 0 )
 
-   vmcsPrint( int( sys.argv[0], 16 ) )
+   vmcsPrint( int( sys.argv[1], 16 ) )
           
           
 
