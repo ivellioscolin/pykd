@@ -12,18 +12,17 @@ def export( moduleName, mask = "*" ):
     module = loadModule( moduleName )
     dprintln( "Module: " + moduleName + " base: %x" % module.begin() + " end: %x" % module.end() )
 
-
-    systemModule = loadModule( "nt" )
-
-    if systemModule==None:
-        systemModule = loadModule( "ntdll" ) 	
-
-
-#    dosHeader = typedVar( systemModule.name(), "_IMAGE_DOS_HEADER", module.begin() )
-
+    if isKernelDebugging():
+        systemModule = loadModule( "nt" )
+    else:
+        systemModule = loadModule( "ntdll" )
+   
 
     if is64bitSystem():
         ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS64", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+        if ntHeader.OptionalHeader.Magic == 0x10b:
+            systemModule = loadModule( "ntdll32" ) 
+            ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS", module.begin() + ptrDWord( module.begin() + 0x3c ) )
     else:
         ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS", module.begin() + ptrDWord( module.begin() + 0x3c ) )
 

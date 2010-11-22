@@ -15,13 +15,20 @@ def iat( moduleName, mask = "*" ):
     if isKernelDebugging():
         systemModule = loadModule( "nt" )
     else:
-        systemModule = loadModule( "ntdll" ) 	
-
+        systemModule = loadModule( "ntdll" )
+    
 
     if is64bitSystem():
         ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS64", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+        if ntHeader.OptionalHeader.Magic == 0x10b:
+            systemModule = loadModule( "ntdll32" ) 
+            ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+            pSize = 4
+        else:
+            pSize = 8     
     else:
         ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+        pSize = 4
 
 
     dprintln( "IAT RVA: %x  Size: %x" % ( ntHeader.OptionalHeader.DataDirectory[12].VirtualAddress, ntHeader.OptionalHeader.DataDirectory[12].Size  ) )
@@ -32,12 +39,19 @@ def iat( moduleName, mask = "*" ):
     
     iatAddr = module.begin() + ntHeader.OptionalHeader.DataDirectory[12].VirtualAddress;
 
-    for i in range( 0, ntHeader.OptionalHeader.DataDirectory[12].Size / ptrSize() ):
-        iatEntry = ptrPtr( iatAddr + i*ptrSize() )
+    for i in range( 0, ntHeader.OptionalHeader.DataDirectory[12].Size / pSize ):
+
+        if ( pSize == 4 ):
+            iatEntry = ptrDWord( iatAddr + i*pSize )
+        else:
+            iatEntry = ptrQWord( iatAddr + i*pSize )
+
         if  iatEntry != 0:
             symbolName = findSymbol( iatEntry ) 
             if fnmatch.fnmatch( symbolName, mask ): 
                 dprintln( symbolName )
+
+ 
 
 
 if __name__ == "__main__":
