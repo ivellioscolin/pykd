@@ -12,10 +12,9 @@ def iat( moduleName, mask = "*" ):
     module = loadModule( moduleName )
     dprintln( "Module: " + moduleName + " base: %x" % module.begin() + " end: %x" % module.end() )
 
-
-    systemModule = loadModule( "nt" )
-
-    if systemModule==None:
+    if isKernelDebugging():
+        systemModule = loadModule( "nt" )
+    else:
         systemModule = loadModule( "ntdll" ) 	
 
 

@@ -22,4 +22,7 @@ getImageFile( ULONG64  moduleBase );
 void
 reloadSymbols( const char * moduleName  );
 
+bool
+isKernelDebugging();
+
 /////////////////////////////////////////////////////////////////////////////////
