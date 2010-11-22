@@ -4,6 +4,7 @@
 #include "dbgsym.h"
 #include "dbgexcept.h"
 #include "dbgprint.h"
+#include "dbgmem.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -14,8 +15,7 @@ findSymbolForAddress( ULONG64 addr )
     
     try {
         
-        if ( *( (ULONG*)&addr + 1 ) == 0 )
-            *( (ULONG*)&addr + 1 ) = 0xFFFFFFFF;        
+        addr = addr64( addr );     
             
         ULONG     moduleIndex;
         ULONG64   moduleBase;            
@@ -43,25 +43,7 @@ findSymbolForAddress( ULONG64 addr )
         displace == 0 ?  ss << symbolName : ss << symbolName << '+' << std::hex << displace;
         
         return boost::python::object( ss.str() );
-        
-        
-/*             
-        std::stringstream      ss;             
-             
-        if ( entries == 0 )
-        {
-            ss << moduleName << "+" << std::hex << ( addr - moduleBase );
-            return boost::python::object( ss.str() );             
-        }            
-                          
-        char      symbolName[0x100];             
-        hres =  dbgExt->symbols3->GetSymbolEntryString( &debugId, 0, symbolName, sizeof(symbolName ), NULL );   
-        if ( FAILED( hres ) )
-             throw DbgException( "IDebugSymbol3::GetSymbolEntryString  failed" );  
-             
-        ss << moduleName << "!" << symbolName;
-        return boost::python::object( ss.str() ); */                               
-            
+                               
     }
 	catch( std::exception  &e )
 	{
