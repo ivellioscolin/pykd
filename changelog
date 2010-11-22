@@ -1,3 +1,10 @@
+version 0.0.11 22/11/2010
+[!] bug fixed: issue #7717 ( !py command failed to find standart modules )
+[!] bug fixed: issue #7718 ( sys.argv[0] does not contain script name ) 
+[!] bug fixed: issue #7697 ( raw_input does not work ) 
+[+] added: windbgIn windbgOut class for redirecting in/out from stdin/stdout 
+[!] bug fixed: issue #7688 ( dbgIsSessionStart returns false after dbgCreateSession call ) 
+
 version 0.0.10 12/11/2010
 [!] updated: loadUnicodeStr routine returns unicode string ( instead of ansi string )
 [!] bug fixed: issue #7623 ( memory routines failed to work at wow64 application )
