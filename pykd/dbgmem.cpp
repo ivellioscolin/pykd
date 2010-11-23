@@ -185,9 +185,7 @@ loadUnicodeStr( ULONG64 address )
     USHORT   length;
     USHORT   maximumLength;
     ULONG64  buffer = 0;
-    
     wchar_t  *str = NULL;
-    char     *ansiStr = NULL;
     
     do {
     
@@ -225,21 +223,22 @@ loadUnicodeStr( ULONG64 address )
             address += 4;               
         }    
         
-        str = new wchar_t[ length/2 ];
+        wchar_t  *str  = new wchar_t[ length/2 ];
         
         if ( !loadMemory( buffer, str, length ) )
             break;
             
-        boost::python::object( std::wstring(str) );
+        std::wstring    strValue(str, length/2);
+        
+        delete[] str; 
+            
+        return boost::python::object( strValue );
                     
     } while( FALSE );
     
     if ( str )
         delete[] str;
         
-    if ( ansiStr )
-        delete[] ansiStr;        
-    
     return boost::python::object( "" );
     
 }
@@ -252,8 +251,7 @@ loadAnsiStr( ULONG64 address )
     USHORT   length;
     USHORT   maximumLength;
     ULONG64  buffer = 0;
-    
-    char     *ansiStr = NULL;
+    char     *str = NULL;
     
     do {
     
@@ -292,21 +290,21 @@ loadAnsiStr( ULONG64 address )
         }    
         
        
-        ansiStr = new char [ length/2 ];        
+        str = new char [ length ];        
         
-        if ( !loadMemory( buffer, ansiStr, length ) )
+        if ( !loadMemory( buffer, str, length ) )
             break;
 
-        std::string     strVal ( ansiStr, length/2 );
+        std::string     strVal ( str, length );
             
-        delete[] ansiStr;
+        delete[] str;
         
         return boost::python::object( strVal );
     
     } while( FALSE );
     
-    if ( ansiStr )
-        delete[] ansiStr;        
+    if ( str )
+        delete[] str;
     
     return boost::python::object( "" );
 }
