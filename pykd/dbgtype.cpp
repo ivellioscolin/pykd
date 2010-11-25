@@ -122,8 +122,9 @@ loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG6
             hres = dbgExt->symbols->GetTypeName( moduleBase, fieldTypeId, fieldTypeName, sizeof(fieldTypeName), NULL );
             
             std::string     fieldTypeNameStr( fieldTypeName );
-            if ( fieldTypeNameStr == "__unnamed"  ||  fieldTypeNameStr == "<unnamed-tag>" )
-                continue;                
+            if ( fieldTypeNameStr == "__unnamed" 
+             ||  fieldTypeNameStr.find("<unnamed-tag>") < fieldTypeNameStr.size() )
+                continue;       
             
             ULONG   fieldSize;
             hres = dbgExt->symbols->GetTypeSize( moduleBase, fieldTypeId, &fieldSize );
@@ -339,7 +340,7 @@ valueLoader( ULONG64 address, ULONG size )
 {
     if ( size == sizeof(valType) )
     {
-        valType     v;          
+        valType     v = 0;          
         if ( loadMemory( address, &v, sizeof(v) ) )
             return boost::python::long_( (unsigned __int64)v );
     }
@@ -349,7 +350,7 @@ valueLoader( ULONG64 address, ULONG size )
             
         for ( unsigned int i = 0; i < size / sizeof(valType); ++i )
         {
-            valType  v;          
+            valType  v = 0;          
             if ( !loadMemory( address + i * sizeof(valType), &v, sizeof(v) ) )
                     return boost::python::object();
             
@@ -362,12 +363,6 @@ valueLoader( ULONG64 address, ULONG size )
     return boost::python::object();
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////////	
 
-boost::python::object
-loadComplexType( const std::string  &typeName, ULONG64  address, ULONG  size )
-{
-    return boost::python::object();
-}
-
-///////////////////////////////////////////////////////////////////////////////////		

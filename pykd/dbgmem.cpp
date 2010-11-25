@@ -20,14 +20,14 @@ loadMemory( ULONG64 address, PVOID dest, ULONG length, BOOLEAN phyAddr  )
         {
             HRESULT     hres = dbgExt->dataSpaces->ReadVirtual( address, dest, length, NULL );
             if ( FAILED( hres ) )
-               throw DbgException( "IDebugDataSpace::ReadVirtual  failed" );
+               return false;
                
         }
         else
         {
              HRESULT     hres = dbgExt->dataSpaces->ReadPhysical( address, dest, length, NULL );
              if ( FAILED( hres ) )
-                throw DbgException( "IDebugDataSpace::ReadPhysical  failed" ); 
+                return false; 
         }               
            
         return true;           
