@@ -1,3 +1,16 @@
+version 0.0.12 27/11/2010
+[+] added : getCurrentPorcess, setCurrentProcess routines
+[!] fixed: loadModule return None for non existin module with out outputing error message
+[+] added : getProcessorMode, setProcessorMode routines; 
+[+] added : sample stacks.py 
+[+] added: getThreadList routine; returns thread object's ptr list 
+[!] fixed : loadTypedVar for unnamed union tag ::<unnamed-tag>
+[!] fixed : loadMemory does not throw exception and return false
+[!] bug fixed: issue #7727 ( loadUnicodeString returns empty string )
+[+] added: isKernelDebugging routine
+[+] added: windbg snippet displaying IAT for module 
+[!] bug fixed: findModule does not work for address < 4GB 
+
 version 0.0.11 22/11/2010
 [!] bug fixed: issue #7717 ( !py command failed to find standart modules )
 [!] bug fixed: issue #7718 ( sys.argv[0] does not contain script name ) 
