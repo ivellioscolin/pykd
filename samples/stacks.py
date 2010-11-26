@@ -6,12 +6,18 @@ def printStack():
 
     threadList = getThreadList()
 
+    oldMode = getProcessorMode()
+
+    if oldMode == "X64" and loadModule( "wow64" ) != None:
+        setProcessorMode("X86")
+
     for threadPtr in threadList:
-        oldThread = 0
         setImplicitThread( threadPtr )
         stackFrames = getCurrentStack()
         for frame in stackFrames: dprintln( findSymbol( frame.instructionOffset ) + "  (%x)" % frame.instructionOffset )
         dprintln("")
+
+    setProcessorMode(oldMode)
 
 
 if __name__ == "__main__":

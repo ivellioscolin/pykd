@@ -16,7 +16,7 @@ loadModule( const std::string &moduleName )
         ULONG64    moduleBase;
         hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
         if ( FAILED( hres ) )
-             throw DbgException( "IDebugSymbol::GetModuleByModuleName  failed" );
+             return boost::python::object();
         
         DEBUG_MODULE_PARAMETERS     moduleParam = { 0 };
         hres = dbgExt->symbols->GetModuleParameters( 1, &moduleBase, 0, &moduleParam );
