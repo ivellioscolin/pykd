@@ -252,3 +252,55 @@ setProcessorMode(
 }    
 
 /////////////////////////////////////////////////////////////////////////////////
+
+ULONG64
+getCurrentProcess()
+{
+    HRESULT                 hres;  
+
+    try {
+
+        ULONG64   processAddr = 0;
+        hres = dbgExt->system2->GetImplicitProcessDataOffset( &processAddr );
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugSystemObjects2::GetImplicitProcessDataOffset  failed" ); 
+            
+         return processAddr;                  
+    }
+  	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}
+	
+    return 0;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+VOID
+setCurrentProcess(
+    ULONG64  processAddr )
+{
+    HRESULT                 hres;  
+
+    try {
+
+        hres = dbgExt->system2->SetImplicitProcessDataOffset( processAddr );
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugSystemObjects2::SetImplicitProcessDataOffset  failed" ); 
+    }
+  	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}
+}
+
+/////////////////////////////////////////////////////////////////////////////////

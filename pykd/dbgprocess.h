@@ -16,7 +16,6 @@ setImplicitThread(
 ULONG64
 getImplicitThread();        
 
-
 boost::python::object
 getCurrentStack();
 
@@ -41,5 +40,12 @@ getProcessorMode();
 void
 setProcessorMode(
     const std::string &mode );
+    
+ULONG64    
+getCurrentProcess();
+
+VOID
+setCurrentProcess(
+    ULONG64  processAddr );
 
 /////////////////////////////////////////////////////////////////////////////////

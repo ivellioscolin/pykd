@@ -135,6 +135,8 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "getImplicitThread", &getImplicitThread );
     boost::python::def( "setImplicitThread", &setImplicitThread );
     boost::python::def( "getThreadList", &getThreadList );
+    boost::python::def( "getCurrentProcess", &getCurrentProcess );
+    boost::python::def( "setCurrentProcess", &setCurrentProcess );
     boost::python::def( "getProcessorMode", &getProcessorMode );
     boost::python::def( "setProcessorMode", &setProcessorMode );
     boost::python::class_<typedVarClass>( "typedVarClass" )
