@@ -396,10 +396,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\dbgstack.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\dbgsym.cpp"
 				>
 			</File>
@@ -507,10 +503,6 @@
 			</File>
 			<File
 				RelativePath=".\dbgsession.h"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgstack.h"
 				>
 			</File>
 			<File

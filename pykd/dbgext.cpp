@@ -25,7 +25,6 @@
 #include "dbgexcept.h"
 #include "dbgsession.h"
 #include "dbgcallback.h"
-#include "dbgstack.h"
 #include "dbgpath.h"
 #include "dbginput.h"
 #include "dbgprocess.h"
@@ -136,6 +135,8 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "getImplicitThread", &getImplicitThread );
     boost::python::def( "setImplicitThread", &setImplicitThread );
     boost::python::def( "getThreadList", &getThreadList );
+    boost::python::def( "getProcessorMode", &getProcessorMode );
+    boost::python::def( "setProcessorMode", &setProcessorMode );
     boost::python::class_<typedVarClass>( "typedVarClass" )
         .def("getAddress", &typedVarClass::getAddress )
         .def("sizeof", &typedVarClass::size );
