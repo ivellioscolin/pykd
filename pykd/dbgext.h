@@ -21,6 +21,7 @@ struct DbgExt {
     
     IDebugAdvanced2         *advanced2;
     
+    IDebugSystemObjects     *system;
     IDebugSystemObjects2    *system2;
 };
 

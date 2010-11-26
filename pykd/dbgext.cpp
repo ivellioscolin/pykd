@@ -28,6 +28,7 @@
 #include "dbgstack.h"
 #include "dbgpath.h"
 #include "dbginput.h"
+#include "dbgprocess.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -134,6 +135,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "getPdbFile", &getPdbFile );
     boost::python::def( "getImplicitThread", &getImplicitThread );
     boost::python::def( "setImplicitThread", &setImplicitThread );
+    boost::python::def( "getThreadList", &getThreadList );
     boost::python::class_<typedVarClass>( "typedVarClass" )
         .def("getAddress", &typedVarClass::getAddress )
         .def("sizeof", &typedVarClass::size );
@@ -214,6 +216,7 @@ SetupDebugEngine( IDebugClient4 *client, DbgExt *dbgExt  )
     
     client->QueryInterface( __uuidof(IDebugAdvanced2), (void **)&dbgExt->advanced2 );
     
+    client->QueryInterface( __uuidof(IDebugSystemObjects), (void**)&dbgExt->system );
     client->QueryInterface( __uuidof(IDebugSystemObjects2), (void**)&dbgExt->system2 );
 }
     

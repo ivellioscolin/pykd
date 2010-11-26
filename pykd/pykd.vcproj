@@ -384,6 +384,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgprocess.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgreg.cpp"
 				>
 			</File>
@@ -491,6 +495,10 @@
 			</File>
 			<File
 				RelativePath=".\dbgprint.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgprocess.h"
 				>
 			</File>
 			<File
