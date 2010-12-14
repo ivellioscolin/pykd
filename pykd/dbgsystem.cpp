@@ -4,6 +4,7 @@
 #include "dbgext.h"
 #include "dbgexcept.h"
 #include "dbgsystem.h"
+#include "dbgcallback.h"
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -122,19 +123,19 @@ getPdbFile( ULONG64  moduleBase )
 ///////////////////////////////////////////////////////////////////////////////////
 
 void
-reloadSymbols( const char * moduleName  )
+reloadModule( const char * moduleName  )
 {
     HRESULT         hres;
      
     try {
+    
+        // подавить вывод сообщений об отсутствии символов
+        OutputReader        outputReader( dbgExt->client );
  
-        std::string   reloadParam( "/f " );
-        reloadParam += moduleName;
-
-        hres = dbgExt->symbols->Reload( reloadParam.c_str() );
+        hres = dbgExt->symbols->Reload( moduleName );
         
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugSymbol::Reload  failed" );      
+        //if ( FAILED( hres ) )
+        //    throw DbgException( "IDebugSymbol::Reload  failed" );      
     }
 	catch( std::exception  &e )
 	{

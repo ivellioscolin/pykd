@@ -10,6 +10,35 @@
 std::string
 dbgCommand( const std::string &command );
 
+template <ULONG status>
+void
+setExecutionStatus()
+{
+    HRESULT     hres;
+    
+    try {
+    
+        hres = dbgExt->control->SetExecutionStatus( status );
+        
+        if ( FAILED( hres ) )
+            throw  DbgException( "IDebugControl::SetExecutionStatus  failed" ); 
+            
+        hres = dbgExt->control->WaitForEvent( 0, INFINITE );
+        
+        if ( FAILED( hres ) )
+            throw  DbgException( "IDebugControl::SetExecutionStatus  failed" ); 
+            
+    } 
+	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}	
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 
 class dbgExtensionClass {
@@ -34,3 +63,27 @@ private:
 
 /////////////////////////////////////////////////////////////////////////////////
 
+
+class  dbgBreakpointClass {
+
+public:
+
+    dbgBreakpointClass( ULONG64 offset );
+    
+    ~dbgBreakpointClass();
+    
+    bool
+    set();
+    
+    void
+    remove();    
+
+private:
+
+    ULONG64                 m_offset;
+
+    IDebugBreakpoint        *m_breakpoint;
+
+};
+
+/////////////////////////////////////////////////////////////////////////////////

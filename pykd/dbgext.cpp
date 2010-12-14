@@ -85,6 +85,9 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemoryOver, compareMemory, 3, 4 )
 
 BOOST_PYTHON_MODULE( pykd )
 {
+    boost::python::def( "go", &setExecutionStatus<DEBUG_STATUS_GO> );
+    boost::python::def( "stepin", &setExecutionStatus<DEBUG_STATUS_STEP_INTO> );
+    boost::python::def( "stepover", &setExecutionStatus<DEBUG_STATUS_STEP_OVER> );    
     boost::python::def( "createSession", &dbgCreateSession );
     boost::python::def( "isSessionStart", &dbgIsSessionStart );
     boost::python::def( "symbolsPath", &dbgSymPath );
@@ -130,7 +133,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "ptrPtr", &loadPtrByPtr );    
     boost::python::def( "compareMemory", &compareMemory, compareMemoryOver( boost::python::args( "addr1", "addr2", "length", "phyAddr" ), "" ) );
     boost::python::def( "getCurrentStack", &getCurrentStack );
-    boost::python::def( "reloadSymbols", &reloadSymbols );
+    boost::python::def( "reloadModule", &reloadModule );
     boost::python::def( "getPdbFile", &getPdbFile );
     boost::python::def( "getImplicitThread", &getImplicitThread );
     boost::python::def( "setImplicitThread", &setImplicitThread );
@@ -162,6 +165,12 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "write", &dbgOut::write );
     boost::python::class_<dbgIn>( "windbgIn", "windbgIn" )
         .def( "readline", &dbgIn::readline );                
+    boost::python::class_<dbgBreakpointClass>( 
+         "dbgBreakpointClass",
+         "dbgBreakpointClass",
+         boost::python::init<ULONG64>( boost::python::args("offset"), "__init__  dbgBreakpointClass" ) ) 
+        .def( "set", &dbgBreakpointClass::set )
+        .def( "remove", &dbgBreakpointClass::remove );
         
 }    
 

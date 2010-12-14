@@ -95,3 +95,76 @@ dbgExtensionClass::call( const std::string &command, const std::string params )
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+dbgBreakpointClass::dbgBreakpointClass( ULONG64 offset )
+{
+    m_offset = offset;
+    m_breakpoint = NULL;
+
+    set();    
+}
+  
+///////////////////////////////////////////////////////////////////////////////  
+    
+dbgBreakpointClass::~dbgBreakpointClass()
+{
+    remove();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool
+dbgBreakpointClass::set()
+{
+    HRESULT             hres;
+    
+    try {
+        
+        if ( m_breakpoint )
+            return true;            
+    
+        hres = dbgExt->control->AddBreakpoint( DEBUG_BREAKPOINT_CODE, DEBUG_ANY_ID, &m_breakpoint );
+        if (  FAILED( hres ) )
+            throw  DbgException( "IDebugControl::AddBreakpoint  failed" ); 
+    
+        hres = m_breakpoint->SetOffset( m_offset );
+        if (  FAILED( hres ) )
+            throw  DbgException( "IDebugBreakpoint::SetOffset  failed" );   
+            
+        hres = m_breakpoint->SetFlags( DEBUG_BREAKPOINT_ENABLED );
+        if (  FAILED( hres ) )
+            throw  DbgException( "IDebugBreakpoint::SetFlags  failed" );           
+            
+        return true;                      
+    } 
+	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}	
+	
+	remove();
+	
+	return false;
+}
+    
+///////////////////////////////////////////////////////////////////////////////    
+    
+void
+dbgBreakpointClass::remove()
+{
+    if ( m_breakpoint )
+    {
+        dbgExt->control->RemoveBreakpoint( m_breakpoint );
+        m_breakpoint = NULL;
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////// 
