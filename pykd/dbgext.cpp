@@ -130,7 +130,9 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "ptrSignDWord", &loadByPtr<long> );
     boost::python::def( "ptrQWord", &loadByPtr<unsigned __int64> );
     boost::python::def( "ptrSignQWord", &loadByPtr<__int64> );
-    boost::python::def( "ptrPtr", &loadPtrByPtr );    
+    boost::python::def( "ptrPtr", &loadPtrByPtr );   
+    boost::python::def( "ptrMWord", &loadMWord );
+    boost::python::def( "ptrSignMWord", &loadSignMWord );
     boost::python::def( "compareMemory", &compareMemory, compareMemoryOver( boost::python::args( "addr1", "addr2", "length", "phyAddr" ), "" ) );
     boost::python::def( "getCurrentStack", &getCurrentStack );
     boost::python::def( "reloadModule", &reloadModule );

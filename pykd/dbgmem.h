@@ -12,6 +12,12 @@ loadMemory( ULONG64 address, PVOID dest, ULONG length, BOOLEAN phyAddr = FALSE )
 ULONG64
 loadPtrByPtr( ULONG64 address );
 
+ULONG64
+loadMWord( ULONG64 address );
+
+LONG64
+loadSignMWord( ULONG64 address );
+
 
 template<typename T>
 boost::python::object

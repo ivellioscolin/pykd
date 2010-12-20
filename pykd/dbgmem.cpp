@@ -179,6 +179,36 @@ loadPtrByPtr( ULONG64 address )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+ULONG64
+loadMWord( ULONG64 address )
+{
+    ULONG64    value = 0;
+
+    if ( is64bitSystem() )
+        loadMemory( address, &value, sizeof(ULONG64) );
+    else
+        loadMemory( address, &value, sizeof(ULONG) );
+    
+    return value;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+LONG64
+loadSignMWord( ULONG64 address )
+{
+    LONG64    value = 0;
+
+    if ( is64bitSystem() )
+        loadMemory( address, &value, sizeof(LONG64) );
+    else
+        loadMemory( address, &value, sizeof(LONG) );
+    
+    return value;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 boost::python::object
 loadUnicodeStr( ULONG64 address )
 {
