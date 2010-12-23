@@ -15,7 +15,6 @@ from pykd import *
 def getTypeWin7(p):
   """
   Get object header by object pointer
-
   Implementation for Win7+
   """
   pHeader = containingRecord(p, "nt", "_OBJECT_HEADER", "Body")
@@ -25,7 +24,6 @@ def getTypeWin7(p):
 def getTypeLegacy(p):
   """
   Get object header by object pointer
-
   Implementation for before Win7
   """
   pHeader = containingRecord(p, "nt", "_OBJECT_HEADER", "Body")
@@ -59,7 +57,6 @@ def getListByHandleTable(pHandleTable, pType=0, bContainHeaders=True):
     """
     Query object pointer by handle entry from handle table
     """
-  
     if (0 == hEntry):
       return 0
   
@@ -121,8 +118,6 @@ def getListByHandleTable(pHandleTable, pType=0, bContainHeaders=True):
       lstObjects += getListByHandleTableL1(pTableLevel1, HT_MIDLEVEL_COUNT * HT_LOWLEVEL_COUNT * HANDLE_VALUE_INC, pType, bContainHeaders)
 
     return lstObjects
-
-
 
   pHandleTable = typedVar("nt", "_HANDLE_TABLE", pHandleTable)
   nMaxHandleIndex = pHandleTable.NextHandleNeedingPool & 0xFFFFFFFF
