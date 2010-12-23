@@ -20,7 +20,7 @@ def getTypeWin7(p):
   """
   pHeader = containingRecord(p, "nt", "_OBJECT_HEADER", "Body")
   pTypeIndexTable = getOffset("nt", "ObTypeIndexTable")
-  return ptrPtr(pTypeIndexTable + (ptrSize() * pHeader->TypeIndex))
+  return ptrPtr(pTypeIndexTable + (ptrSize() * pHeader.TypeIndex))
 
 def getTypeLegacy(p):
   """
@@ -29,7 +29,7 @@ def getTypeLegacy(p):
   Implementation for before Win7
   """
   pHeader = containingRecord(p, "nt", "_OBJECT_HEADER", "Body")
-  return ptrPtr(pHeader->Type)
+  return addr64(pHeader.Type)
 
 # Select platform-specific function for getting object header
 if (ptrWord(getOffset("nt", "NtBuildNumber")) >= 7600):
