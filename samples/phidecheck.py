@@ -28,4 +28,4 @@ if __name__ == "__main__":
     if (0 == lstActiveProcesses.count(processFromTable)):
       dprintln("!process 0x%X removed from PsActiveProcessHead" % processFromTable)
       founded += 1
-  dprintln("checked 0x%x processes" % len(lstProcessTable) + (", %u hidden" % founded if (0 != founded) else ", hidden not found"))
+  dprintln("checked %u processes" % len(lstProcessTable) + (", %u hidden" % founded if (0 != founded) else ", hidden not found"))
