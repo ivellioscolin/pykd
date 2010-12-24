@@ -27,7 +27,7 @@ def getTypeLegacy(p):
   Implementation for before Win7
   """
   pHeader = containingRecord(p, "nt", "_OBJECT_HEADER", "Body")
-  return addr64(pHeader.Type)
+  return pHeader.Type
 
 # Select platform-specific function for getting object header
 if (ptrWord(getOffset("nt", "NtBuildNumber")) >= 7600):
@@ -60,7 +60,7 @@ def getListByHandleTable(pHandleTable, pType=0, bContainHeaders=True):
     if (0 == hEntry):
       return 0
   
-    HandleEntry = typedVar("nt", "_HANDLE_TABLE_ENTRY", addr64(hEntry))
+    HandleEntry = typedVar("nt", "_HANDLE_TABLE_ENTRY", hEntry)
     if (0xFFFFFFFE == HandleEntry.NextFreeTableEntry):
       return 0
 
@@ -69,7 +69,7 @@ def getListByHandleTable(pHandleTable, pType=0, bContainHeaders=True):
       return 0
 
     if (bContainHeader):
-      pHeader = typedVar("nt", "_OBJECT_HEADER", addr64(p))
+      pHeader = typedVar("nt", "_OBJECT_HEADER", p)
       p = pHeader.Body.getAddress()
     return p
 
@@ -90,7 +90,7 @@ def getListByHandleTable(pHandleTable, pType=0, bContainHeaders=True):
         lstObjects.append(p)
       else:
         pCurrentType = getType(p)
-        if (addr64(pType) == pCurrentType):
+        if (addr64(pType) == addr64(pCurrentType)):
           lstObjects.append(p)
 
     return lstObjects
