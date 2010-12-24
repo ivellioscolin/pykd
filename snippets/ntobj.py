@@ -4,7 +4,7 @@
 # To use:
 # 
 #   ntobj.getType(p)
-#     query object header by object pointer
+#     query object type by object pointer
 # 
 #   ntobj.getListByHandleTable(pHandleTable, pType=0, bContainHeaders=True)
 #     build object list from handle table
@@ -133,3 +133,58 @@ def getListByHandleTable(pHandleTable, pType=0, bContainHeaders=True):
 
   dprintln("ERROR: Unknown handle table level: %u" % nTableLevel)
   return list()
+
+import sys
+
+if __name__ == "__main__":
+  # 
+  # Print content of object table (handle table)
+  # 
+  # Usage:
+  # 
+  # !py ntobj [ObjectTableAddr] [ContainHeaders=<True|False>, by default is True]
+  # 
+  # Examples:
+  # 
+  # !py ntobj.py
+  # Print object table of current process
+  # 
+  # !py ntobj.py aabbccee
+  # Print object table by address 0xaabbccee. F.e. address object table 
+  # contained in field ObjectTable structure nt!_EPROCESS
+  # 
+  # !py ntobj.py eeccbbaa False
+  # When 0xeeccbbaa is poi(nt!PspCidTable)
+  # Print all thread and process
+  # 
+
+  def printObjectTable(pObejctTable, bHeaders):
+    """
+    Print content of object table
+    """
+    lstObejcts = getListByHandleTable(pObejctTable, bContainHeaders=bHeaders)
+    dprintln("%u objects:" % len(lstObejcts))
+    for obj in lstObejcts:
+      dprintln("obj: 0x%X" % obj + " type: 0x%X" % getType(obj))
+
+
+  if not isSessionStart():
+    print "Script is launch out of WinDBG"
+    quit(0)
+
+  argc = len(sys.argv)
+  if (1 == argc):
+    process = typedVar("nt", "_EPROCESS", getCurrentProcess())
+    printObjectTable(process.ObjectTable, True)
+  elif (2 == argc):
+    printObjectTable(int(sys.argv[1], 16), True)
+  elif (3 == argc):
+    bHeaders = True
+    if (sys.argv[2].lower() == "true"):
+      printObjectTable(int(sys.argv[1], 16), True)
+    elif (sys.argv[2].lower() == "false"):
+      printObjectTable(int(sys.argv[1], 16), False)
+    else:
+      dprintln("Invalid command line, usage: " + sys.argv[0] + " [ObjectTableAddr] [ContainHeaders=True|False, by default is True]")
+  else:
+    dprintln("Invalid command line, usage: " + sys.argv[0] + " [ObjectTableAddr] [ContainHeaders=<True|False>, by default is True]")
