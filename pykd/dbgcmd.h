@@ -23,10 +23,22 @@ setExecutionStatus()
         if ( FAILED( hres ) )
             throw  DbgException( "IDebugControl::SetExecutionStatus  failed" ); 
             
-        hres = dbgExt->control->WaitForEvent( 0, INFINITE );
+        ULONG    currentStatus;                
+          
+        do {
+            
+            hres = dbgExt->control->WaitForEvent( 0, INFINITE );
         
-        if ( FAILED( hres ) )
-            throw  DbgException( "IDebugControl::SetExecutionStatus  failed" ); 
+            if ( FAILED( hres ) )
+                throw  DbgException( "IDebugControl::SetExecutionStatus  failed" ); 
+                            
+            hres = dbgExt->control->GetExecutionStatus( &currentStatus );
+                
+            if ( FAILED( hres ) )
+                throw  DbgException( "IDebugControl::GetExecutionStatus  failed" ); 
+               
+                
+        } while( currentStatus != DEBUG_STATUS_BREAK && currentStatus != DEBUG_STATUS_NO_DEBUGGEE );                    
             
     } 
 	catch( std::exception  &e )
