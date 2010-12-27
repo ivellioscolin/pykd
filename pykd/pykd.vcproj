@@ -132,6 +132,7 @@
 				GeneratePreprocessedFile="0"
 				KeepComments="false"
 				MinimalRebuild="true"
+				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
