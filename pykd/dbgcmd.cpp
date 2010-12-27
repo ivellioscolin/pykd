@@ -4,6 +4,7 @@
 #include "dbgcmd.h"
 #include "dbgexcept.h"
 #include "dbgcallback.h"
+#include "dbgsystem.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -165,6 +166,60 @@ dbgBreakpointClass::remove()
         dbgExt->control->RemoveBreakpoint( m_breakpoint );
         m_breakpoint = NULL;
     }
+}
+
+/////////////////////////////////////////////////////////////////////////////// 
+
+ULONG64
+evaluate( const std::string  &expression )
+{
+    HRESULT             hres;
+    ULONG64             value = 0;
+    
+    try {
+    
+        DEBUG_VALUE  debugValue = {};
+        ULONG        remainderIndex = 0;
+        
+        if ( is64bitSystem() )
+        {
+            hres = dbgExt->control->Evaluate( 
+                expression.c_str(), 
+                DEBUG_VALUE_INT64,
+                &debugValue,
+                &remainderIndex );
+                
+            if (  FAILED( hres ) )
+                throw  DbgException( "IDebugControl::Evaluate  failed" );             
+                
+            if ( remainderIndex == expression.length() )
+                value = debugValue.I64;
+        }
+        else
+        {
+            hres = dbgExt->control->Evaluate( 
+                expression.c_str(), 
+                DEBUG_VALUE_INT32,
+                &debugValue,
+                &remainderIndex );
+                
+            if (  FAILED( hres ) )
+                throw  DbgException( "IDebugControl::Evaluate  failed" );             
+                
+            if ( remainderIndex == expression.length() )
+                value = debugValue.I32;
+        }      
+    } 
+	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}	
+	
+	return value;
 }
 
 /////////////////////////////////////////////////////////////////////////////// 
