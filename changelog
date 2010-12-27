@@ -1,3 +1,11 @@
+version 0.0.13 27/12/2010
+[+] added : go, step, trace routine for control execution
+[+] added : bp class for control breakpoints
+[+] added : ptrMWord, ptrSignMWord for reading target's machine word ( 32 or 64 bits ) from memory\
+[+] added : eval routine for evaluation windbg expression
+[!] fixed : issue #6782 ( typedVar works very slowly )
+
+
 version 0.0.12 27/11/2010
 [+] added : getCurrentPorcess, setCurrentProcess routines
 [!] fixed: loadModule return None for non existin module with out outputing error message
