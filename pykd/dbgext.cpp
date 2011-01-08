@@ -96,7 +96,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "dprintln", &DbgPrint::dprintln );
     boost::python::def( "loadDump", &dbgLoadDump );
     boost::python::def( "dbgCommand", &dbgCommand );
-    boost::python::def( "is64bitSystem", is64bitSystem );
+    boost::python::def( "is64bitSystem", &is64bitSystem );
     boost::python::def( "isKernelDebugging", &isKernelDebugging );
     boost::python::def( "ptrSize", ptrSize );
     boost::python::def( "reg", &loadRegister );
@@ -241,6 +241,8 @@ HRESULT
 CALLBACK
 py( PDEBUG_CLIENT4 client, PCSTR args)
 {
+    PyThreadState   *interpreter = Py_NewInterpreter();
+
     try {
     
         DbgExt      ext = { 0 };
@@ -255,7 +257,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
         boost::python::object       global(main.attr("__dict__"));
         
         // перенаправление стандартных потоков ВВ
-        boost::python::object       sys = boost::python::import( "sys");
+        boost::python::object       sys = boost::python::import("sys");
         
         dbgOut                      dout;
         sys.attr("stdout") = boost::python::object( dout );
@@ -348,6 +350,8 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
     catch(...)
     {           
     }     
+    
+    Py_EndInterpreter( interpreter ); 
     
     return S_OK;  
 }
