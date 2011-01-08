@@ -241,7 +241,9 @@ HRESULT
 CALLBACK
 py( PDEBUG_CLIENT4 client, PCSTR args)
 {
-    PyThreadState   *interpreter = Py_NewInterpreter();
+
+    PyThreadState   *globalInterpreter = PyThreadState_Swap( NULL );
+    PyThreadState   *localInterpreter = Py_NewInterpreter();
 
     try {
     
@@ -351,7 +353,8 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
     {           
     }     
     
-    Py_EndInterpreter( interpreter ); 
+    Py_EndInterpreter( localInterpreter ); 
+    PyThreadState_Swap( globalInterpreter );
     
     return S_OK;  
 }
