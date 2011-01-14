@@ -17,7 +17,7 @@ def symreload():
  
         if "" == getPdbFile( module.DllBase ):
             baseName = loadUnicodeString( module.BaseDllName.getAddress() )
-	    if baseName=="ntoskrnl.exe": baseName = "nt"
+            if baseName=="ntoskrnl.exe": baseName = "nt"
             reloadModule(  " /u " + str(baseName)  )
    
 if __name__ == "__main__":

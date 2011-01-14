@@ -2,6 +2,7 @@
 
 #include <string>
 #include <map>
+#include <list>
 
 #include <boost/python.hpp>
 #include <boost/python/object.hpp>
@@ -10,37 +11,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////
 
-class typedVarClass {
 
-public:
-
-    typedVarClass()
-    {}
-    
-    typedVarClass( ULONG64 addr, ULONG size ) :
-        m_addr( addr ), 
-        m_size( size )
-    {}
-    
-    ULONG64
-    getAddress() const {
-        return m_addr;
-    }
-    
-    ULONG
-    size() const {
-        return m_size;
-    }
-    
-private:
-
-    ULONG64     m_addr;
-    
-    ULONG       m_size;
-        
-};
-
-/////////////////////////////////////////////////////////////////////////////////
 
 boost::python::object
 loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG64 address );
@@ -58,6 +29,44 @@ sizeofType( const std::string &moduleName, const std::string &typeName );
 /////////////////////////////////////////////////////////////////////////////////
 
 class TypeInfo {
+
+public:
+
+    template< typename TTypeInfo>
+    struct TypeFieldT {
+        ULONG           size;  
+        ULONG           offset;
+        TTypeInfo       type; 
+        std::string     name;
+          
+        TypeFieldT( const std::string &name_, const TTypeInfo  &type_,  ULONG size_, ULONG offset_ ) :
+            name( name_ ),
+            size( size_ ),
+            offset( offset_ ),
+            type( type_ )               
+            {}
+    };
+    
+    struct TypeName {
+        std::string   module;
+        std::string   symbol;
+        
+        TypeName( const std::string &module_, const std::string  &symbol_ ) :
+            module( module_ ),
+            symbol( symbol_ )
+            {}
+            
+        bool
+        operator < ( const TypeName &typeName ) const {
+            return ( typeName.module <= module ) && ( typeName.symbol < symbol );
+        }            
+    };
+    
+    typedef TypeFieldT<TypeInfo>                TypeField;
+    
+    typedef std::map<TypeName, TypeInfo>        TypeInfoMap;
+    
+    typedef std::list<TypeField>                TypeFieldList;
 
 public:
 
@@ -85,48 +94,21 @@ public:
     }
     
     static const TypeInfo&
-    get( const std::string  &moduleName, const std::string  &typeName );        
-        
+    get( const std::string  &moduleName, const std::string  &typeName );  
+    
+    const TypeFieldList&
+    getFields() const {
+        return m_fields;
+    }
+    
+    bool
+    isComplex() const {
+        return !m_baseType;
+    }        
     
 private:  
-
-    template< typename TTypeInfo>
-    struct TypeFieldT {
-        ULONG         size;  
-        ULONG         offset;
-        TTypeInfo     type; 
-          
-        TypeFieldT( const TTypeInfo  &type_,  ULONG size_, ULONG offset_ ) :
-            size( size_ ),
-            offset( offset_ ),
-            type( type_ )               
-            {}
-    };
-    
-    struct TypeName {
-        std::string   module;
-        std::string   symbol;
-        
-        TypeName( const std::string &module_, const std::string  &symbol_ ) :
-            module( module_ ),
-            symbol( symbol_ )
-            {}
-            
-        bool
-        operator < ( const TypeName &typeName ) const {
-            return ( typeName.module <= module ) && ( typeName.symbol < symbol );
-        }            
-    };
-    
-    
-    
-    typedef TypeFieldT<TypeInfo>                TypeField;
-    
-    typedef std::map<TypeName, TypeInfo>     TypeInfoMap;
-    
-    typedef std::map<std::string, TypeField>    TypeFieldMap;
        
-    static TypeInfoMap                  g_typeInfoCache; 
+    static TypeInfoMap                          g_typeInfoCache; 
 
     boost::python::object
     loadBaseType( ULONG64 addr ) const;
@@ -145,11 +127,55 @@ private:
     
     bool                                m_pointer;
     
-    TypeFieldMap                        m_fields;
+    TypeFieldList                       m_fields;
 
     std::string                         m_typeName;
     
     ULONG                               m_size;
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+
+class typedVarClass {
+
+public:
+
+    typedVarClass()
+    {}
+    
+    typedVarClass( const TypeInfo  &typeInfo, ULONG64 addr, ULONG size ) :
+        m_typeInfo( typeInfo ),
+        m_addr( addr ), 
+        m_size( size )
+        {}
+    
+    ULONG64
+    getAddress() const {
+        return m_addr;
+    }
+    
+    ULONG
+    size() const {
+        return m_size;
+    }
+    
+    std::string
+    print() const;
+    
+    void
+    setPyObj( const boost::python::object  &obj ) {
+        m_pyobj = obj;
+    }        
+    
+private:
+
+    ULONG64                     m_addr;
+    
+    ULONG                       m_size;
+    
+    TypeInfo                    m_typeInfo;   
+    
+    boost::python::object       m_pyobj;           
 };
 
 /////////////////////////////////////////////////////////////////////////////////

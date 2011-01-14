@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include <map>
+#include <sstream>
 
 #include "dbgext.h"
 #include "dbgtype.h"
@@ -285,7 +285,7 @@ TypeInfo::TypeInfo( const std::string  &moduleName, const std::string  &typeName
              ||  fieldTypeNameStr.find("<unnamed-tag>") < fieldTypeNameStr.size() )
                 continue;   
             
-            m_fields.insert( make_pair( fieldName, TypeField( get(moduleName, fieldTypeName), fieldSize, fieldOffset ) ) );
+            m_fields.push_back( TypeField( fieldName, get(moduleName, fieldTypeName), fieldSize, fieldOffset ) );
        }            
     
     }
@@ -310,25 +310,30 @@ TypeInfo::load( ULONG64 addr ) const
     if ( m_baseType )
         return loadBaseType( addr );
         
-    boost::python::object     var( typedVarClass( addr, m_size ) );   
+    boost::shared_ptr<typedVarClass>    ptr( new typedVarClass( *this, addr, m_size ) );
+    boost::python::object               var( ptr );
+    ptr->setPyObj( var );
     
-    TypeFieldMap::const_iterator    it = m_fields.begin();
-    for ( it = m_fields.begin(); it != m_fields.end(); ++it )
+    TypeFieldList::const_iterator    field = m_fields.begin();
+    for ( field = m_fields.begin(); field != m_fields.end(); ++field )
     {
-        const TypeField      &field =  it->second;
-        
-        if ( field.size == field.type.size() )
+
+        if ( field->size == field->type.size() )
         {
-            var.attr( it->first.c_str() ) = field.type.load( addr + field.offset );
+            var.attr( field->name.c_str() ) = field->type.load( addr + field->offset );
+            
+//            boost::python::object  obj = var.attr( field->name.c_str() );
+            
+            //int  a;
         }
         else
         {
             boost::python::dict     arr;
             
-            for ( unsigned int i = 0; i < field.size / field.type.size(); ++i )
-                arr[i] = field.type.load( addr + field.offset + i * field.type.size() );
+            for ( unsigned int i = 0; i < field->size / field->type.size(); ++i )
+                arr[i] = field->type.load( addr + field->offset + i * field->type.size() );
                 
-            var.attr( it->first.c_str() ) = arr;                
+            var.attr( field->name.c_str() ) = arr;                
         }  
     }     
 
@@ -413,3 +418,46 @@ valueLoader( ULONG64 address, ULONG size )
 }
 
 /////////////////////////////////////////////////////////////////////////////////
+
+std::string
+typedVarClass::print() const
+{
+    stringstream         sstr;
+    
+    for ( 
+        TypeInfo::TypeFieldList::const_iterator      field = m_typeInfo.getFields().begin();
+        field != m_typeInfo.getFields().end(); 
+        field++ )
+    {
+        sstr << "\t" << hex << "+" << field->offset << "  " << field->name << "  ";
+        
+        if ( field->type.isComplex() )
+           sstr << field->type.name();
+        else       
+        {
+            if ( field->size == field->type.size() )
+            {
+                boost::python::object     attr = m_pyobj.attr( field->name.c_str() );
+            
+                if ( attr.ptr() == Py_None )
+                {
+                    sstr << "memory error";
+                }
+                else
+                {
+                    unsigned __int64  val = boost::python::extract<unsigned __int64>( attr );
+                
+                    sstr << hex << "0x" << val << dec << " ( " << val << " )";
+                }                    
+            }             
+        }
+               
+        sstr << std::endl;
+    }  
+    
+    return sstr.str();
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+
