@@ -1,3 +1,10 @@
+version 0.0.14 17/01/2011
+[+] added : __getattribute__ method for dbgModuleClass class to simplify access to module symbols's offsets
+[+] added : __str__ method for typedVar class, so it can be outputed by print operator
+[!] bug fixed: issue #8103 ( !py windbg extension imports modules into the global space )
+[~] changed: eval() renamed to expr()
+
+
 version 0.0.13 27/12/2010
 [+] added : go, step, trace routine for control execution
 [+] added : bp class for control breakpoints
