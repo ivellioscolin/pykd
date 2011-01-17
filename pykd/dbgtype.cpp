@@ -435,10 +435,10 @@ typedVarClass::print() const
            sstr << field->type.name();
         else       
         {
+            boost::python::object     attr = m_pyobj.attr( field->name.c_str() );
+        
             if ( field->size == field->type.size() )
             {
-                boost::python::object     attr = m_pyobj.attr( field->name.c_str() );
-            
                 if ( attr.ptr() == Py_None )
                 {
                     sstr << "memory error";
@@ -449,7 +449,16 @@ typedVarClass::print() const
                 
                     sstr << hex << "0x" << val << dec << " ( " << val << " )";
                 }                    
-            }             
+            }      
+            else
+            {
+                for ( size_t i = 0; i <  field->size/field->type.size(); ++i )
+                {
+                    unsigned __int64  val = boost::python::extract<unsigned __int64>( attr[i] );
+                
+                    sstr << "\n\t\t\t[" << i << "]  " << hex << "0x" << val << dec << " ( " << val << " )";
+                }
+            }       
         }
                
         sstr << std::endl;
