@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <map>
 
 #include <boost/python.hpp>
 #include <boost/python/object.hpp>
@@ -48,6 +49,10 @@ public:
     void
     reloadSymbols();
     
+    ULONG64
+    getOffset( const std::string  &symName );
+    
+    
 private:
 
     ULONG64         m_base;
@@ -55,6 +60,9 @@ private:
     ULONG64         m_end;        
     
     std::string     m_name;
+    
+    typedef std::map<std::string, ULONG64>  OffsetMap;
+    OffsetMap       m_offsets;
 };
 
 /////////////////////////////////////////////////////////////////////////////////

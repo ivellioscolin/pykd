@@ -7,7 +7,6 @@ def loadSymbols():
 
    global nt
    nt = loadModule( "nt" )
-   nt.PsActiveProcessHead = getOffset( "nt", "PsActiveProcessHead" )
 
 
 def processInfo():

@@ -4,6 +4,7 @@
 #include "dbgmodule.h"
 #include "dbgexcept.h"
 #include "dbgmem.h"
+#include "dbgsym.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -123,6 +124,26 @@ dbgModuleClass::reloadSymbols()
 		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}	 
 	
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+ULONG64
+dbgModuleClass::getOffset( const std::string  &symName )
+{
+    OffsetMap::iterator  offset = m_offsets.find( symName ); 
+    if ( offset != m_offsets.end() )
+    {
+        return offset->second;
+    }
+    
+    ULONG64  offsetVal = findAddressForSymbol( m_name, symName );
+    if (  (ULONG64)~0 == offsetVal )
+        return offsetVal;
+        
+    m_offsets.insert( std::make_pair( symName, offsetVal ) );
+    
+    return offsetVal;                    
 }
 
 /////////////////////////////////////////////////////////////////////////////////
