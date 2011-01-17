@@ -9,8 +9,6 @@ def loadSymbols():
 
    global nt
    nt = loadModule( "nt" )
-   nt.ObpRootDirectoryObject = getOffset( "nt", "ObpRootDirectoryObject" )
-   nt.ObpDirectoryObjectType = getOffset( "nt", "ObpDirectoryObjectType" )
 
 
 def getObjectInDir( dirObj, objName ):

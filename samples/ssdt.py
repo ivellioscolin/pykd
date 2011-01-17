@@ -5,7 +5,7 @@ import sys
 def checkSSDT():
 
    nt = loadModule( "nt" )
-   nt.KeServiceDescriptorTable = getOffset( "nt", "KeServiceDescriptorTable" )
+
 
    if is64bitSystem():   
 

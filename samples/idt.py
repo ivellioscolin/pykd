@@ -11,10 +11,6 @@ def checkInterrupt():
         idtr = reg( "idtr" )
 
         nt = loadModule( "nt" )
-        nt.KiInterruptDispatch = getOffset( "nt", "KiInterruptDispatch" )          
-        nt.KiChainedDispatch = getOffset( "nt", "KiChainedDispatch" )
-        nt.KiInterruptTemplate = getOffset( "nt", "KiInterruptTemplate" )             
-
         hal = loadModule( "hal" )
 
         ErrorCount = 0

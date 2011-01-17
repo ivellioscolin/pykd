@@ -154,7 +154,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def("end", &dbgModuleClass::getEnd )
         .def("name", &dbgModuleClass::getName )
         .def("contain", &dbgModuleClass::contain )
-        .def("__getattribute__", &dbgModuleClass::getOffset );
+        .def("__getattr__", &dbgModuleClass::getOffset );
     boost::python::class_<dbgExtensionClass>( 
             "ext",
             "windbg extension",
