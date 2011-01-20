@@ -17,11 +17,7 @@ public:
         m_end( 0 )     
     {}           
     
-    dbgModuleClass( const std::string &name, ULONG64 base, ULONG size ) :
-        m_name( name ),
-        m_base( base ),
-        m_end( base + size )
-    {}    
+    dbgModuleClass( const std::string &name, ULONG64 base, ULONG size );
     
     ULONG64
     getBegin() const {

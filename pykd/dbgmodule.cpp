@@ -101,6 +101,47 @@ findModule( ULONG64 addr )
 
 /////////////////////////////////////////////////////////////////////////////////
 
+dbgModuleClass::dbgModuleClass( const std::string &name, ULONG64 base, ULONG size ) :
+    m_name( name ),
+    m_base( base ),
+    m_end( base + size )
+{
+    reloadSymbols();
+    
+    std::string         pattern = name + "!*";
+    ULONG64             enumHandle = 0;
+    
+    HRESULT   hres = dbgExt->symbols->StartSymbolMatch( pattern.c_str(), &enumHandle );
+    
+    while( SUCCEEDED( hres ) )
+    {
+        char            nameBuf[0x100];
+        ULONG64         offset = 0;
+    
+        hres = 
+            dbgExt->symbols->GetNextSymbolMatch(
+                enumHandle,
+                nameBuf,
+                sizeof( nameBuf ),
+                NULL,
+                &offset );
+                
+        if ( FAILED( hres ) )
+            break;                
+            
+        std::string   symbolName( nameBuf );
+        
+        symbolName.erase( 0, name.size() + 1 );
+                
+        m_offsets.insert( std::make_pair( symbolName, offset ) );
+    }
+    
+    if ( enumHandle )
+        dbgExt->symbols->EndSymbolMatch( enumHandle );   
+}  
+
+/////////////////////////////////////////////////////////////////////////////////
+
 void
 dbgModuleClass::reloadSymbols()
 {
@@ -136,14 +177,8 @@ dbgModuleClass::getOffset( const std::string  &symName )
     {
         return offset->second;
     }
-    
-    ULONG64  offsetVal = findAddressForSymbol( m_name, symName );
-    if (  (ULONG64)~0 == offsetVal )
-        return offsetVal;
-        
-    m_offsets.insert( std::make_pair( symName, offsetVal ) );
-    
-    return offsetVal;                    
+
+    return 0;    
 }
 
 /////////////////////////////////////////////////////////////////////////////////
