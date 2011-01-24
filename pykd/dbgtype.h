@@ -106,6 +106,11 @@ public:
         return !m_baseType;
     }        
     
+    bool
+    isPtr() const {
+        return m_pointer;
+    }       
+    
 private:  
        
     static TypeInfoMap                          g_typeInfoCache; 

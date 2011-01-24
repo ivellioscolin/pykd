@@ -341,6 +341,76 @@ loadAnsiStr( ULONG64 address )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+bool
+loadCStrToBuffer( ULONG64 address, PCHAR buffer, ULONG  bufferLen )
+{
+    address = addr64( address );
+
+    try {
+        
+        HRESULT     hres = 
+            dbgExt->dataSpaces4->ReadMultiByteStringVirtual(
+                address,
+                bufferLen,
+                buffer,
+                bufferLen/sizeof(CHAR),
+                NULL );
+        
+        if ( FAILED( hres ) )
+            return false;
+            
+        return true;  
+    } 
+	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}	            
+
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+bool
+loadWStrToBuffer( ULONG64 address, PWCHAR buffer, ULONG  bufferLen )
+{
+    address = addr64( address );
+
+    try {
+        
+        HRESULT     hres = 
+            dbgExt->dataSpaces4->ReadUnicodeStringVirtualWide(
+                address,
+                bufferLen,
+                buffer,
+                bufferLen/sizeof(WCHAR),
+                NULL );
+        
+        if ( FAILED( hres ) )
+            return false;
+                               
+        return true;
+    
+    } 
+	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}	            
+	
+    return false;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////
+
 boost::python::object
 loadCStr( ULONG64 address )
 {
@@ -422,6 +492,7 @@ loadWStr( ULONG64 address )
 	
 	return strObj;
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 

@@ -431,7 +431,7 @@ typedVarClass::print() const
     {
         sstr << "\t" << hex << "+" << field->offset << "  " << field->name << "  ";
         
-        if ( field->type.isComplex() )
+        if ( field->type.isComplex() && !field->type.isPtr())
            sstr << field->type.name();
         else       
         {
@@ -447,8 +447,35 @@ typedVarClass::print() const
                 {
                     unsigned __int64  val = boost::python::extract<unsigned __int64>( attr );
                 
-                    sstr << hex << "0x" << val << dec << " ( " << val << " )";
-                }                    
+                    sstr << hex << "0x" << val;
+                    
+                    if ( field->type.name() == "char*" )
+                    {
+                        char  buf[0x100];
+                        if ( loadCStrToBuffer( val, buf, sizeof(buf) ) )
+                            sstr << "  (" << buf << " )";
+                        else
+                            sstr << "  ( read string error )";
+                    }
+                    else if ( field->type.name() == "unsigned short*" )
+                    {
+                        wchar_t   wbuf[0x100];
+                        if ( loadWStrToBuffer( val, wbuf, sizeof(wbuf) ) )      
+                        {
+                            char  mbBuf[0x100] = { 0 };
+                        
+                            WideCharToMultiByte( CP_ACP, 0, wbuf, wcslen(wbuf)+1, mbBuf, sizeof(mbBuf),  NULL, NULL );
+                            
+                            sstr << "  (" << mbBuf << " )";
+                        }
+                        else
+                            sstr << "  ( read string error )";                                      
+                    }
+                    else
+                    {
+                        sstr << dec << " ( " << val << " )";
+                    }   
+                }                                 
             }      
             else
             {
