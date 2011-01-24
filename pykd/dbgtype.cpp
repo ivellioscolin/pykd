@@ -107,6 +107,21 @@ loadTypedVarList( ULONG64 address, const std::string &moduleName, const std::str
 
 /////////////////////////////////////////////////////////////////////////////////
 
+boost::python::object
+loadTypedVarArray( ULONG64 address, const std::string &moduleName, const std::string &typeName, long number )
+{
+    boost::python::dict     objArr;
+    
+    const TypeInfo&         typeInfo = TypeInfo::get( moduleName, typeName );
+    
+    for( long i = 0; i < number; ++i )
+        objArr[i] = loadTypedVar( moduleName, typeName, address + i * typeInfo.size() );
+    
+    return objArr;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
 bool
 isBaseType( const std::string  &typeName );
 

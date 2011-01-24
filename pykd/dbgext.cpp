@@ -102,6 +102,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "reg", &loadRegister );
     boost::python::def( "typedVar", &loadTypedVar );
     boost::python::def( "typedVarList", &loadTypedVarList );
+    boost::python::def( "typedVarArray", &loadTypedVarArray );
     boost::python::def( "containingRecord", &containingRecord );
     boost::python::def( "sizeof", &sizeofType );
     boost::python::def( "loadModule", &loadModule );

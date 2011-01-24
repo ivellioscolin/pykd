@@ -20,6 +20,9 @@ boost::python::object
 loadTypedVarList( ULONG64 address, const std::string &moduleName, const std::string &typeName, const std::string &listEntryName );
 
 boost::python::object
+loadTypedVarArray( ULONG64 address, const std::string &moduleName, const std::string &typeName, long number );
+
+boost::python::object
 containingRecord( ULONG64 address, const std::string &moduleName, const std::string &typeName, const std::string &fieldName );
 
 ULONG
