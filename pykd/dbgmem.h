@@ -42,6 +42,7 @@ loadArray( ULONG64 address, ULONG  number, BOOLEAN phyAddr = FALSE )
  	return boost::python::object();
 }
 
+
 template<typename T>
 boost::python::object
 loadByPtr( ULONG64 address )
@@ -55,6 +56,10 @@ loadByPtr( ULONG64 address )
     
     return boost::python::object();
 }
+
+template<>
+boost::python::object
+loadByPtr<char>( ULONG64 address );
 
 boost::python::object
 loadPtrArray( ULONG64 address, ULONG  number );

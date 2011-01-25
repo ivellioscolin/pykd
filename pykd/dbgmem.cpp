@@ -209,6 +209,22 @@ loadSignMWord( ULONG64 address )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+template<>
+boost::python::object
+loadByPtr<char>( ULONG64 address )
+{
+    char   value;
+    
+    if ( loadMemory( address, &value, sizeof(char) ) )
+    {
+        return boost::python::object( (int)value );
+    }    
+    
+    return boost::python::object();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 boost::python::object
 loadUnicodeStr( ULONG64 address )
 {
