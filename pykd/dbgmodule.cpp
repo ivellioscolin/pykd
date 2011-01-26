@@ -5,6 +5,7 @@
 #include "dbgexcept.h"
 #include "dbgmem.h"
 #include "dbgsym.h"
+#include "dbgcallback.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -148,13 +149,42 @@ dbgModuleClass::reloadSymbols()
     HRESULT         hres;
      
     try {
- 
-        std::string   reloadParam = "/f "; //"/f /s ";
+        static const char *szReloadParam = "/f "; //"/f /s ";
+        std::string   reloadParam = szReloadParam;
         reloadParam += m_name;
-        hres = dbgExt->symbols->Reload( reloadParam.c_str() );
-        
+
+        {
+            // try reload module by entered name, "silent mode"
+            OutputReader outputReader( dbgExt->client );
+            hres = dbgExt->symbols->Reload( reloadParam.c_str() );
+        }
         if ( FAILED( hres ) )
-            throw DbgException( "IDebugSymbol::Reload  failed" );      
+        {
+            // failed => try reload symbols by image file name
+            char szImageName[MAX_PATH/2];
+            HRESULT hres2 = dbgExt->symbols2->GetModuleNameString(
+                DEBUG_MODNAME_IMAGE,
+                DEBUG_ANY_ID,
+                m_base,
+                szImageName,
+                _countof(szImageName),
+                NULL);
+            if (SUCCEEDED(hres2))
+            {
+                PCSTR szImageFileName = strrchr(szImageName, '\\');
+                if (!szImageFileName)
+                    szImageFileName = szImageName;
+                else
+                    ++szImageFileName;
+
+                reloadParam = szReloadParam;
+                reloadParam += szImageFileName;
+                hres = dbgExt->symbols->Reload( reloadParam.c_str() );
+            }
+        }
+
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugSymbol::Reload  failed" );
     }
 	catch( std::exception  &e )
 	{
