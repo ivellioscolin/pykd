@@ -1,6 +1,8 @@
 #pragma once
 
 #include "dbgprint.h"
+#include <boost/python.hpp>
+#include <boost/python/object.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -9,12 +11,9 @@ class dbgOut {
 public:
 
     void
-    write( const std::string&  str ) {
+    write( const boost::python::object  &str ) {
         DbgPrint::dprint( str );
-    }    
-    
-private:
-   
+    }         
     
 };
 
@@ -36,9 +35,6 @@ public:
     
         return std::string( str );
     }    
-    
-private:
-   
 
 };
 

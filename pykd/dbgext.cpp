@@ -71,6 +71,8 @@ private:
 WindbgGlobalSession     *windbgGlobalSession = NULL; 
 
 /////////////////////////////////////////////////////////////////////////////////
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprint, DbgPrint::dprint, 1, 2 )
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln, DbgPrint::dprintln, 1, 2 )
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadBytes, loadArray<unsigned char>, 2, 3 )
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadWords, loadArray<unsigned short>, 2, 3 )
@@ -92,8 +94,8 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "createSession", &dbgCreateSession );
     boost::python::def( "isSessionStart", &dbgIsSessionStart );
     boost::python::def( "symbolsPath", &dbgSymPath );
-    boost::python::def( "dprint", &DbgPrint::dprint );
-    boost::python::def( "dprintln", &DbgPrint::dprintln );
+    boost::python::def( "dprint", &DbgPrint::dprint, dprint( boost::python::args( "str", "dml" ), ""  ) );
+    boost::python::def( "dprintln", &DbgPrint::dprintln, dprintln( boost::python::args( "str", "dml" ), ""  ) );
     boost::python::def( "loadDump", &dbgLoadDump );
     boost::python::def( "dbgCommand", &dbgCommand );
     boost::python::def( "is64bitSystem", &is64bitSystem );
@@ -110,7 +112,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "getOffset", &findAddressForSymbol );
     boost::python::def( "findModule", &findModule );
     boost::python::def( "addr64", &addr64 );
-    boost::python::def( "loadBytes", loadArray<unsigned char>, loadBytes( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
+    boost::python::def( "loadBytes", &loadArray<unsigned char>, loadBytes( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
     boost::python::def( "loadWords", &loadArray<unsigned short>, loadWords( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
     boost::python::def( "loadDWords", &loadArray<unsigned long>, loadDWords( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
     boost::python::def( "loadQWords", &loadArray<unsigned __int64>, loadQWords( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
@@ -222,6 +224,7 @@ SetupDebugEngine( IDebugClient4 *client, DbgExt *dbgExt  )
     
     
     client->QueryInterface( __uuidof(IDebugControl), (void **)&dbgExt->control );
+    client->QueryInterface( __uuidof(IDebugControl4), (void **)&dbgExt->control4 );
     
     client->QueryInterface( __uuidof(IDebugRegisters), (void **)&dbgExt->registers );
     
@@ -331,7 +334,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
                 {
                     PyObject *s = PyObject_Str(errvalue);
                     
-                    DbgPrint::dprintln( PyString_AS_STRING( s ) );
+                    dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "%s/n", PyString_AS_STRING( s ) );
 
                     Py_DECREF(s);
                 }
@@ -348,7 +351,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
         }
         else
         {
-            DbgPrint::dprintln( "script file not found" ); 
+      		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "script file not found\n" );
         }           
     }
    
@@ -391,8 +394,8 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
                 {
                     PyObject *s = PyObject_Str(errvalue);
                     
-                    DbgPrint::dprintln( PyString_AS_STRING( s ) );
-
+                    dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "%s\n", PyString_AS_STRING( s )  );
+                    
                     Py_DECREF(s);
                 }
 
@@ -442,8 +445,8 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
                         {
                             PyObject *s = PyObject_Str(errvalue);
                             
-                            DbgPrint::dprintln( PyString_AS_STRING( s ) );
-
+                            dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "%s/n", PyString_AS_STRING( s ) );
+                            
                             Py_DECREF(s);
                         }
 

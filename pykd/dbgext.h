@@ -9,6 +9,7 @@ struct DbgExt {
     IDebugClient4           *client4;
     
     IDebugControl           *control;
+    IDebugControl4          *control4;
     
     IDebugRegisters         *registers;
     

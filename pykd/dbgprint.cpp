@@ -7,16 +7,18 @@
 
 using namespace std;
 
-void DbgPrint::dprint( const string&  str )
+void DbgPrint::dprint( const boost::python::object& obj, bool dml )
 {
-    HRESULT  hres = dbgExt->control->ControlledOutput( DEBUG_OUTCTL_AMBIENT_DML, DEBUG_OUTPUT_NORMAL, str.c_str() );
-    if ( FAILED( hres ) )
-        std::cout << str;        
+    std::wstring   str = boost::python::extract<std::wstring>( obj );
+
+    dbgExt->control4->ControlledOutputWide(  dml ? DEBUG_OUTCTL_AMBIENT_DML : DEBUG_OUTCTL_AMBIENT_TEXT, DEBUG_OUTPUT_NORMAL, str.c_str() );
 }
 
-void DbgPrint::dprintln( const std::string&  str )
+void DbgPrint::dprintln( const boost::python::object& obj, bool dml  )
 {
-    DbgPrint::dprint( str );
-    DbgPrint::dprint( "\r\n" );
+    std::wstring   str = boost::python::extract<std::wstring>( obj );
+    str += L"\r\n";
+
+    dbgExt->control4->ControlledOutputWide(  dml ? DEBUG_OUTCTL_AMBIENT_DML : DEBUG_OUTCTL_AMBIENT_TEXT, DEBUG_OUTPUT_NORMAL, str.c_str() );
 }
 
