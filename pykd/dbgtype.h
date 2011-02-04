@@ -11,8 +11,6 @@
 
 /////////////////////////////////////////////////////////////////////////////////
 
-
-
 boost::python::object
 loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG64 address );
 

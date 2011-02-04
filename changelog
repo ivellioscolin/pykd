@@ -1,3 +1,13 @@
+
+version 0.0.15 04/02/2011
+[+] added : locals() routine; it returns local var for current scope 
+[+] added : typedVarArray routine 
+[~] updated : dbgModuleClass constructor fills symbol cache for optimization 
+[!] fixed : issue #8236 ( dprint/dprintln/print doesn't work with unicode string )
+[!] fixed : issue #8229 ( loadModuel("some_drv") - out message "IDebugSymbol::Reload failed" )
+[!] fixed : issue #8239 ( ptrSignByte returns str value )
+
+
 version 0.0.14 17/01/2011
 [+] added : __getattribute__ method for dbgModuleClass class to simplify access to module symbols's offsets
 [+] added : __str__ method for typedVar class, so it can be outputed by print operator

@@ -336,10 +336,7 @@ TypeInfo::load( ULONG64 addr ) const
         if ( field->size == field->type.size() )
         {
             var.attr( field->name.c_str() ) = field->type.load( addr + field->offset );
-            
-//            boost::python::object  obj = var.attr( field->name.c_str() );
-            
-            //int  a;
+
         }
         else
         {
