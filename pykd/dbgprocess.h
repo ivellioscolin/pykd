@@ -19,6 +19,10 @@ getImplicitThread();
 boost::python::object
 getCurrentStack();
 
+boost::python::object
+getLocals();
+
+
 class dbgStackFrameClass : public DEBUG_STACK_FRAME {
 
 public:
@@ -28,10 +32,7 @@ public:
         memset( static_cast<DEBUG_STACK_FRAME*>( this ), 0, sizeof(DEBUG_STACK_FRAME) );
     }       
     
-    dbgStackFrameClass( const DEBUG_STACK_FRAME &stackFrame )
-    {
-        memcpy( static_cast<DEBUG_STACK_FRAME*>( this ), &stackFrame, sizeof(DEBUG_STACK_FRAME) );   
-    }
+    dbgStackFrameClass( const DEBUG_STACK_FRAME &stackFrame );
 };
 
 boost::python::object

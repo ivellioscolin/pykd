@@ -3,6 +3,7 @@
 #include "dbgprocess.h"
 #include "dbgext.h"
 #include "dbgexcept.h"
+#include "dbgtype.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -133,8 +134,13 @@ getCurrentStack()
 {
     HRESULT                 hres;  
     PDEBUG_STACK_FRAME      frames = NULL;
+    ULONG                   currentScope = 0;       
 
     try {
+    
+        hres = dbgExt->symbols3->GetCurrentScopeFrameIndex( &currentScope );
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugSymbol3::GetCurrentScopeFrameIndex  failed" );      
     
         frames = new DEBUG_STACK_FRAME [ 1000 ];
     
@@ -147,11 +153,21 @@ getCurrentStack()
         
         for ( ULONG i = 0; i < filledFrames; ++i )
         {
-            frameList.append( boost::python::object( dbgStackFrameClass( frames[i] ) ) );
+            dbgStackFrameClass          frame( frames[i] );
+            
+            boost::python::object       frameObj( frame ); 
+ 
+            hres = dbgExt->symbols->SetScope( NULL, &frames[i], NULL, sizeof(DEBUG_STACK_FRAME) );
+            if ( SUCCEEDED( hres ) )
+                frameObj.attr( "locals" ) = getLocals();    
+        
+            frameList.append( frameObj );
         }         
         
     	if ( frames )
 	        delete[] frames;
+	        
+        dbgExt->symbols3->SetScopeFrameByIndex( currentScope );	    	        
 
         return frameList;       
     
@@ -167,6 +183,8 @@ getCurrentStack()
 	
 	if ( frames )
 	    delete[] frames;
+	    
+    dbgExt->symbols3->SetScopeFrameByIndex( currentScope );	    
 
     return boost::python::object(); 
 }
@@ -304,3 +322,95 @@ setCurrentProcess(
 }
 
 /////////////////////////////////////////////////////////////////////////////////
+
+dbgStackFrameClass::dbgStackFrameClass( const DEBUG_STACK_FRAME &stackFrame )
+{
+    memcpy( static_cast<DEBUG_STACK_FRAME*>( this ), &stackFrame, sizeof(DEBUG_STACK_FRAME) );           
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+boost::python::object
+getLocals()
+{
+    HRESULT                 hres;
+    IDebugSymbolGroup       *localSymbols = NULL;
+    IDebugSymbolGroup2      *localSymbols2 = NULL;
+   
+    try {
+    
+        hres = dbgExt->symbols->GetScopeSymbolGroup( DEBUG_SCOPE_GROUP_ARGUMENTS|DEBUG_SCOPE_GROUP_LOCALS, NULL, &localSymbols  );
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugSymbols::GetScopeSymbolGroup  failed" );     
+            
+        hres = localSymbols->QueryInterface( __uuidof(IDebugSymbolGroup2), (void**) &localSymbols2 );
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugSymbols::QueryInterface  failed to get IDebugSymbolGroup2" );  
+            
+        ULONG   localNumber;            
+        hres = localSymbols->GetNumberSymbols( &localNumber );       
+        
+        boost::python::dict     arr; 
+        
+        for ( ULONG i = 0; i < localNumber; ++i )
+        {
+            char        varName[0x100];
+        
+            hres = localSymbols->GetSymbolName( i, varName, sizeof(varName), NULL );
+            if ( FAILED( hres ) )
+                throw DbgException( "IDebugSymbolGroup::GetSymbolName  failed" ); 
+                
+            DEBUG_SYMBOL_PARAMETERS     symbolParam = {};                
+            hres = localSymbols->GetSymbolParameters( i, 1, &symbolParam );                    
+            if ( FAILED( hres ) )
+                throw DbgException( "IDebugSymbolGroup::GetSymbolParameters  failed" );              
+          
+            char        typeName[0x100];
+            hres = dbgExt->symbols->GetTypeName( symbolParam.Module, symbolParam.TypeId, typeName, sizeof(typeName), NULL );
+            if ( FAILED( hres ) )
+                throw DbgException( "IDebugSymbols::GetTypeName  failed" );    
+                
+            char        moduleName[0x100];
+            hres = dbgExt->symbols2->GetModuleNameString( 
+                DEBUG_MODNAME_MODULE,
+                DEBUG_ANY_ID,
+                symbolParam.Module,
+                moduleName,
+                sizeof(moduleName),
+                NULL );
+            if ( FAILED( hres ) )
+                throw DbgException( "IDebugSymbols2::GetModuleNameString  failed" );               
+                
+                
+            ULONG64     varOffset;                
+            hres = localSymbols2->GetSymbolOffset( i, &varOffset );
+            if ( FAILED( hres ) )
+                throw DbgException( "IDebugSymbolGroup2::GetSymbolOffset  failed" );               
+                            
+            arr[ varName ] = loadTypedVar( moduleName, typeName, varOffset );
+        }    
+        
+        return arr;
+    }
+  	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}
+	
+	if ( localSymbols )
+	    localSymbols->Release();
+	    
+    if ( localSymbols2 )
+        localSymbols2->Release();	    
+        
+    return boost::python::object();        
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+

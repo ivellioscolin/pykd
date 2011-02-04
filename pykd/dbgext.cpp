@@ -139,6 +139,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "ptrSignMWord", &loadSignMWord );
     boost::python::def( "compareMemory", &compareMemory, compareMemoryOver( boost::python::args( "addr1", "addr2", "length", "phyAddr" ), "" ) );
     boost::python::def( "getCurrentStack", &getCurrentStack );
+    boost::python::def( "locals", &getLocals );
     boost::python::def( "reloadModule", &reloadModule );
     boost::python::def( "getPdbFile", &getPdbFile );
     boost::python::def( "getImplicitThread", &getImplicitThread );
