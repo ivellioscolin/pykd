@@ -4,6 +4,7 @@
 #include "dbgexcept.h"
 #include "dbgmem.h"
 #include "dbgsystem.h"
+#include "dbgcallback.h"
 
 using namespace std;
 
@@ -523,6 +524,47 @@ loadLinkedList( ULONG64 address )
         objList.append( entryAddress );
     
     return objList;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+bool
+isOffsetValid( ULONG64  addr )
+{
+    HRESULT     hres;
+
+    try {
+    
+        // нужно подавить возможный вывод в консоль об отсутствующей странице памяти
+        OutputReader outputReader( dbgExt->client );    
+    
+        ULONG       offsetInfo;
+        
+        hres = 
+            dbgExt->dataSpaces4->GetOffsetInformation(
+                DEBUG_DATA_SPACE_VIRTUAL,
+                DEBUG_OFFSINFO_VIRTUAL_SOURCE,
+                addr,
+                &offsetInfo,
+                sizeof( offsetInfo ),
+                NULL );
+                
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugDataSpace4::GetOffsetInformation  failed" );                    
+            
+        return  offsetInfo != DEBUG_VSOURCE_INVALID;       
+    
+    } 
+	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}	            
+	
+	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

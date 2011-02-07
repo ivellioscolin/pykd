@@ -98,6 +98,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "dprintln", &DbgPrint::dprintln, dprintln( boost::python::args( "str", "dml" ), ""  ) );
     boost::python::def( "loadDump", &dbgLoadDump );
     boost::python::def( "dbgCommand", &dbgCommand );
+    boost::python::def( "isValid", &isOffsetValid );
     boost::python::def( "is64bitSystem", &is64bitSystem );
     boost::python::def( "isKernelDebugging", &isKernelDebugging );
     boost::python::def( "ptrSize", ptrSize );

@@ -91,4 +91,7 @@ addr64( ULONG64  addr );
 boost::python::object
 loadLinkedList( ULONG64 address );
 
+bool
+isOffsetValid( ULONG64  addr );
+
 /////////////////////////////////////////////////////////////////////////////////
