@@ -159,6 +159,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def("end", &dbgModuleClass::getEnd )
         .def("name", &dbgModuleClass::getName )
         .def("contain", &dbgModuleClass::contain )
+        .def("image", &dbgModuleClass::getImageSymbolName )
+        .def("pdb", &dbgModuleClass::getPdbName )
         .def("__getattr__", &dbgModuleClass::getOffset );
     boost::python::class_<dbgExtensionClass>( 
             "ext",

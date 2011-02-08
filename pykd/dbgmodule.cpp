@@ -139,6 +139,22 @@ dbgModuleClass::dbgModuleClass( const std::string &name, ULONG64 base, ULONG siz
     
     if ( enumHandle )
         dbgExt->symbols->EndSymbolMatch( enumHandle );   
+
+    memset( &m_debugInfo, 0, sizeof( m_debugInfo ) );
+
+    hres = dbgExt->advanced2->GetSymbolInformation(
+        DEBUG_SYMINFO_IMAGEHLP_MODULEW64,
+        base,
+        0,
+        &m_debugInfo,
+        sizeof( m_debugInfo ),
+        NULL,
+        NULL,
+        0,
+        NULL );
+        
+    if ( SUCCEEDED( hres ) )
+        getImagePath();
 }  
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -213,3 +229,81 @@ dbgModuleClass::getOffset( const std::string  &symName )
 
 /////////////////////////////////////////////////////////////////////////////////
 
+void
+dbgModuleClass::getImagePath()
+{
+    HRESULT         hres;
+    PWSTR           pathBuffer = NULL;
+         
+    try {
+    
+        ULONG       pathSize = 0;
+        hres = dbgExt->symbols3->GetSymbolPathWide( NULL, 0, &pathSize );
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugSymbol3::GetImagePathWide  failed" );
+            
+        pathBuffer = new WCHAR [ pathSize ];
+        
+        hres = dbgExt->symbols3->GetSymbolPathWide( pathBuffer, pathSize, NULL );
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugSymbol3::GetImagePathWide  failed" );
+            
+        std::wstring   symPath( pathBuffer, pathSize );
+        
+        std::wstring   altName =  m_debugInfo.CVData;
+        altName = altName.substr( 0, altName.find_last_of(L".") );
+        
+        std::wstring   imageName = m_debugInfo.LoadedImageName;
+        altName += imageName.substr( imageName.find_last_of(L".") );        
+        
+        for ( size_t  offset = 0; offset < symPath.length(); )
+        {
+            size_t  newOffset = symPath.find( L";", offset );
+            std::wstring    subPath = symPath.substr( offset, newOffset - offset );
+            
+            std::wstringstream   sstr;
+            
+            sstr << subPath  << L"\\" << m_debugInfo.LoadedImageName << L"\\" << std::hex << 
+                m_debugInfo.TimeDateStamp << m_debugInfo.ImageSize << L"\\" << 
+                m_debugInfo.LoadedImageName;
+                
+            if( (_waccess( sstr.str().c_str(), 0 )) != -1 )
+            {
+                m_imageFullName = sstr.str();
+                break;
+            }   
+            
+            
+            std::wstringstream   altstr;
+            
+            altstr << subPath << L"\\" << altName << L"\\" << std::hex << 
+                m_debugInfo.TimeDateStamp << m_debugInfo.ImageSize << L"\\" << 
+                altName;
+                
+            if( (_waccess( altstr.str().c_str(), 0 )) != -1 )
+            {
+                m_imageFullName = altstr.str();
+                break;
+            }               
+            
+            if ( newOffset == std::wstring::npos )
+                break;
+            
+            offset = newOffset + 1;
+        }       
+          
+    }
+	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}	
+
+    if ( pathBuffer )
+        delete[] pathBuffer;
+}
+
+/////////////////////////////////////////////////////////////////////////////////

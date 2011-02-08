@@ -23,7 +23,7 @@ findSymbolForAddress( ULONG64 addr )
     
         if ( FAILED( hres ) )
         {
-            return boost::python::object( "out of module" );   
+            return boost::python::object();   
         }         
         
         char   moduleName[0x100];
@@ -54,7 +54,7 @@ findSymbolForAddress( ULONG64 addr )
 		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}	 
 	
-	return boost::python::object( addr );
+	return boost::python::object();
 }
 
 /////////////////////////////////////////////////////////////////////////////////

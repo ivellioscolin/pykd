@@ -48,6 +48,16 @@ public:
     ULONG64
     getOffset( const std::string  &symName );
     
+    std::wstring
+    getImageSymbolName() const {
+        return m_imageFullName;
+    }
+    
+    std::wstring    
+    getPdbName() const {
+        return std::wstring( m_debugInfo.LoadedPdbName );
+    }
+    
     
 private:
 
@@ -57,8 +67,15 @@ private:
     
     std::string     m_name;
     
+    std::wstring    m_imageFullName;
+
+    IMAGEHLP_MODULEW64        m_debugInfo;
+    
     typedef std::map<std::string, ULONG64>  OffsetMap;
     OffsetMap       m_offsets;
+    
+    void
+    getImagePath();
 };
 
 /////////////////////////////////////////////////////////////////////////////////
