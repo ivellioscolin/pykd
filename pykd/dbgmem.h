@@ -27,14 +27,15 @@ loadArray( ULONG64 address, ULONG  number, BOOLEAN phyAddr = FALSE )
     
     if ( loadMemory( address, buffer, number*sizeof(T), phyAddr ) )
     {
-        boost::python::dict    arr;
+        boost::python::list    lst;
     
         for ( ULONG  i = 0; i < number; ++i )
-            arr[i] = buffer[i];
+            lst.append( buffer[i] );
+            //arr[i] = buffer[i];
             
         delete[]  buffer;            
         
-        return   arr;
+        return   lst;
     }
    
     delete[]  buffer;
