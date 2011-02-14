@@ -31,8 +31,9 @@
 
 
 
-
+#ifndef  __field_ecount_opt
 #define  __field_ecount_opt(x)  
+#endif // __field_ecount_opt
 
 
 #define BOOST_PYTHON_STATIC_LIB
