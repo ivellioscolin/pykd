@@ -59,8 +59,16 @@ public:
             
         bool
         operator < ( const TypeName &typeName ) const {
-            return ( typeName.module <= module ) && ( typeName.symbol < symbol );
-        }            
+
+              if ( typeName.module < module )
+                    return true;
+                    
+              if ( typeName.module > module )
+                    return false;
+                    
+              return typeName.symbol < symbol;                                    
+        }    
+  
     };
     
     typedef TypeFieldT<TypeInfo>                TypeField;
