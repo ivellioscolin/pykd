@@ -2,6 +2,18 @@ from pykd import *
 import sys
 
 
+def getServiceAddrWlh(Start, Offset):
+  return Start + (Offset / 16)
+
+def getServiceAddr2k3(Start, Offset):
+  return Start + Offset
+
+if (ptrWord(getOffset("nt", "NtBuildNumber")) == 3790):
+  getServiceAddr = getServiceAddr2k3
+else:
+  getServiceAddr = getServiceAddrWlh
+
+
 def checkSSDT():
 
    nt = loadModule( "nt" )
@@ -19,7 +31,7 @@ def checkSSDT():
 
        for i in range( 0, serviceCount ):
 
-         routineAddress = serviceTableStart + ( serviceTable[i] / 16 );
+         routineAddress = getServiceAddr(serviceTableStart, serviceTable[i]);
          dprintln( findSymbol( routineAddress ) )           
 
 
