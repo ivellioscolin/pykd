@@ -7,6 +7,7 @@
 #include "dbgexcept.h"
 #include "dbgmem.h"
 #include "dbgsystem.h"
+#include "dbgmem.h"
 
 using namespace std;
 
@@ -319,6 +320,9 @@ TypeInfo::TypeInfo( const std::string  &moduleName, const std::string  &typeName
 boost::python::object
 TypeInfo::load( ULONG64 addr ) const
 {
+    if ( !isOffsetValid( addr) )
+        return boost::python::object();
+
     if ( m_pointer )
         return ptrLoader( addr );
 
