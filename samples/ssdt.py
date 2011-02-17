@@ -6,7 +6,7 @@ def getServiceAddrWlh(Start, Offset):
   return Start + (Offset / 16)
 
 def getServiceAddr2k3(Start, Offset):
-  return Start + Offset
+  return Start + (Offset & ~0xf)
 
 if (ptrWord(getOffset("nt", "NtBuildNumber")) == 3790):
   getServiceAddr = getServiceAddr2k3
@@ -32,7 +32,7 @@ def checkSSDT():
        for i in range( 0, serviceCount ):
 
          routineAddress = getServiceAddr(serviceTableStart, serviceTable[i]);
-         dprintln( findSymbol( routineAddress ) )           
+         dprintln( "[%u] " % i + findSymbol( routineAddress ) )           
 
 
    else:
@@ -46,7 +46,7 @@ def checkSSDT():
        serviceTable = loadPtrs( serviceTableStart, serviceCount ) 
 
        for i in range( 0, serviceCount ):
-          dprintln( findSymbol( serviceTable[i] ) )       
+          dprintln( "[%u] " % i + findSymbol( serviceTable[i] ) )       
 
         
 
