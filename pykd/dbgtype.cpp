@@ -92,6 +92,32 @@ containingRecord( ULONG64 address, const std::string &moduleName, const std::str
 /////////////////////////////////////////////////////////////////////////////////
 
 boost::python::object
+getTypeClass( const std::string &moduleName, const std::string &typeName )
+{
+    try
+    {
+        boost::shared_ptr<typeClass> ptr( 
+            new typeClass( TypeInfo::get( moduleName, typeName ))
+        );
+        boost::python::object var( ptr );
+        ptr->setPyObj(var);
+
+        return var;
+    }
+    catch( std::exception  &e )
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+    }
+    catch(...)
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+    }
+    return boost::python::object();
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+boost::python::object
 loadTypedVarList( ULONG64 address, const std::string &moduleName, const std::string &typeName, const std::string &listEntryName )
 {
     ULONG64     entryAddress = 0;
@@ -330,10 +356,10 @@ TypeInfo::load( ULONG64 addr ) const
     if ( m_baseType )
         return loadBaseType( addr );
         
-    boost::shared_ptr<typedVarClass>    ptr( new typedVarClass( *this, addr, m_size ) );
+    boost::shared_ptr<typedVarClass>    ptr( new typedVarClass( *this, addr ) );
     boost::python::object               var( ptr );
     ptr->setPyObj( var );
-    
+
     TypeFieldList::const_iterator    field = m_fields.begin();
     for ( field = m_fields.begin(); field != m_fields.end(); ++field )
     {
@@ -436,79 +462,90 @@ valueLoader( ULONG64 address, ULONG size )
 
 /////////////////////////////////////////////////////////////////////////////////
 
-std::string
-typedVarClass::print() const
+std::string typeClass::print() const
 {
-    stringstream         sstr;
-    
-    for ( 
-        TypeInfo::TypeFieldList::const_iterator      field = m_typeInfo.getFields().begin();
-        field != m_typeInfo.getFields().end(); 
-        field++ )
+    stringstream sstr;
+
+    sstr << getTypeInfo().name() << std::endl;
+
+    TypeInfo::TypeFieldList::const_iterator itField = 
+        getTypeInfo().getFields().begin();
+    while (itField != getTypeInfo().getFields().end())
     {
-        sstr << "\t" << hex << "+" << field->offset << "  " << field->name << "  ";
-        
-        if ( field->type.isComplex() && !field->type.isPtr())
-           sstr << field->type.name();
-        else       
+        sstr << "\t" << hex << "+" << itField->offset;
+        sstr << "  " << itField->name << "  ";
+
+        printField(*itField, sstr);
+
+        sstr << std::endl;
+
+        ++itField;
+    }
+
+    return sstr.str();
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void
+typedVarClass::printField(const TypeInfo::TypeField &field, stringstream &sstr) const
+{
+    if ( field.type.isComplex() && !field.type.isPtr())
+       sstr << field.type.name();
+    else
+    {
+        boost::python::object     attr = getPyObj().attr( field.name.c_str() );
+    
+        if ( field.size == field.type.size() )
         {
-            boost::python::object     attr = m_pyobj.attr( field->name.c_str() );
-        
-            if ( field->size == field->type.size() )
+            if ( attr.ptr() == Py_None )
             {
-                if ( attr.ptr() == Py_None )
+                sstr << "memory error";
+            }
+            else
+            {
+                unsigned __int64  val = boost::python::extract<unsigned __int64>( attr );
+            
+                sstr << hex << "0x" << val;
+                
+                if ( field.type.name() == "char*" )
                 {
-                    sstr << "memory error";
+                    char  buf[0x100];
+                    if ( loadCStrToBuffer( val, buf, sizeof(buf) ) )
+                        sstr << "  (" << buf << " )";
+                    else
+                        sstr << "  ( read string error )";
+                }
+                else if ( field.type.name() == "unsigned short*" )
+                {
+                    wchar_t   wbuf[0x100];
+                    if ( loadWStrToBuffer( val, wbuf, sizeof(wbuf) ) )      
+                    {
+                        char  mbBuf[0x100] = { 0 };
+                    
+                        WideCharToMultiByte( CP_ACP, 0, wbuf, wcslen(wbuf)+1, mbBuf, sizeof(mbBuf),  NULL, NULL );
+                        
+                        sstr << "  (" << mbBuf << " )";
+                    }
+                    else
+                        sstr << "  ( read string error )";                                      
                 }
                 else
                 {
-                    unsigned __int64  val = boost::python::extract<unsigned __int64>( attr );
-                
-                    sstr << hex << "0x" << val;
-                    
-                    if ( field->type.name() == "char*" )
-                    {
-                        char  buf[0x100];
-                        if ( loadCStrToBuffer( val, buf, sizeof(buf) ) )
-                            sstr << "  (" << buf << " )";
-                        else
-                            sstr << "  ( read string error )";
-                    }
-                    else if ( field->type.name() == "unsigned short*" )
-                    {
-                        wchar_t   wbuf[0x100];
-                        if ( loadWStrToBuffer( val, wbuf, sizeof(wbuf) ) )      
-                        {
-                            char  mbBuf[0x100] = { 0 };
-                        
-                            WideCharToMultiByte( CP_ACP, 0, wbuf, wcslen(wbuf)+1, mbBuf, sizeof(mbBuf),  NULL, NULL );
-                            
-                            sstr << "  (" << mbBuf << " )";
-                        }
-                        else
-                            sstr << "  ( read string error )";                                      
-                    }
-                    else
-                    {
-                        sstr << dec << " ( " << val << " )";
-                    }   
-                }                                 
-            }      
-            else
+                    sstr << dec << " ( " << val << " )";
+                }   
+            }                                 
+        }      
+        else
+        {
+            for ( size_t i = 0; i <  field.size/field.type.size(); ++i )
             {
-                for ( size_t i = 0; i <  field->size/field->type.size(); ++i )
-                {
-                    unsigned __int64  val = boost::python::extract<unsigned __int64>( attr[i] );
-                
-                    sstr << "\n\t\t\t[" << i << "]  " << hex << "0x" << val << dec << " ( " << val << " )";
-                }
-            }       
+                unsigned __int64  val = boost::python::extract<unsigned __int64>( attr[i] );
+            
+                sstr << "\n\t\t\t[" << i << "]  " << hex << "0x" << val << dec << " ( " << val << " )";
+            }
         }
-               
-        sstr << std::endl;
-    }  
-    
-    return sstr.str();
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////

@@ -107,6 +107,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "typedVarList", &loadTypedVarList );
     boost::python::def( "typedVarArray", &loadTypedVarArray );
     boost::python::def( "containingRecord", &containingRecord );
+    boost::python::def( "getTypeClass", &getTypeClass );
     boost::python::def( "sizeof", &sizeofType );
     boost::python::def( "loadModule", &loadModule );
     boost::python::def( "findSymbol", &findSymbolForAddress );
@@ -150,10 +151,11 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "setCurrentProcess", &setCurrentProcess );
     boost::python::def( "getProcessorMode", &getProcessorMode );
     boost::python::def( "setProcessorMode", &setProcessorMode );
-    boost::python::class_<typedVarClass, boost::shared_ptr<typedVarClass> >( "typedVarClass" )
-        .def("getAddress", &typedVarClass::getAddress )
-        .def("sizeof", &typedVarClass::size )
-        .def("__str__", &typedVarClass::print);
+    boost::python::class_<typeClass, boost::shared_ptr<typeClass> >( "typeClass" )
+        .def("sizeof", &typeClass::size )
+        .def("__str__", &typeClass::print);
+    boost::python::class_<typedVarClass, boost::python::bases<typeClass>, boost::shared_ptr<typedVarClass> >( "typedVarClass" )
+        .def("getAddress", &typedVarClass::getAddress );
     boost::python::class_<dbgModuleClass>( "dbgModuleClass" )
         .def("begin", &dbgModuleClass::getBegin )
         .def("end", &dbgModuleClass::getEnd )

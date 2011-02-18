@@ -23,6 +23,9 @@ loadTypedVarArray( ULONG64 address, const std::string &moduleName, const std::st
 boost::python::object
 containingRecord( ULONG64 address, const std::string &moduleName, const std::string &typeName, const std::string &fieldName );
 
+boost::python::object
+getTypeClass( const std::string &moduleName, const std::string &typeName );
+
 ULONG
 sizeofType( const std::string &moduleName, const std::string &typeName );
 
@@ -138,58 +141,96 @@ private:
 private:
 
     bool                                m_baseType;
-    
     bool                                m_pointer;
-    
     TypeFieldList                       m_fields;
-
     std::string                         m_typeName;
-    
     ULONG                               m_size;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
 
-class typedVarClass {
+class typeClass
+{
+public:
+
+    typeClass()
+    {
+    }
+
+    typeClass(
+        const TypeInfo &typeInfo
+    ) : m_typeInfo(typeInfo)
+    {
+    }
+
+    ULONG size() const
+    {
+        return m_typeInfo.size();
+    }
+
+    void setPyObj( const boost::python::object  &obj )
+    {
+        m_pyobj = obj;
+    }
+
+    TypeInfo &getTypeInfo()
+    {
+        return m_typeInfo;
+    }
+    const TypeInfo &getTypeInfo() const
+    {
+        return m_typeInfo;
+    }
+
+    boost::python::object &getPyObj()
+    {
+        return m_pyobj;
+    }
+    const boost::python::object &getPyObj() const
+    {
+        return m_pyobj;
+    }
+
+    std::string print() const;
+
+    virtual void printField(
+        const TypeInfo::TypeField &field,
+        std::stringstream &sstr
+    ) const 
+    {
+        // no data - nothing print
+    }
+
+private:
+    TypeInfo m_typeInfo;
+    boost::python::object m_pyobj;
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+
+class typedVarClass : public typeClass {
 
 public:
 
     typedVarClass()
     {}
     
-    typedVarClass( const TypeInfo  &typeInfo, ULONG64 addr, ULONG size ) :
-        m_typeInfo( typeInfo ),
-        m_addr( addr ), 
-        m_size( size )
+    typedVarClass( const TypeInfo  &typeInfo, ULONG64 addr)  :
+        typeClass( typeInfo ),
+        m_addr( addr )
         {}
-    
+
     ULONG64
     getAddress() const {
         return m_addr;
     }
-    
-    ULONG
-    size() const {
-        return m_size;
-    }
-    
-    std::string
-    print() const;
-    
-    void
-    setPyObj( const boost::python::object  &obj ) {
-        m_pyobj = obj;
-    }        
-    
+
+    virtual void 
+    printField(const TypeInfo::TypeField &field, std::stringstream &sstr) const override;
+
 private:
 
     ULONG64                     m_addr;
-    
-    ULONG                       m_size;
-    
-    TypeInfo                    m_typeInfo;   
-    
-    boost::python::object       m_pyobj;           
 };
 
 /////////////////////////////////////////////////////////////////////////////////
