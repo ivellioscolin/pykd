@@ -97,7 +97,8 @@ loadTypedVarList( ULONG64 address, const std::string &moduleName, const std::str
     ULONG64     entryAddress = 0;
     
     boost::python::list    objList;
-    
+
+    address = addr64(address);
     for( entryAddress = loadPtrByPtr( address ); entryAddress != address && entryAddress != NULL; entryAddress = loadPtrByPtr( entryAddress ) )
     {
         objList.append( containingRecord( entryAddress, moduleName, typeName, listEntryName ) );  
