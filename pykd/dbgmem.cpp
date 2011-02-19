@@ -534,10 +534,10 @@ isOffsetValid( ULONG64  addr )
     HRESULT     hres;
 
     try {
-    
+
         // нужно подавить возможный вывод в консоль об отсутствующей странице памяти
         OutputReader outputReader( dbgExt->client );    
-    
+
         ULONG       offsetInfo;
         
         hres = 
@@ -548,23 +548,23 @@ isOffsetValid( ULONG64  addr )
                 &offsetInfo,
                 sizeof( offsetInfo ),
                 NULL );
-                
+
         if ( FAILED( hres ) )
-            throw DbgException( "IDebugDataSpace4::GetOffsetInformation  failed" );                    
-            
-        return  offsetInfo != DEBUG_VSOURCE_INVALID;       
+            throw DbgException( "IDebugDataSpace4::GetOffsetInformation  failed" );
+
+        return  offsetInfo != DEBUG_VSOURCE_INVALID;
     
-    } 
-	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}	            
-	
-	return false;
+    }
+    catch( std::exception  &e )
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+    }
+    catch(...)
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+    }
+
+    return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

@@ -153,6 +153,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "setProcessorMode", &setProcessorMode );
     boost::python::class_<typeClass, boost::shared_ptr<typeClass> >( "typeClass" )
         .def("sizeof", &typeClass::size )
+        .def("offset", &typeClass::getOffset )
         .def("__str__", &typeClass::print);
     boost::python::class_<typedVarClass, boost::python::bases<typeClass>, boost::shared_ptr<typedVarClass> >( "typedVarClass" )
         .def("getAddress", &typedVarClass::getAddress );
@@ -168,7 +169,7 @@ BOOST_PYTHON_MODULE( pykd )
             "ext",
             "windbg extension",
              boost::python::init<const char*>( boost::python::args("path"), "__init__  dbgExtensionClass" ) ) 
-        .def("call", &dbgExtensionClass::call );    
+        .def("call", &dbgExtensionClass::call );
     boost::python::class_<dbgStackFrameClass>( "dbgStackFrameClass", "dbgStackFrameClass" )
         .def_readonly( "instructionOffset", &dbgStackFrameClass::InstructionOffset )
         .def_readonly( "returnOffset", &dbgStackFrameClass::ReturnOffset )

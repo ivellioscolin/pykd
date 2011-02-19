@@ -38,11 +38,11 @@ public:
 
     template< typename TTypeInfo>
     struct TypeFieldT {
-        ULONG           size;  
+        ULONG           size;
         ULONG           offset;
-        TTypeInfo       type; 
+        TTypeInfo       type;
         std::string     name;
-          
+
         TypeFieldT( const std::string &name_, const TTypeInfo  &type_,  ULONG size_, ULONG offset_ ) :
             name( name_ ),
             size( size_ ),
@@ -65,12 +65,12 @@ public:
 
               if ( typeName.module < module )
                     return true;
-                    
+
               if ( typeName.module > module )
                     return false;
-                    
-              return typeName.symbol < symbol;                                    
-        }    
+
+              return typeName.symbol < symbol;
+        }
   
     };
     
@@ -85,46 +85,55 @@ public:
     TypeInfo() :
         m_size( 0 ),
         m_baseType( false ),
-        m_pointer( false )  
+        m_pointer( false ),
+        m_offset(0)
         {}
-    
+
     TypeInfo( const std::string  &moduleName, const std::string  &typeName );
-    
+
     boost::python::object
-    load( ULONG64 addr ) const;
-    
+    load( ULONG64 addr, ULONG offset = 0 ) const;
+
+    boost::python::object
+    build( ULONG offset = 0 ) const;
+
+
     ULONG64
     size() const 
     {
         return m_size;
     }
-    
+
     const std::string&
     name() const 
     {
         return m_typeName;
     }
-    
+
     static const TypeInfo&
     get( const std::string  &moduleName, const std::string  &typeName );  
-    
+
     const TypeFieldList&
     getFields() const {
         return m_fields;
     }
-    
+
     bool
     isComplex() const {
         return !m_baseType;
-    }        
-    
+    }
+
     bool
     isPtr() const {
         return m_pointer;
-    }       
-    
-private:  
-       
+    }
+
+    // field offset getter/setter
+    void setOffset(ULONG offset) { m_offset = offset; }
+    ULONG getOffset() const { return m_offset; }
+
+private:
+
     static TypeInfoMap                          g_typeInfoCache; 
 
     boost::python::object
@@ -134,7 +143,7 @@ private:
     ptrLoader( ULONG64 addr ) const  {
         return boost::python::object( loadPtrByPtr( addr ) );
     }
-    
+
     void
     setupBaseType();
 
@@ -145,6 +154,7 @@ private:
     TypeFieldList                       m_fields;
     std::string                         m_typeName;
     ULONG                               m_size;
+    ULONG                               m_offset;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -163,9 +173,10 @@ public:
     {
     }
 
+    // sizeof(TYPE)
     ULONG size() const
     {
-        return m_typeInfo.size();
+        return (ULONG)m_typeInfo.size();
     }
 
     void setPyObj( const boost::python::object  &obj )
@@ -173,6 +184,7 @@ public:
         m_pyobj = obj;
     }
 
+    // TypeInfo getter
     TypeInfo &getTypeInfo()
     {
         return m_typeInfo;
@@ -182,6 +194,7 @@ public:
         return m_typeInfo;
     }
 
+    // boost::python::object getter
     boost::python::object &getPyObj()
     {
         return m_pyobj;
@@ -200,6 +213,14 @@ public:
     {
         // no data - nothing print
     }
+    virtual void printSelf(
+        std::stringstream &sstr
+    ) const 
+    {
+        // no data - nothing print
+    }
+
+    ULONG getOffset() const { return m_typeInfo.getOffset(); }
 
 private:
     TypeInfo m_typeInfo;
@@ -226,7 +247,13 @@ public:
     }
 
     virtual void 
-    printField(const TypeInfo::TypeField &field, std::stringstream &sstr) const override;
+    printField( const TypeInfo::TypeField &field, std::stringstream &sstr ) const override;
+
+    virtual void
+    printSelf( std::stringstream &sstr ) const override 
+    {
+        sstr << std::hex << "0x" << getAddress() << std::dec << "  ";
+    }
 
 private:
 
