@@ -16,29 +16,24 @@ def addSymSymbolsByImports(dbgModule):
     if ntHeader.OptionalHeader.Magic == 0x10b:
       systemModule = loadModule( "ntdll32" ) 
       ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS", dbgModule.begin() + ptrDWord( dbgModule.begin() + 0x3c ) )
-      pSize = 4
-    else:
-      pSize = 8     
   else:
       ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS", dbgModule.begin() + ptrDWord( dbgModule.begin() + 0x3c ) )
-      pSize = 4
 
   if ntHeader.OptionalHeader.DataDirectory[12].Size == 0:
     return
   
   iatAddr = dbgModule.begin() + ntHeader.OptionalHeader.DataDirectory[12].VirtualAddress;
 
-  for i in range( 0, ntHeader.OptionalHeader.DataDirectory[12].Size / pSize ):
-      pIatEtry = iatAddr + i*pSize;
-
-      if ( pSize == 4 ):
-        iatEntry = ptrDWord( pIatEtry )
-      else:
-        iatEntry = ptrQWord( pIatEtry )
+  for i in range( 0, ntHeader.OptionalHeader.DataDirectory[12].Size / ptrSize() ):
+      pIatEtry = iatAddr + i*ptrSize();
+      iatEntry = ptrPtr( pIatEtry )
 
       if iatEntry != 0:
-        symbolName = findSymbol( iatEntry ) 
-        addSynSymbol(pIatEtry, pSize, "_imp_" + symbolName)
+        try:
+          symbolName = findSymbol( iatEntry ) 
+          addSynSymbol(pIatEtry, ptrSize(), "_imp_" + symbolName)
+        except TypeError:
+          dprintln( "Symbol for 0x%x" % iatEntry + " not found" )
 
 if __name__ == "__main__":
 
