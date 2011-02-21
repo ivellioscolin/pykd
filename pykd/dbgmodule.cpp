@@ -224,7 +224,18 @@ dbgModuleClass::getOffset( const std::string  &symName )
         return offset->second;
     }
 
-    return 0;    
+    return 0;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void dbgModuleClass::addSyntheticSymbol(
+    ULONG64 offset,
+    ULONG size,
+    const std::string &symName
+)
+{
+    ::addSyntheticSymbol(m_base + offset, size, symName);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -304,6 +315,33 @@ dbgModuleClass::getImagePath()
 
     if ( pathBuffer )
         delete[] pathBuffer;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void
+addSyntheticSymbol( ULONG64 addr, ULONG size, const std::string &symName )
+{
+    try
+    {
+        HRESULT hres = 
+            dbgExt->symbols3->AddSyntheticSymbol(
+                addr,
+                size,
+                symName.c_str(),
+                DEBUG_ADDSYNTHSYM_DEFAULT,
+                NULL);
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugSymbol3::AddSyntheticSymbol  failed" );
+    }
+    catch( std::exception  &e )
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+    }
+    catch(...)
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////

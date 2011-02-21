@@ -151,6 +151,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "setCurrentProcess", &setCurrentProcess );
     boost::python::def( "getProcessorMode", &getProcessorMode );
     boost::python::def( "setProcessorMode", &setProcessorMode );
+    boost::python::def( "addSynSymbol", &addSyntheticSymbol );
     boost::python::class_<typeClass, boost::shared_ptr<typeClass> >( "typeClass" )
         .def("sizeof", &typeClass::size )
         .def("offset", &typeClass::getOffset )
@@ -164,6 +165,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def("contain", &dbgModuleClass::contain )
         .def("image", &dbgModuleClass::getImageSymbolName )
         .def("pdb", &dbgModuleClass::getPdbName )
+        .def("addSynSymbol", &dbgModuleClass::addSyntheticSymbol )
         .def("__getattr__", &dbgModuleClass::getOffset );
     boost::python::class_<dbgExtensionClass>( 
             "ext",
