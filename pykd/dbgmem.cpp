@@ -1,5 +1,8 @@
 #include "stdafx.h"
 
+#include <boost/scoped_array.hpp>
+#include <vector>
+
 #include "dbgext.h"
 #include "dbgexcept.h"
 #include "dbgmem.h"
@@ -68,34 +71,34 @@ compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, BOOLEAN phyAddr  )
     addr1 = addr64( addr1 );
     addr2 = addr64( addr2 );
 
-    char*  m1 = new char[length];    
-    char*  m2 = new char[length];        
+    boost::scoped_array<char> m1(new char[length]);
+    boost::scoped_array<char> m2(new char[length]);
    
     try {
     
         if ( phyAddr == FALSE )
         { 
     
-            hres = dbgExt->dataSpaces->ReadVirtual( addr1, m1, length, NULL );
+            hres = dbgExt->dataSpaces->ReadVirtual( addr1, m1.get(), length, NULL );
             if ( FAILED( hres ) )
                throw DbgException( "IDebugDataSpace::ReadVirtual  failed" );
            
-            hres = dbgExt->dataSpaces->ReadVirtual( addr2, m2, length, NULL );
+            hres = dbgExt->dataSpaces->ReadVirtual( addr2, m2.get(), length, NULL );
             if ( FAILED( hres ) )
                 throw DbgException( "IDebugDataSpace::ReadVirtual  failed" );           
         }
         else
         {
-            hres = dbgExt->dataSpaces->ReadPhysical( addr1, m1, length, NULL );
+            hres = dbgExt->dataSpaces->ReadPhysical( addr1, m1.get(), length, NULL );
             if ( FAILED( hres ) )
                throw DbgException( "IDebugDataSpace::ReadPhysical  failed" );
            
-            hres = dbgExt->dataSpaces->ReadPhysical( addr2, m2, length, NULL );
+            hres = dbgExt->dataSpaces->ReadPhysical( addr2, m2.get(), length, NULL );
             if ( FAILED( hres ) )
                 throw DbgException( "IDebugDataSpace::ReadPhysical  failed" );   
         }                
            
-        result = memcmp( m1, m2, length ) == 0;     
+        result = memcmp( m1.get(), m2.get(), length ) == 0;     
         
     } 
 	catch( std::exception  &e )
@@ -107,9 +110,6 @@ compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, BOOLEAN phyAddr  )
 		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}	 
 	
-    delete[] m1;
-    delete[] m2;
-    
     return result;
 }
 
@@ -120,42 +120,34 @@ loadPtrArray( ULONG64 address, ULONG  number )
 {
     if ( is64bitSystem() )
     {
-        ULONG64   *buffer = new ULONG64[ number ];
+		boost::scoped_array<ULONG64> buffer(new ULONG64[number]);
         
-        if ( loadMemory( address, buffer, number*sizeof(ULONG64) ) )
+        if ( loadMemory( address, buffer.get(), number*sizeof(ULONG64) ) )
         {
             boost::python::dict    arr;
         
             for ( ULONG  i = 0; i < number; ++i )
                 arr[i] = buffer[i];
                 
-            delete[]  buffer;            
-            
             return   arr;
         }
        
-        delete[]  buffer;
-        
  	    return boost::python::object();    
     }
     else
     {
-        ULONG   *buffer = new ULONG[ number ];
+		boost::scoped_array<ULONG> buffer(new ULONG[number]);
         
-        if ( loadMemory( address, buffer, number*sizeof(ULONG) ) )
+        if ( loadMemory( address, buffer.get(), number*sizeof(ULONG) ) )
         {
             boost::python::dict    arr;
         
             for ( ULONG  i = 0; i < number; ++i )
                 arr[i] = addr64( buffer[i] );
                 
-            delete[]  buffer;            
-            
             return   arr;
         }
        
-        delete[]  buffer;
-        
  	    return boost::python::object();       
     }
 }
@@ -232,7 +224,6 @@ loadUnicodeStr( ULONG64 address )
     USHORT   length;
     USHORT   maximumLength;
     ULONG64  buffer = 0;
-    wchar_t  *str = NULL;
     
     do {
     
@@ -270,22 +261,17 @@ loadUnicodeStr( ULONG64 address )
             address += 4;               
         }    
         
-        wchar_t  *str  = new wchar_t[ length/2 ];
+	std::vector<wchar_t> str(length / 2);
         
-        if ( !loadMemory( buffer, str, length ) )
+        if ( !loadMemory( buffer, &str[0], length ) )
             break;
             
-        std::wstring    strValue(str, length/2);
+        std::wstring    strValue(&str[0], length/2);
         
-        delete[] str; 
-            
         return boost::python::object( strValue );
                     
     } while( FALSE );
     
-    if ( str )
-        delete[] str;
-        
     return boost::python::object( "" );
     
 }
@@ -298,7 +284,6 @@ loadAnsiStr( ULONG64 address )
     USHORT   length;
     USHORT   maximumLength;
     ULONG64  buffer = 0;
-    char     *str = NULL;
     
     do {
     
@@ -337,21 +322,16 @@ loadAnsiStr( ULONG64 address )
         }    
         
        
-        str = new char [ length ];        
+	std::vector<char> str(length);
         
-        if ( !loadMemory( buffer, str, length ) )
+        if ( !loadMemory( buffer, &str[0], length ) )
             break;
 
-        std::string     strVal ( str, length );
+        std::string     strVal ( &str[0], length );
             
-        delete[] str;
-        
         return boost::python::object( strVal );
     
     } while( FALSE );
-    
-    if ( str )
-        delete[] str;
     
     return boost::python::object( "" );
 }
@@ -436,7 +416,7 @@ loadCStr( ULONG64 address )
 
     address = addr64( address );
     
-    char*   buffer = new char[maxLength];
+    boost::scoped_array<char> buffer(new char[maxLength]);
 
     try {
         
@@ -444,14 +424,14 @@ loadCStr( ULONG64 address )
             dbgExt->dataSpaces4->ReadMultiByteStringVirtual(
                 address,
                 maxLength,
-                buffer,
+                buffer.get(),
                 maxLength,
                 NULL );
         
         if ( FAILED( hres ) )
             throw DbgException( "IDebugDataSpace4::ReadMultiByteStringVirtual  failed" );
                                
-        strObj = boost::python::object( std::string( buffer ) );
+        strObj = boost::python::object( std::string( buffer.get() ) );
     
     } 
 	catch( std::exception  &e )
@@ -462,8 +442,6 @@ loadCStr( ULONG64 address )
 	{
 		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}	            
-	
-	delete[] buffer;
 	
 	return strObj;
 }
@@ -478,7 +456,7 @@ loadWStr( ULONG64 address )
 
     address = addr64( address );
     
-    wchar_t*   buffer = new wchar_t[maxLength];
+    boost::scoped_array<wchar_t> buffer(new wchar_t[maxLength]);
 
     try {
         
@@ -486,14 +464,14 @@ loadWStr( ULONG64 address )
             dbgExt->dataSpaces4->ReadUnicodeStringVirtualWide(
                 address,
                 maxLength*sizeof(wchar_t),
-                buffer,
+                buffer.get(),
                 maxLength,
                 NULL );
         
         if ( FAILED( hres ) )
             throw DbgException( "IDebugDataSpace4::ReadUnicodeStringVirtualWide  failed" );
                                
-        strObj = boost::python::object( std::wstring(buffer) );
+        strObj = boost::python::object( std::wstring(buffer.get()) );
     
     } 
 	catch( std::exception  &e )
@@ -504,8 +482,6 @@ loadWStr( ULONG64 address )
 	{
 		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}	            
-	
-	delete[] buffer;
 	
 	return strObj;
 }

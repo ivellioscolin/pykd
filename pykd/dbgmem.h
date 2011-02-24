@@ -2,7 +2,7 @@
 
 #include <boost/python.hpp>
 #include <boost/python/object.hpp>
-
+#include <boost/scoped_array.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -23,23 +23,18 @@ template<typename T>
 boost::python::object
 loadArray( ULONG64 address, ULONG  number, BOOLEAN phyAddr = FALSE )
 {
-    T   *buffer = new T[ number ];
+    boost::scoped_array<T> buffer(new T[number]);
     
-    if ( loadMemory( address, buffer, number*sizeof(T), phyAddr ) )
+    if ( loadMemory( address, buffer.get(), number*sizeof(T), phyAddr ) )
     {
         boost::python::list    lst;
     
         for ( ULONG  i = 0; i < number; ++i )
             lst.append( buffer[i] );
-            //arr[i] = buffer[i];
             
-        delete[]  buffer;            
-        
         return   lst;
     }
    
-    delete[]  buffer;
-    
  	return boost::python::object();
 }
 

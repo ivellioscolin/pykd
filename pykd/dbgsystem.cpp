@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <vector>
+
 #include <exception>
 #include "dbgext.h"
 #include "dbgexcept.h"
@@ -46,7 +48,6 @@ std::string
 dbgSymPath()
 {
     HRESULT         hres;
-    char            *path = NULL;
     std::string     pathStr;
     
     try {
@@ -54,12 +55,12 @@ dbgSymPath()
         ULONG    size;
         dbgExt->symbols->GetSymbolPath( NULL, 0, &size );
         
-        path = new char[ size ];
-        hres = dbgExt->symbols->GetSymbolPath( path, size, NULL );
+	std::vector<char> path(size);
+        hres = dbgExt->symbols->GetSymbolPath( &path[0], size, NULL );
         if ( FAILED( hres ) )
              throw DbgException( "IDebugSymbols::GetSymbolPath  failed" ); 
         
-        pathStr = path;        
+        pathStr = &path[0];        
         
     }    
 	catch( std::exception  &e )
@@ -71,9 +72,6 @@ dbgSymPath()
 		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}	 
 	
-    if ( path )
-        delete[]  path;
-        
     return pathStr;
 }
 

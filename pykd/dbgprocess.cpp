@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include <boost/format.hpp>
+#include <boost/scoped_array.hpp>
 
 #include "dbgprocess.h"
 #include "dbgext.h"
@@ -13,7 +14,6 @@ boost::python::object
 getThreadList()
 {
     HRESULT         hres;  
-    PULONG          ids = NULL;
     ULONG           i;
     ULONG           oldThreadId = 0;
 
@@ -24,8 +24,8 @@ getThreadList()
         if ( FAILED( hres ) )
             throw DbgException( "IDebugSystemObjects::GetNumberThreads failed" );
             
-        ids = new ULONG[threadCount];            
-        hres = dbgExt->system->GetThreadIdsByIndex( 0, threadCount, ids, NULL );
+	boost::scoped_array<ULONG> ids(new ULONG[threadCount]);
+        hres = dbgExt->system->GetThreadIdsByIndex( 0, threadCount, ids.get(), NULL );
         if ( FAILED( hres ) )
             throw DbgException( "IDebugSystemObjects::GetThreadIdsByIndex failed" );
         
@@ -46,9 +46,6 @@ getThreadList()
             threadList.append( threadOffset );            
         }
         
-        if ( ids )
-            delete[] ids;
-        
         return threadList;  
     }
   	catch( std::exception  &e )
@@ -63,9 +60,6 @@ getThreadList()
 	if ( oldThreadId )
         dbgExt->system->SetCurrentThreadId( oldThreadId );
         
-    if ( ids )
-        delete[] ids;        
-	
 	return  boost::python::list();
 }
 
@@ -135,7 +129,6 @@ boost::python::object
 getCurrentStack()
 {
     HRESULT                 hres;  
-    PDEBUG_STACK_FRAME      frames = NULL;
     ULONG                   currentScope = 0;       
 
     try {
@@ -144,10 +137,10 @@ getCurrentStack()
         if ( FAILED( hres ) )
             throw DbgException( "IDebugSymbol3::GetCurrentScopeFrameIndex  failed" );      
     
-        frames = new DEBUG_STACK_FRAME [ 1000 ];
+        boost::scoped_array<DEBUG_STACK_FRAME> frames(new DEBUG_STACK_FRAME [ 1000 ]);
     
         ULONG   filledFrames;
-        hres = dbgExt->control->GetStackTrace( 0, 0, 0, frames, 1000, &filledFrames );
+        hres = dbgExt->control->GetStackTrace( 0, 0, 0, frames.get(), 1000, &filledFrames );
         if ( FAILED( hres ) )
             throw DbgException( "IDebugControl::GetStackTrace  failed" );         
         
@@ -166,9 +159,6 @@ getCurrentStack()
             frameList.append( frameObj );
         }         
         
-    	if ( frames )
-	        delete[] frames;
-	        
         dbgExt->symbols3->SetScopeFrameByIndex( currentScope );	    	        
 
         return frameList;       
@@ -183,9 +173,6 @@ getCurrentStack()
 		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}
 	
-	if ( frames )
-	    delete[] frames;
-	    
     dbgExt->symbols3->SetScopeFrameByIndex( currentScope );	    
 
     return boost::python::object(); 

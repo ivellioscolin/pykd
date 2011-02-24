@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include <boost/format.hpp>
+#include <vector>
 
 #include "dbgext.h"
 #include "dbgmodule.h"
@@ -246,7 +247,6 @@ void
 dbgModuleClass::getImagePath()
 {
     HRESULT         hres;
-    PWSTR           pathBuffer = NULL;
          
     try {
     
@@ -255,13 +255,13 @@ dbgModuleClass::getImagePath()
         if ( FAILED( hres ) )
             throw DbgException( "IDebugSymbol3::GetImagePathWide  failed" );
             
-        pathBuffer = new WCHAR [ pathSize ];
+	std::vector<WCHAR> pathBuffer(pathSize);
         
-        hres = dbgExt->symbols3->GetSymbolPathWide( pathBuffer, pathSize, NULL );
+        hres = dbgExt->symbols3->GetSymbolPathWide( &pathBuffer[0], pathSize, NULL );
         if ( FAILED( hres ) )
             throw DbgException( "IDebugSymbol3::GetImagePathWide  failed" );
             
-        std::wstring   symPath( pathBuffer, pathSize );
+        std::wstring   symPath( &pathBuffer[0], pathSize );
         
         std::wstring   altName =  m_debugInfo.CVData;
         altName = altName.substr( 0, altName.find_last_of(L".") );
@@ -314,9 +314,6 @@ dbgModuleClass::getImagePath()
 	{
 		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}	
-
-    if ( pathBuffer )
-        delete[] pathBuffer;
 }
 
 std::string

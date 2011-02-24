@@ -323,9 +323,9 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
         {
             DWORD       oldCurDirLen = GetCurrentDirectoryA( 0, NULL );
 
-            char        *oldCurDirCstr = new char[ oldCurDirLen ];
+	    std::vector<char> oldCurDirCstr(oldCurDirLen);
             
-            GetCurrentDirectoryA( oldCurDirLen, oldCurDirCstr );
+            GetCurrentDirectoryA( oldCurDirLen, &oldCurDirCstr[0] );
             
             SetCurrentDirectoryA( filePath.c_str() );
             
@@ -357,10 +357,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
                 Py_XDECREF(traceback);        
             }  
             
-            SetCurrentDirectoryA( oldCurDirCstr );               
-            
-            delete[] oldCurDirCstr;
-                
+            SetCurrentDirectoryA( &oldCurDirCstr[0] );
         }
         else
         {

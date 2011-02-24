@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <vector>
+
 #include "dbgpath.h"
 
 #include <boost/tokenizer.hpp>
@@ -15,24 +17,25 @@ DbgPythonPath::DbgPythonPath()
     
     enviromentSize = GetEnvironmentVariableA( "PYTHONPATH", NULL, enviromentSize );
 
-    char   *enviromentBuffer = new char[ enviromentSize ];
-    
-    GetEnvironmentVariableA( "PYTHONPATH", enviromentBuffer, enviromentSize );
+    std::vector<char> enviromentBuffer(enviromentSize);
 
-    typedef  boost::escaped_list_separator<char>    char_separator_t;
-    typedef  boost::tokenizer< char_separator_t >   char_tokenizer_t;  
-    
-    std::string     pytonPath( enviromentBuffer );
-  
-    char_tokenizer_t            token( pytonPath, char_separator_t( "", "; \t", "\"" ) );
+	if (!enviromentBuffer.empty())
+	{
+		GetEnvironmentVariableA( "PYTHONPATH", &enviromentBuffer[0], enviromentSize );
 
-    for ( char_tokenizer_t::iterator   it = token.begin(); it != token.end(); ++it )
-    {
-        if ( *it != "" )
-            m_pathList.push_back( *it );
-    }        
-    
-    delete[] enviromentBuffer;
+		typedef  boost::escaped_list_separator<char>    char_separator_t;
+		typedef  boost::tokenizer< char_separator_t >   char_tokenizer_t;  
+	    
+		std::string     pytonPath( &enviromentBuffer[0] );
+	  
+		char_tokenizer_t            token( pytonPath, char_separator_t( "", "; \t", "\"" ) );
+
+		for ( char_tokenizer_t::iterator   it = token.begin(); it != token.end(); ++it )
+		{
+			if ( *it != "" )
+				m_pathList.push_back( *it );
+		}
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -84,7 +87,7 @@ DbgPythonPath::findPath(
             
     if ( bufSize > 0 )    
     {
-        char    *fullFileNameCStr = new char[ bufSize ];
+		std::vector<char> fullFileNameCStr(bufSize);
         char    *partFileNameCStr = NULL;
 
         SearchPathA(
@@ -92,13 +95,11 @@ DbgPythonPath::findPath(
             fileName.c_str(),
             pyExt ? NULL : ".py",
             bufSize,
-            fullFileNameCStr,
+            &fullFileNameCStr[0],
             &partFileNameCStr );              
 
-        fullFileName = std::string( fullFileNameCStr );
-        filePath = std::string( fullFileNameCStr, partFileNameCStr );
-
-        delete[] fullFileNameCStr;
+        fullFileName = std::string( &fullFileNameCStr[0] );
+        filePath = std::string( &fullFileNameCStr[0], partFileNameCStr );
 
         return true;        
     }                
@@ -120,7 +121,7 @@ DbgPythonPath::findPath(
                 
         if ( bufSize > 0 )
         {
-            char    *fullFileNameCStr = new char[ bufSize ];
+			std::vector<char> fullFileNameCStr(bufSize);
             char    *partFileNameCStr = NULL;
             
             SearchPathA(
@@ -128,13 +129,11 @@ DbgPythonPath::findPath(
                 fileName.c_str(),
                 pyExt ? NULL : ".py",
                 bufSize,
-                fullFileNameCStr,
+                &fullFileNameCStr[0],
                 &partFileNameCStr );              
             
-            fullFileName = std::string( fullFileNameCStr );
-            filePath = std::string( fullFileNameCStr, partFileNameCStr );
-            
-            delete[] fullFileNameCStr;
+            fullFileName = std::string( &fullFileNameCStr[0] );
+            filePath = std::string( &fullFileNameCStr[0], partFileNameCStr );
             
             return true;
         }                  

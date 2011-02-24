@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <vector>
+
 #include "dbgext.h"
 #include "dbgdump.h"
 #include "dbgexcept.h"
@@ -13,21 +15,19 @@ dbgLoadDump( const std::string &fileName )
 {
     HRESULT     hres;
     
-    wchar_t     *fileNameW = NULL;
-
     try {
     
-        fileNameW = new wchar_t [ fileName.size()+ 1 ];
+	std::vector<wchar_t> fileNameW( fileName.size()+ 1 );
     
         MultiByteToWideChar(
             CP_ACP,            
             0,
             fileName.c_str(),
             fileName.size() + 1,
-            fileNameW,
+	    &fileNameW[0],
             fileName.size() + 1 );
     
-        hres = dbgExt->client4->OpenDumpFileWide( fileNameW, NULL );
+        hres = dbgExt->client4->OpenDumpFileWide( &fileNameW[0], NULL );
         if ( FAILED( hres ) )
             throw DbgException( "IDebugClient4::OpenDumpFileWide failed" );
             
@@ -37,9 +37,6 @@ dbgLoadDump( const std::string &fileName )
             
         dbgSessionStarted = true;                    
         
-        if ( fileNameW )
-            delete[] fileNameW;
-            
         return "loaded ok";                              
     }
  	catch( std::exception& )
@@ -53,9 +50,6 @@ dbgLoadDump( const std::string &fileName )
 
 	std::string  result = "failed to open dump ";
 	result += fileName;
-	
-    if ( fileNameW )
-        delete[] fileNameW;	
 	
     return result;
 }
