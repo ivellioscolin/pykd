@@ -61,6 +61,10 @@ public:
     void 
     addSyntheticSymbol( ULONG64 offset, ULONG size, const std::string &symName );
 
+    
+    std::string
+    print() const;
+    
 private:
 
     ULONG64         m_base;

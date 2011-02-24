@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <boost/format.hpp>
+
 #include "dbgprocess.h"
 #include "dbgext.h"
 #include "dbgexcept.h"
@@ -326,6 +328,16 @@ setCurrentProcess(
 dbgStackFrameClass::dbgStackFrameClass( const DEBUG_STACK_FRAME &stackFrame )
 {
     memcpy( static_cast<DEBUG_STACK_FRAME*>( this ), &stackFrame, sizeof(DEBUG_STACK_FRAME) );           
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+std::string
+dbgStackFrameClass::print() const
+{
+	boost::format fmt(dbgExt->control->IsPointer64Bit() == S_OK ? "%1$4d %2$16x" : "%1$4d %2$08x");
+	fmt % FrameNumber % ReturnOffset;
+	return fmt.str();
 }
 
 /////////////////////////////////////////////////////////////////////////////////

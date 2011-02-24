@@ -33,6 +33,9 @@ public:
     }       
     
     dbgStackFrameClass( const DEBUG_STACK_FRAME &stackFrame );
+
+    std::string
+    print() const;
 };
 
 boost::python::object

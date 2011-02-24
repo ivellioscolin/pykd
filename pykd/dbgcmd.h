@@ -67,10 +67,14 @@ public:
     
     std::string
     call( const std::string &command, const std::string param );
+
+    std::string
+    print() const;
     
 private:
 
-    ULONG64         m_handle;    
+    ULONG64         m_handle;  
+	std::string     m_path;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -89,6 +93,9 @@ public:
     
     void
     remove();    
+
+    std::string
+    print() const;
 
 private:
 

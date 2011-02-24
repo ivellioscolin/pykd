@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <boost/format.hpp>
+
 #include "dbgext.h"
 #include "dbgcmd.h"
 #include "dbgexcept.h"
@@ -37,7 +39,7 @@ dbgCommand( const std::string &command )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-dbgExtensionClass::dbgExtensionClass( const char* path )
+dbgExtensionClass::dbgExtensionClass( const char* path ) : m_path(path)
 {
     HRESULT     hres;
 
@@ -93,6 +95,29 @@ dbgExtensionClass::call( const std::string &command, const std::string params )
 	}	
 	
 	return "error"; 
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::string
+dbgExtensionClass::print() const
+{
+	HRESULT status = S_OK;
+
+	try
+	{
+		return m_handle ? m_path : "";
+	}
+	catch (std::exception & e)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch (...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}
+
+	return "";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -166,6 +191,43 @@ dbgBreakpointClass::remove()
         dbgExt->control->RemoveBreakpoint( m_breakpoint );
         m_breakpoint = NULL;
     }
+}
+
+/////////////////////////////////////////////////////////////////////////////// 
+
+std::string
+dbgBreakpointClass::print() const
+{
+	HRESULT status = S_OK; 
+
+	try
+	{
+		if (!m_breakpoint)
+			return "not set";
+
+		DEBUG_BREAKPOINT_PARAMETERS params;
+		status = m_breakpoint->GetParameters(&params);
+		if (FAILED(status))
+			throw DbgException("IDebugBreakpoint::GetParameters failed");
+
+		boost::format fmt("%1$2d %2%%3% %4%:*** ");
+		fmt % params.Id 
+		    % (params.Flags & DEBUG_BREAKPOINT_ENABLED ? 'e' : 'd') 
+		    % 'u'
+		    % params.CurrentPassCount;
+
+		return fmt.str();
+	}
+	catch (std::exception & e)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch (...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}
+
+	return "";
 }
 
 /////////////////////////////////////////////////////////////////////////////// 

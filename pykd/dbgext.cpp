@@ -166,18 +166,21 @@ BOOST_PYTHON_MODULE( pykd )
         .def("image", &dbgModuleClass::getImageSymbolName )
         .def("pdb", &dbgModuleClass::getPdbName )
         .def("addSynSymbol", &dbgModuleClass::addSyntheticSymbol )
-        .def("__getattr__", &dbgModuleClass::getOffset );
+        .def("__getattr__", &dbgModuleClass::getOffset )
+		.def("__str__", &dbgModuleClass::print );
     boost::python::class_<dbgExtensionClass>( 
             "ext",
             "windbg extension",
              boost::python::init<const char*>( boost::python::args("path"), "__init__  dbgExtensionClass" ) ) 
-        .def("call", &dbgExtensionClass::call );
+        .def("call", &dbgExtensionClass::call )
+		.def("__str__", &dbgExtensionClass::print );
     boost::python::class_<dbgStackFrameClass>( "dbgStackFrameClass", "dbgStackFrameClass" )
         .def_readonly( "instructionOffset", &dbgStackFrameClass::InstructionOffset )
         .def_readonly( "returnOffset", &dbgStackFrameClass::ReturnOffset )
         .def_readonly( "frameOffset", &dbgStackFrameClass::FrameOffset )
         .def_readonly( "stackOffset", &dbgStackFrameClass::StackOffset )
-        .def_readonly( "frameNumber", &dbgStackFrameClass::FrameNumber );
+        .def_readonly( "frameNumber", &dbgStackFrameClass::FrameNumber )
+		.def( "__str__", &dbgStackFrameClass::print );
     boost::python::class_<dbgOut>( "windbgOut", "windbgOut" )
         .def( "write", &dbgOut::write );
     boost::python::class_<dbgIn>( "windbgIn", "windbgIn" )
@@ -187,7 +190,8 @@ BOOST_PYTHON_MODULE( pykd )
          "break point",
          boost::python::init<ULONG64>( boost::python::args("offset"), "__init__  dbgBreakpointClass" ) ) 
         .def( "set", &dbgBreakpointClass::set )
-        .def( "remove", &dbgBreakpointClass::remove );
+        .def( "remove", &dbgBreakpointClass::remove )
+		.def( "__str__", &dbgBreakpointClass::print );
         
 }    
 

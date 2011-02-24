@@ -1,4 +1,4 @@
-@set CL=/nologo /EHsc /LD /I%BOOST_ROOT% /I%PYTHON_ROOT%\include /I%DBG_SDK_ROOT%\inc
+@set CL=/nologo /EHsc /LD /MD /D "NDEBUG" /Ox /I%BOOST_ROOT% /I%PYTHON_ROOT%\include /I%DBG_SDK_ROOT%\inc
 @rc /fo resource.res pykd.rc > nul
 @cvtres /out:resource.obj /nologo /machine:x86 resource.res
 @cl pykd.cpp       ^
@@ -17,7 +17,11 @@
     dbgtype.cpp    ^
     stdafx.cpp     ^
     pykd.def       ^
-    resource.obj   ^
-    %PYTHON_ROOT%\libs\python26.lib ^
-    %DBG_SDK_ROOT%\lib\i386\dbgeng.lib
+    %DBG_SDK_ROOT%\lib\i386\dbgeng.lib ^
+    /link /out:pykd.pyd
+@mt -nologo -manifest pykd.pyd.manifest  -outputresource:pykd.pyd;1
 @if exist *.obj del *.obj
+@if exist *.res del *.res
+@if exist *.lib del *.lib
+@if exist *.exp del *.exp
+@if exist *.manifest del *.manifest

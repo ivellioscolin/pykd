@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <boost/format.hpp>
+
 #include "dbgext.h"
 #include "dbgmodule.h"
 #include "dbgexcept.h"
@@ -315,6 +317,31 @@ dbgModuleClass::getImagePath()
 
     if ( pathBuffer )
         delete[] pathBuffer;
+}
+
+std::string
+dbgModuleClass::print() const 
+{
+	try
+	{
+		const char * format_string(dbgExt->control->IsPointer64Bit() == S_OK ?
+			"%1$016x %2$016x %3$20s %4$20s" : "%1$08x %2$08x %3$20s %4$20s");
+		boost::format fmt(format_string);
+		std::vector<char> v(MAX_PATH);
+		::WideCharToMultiByte( CP_ACP, 0, m_imageFullName.c_str(), -1, &v[0], v.size(), 0, 0);
+		std::string fullname(&v[0]);
+		fmt % m_base % (m_end - m_base) % m_name % fullname;
+		return fmt.str();
+	}
+	catch (std::exception & e)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch (...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}
+	return "";
 }
 
 /////////////////////////////////////////////////////////////////////////////////
