@@ -85,8 +85,7 @@ public:
     TypeInfo() :
         m_size( 0 ),
         m_baseType( false ),
-        m_pointer( false ),
-        m_offset(0)
+        m_pointer( false )
         {}
 
     TypeInfo( const std::string  &moduleName, const std::string  &typeName );
@@ -128,10 +127,6 @@ public:
         return m_pointer;
     }
 
-    // field offset getter/setter
-    void setOffset(ULONG offset) { m_offset = offset; }
-    ULONG getOffset() const { return m_offset; }
-
 private:
 
     static TypeInfoMap                          g_typeInfoCache; 
@@ -154,7 +149,6 @@ private:
     TypeFieldList                       m_fields;
     std::string                         m_typeName;
     ULONG                               m_size;
-    ULONG                               m_offset;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -164,12 +158,15 @@ class typeClass
 public:
 
     typeClass()
+      : m_offset(0)
     {
     }
 
     typeClass(
-        const TypeInfo &typeInfo
+        const TypeInfo &typeInfo,
+        ULONG offset
     ) : m_typeInfo(typeInfo)
+      , m_offset(offset)
     {
     }
 
@@ -220,10 +217,12 @@ public:
         // no data - nothing print
     }
 
-    ULONG getOffset() const { return m_typeInfo.getOffset(); }
+    // field offset getter/setter
+    ULONG getOffset() const { return m_offset; }
 
 private:
     TypeInfo m_typeInfo;
+    ULONG  m_offset;
     boost::python::object m_pyobj;
 };
 
@@ -233,11 +232,11 @@ class typedVarClass : public typeClass {
 
 public:
 
-    typedVarClass()
+    typedVarClass() : m_addr(0) 
     {}
-    
-    typedVarClass( const TypeInfo  &typeInfo, ULONG64 addr)  :
-        typeClass( typeInfo ),
+
+    typedVarClass( const TypeInfo  &typeInfo, ULONG offset, ULONG64 addr)  :
+        typeClass( typeInfo, offset ),
         m_addr( addr )
         {}
 

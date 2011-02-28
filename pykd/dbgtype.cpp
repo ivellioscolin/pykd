@@ -261,7 +261,6 @@ TypeInfo::TypeInfo( const std::string  &moduleName, const std::string  &typeName
     m_size = 0;
     m_baseType = false;
     m_pointer = false;
-    m_offset = 0;
     try {
 
         if (  typeName.find("*") < typeName.size() )
@@ -338,10 +337,9 @@ TypeInfo::TypeInfo( const std::string  &moduleName, const std::string  &typeName
 boost::python::object
 TypeInfo::build( ULONG offset /* = 0 */ ) const
 {
-    boost::shared_ptr<typeClass> ptr( new typeClass( *this ) );
+    boost::shared_ptr<typeClass> ptr( new typeClass( *this, offset ) );
     boost::python::object var( ptr );
     ptr->setPyObj( var );
-    ptr->getTypeInfo().setOffset(offset);
 
     TypeFieldList::const_iterator    field = m_fields.begin();
     for ( field = m_fields.begin(); field != m_fields.end(); ++field )
@@ -383,10 +381,9 @@ TypeInfo::load( ULONG64 addr, ULONG offset /* = 0 */ ) const
     if ( m_baseType )
         return loadBaseType( addr );
 
-    boost::shared_ptr<typedVarClass>    ptr( new typedVarClass( *this, addr ) );
+    boost::shared_ptr<typedVarClass>    ptr( new typedVarClass( *this, offset, addr ) );
     boost::python::object               var( ptr );
     ptr->setPyObj( var );
-    ptr->getTypeInfo().setOffset(offset);
 
     TypeFieldList::const_iterator    field = m_fields.begin();
     for ( field = m_fields.begin(); field != m_fields.end(); ++field )
