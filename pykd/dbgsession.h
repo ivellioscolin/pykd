@@ -6,29 +6,9 @@ dbgCreateSession();
 extern
 bool    dbgSessionStarted;
 
-inline void stopDbgEventMonotoring()
-{
-    if (dbgEventCallbacks)
-        dbgEventCallbacks->Deregister();
-}
-
 inline HRESULT setDbgSessionStarted()
 {
-    HRESULT hres;
-    try
-    {
-        stopDbgEventMonotoring();
-        dbgEventCallbacks = new DbgEventCallbacks;
-        hres = S_OK;
-    }
-    catch (HRESULT _hres)
-    {
-        hres = _hres;
-    }
-    catch (...)
-    {
-        hres = E_OUTOFMEMORY;
-    }
+    HRESULT hres = DbgEventCallbacks::Start();
     if (SUCCEEDED(hres))
         dbgSessionStarted = true;
     return hres;

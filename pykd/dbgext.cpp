@@ -227,7 +227,7 @@ VOID
 CALLBACK
 DebugExtensionUninitialize()
 {
-    stopDbgEventMonotoring();
+    DbgEventCallbacks::Stop();
 
     delete windbgGlobalSession;
     windbgGlobalSession = NULL;

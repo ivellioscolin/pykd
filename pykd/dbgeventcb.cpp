@@ -10,7 +10,37 @@
 
 /////////////////////////////////////////////////////////////////////////////////
 
-DbgEventCallbacks *dbgEventCallbacks = NULL;
+DbgEventCallbacks *DbgEventCallbacks::dbgEventCallbacks = NULL;
+
+/////////////////////////////////////////////////////////////////////////////////
+
+HRESULT DbgEventCallbacks::Start()
+{
+    HRESULT hres;
+    try
+    {
+        Stop();
+        dbgEventCallbacks = new DbgEventCallbacks;
+        hres = S_OK;
+    }
+    catch (HRESULT _hres)
+    {
+        hres = _hres;
+    }
+    catch (...)
+    {
+        hres = E_OUTOFMEMORY;
+    }
+    return hres;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void DbgEventCallbacks::Stop()
+{
+    if (dbgEventCallbacks)
+        dbgEventCallbacks->Deregister();
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 
