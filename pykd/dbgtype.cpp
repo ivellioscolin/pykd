@@ -550,11 +550,19 @@ typedVarClass::printField(const TypeInfo::TypeField &field, stringstream &sstr) 
                 else if ( field.type.name() == "unsigned short*" )
                 {
                     wchar_t   wbuf[0x100];
-                    if ( loadWStrToBuffer( val, wbuf, sizeof(wbuf) ) )      
+                    if ( loadWStrToBuffer( val, wbuf, sizeof(wbuf) ) )
                     {
                         char  mbBuf[0x100] = { 0 };
 
-                        WideCharToMultiByte( CP_ACP, 0, wbuf, wcslen(wbuf)+1, mbBuf, sizeof(mbBuf),  NULL, NULL );
+                        WideCharToMultiByte(
+                            CP_ACP,
+                            0,
+                            wbuf,
+                            (ULONG)wcslen(wbuf) + 1,
+                            mbBuf,
+                            sizeof(mbBuf),
+                            NULL,
+                            NULL);
 
                         sstr << "  (" << mbBuf << " )";
                     }

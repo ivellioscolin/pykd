@@ -133,7 +133,7 @@ reloadModule( const char * moduleName  )
         hres = dbgExt->symbols->Reload( moduleName );
         
         //if ( FAILED( hres ) )
-        //    throw DbgException( "IDebugSymbol::Reload  failed" );      
+        //    throw DbgException( "IDebugSymbol::Reload  failed" );
     }
 	catch( std::exception  &e )
 	{

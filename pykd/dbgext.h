@@ -29,5 +29,5 @@ struct DbgExt {
 extern DbgExt    *dbgExt;
 
 void
-SetupDebugEngine( IDebugClient4 *client, DbgExt *dbgExt  );    
+SetupDebugEngine( IDebugClient4 *client, DbgExt *dbgExt  );
 

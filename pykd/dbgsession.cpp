@@ -1,7 +1,8 @@
 #include "stdafx.h"
 
-#include "dbgsession.h"
 #include "dbgext.h"
+#include "dbgeventcb.h"
+#include "dbgsession.h"
 
 DbgExt      dbgGlobalSession = { 0 };
 
@@ -11,12 +12,12 @@ void
 dbgCreateSession()
 {
     IDebugClient4     *client = NULL;
-    DebugCreate( __uuidof(IDebugClient4), (void **)&client );  
-        
+    DebugCreate( __uuidof(IDebugClient4), (void **)&client );
+
     SetupDebugEngine( client, &dbgGlobalSession );
     dbgExt = &dbgGlobalSession;
-    
-    dbgSessionStarted = true;
+
+    setDbgSessionStarted();
 }
 
 bool

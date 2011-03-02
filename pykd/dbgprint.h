@@ -3,8 +3,6 @@
 #pragma once
 
 #include <string>
-#include <boost/python.hpp>
-#include <boost/python/object.hpp>
 
 class DbgPrint {
 

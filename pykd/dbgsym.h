@@ -2,9 +2,6 @@
 
 #include <string>
 
-#include <boost/python.hpp>
-#include <boost/python/object.hpp>
-
 /////////////////////////////////////////////////////////////////////////////////
 
 boost::python::object

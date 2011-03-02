@@ -5,90 +5,54 @@
 #include "dbgext.h"
 #include "dbgdump.h"
 #include "dbgexcept.h"
+#include "dbgeventcb.h"
 #include "dbgsession.h"
 #include "dbgsystem.h"
-#include "dbgcmd.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
-bool
-dbgLoadDump( const std::wstring &fileName )
+std::string
+dbgLoadDump( const std::string &fileName )
 {
     HRESULT     hres;
     
     try {
-      
-        if ( !dbgSessionStarted )
-           dbgCreateSession();
-       
-        hres = dbgExt->client4->OpenDumpFileWide( fileName.c_str(), NULL );       
-       
+    
+	std::vector<wchar_t> fileNameW( fileName.size()+ 1 );
+    
+        MultiByteToWideChar(
+            CP_ACP,            
+            0,
+            fileName.c_str(),
+            (ULONG)fileName.size() + 1,
+            &fileNameW[0],
+            (ULONG)fileName.size() + 1 );
+    
+        hres = dbgExt->client4->OpenDumpFileWide( &fileNameW[0], NULL );
         if ( FAILED( hres ) )
             throw DbgException( "IDebugClient4::OpenDumpFileWide failed" );
             
         hres = dbgExt->control->WaitForEvent(DEBUG_WAIT_DEFAULT, INFINITE);
         if ( FAILED( hres ) )
-            throw DbgException( "IDebugControl::WaitForEvent failed" );                    
-        
-        return true;                       
+            throw DbgException( "IDebugControl::WaitForEvent failed" );   
+
+        setDbgSessionStarted();
+
+        return "loaded ok";
     }
  	catch( std::exception& )
 	{
-
+	    //g_Ext->Out( "pykd error: %s\n", e.what() );
 	}
 	catch(...)
 	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}	
-	    
-    return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////// 
-
-bool
-startProcess( const std::wstring  &processName )
-{
-    HRESULT     hres;
-
-    try {
-    
-        if ( !dbgSessionStarted )
-            dbgCreateSession();
-        
-        ULONG       opt;
-        hres = dbgExt->control->GetEngineOptions( &opt );
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugControl::GetEngineOptions failed" );    
-            
-        opt |= DEBUG_ENGOPT_INITIAL_BREAK;
-        hres = dbgExt->control->SetEngineOptions( opt );
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugControl::SetEngineOptions failed" );           
-        
-        std::vector< std::wstring::value_type>      cmdLine( processName.size() + 1 );
-        wcscpy_s( &cmdLine[0], cmdLine.size(), processName.c_str() );   
-        
-        hres = dbgExt->client4->CreateProcessWide( 0, &cmdLine[0], DEBUG_PROCESS | DETACHED_PROCESS );
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugClient4::CreateProcessWide failed" );                    
-            
-        hres = dbgExt->control->WaitForEvent(DEBUG_WAIT_DEFAULT, INFINITE);
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugControl::WaitForEvent failed" );   
-        
-        return true;
-    }
- 	catch( std::exception& e )
-	{
-        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+		//g_Ext->Out( "pykd unexpected error\n" );
 	}	    
 
-	return false;    
-}    
+	std::string  result = "failed to open dump ";
+	result += fileName;
+	
+    return result;
+}
 
 ///////////////////////////////////////////////////////////////////////////////// 

@@ -38,4 +38,11 @@
 
 #define BOOST_PYTHON_STATIC_LIB
 
+#pragma warning(push)
+// 'return' : conversion from 'Py_ssize_t' to 'unsigned int', possible loss of data
+#pragma warning(disable:4244)
+#include <boost/python.hpp>
+#include <boost/python/object.hpp>
+#pragma warning(pop)
+
 // TODO: reference additional headers your program requires here

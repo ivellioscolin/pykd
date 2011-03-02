@@ -4,9 +4,6 @@
 #include <map>
 #include <list>
 
-#include <boost/python.hpp>
-#include <boost/python/object.hpp>
-
 #include "dbgmem.h"
 
 /////////////////////////////////////////////////////////////////////////////////

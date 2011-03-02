@@ -4,11 +4,12 @@
 #include <vector>
 
 #include "dbgext.h"
+#include "dbgmem.h"
 #include "dbgmodule.h"
 #include "dbgexcept.h"
-#include "dbgmem.h"
 #include "dbgsym.h"
 #include "dbgcallback.h"
+#include "dbgsynsym.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -111,7 +112,7 @@ dbgModuleClass::dbgModuleClass( const std::string &name, ULONG64 base, ULONG siz
     m_end( base + size )
 {
     reloadSymbols();
-    
+
     std::string         pattern = name + "!*";
     ULONG64             enumHandle = 0;
     
@@ -131,17 +132,17 @@ dbgModuleClass::dbgModuleClass( const std::string &name, ULONG64 base, ULONG siz
                 &offset );
                 
         if ( FAILED( hres ) )
-            break;                
-            
+            break;
+
         std::string   symbolName( nameBuf );
-        
+
         symbolName.erase( 0, name.size() + 1 );
-                
+
         m_offsets.insert( std::make_pair( symbolName, offset ) );
     }
-    
+
     if ( enumHandle )
-        dbgExt->symbols->EndSymbolMatch( enumHandle );   
+        dbgExt->symbols->EndSymbolMatch( enumHandle );
 
     memset( &m_debugInfo, 0, sizeof( m_debugInfo ) );
 
@@ -155,10 +156,10 @@ dbgModuleClass::dbgModuleClass( const std::string &name, ULONG64 base, ULONG siz
         NULL,
         0,
         NULL );
-        
+
     if ( SUCCEEDED( hres ) )
         getImagePath();
-}  
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -226,19 +227,45 @@ dbgModuleClass::getOffset( const std::string  &symName )
     {
         return offset->second;
     }
-
-    return 0;
+    ModuleInfo moduleInfo(m_debugInfo);
+    return ::getSyntheticSymbol(moduleInfo, symName);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
-void dbgModuleClass::addSyntheticSymbol(
+bool dbgModuleClass::addSyntheticSymbol(
     ULONG64 offset,
     ULONG size,
     const std::string &symName
 )
 {
-    ::addSyntheticSymbol(m_base + offset, size, symName);
+    ModuleInfo moduleInfo(m_debugInfo);
+    return ::addSyntheticSymbolForModule(offset, size, symName, moduleInfo);
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void dbgModuleClass::delAllSyntheticSymbols()
+{
+    ModuleInfo moduleInfo(m_debugInfo);
+    ::delAllSyntheticSymbolsForModule(moduleInfo);
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+ULONG dbgModuleClass::delSyntheticSymbol(
+    ULONG64 offset
+)
+{
+    ModuleInfo moduleInfo(m_debugInfo);
+    return ::delSyntheticSymbolForModule(offset, moduleInfo);
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+ULONG dbgModuleClass::delSyntheticSymbolsMask( const std::string &symName )
+{
+    return ::delSyntheticSymbolsMask(m_name, symName);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -325,7 +352,15 @@ dbgModuleClass::print() const
 			"%1$016x %2$016x %3$20s %4$20s" : "%1$08x %2$08x %3$20s %4$20s");
 		boost::format fmt(format_string);
 		std::vector<char> v(MAX_PATH);
-		::WideCharToMultiByte( CP_ACP, 0, m_imageFullName.c_str(), -1, &v[0], v.size(), 0, 0);
+		::WideCharToMultiByte(
+            CP_ACP,
+            0,
+            m_imageFullName.c_str(),
+            -1,
+            &v[0],
+            (ULONG)v.size(),
+            0,
+            0);
 		std::string fullname(&v[0]);
 		fmt % m_base % (m_end - m_base) % m_name % fullname;
 		return fmt.str();
@@ -339,33 +374,6 @@ dbgModuleClass::print() const
 		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}
 	return "";
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-void
-addSyntheticSymbol( ULONG64 addr, ULONG size, const std::string &symName )
-{
-    try
-    {
-        HRESULT hres = 
-            dbgExt->symbols3->AddSyntheticSymbol(
-                addr,
-                size,
-                symName.c_str(),
-                DEBUG_ADDSYNTHSYM_DEFAULT,
-                NULL);
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugSymbol3::AddSyntheticSymbol  failed" );
-    }
-    catch( std::exception  &e )
-    {
-        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-    }
-    catch(...)
-    {
-        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////

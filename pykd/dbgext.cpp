@@ -5,8 +5,6 @@
 #include <vector>
 #include <string>
 
-#include <boost/python.hpp>
-#include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
 #include <boost/python/def.hpp>
 #include <boost/tokenizer.hpp>
@@ -15,7 +13,7 @@
 #include "dbgext.h"
 #include "dbgprint.h"
 #include "dbgreg.h"
-#include "dbgtype.h"    
+#include "dbgtype.h"
 #include "dbgmodule.h"
 #include "dbgsym.h"
 #include "dbgmem.h"
@@ -23,11 +21,13 @@
 #include "dbgcmd.h"
 #include "dbgdump.h"
 #include "dbgexcept.h"
+#include "dbgeventcb.h"
 #include "dbgsession.h"
 #include "dbgcallback.h"
 #include "dbgpath.h"
 #include "dbginput.h"
 #include "dbgprocess.h"
+#include "dbgsynsym.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -54,7 +54,7 @@ public:
         sys.attr("stdout") = boost::python::object( dout );
 
         dbgIn                       din;
-        sys.attr("stdin") = boost::python::object( din );          
+        sys.attr("stdin") = boost::python::object( din );
     }
     
     boost::python::object
@@ -91,13 +91,12 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "trace", &setExecutionStatus<DEBUG_STATUS_STEP_INTO> );
     boost::python::def( "step", &setExecutionStatus<DEBUG_STATUS_STEP_OVER> );   
     boost::python::def( "expr", &evaluate ); 
-    boost::python::def( "createSession", &dbgCreateSession );    // depricated 
+    boost::python::def( "createSession", &dbgCreateSession );
     boost::python::def( "isSessionStart", &dbgIsSessionStart );
     boost::python::def( "symbolsPath", &dbgSymPath );
     boost::python::def( "dprint", &DbgPrint::dprint, dprint( boost::python::args( "str", "dml" ), ""  ) );
     boost::python::def( "dprintln", &DbgPrint::dprintln, dprintln( boost::python::args( "str", "dml" ), ""  ) );
     boost::python::def( "loadDump", &dbgLoadDump );
-    boost::python::def( "startProcess", &startProcess );
     boost::python::def( "dbgCommand", &dbgCommand );
     boost::python::def( "isValid", &isOffsetValid );
     boost::python::def( "is64bitSystem", &is64bitSystem );
@@ -153,6 +152,9 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "getProcessorMode", &getProcessorMode );
     boost::python::def( "setProcessorMode", &setProcessorMode );
     boost::python::def( "addSynSymbol", &addSyntheticSymbol );
+    boost::python::def( "delAllSynSymbols", &delAllSyntheticSymbols);
+    boost::python::def( "delSynSymbol", &delSyntheticSymbol );
+    boost::python::def( "delSynSymbolsMask", &delSyntheticSymbolsMask);
     boost::python::class_<typeClass, boost::shared_ptr<typeClass> >( "typeClass" )
         .def("sizeof", &typeClass::size )
         .def("offset", &typeClass::getOffset )
@@ -167,6 +169,9 @@ BOOST_PYTHON_MODULE( pykd )
         .def("image", &dbgModuleClass::getImageSymbolName )
         .def("pdb", &dbgModuleClass::getPdbName )
         .def("addSynSymbol", &dbgModuleClass::addSyntheticSymbol )
+        .def("delAllSynSymbols", &dbgModuleClass::delAllSyntheticSymbols )
+        .def("delSynSymbol", &dbgModuleClass::delSyntheticSymbol )
+        .def("delSynSymbolsMask", &dbgModuleClass::delSyntheticSymbolsMask )
         .def("__getattr__", &dbgModuleClass::getOffset )
 		.def("__str__", &dbgModuleClass::print );
     boost::python::class_<dbgExtensionClass>( 
@@ -206,15 +211,15 @@ DebugExtensionInitialize(
 {
     *Version = DEBUG_EXTENSION_VERSION( 1, 0 );
     *Flags = 0;
-     
+
     PyImport_AppendInittab("pykd", initpykd ); 
-       
+
     Py_Initialize();
-    
+
     windbgGlobalSession = new WindbgGlobalSession();
-    
-    dbgSessionStarted = true;                
-    
+
+    setDbgSessionStarted();
+
     return S_OK; 
 }
     
@@ -254,7 +259,7 @@ SetupDebugEngine( IDebugClient4 *client, DbgExt *dbgExt  )
     client->QueryInterface( __uuidof(IDebugSystemObjects), (void**)&dbgExt->system );
     client->QueryInterface( __uuidof(IDebugSystemObjects2), (void**)&dbgExt->system2 );
 }
-    
+
 /////////////////////////////////////////////////////////////////////////////////    
     
 HRESULT 
@@ -268,12 +273,11 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
     try {
     
         DbgExt      ext = { 0 };
-    
-        SetupDebugEngine( client, &ext );  
-        dbgExt = &ext;        
-        
+        SetupDebugEngine( client, &ext );
+        dbgExt = &ext;
+
         boost::python::import( "pykd" ); 
-        
+
         boost::python::object       main =  boost::python::import("__main__");
 
         boost::python::object       global(main.attr("__dict__"));
@@ -383,17 +387,19 @@ CALLBACK
 pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 {
     try {
-    
+
+
         DbgExt      ext = { 0 };
-    
-        SetupDebugEngine( client, &ext );  
-        dbgExt = &ext;   
-        
+
+        SetupDebugEngine( client, &ext );
+        dbgExt = &ext;
+
         if ( !std::string( args ).empty() )
         {
-            try {
+            try
+            {
                 boost::python::exec( args, windbgGlobalSession->global(), windbgGlobalSession->global() );
-            }                
+            }
             catch( boost::python::error_already_set const & )
             {
                 // ошибка в скрипте
@@ -420,7 +426,7 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
             char        str[100];
             ULONG       inputSize;
             bool        stopInput = false;
-            
+
             do {
             
                 std::string     output;
@@ -485,13 +491,13 @@ CALLBACK
 pythonpath( PDEBUG_CLIENT4 client, PCSTR args )
 {
     DbgExt      ext = { 0 };
-    
+
     SetupDebugEngine( client, &ext );  
-    dbgExt = &ext;   
+    dbgExt = &ext;
 
     //DbgPrint::dprintln( dbgPythonPath.getStr() );
-   
-    return S_OK;      
+
+    return S_OK;
 }
 
 ///////////////////////////////////////////////////////////////////////////////// 

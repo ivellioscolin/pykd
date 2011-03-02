@@ -1,8 +1,6 @@
 #pragma once
 
 #include "dbgprint.h"
-#include <boost/python.hpp>
-#include <boost/python/object.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////
 

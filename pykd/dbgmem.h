@@ -1,7 +1,5 @@
 #pragma once
 
-#include <boost/python.hpp>
-#include <boost/python/object.hpp>
 #include <boost/scoped_array.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////
