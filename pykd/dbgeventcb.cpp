@@ -21,20 +21,20 @@ HRESULT DbgEventCallbacks::Register()
     {
         // monitor "global" WinDbg events
         hres = DebugCreate(
+            __uuidof(IDebugClient),
+            reinterpret_cast<PVOID *>(&m_dbgClient));
+        if (FAILED(hres))
+            throw hres;
+
+        hres = m_dbgClient->QueryInterface(
             __uuidof(IDebugSymbols),
             reinterpret_cast<PVOID *>(&m_dbgSymbols));
         if (FAILED(hres))
             throw hres;
 
-        hres = DebugCreate(
+        hres = m_dbgClient->QueryInterface(
             __uuidof(IDebugSymbols3),
             reinterpret_cast<PVOID *>(&m_dbgSymbols3));
-        if (FAILED(hres))
-            throw hres;
-
-        hres = DebugCreate(
-            __uuidof(IDebugClient),
-            reinterpret_cast<PVOID *>(&m_dbgClient));
         if (FAILED(hres))
             throw hres;
 
@@ -66,6 +66,16 @@ HRESULT DbgEventCallbacks::Register()
 
 void DbgEventCallbacks::Deregister()
 {
+    if (m_dbgSymbols3)
+    {
+        m_dbgSymbols3->Release();
+        m_dbgSymbols3 = NULL;
+    }
+    if (m_dbgSymbols)
+    {
+        m_dbgSymbols->Release();
+        m_dbgSymbols = NULL;
+    }
     if (m_dbgClient)
     {
         m_dbgClient->SetEventCallbacks(m_prevCallbacks);
@@ -73,21 +83,11 @@ void DbgEventCallbacks::Deregister()
         m_dbgClient->Release();
         m_dbgClient = NULL;
     }
-    if (m_dbgSymbols)
-    {
-        m_dbgSymbols->Release();
-        m_dbgSymbols = NULL;
-    }
-    if (m_dbgSymbols3)
-    {
-        m_dbgSymbols3->Release();
-        m_dbgSymbols3 = NULL;
-    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::GetInterestMask(
+HRESULT DbgEventCallbacks::GetInterestMask(
     __out PULONG Mask
 )
 {
@@ -96,7 +96,7 @@ COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::GetInterestMask(
 }
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::Breakpoint(
+HRESULT DbgEventCallbacks::Breakpoint(
     __in PDEBUG_BREAKPOINT  /* Bp */
 )
 {
@@ -105,7 +105,7 @@ COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::Breakpoint(
 
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::Exception(
+HRESULT DbgEventCallbacks::Exception(
     __in PEXCEPTION_RECORD64 /* Exception */,
     __in ULONG /* FirstChance */
 )
@@ -115,7 +115,7 @@ COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::Exception(
 
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::CreateThread(
+HRESULT DbgEventCallbacks::CreateThread(
     __in ULONG64 /* Handle */,
     __in ULONG64 /* DataOffset */,
     __in ULONG64 /* StartOffset */
@@ -126,7 +126,7 @@ COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::CreateThread(
 
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::ExitThread(
+HRESULT DbgEventCallbacks::ExitThread(
     __in ULONG /* ExitCode */
 )
 {
@@ -135,7 +135,7 @@ COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::ExitThread(
 
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::CreateProcess(
+HRESULT DbgEventCallbacks::CreateProcess(
     __in ULONG64 /* ImageFileHandle */,
     __in ULONG64 /* Handle */,
     __in ULONG64 /* BaseOffset */,
@@ -154,7 +154,7 @@ COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::CreateProcess(
 
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::ExitProcess(
+HRESULT DbgEventCallbacks::ExitProcess(
     __in ULONG /* ExitCode */
 )
 {
@@ -163,7 +163,7 @@ COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::ExitProcess(
 
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::LoadModule(
+HRESULT DbgEventCallbacks::LoadModule(
     __in ULONG64 /* ImageFileHandle */,
     __in ULONG64 /* BaseOffset */,
     __in ULONG /* ModuleSize */,
@@ -178,7 +178,7 @@ COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::LoadModule(
 
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::UnloadModule(
+HRESULT DbgEventCallbacks::UnloadModule(
     __in_opt PCSTR /* ImageBaseName */,
     __in ULONG64 /* BaseOffset */
 )
@@ -188,7 +188,7 @@ COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::UnloadModule(
 
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::SystemError(
+HRESULT DbgEventCallbacks::SystemError(
     __in ULONG /* Error */,
     __in ULONG /* Level */
 )
@@ -198,7 +198,7 @@ COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::SystemError(
 
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::SessionStatus(
+HRESULT DbgEventCallbacks::SessionStatus(
     __in ULONG /* Status */
 )
 {
@@ -207,7 +207,7 @@ COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::SessionStatus(
 
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::ChangeDebuggeeState(
+HRESULT DbgEventCallbacks::ChangeDebuggeeState(
     __in ULONG /* Flags */,
     __in ULONG64 /* Argument */
 )
@@ -217,7 +217,7 @@ COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::ChangeDebuggeeState(
 
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::ChangeEngineState(
+HRESULT DbgEventCallbacks::ChangeEngineState(
     __in ULONG /* Flags */,
     __in ULONG64 /* Argument */
 )
@@ -227,7 +227,7 @@ COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::ChangeEngineState(
 
 /////////////////////////////////////////////////////////////////////////////////
 
-COM_DECLSPEC_NOTHROW HRESULT DbgEventCallbacks::ChangeSymbolState(
+HRESULT DbgEventCallbacks::ChangeSymbolState(
     __in ULONG Flags,
     __in ULONG64 Argument
 )
