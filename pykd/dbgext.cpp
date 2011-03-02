@@ -219,20 +219,20 @@ DebugExtensionInitialize(
 
     windbgGlobalSession = new WindbgGlobalSession();
 
-    setDbgSessionStarted();
-
-    return S_OK; 
+    return setDbgSessionStarted();
 }
-    
-    
+
+
 VOID
 CALLBACK
 DebugExtensionUninitialize()
 {
+    stopDbgEventMonotoring();
+
     delete windbgGlobalSession;
     windbgGlobalSession = NULL;
 
-    Py_Finalize();  
+    Py_Finalize();
 }
 
 

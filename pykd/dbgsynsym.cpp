@@ -2,6 +2,7 @@
 
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/sync/interprocess_recursive_mutex.hpp>
+#include <boost/interprocess/sync/interprocess_mutex.hpp>
 #include <vector>
 #include <list>
 
@@ -51,41 +52,24 @@ typedef std::map<ModuleInfo, SynSymbolsForModule> SynSymbolsMap;
 
 // synchro-object for global synthetic symbols map
 typedef boost::interprocess::interprocess_recursive_mutex SynSymbolsMapLockType;
+typedef boost::interprocess::interprocess_mutex SynSymbolsMapLockWriteType;
 
 // scoped lock synchro-object for global synthetic symbols map
 typedef boost::interprocess::scoped_lock<SynSymbolsMapLockType> SynSymbolsMapScopedLock;
+typedef boost::interprocess::scoped_lock<SynSymbolsMapLockWriteType> SynSymbolsMapScopedLockWrite;
 
 static struct _GlobalSyntheticSymbolMap : public SynSymbolsMap
 {
-    _GlobalSyntheticSymbolMap() : m_nRestoreAllModulesThread(0) {}
-
     SynSymbolsMapLockType m_Lock;
-
-    // (**1)
-    //
-    // restoration of synthetic symbols for all modules can generate events of
-    // the synthetic symbols restoration for a specific module.
-    // perhaps this can give rise to event update to all modules (recursive)
-    // it is necessary to skip such a challenge
-    // 
-    ULONG m_nRestoreAllModulesThread;
+    SynSymbolsMapLockWriteType m_LockWrite;
 }g_SyntheticSymbolMap;
 
 #define _SynSymbolsMapScopedLock()  \
     SynSymbolsMapScopedLock _lock(g_SyntheticSymbolMap.m_Lock)
+#define _SynSymbolsMapScopedLockWrite() \
+    _SynSymbolsMapScopedLock();         \
+    SynSymbolsMapScopedLockWrite _lockw(g_SyntheticSymbolMap.m_LockWrite)
 
-// (**1) for scope
-struct ScopedAllModulesThread
-{
-    ScopedAllModulesThread(
-        ULONG &threadId = g_SyntheticSymbolMap.m_nRestoreAllModulesThread
-    ) : m_threadId(threadId)
-    {
-        m_threadId = GetCurrentThreadId();
-    }
-    ~ScopedAllModulesThread() { m_threadId = 0; }
-    ULONG &m_threadId;
-};
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -122,7 +106,7 @@ bool addSyntheticSymbol(
             throw DbgException( "call IDebugSymbol3::GetModuleParameters(...) failed" );
         }
 
-        _SynSymbolsMapScopedLock();
+        _SynSymbolsMapScopedLockWrite();
 
         ModuleInfo moduleInfo(dbgModuleParameters);
         SynSymbolsForModule &mapSynSymbolsForModule = 
@@ -192,7 +176,7 @@ bool addSyntheticSymbolForModule(
             }
         }
 
-        _SynSymbolsMapScopedLock();
+        _SynSymbolsMapScopedLockWrite();
 
         SynSymbolsForModule &mapSynSymbolsForModule = 
             g_SyntheticSymbolMap[moduleInfo];
@@ -354,7 +338,7 @@ void delAllSyntheticSymbols()
 {
     try
     {
-        _SynSymbolsMapScopedLock();
+        _SynSymbolsMapScopedLockWrite();
 
         for_each(
             g_SyntheticSymbolMap.begin(),
@@ -380,7 +364,7 @@ void delAllSyntheticSymbolsForModule(
 {
     try
     {
-        _SynSymbolsMapScopedLock();
+        _SynSymbolsMapScopedLockWrite();
 
         SynSymbolsMap::iterator itSynSymbols = 
             g_SyntheticSymbolMap.find(moduleInfo);
@@ -451,7 +435,7 @@ ULONG delSyntheticSymbol(
                     &dbgModuleParameters);
             if ( SUCCEEDED(hres) )
             {
-                _SynSymbolsMapScopedLock();
+                _SynSymbolsMapScopedLockWrite();
 
                 ModuleInfo moduleInfo(dbgModuleParameters);
                 return 
@@ -482,7 +466,7 @@ ULONG delSyntheticSymbolForModule(
 {
     try
     {
-        _SynSymbolsMapScopedLock();
+        _SynSymbolsMapScopedLockWrite();
         return delSyntheticSymbolForModuleNoLock(offset, moduleInfo);
     }
     catch( std::exception  &e )
@@ -568,7 +552,7 @@ ULONG delSyntheticSymbolsMask(
                 throw DbgException( "call IDebugSymbol3::GetSymbolEntriesByOffset(...) failed" );
             
             {
-                _SynSymbolsMapScopedLock();
+                _SynSymbolsMapScopedLockWrite();
                 RemoveSyntheticSymbolsFromMap(arrSymbols);
             }
 
@@ -625,46 +609,37 @@ void restoreSyntheticSymbolForModule(
     _SynSymbolsMapScopedLock();
 
     // see (**1)
-    if (!g_SyntheticSymbolMap.m_nRestoreAllModulesThread)
-        restoreSyntheticSymbolForModuleNoLock(moduleInfo, symbols3);
+    restoreSyntheticSymbolForModuleNoLock(moduleInfo, symbols3);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
 void restoreSyntheticSymbolForAllModules(
-    IDebugSymbols *symbols,
     IDebugSymbols3 *symbols3
 )
 {
     try
     {
         _SynSymbolsMapScopedLock();
+        ULONG nLoaded;
+        ULONG nUnloaded;
 
-        // see (**1)
-        if (!g_SyntheticSymbolMap.m_nRestoreAllModulesThread)
+        HRESULT hres = symbols3->GetNumberModules(&nLoaded, &nUnloaded);
+        if (SUCCEEDED(hres) && (nLoaded || nUnloaded))
         {
-            ScopedAllModulesThread scopedAllModulesThread;
-
-            ULONG nLoaded;
-            ULONG nUnloaded;
-
-            HRESULT hres = symbols->GetNumberModules(&nLoaded, &nUnloaded);
-            if (SUCCEEDED(hres) && (nLoaded || nUnloaded))
+            std::vector<DEBUG_MODULE_PARAMETERS> arrModules(nLoaded + nUnloaded);
+            hres = 
+                symbols3->GetModuleParameters(
+                    (ULONG)arrModules.size(),
+                    NULL,
+                    0,
+                    &arrModules[0]);
+            if (SUCCEEDED(hres))
             {
-                std::vector<DEBUG_MODULE_PARAMETERS> arrModules(nLoaded + nUnloaded);
-                hres = 
-                    symbols->GetModuleParameters(
-                        (ULONG)arrModules.size(),
-                        NULL,
-                        0,
-                        &arrModules[0]);
-                if (SUCCEEDED(hres))
+                for (ULONG i = 0; i < arrModules.size(); ++i)
                 {
-                    for (ULONG i = 0; i < arrModules.size(); ++i)
-                    {
-                        ModuleInfo moduleInfo(arrModules[i]);
-                        restoreSyntheticSymbolForModuleNoLock(moduleInfo, symbols3);
-                    }
+                    ModuleInfo moduleInfo(arrModules[i]);
+                    restoreSyntheticSymbolForModuleNoLock(moduleInfo, symbols3);
                 }
             }
         }

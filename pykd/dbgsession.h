@@ -6,11 +6,32 @@ dbgCreateSession();
 extern
 bool    dbgSessionStarted;
 
-inline void setDbgSessionStarted()
+inline void stopDbgEventMonotoring()
 {
-    dbgEventCallbacks.Register();
+    if (dbgEventCallbacks)
+        dbgEventCallbacks->Deregister();
+}
 
-    dbgSessionStarted = true;
+inline HRESULT setDbgSessionStarted()
+{
+    HRESULT hres;
+    try
+    {
+        stopDbgEventMonotoring();
+        dbgEventCallbacks = new DbgEventCallbacks;
+        hres = S_OK;
+    }
+    catch (HRESULT _hres)
+    {
+        hres = _hres;
+    }
+    catch (...)
+    {
+        hres = E_OUTOFMEMORY;
+    }
+    if (SUCCEEDED(hres))
+        dbgSessionStarted = true;
+    return hres;
 }
 
 bool
