@@ -16,8 +16,6 @@ dbgCreateSession()
     SetupDebugEngine( client, &dbgGlobalSession );
     dbgExt = &dbgGlobalSession;
     
-    dbgExt->control->Output( DEBUG_OUTPUT_WARNING, "Depricated call\n" );
-    
     dbgSessionStarted = true;
 }
 
