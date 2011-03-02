@@ -91,12 +91,13 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "trace", &setExecutionStatus<DEBUG_STATUS_STEP_INTO> );
     boost::python::def( "step", &setExecutionStatus<DEBUG_STATUS_STEP_OVER> );   
     boost::python::def( "expr", &evaluate ); 
-    boost::python::def( "createSession", &dbgCreateSession );
+    boost::python::def( "createSession", &dbgCreateSession );   // deprecated
     boost::python::def( "isSessionStart", &dbgIsSessionStart );
     boost::python::def( "symbolsPath", &dbgSymPath );
     boost::python::def( "dprint", &DbgPrint::dprint, dprint( boost::python::args( "str", "dml" ), ""  ) );
     boost::python::def( "dprintln", &DbgPrint::dprintln, dprintln( boost::python::args( "str", "dml" ), ""  ) );
     boost::python::def( "loadDump", &dbgLoadDump );
+    boost::python::def( "startProcess", &startProcess );
     boost::python::def( "dbgCommand", &dbgCommand );
     boost::python::def( "isValid", &isOffsetValid );
     boost::python::def( "is64bitSystem", &is64bitSystem );
