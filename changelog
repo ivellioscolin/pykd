@@ -1,3 +1,24 @@
+version 0.0.16 03/03/2011
+[+] added : isValid() routine; it validates virtual address 
+[+] added : image() and pdb() method for dbgModuleClass class. They return paths to pdb and image files. 
+[+] added : function getTypeClass() - create instance of typeClass by module an type name 
+[+] added : addSynSymbol function adds a synthetic symbol to a module by virtual address
+[+] added : dbgModuleClass::addSynSymbol method adds a synthetic symbol by offset related to module base
+[+] added : dbgStackFrameClass::print() 
+[+] added : dbgBreakpointClass::print()
+[+] added : dbgExtensionClass::print()
+[+] added : dbgModuleClass::print()
+[+] added : startProcess routine for live user-mode debugging
+
+[~] updated : loadArray returns python list, not dict 
+[~] updated : typedVar routine will return None if varibales's address is invalid.
+[~] updated : loadDump routine returns bool now ( not string ) 
+[~] updated : createSession routine is depricated now
+
+[!] fixed : issue #8336 ( typedVar returns value with wrong type of fields ) 
+[!] fixed : infinity loop on x32, if passed into typedVarList() address is not cast to addr64-format. condition in for(): entryAddress != address 
+[!] fixed : issue 8458 ( doubled output in windbg ) 
+
 
 version 0.0.15 04/02/2011
 [+] added : locals() routine; it returns local var for current scope 

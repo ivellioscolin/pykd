@@ -375,7 +375,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
             
             GetCurrentDirectoryA( oldCurDirLen, &oldCurDirCstr[0] );
             
-            SetCurrentDirectoryA( filePath.c_str() );
+           // SetCurrentDirectoryA( filePath.c_str() );
             
             try {                  
             
