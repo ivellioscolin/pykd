@@ -4,7 +4,7 @@
 #include "dbgeventcb.h"
 #include "dbgsession.h"
 
-DbgExt      dbgGlobalSession = { 0 };
+DbgExt      dbgGlobalSession;
 
 bool        dbgSessionStarted = false;
 

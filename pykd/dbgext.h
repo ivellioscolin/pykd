@@ -24,6 +24,24 @@ struct DbgExt {
     
     IDebugSystemObjects     *system;
     IDebugSystemObjects2    *system2;
+    
+    DbgExt() :
+        client( NULL ),
+        client4( NULL ),
+        control( NULL ),
+        control4( NULL ),
+        registers( NULL ),
+        symbols( NULL ),
+        symbols2( NULL ),
+        symbols3( NULL ),
+        dataSpaces( NULL ),
+        dataSpaces4( NULL ),
+        advanced2( NULL ),
+        system( NULL ),
+        system2( NULL )
+        {}
+            
+    ~DbgExt();
 };
 
 extern DbgExt    *dbgExt;

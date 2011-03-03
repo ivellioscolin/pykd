@@ -261,6 +261,48 @@ SetupDebugEngine( IDebugClient4 *client, DbgExt *dbgExt  )
     client->QueryInterface( __uuidof(IDebugSystemObjects2), (void**)&dbgExt->system2 );
 }
 
+DbgExt::~DbgExt()
+{
+    if ( client )
+        client->Release();
+        
+    if ( client4 )
+        client4->Release();
+        
+    if ( control )
+        control->Release();
+        
+    if ( control4 )
+        control4->Release();
+        
+    if ( registers )
+        registers->Release();
+            
+    if ( symbols )
+        symbols->Release();
+        
+    if ( symbols2 )
+        symbols2->Release();
+        
+    if ( symbols3 )
+        symbols3->Release();
+        
+    if ( dataSpaces )
+        dataSpaces->Release();
+        
+    if ( dataSpaces4 )
+        dataSpaces4->Release();
+        
+    if ( advanced2 )
+        advanced2->Release();
+        
+    if ( system )
+        system->Release();
+        
+    if ( system2 )
+        system2->Release();
+}
+
 /////////////////////////////////////////////////////////////////////////////////    
     
 HRESULT 
@@ -273,7 +315,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
 
     try {
     
-        DbgExt      ext = { 0 };
+        DbgExt      ext;
         SetupDebugEngine( client, &ext );
         dbgExt = &ext;
 
@@ -389,8 +431,7 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 {
     try {
 
-
-        DbgExt      ext = { 0 };
+        DbgExt      ext;
 
         SetupDebugEngine( client, &ext );
         dbgExt = &ext;
@@ -491,7 +532,7 @@ HRESULT
 CALLBACK
 pythonpath( PDEBUG_CLIENT4 client, PCSTR args )
 {
-    DbgExt      ext = { 0 };
+    DbgExt      ext;
 
     SetupDebugEngine( client, &ext );  
     dbgExt = &ext;
