@@ -62,7 +62,7 @@ static struct _GlobalSyntheticSymbolMap : public SynSymbolsMap
 {
     SynSymbolsMapLockType m_Lock;
     SynSymbolsMapLockWriteType m_LockWrite;
-}g_SyntheticSymbolMap;
+} g_SyntheticSymbolMap;
 
 #define _SynSymbolsMapScopedLock()  \
     SynSymbolsMapScopedLock _lock(g_SyntheticSymbolMap.m_Lock)
@@ -621,6 +621,10 @@ void restoreSyntheticSymbolForAllModules(
     try
     {
         _SynSymbolsMapScopedLock();
+
+        if (g_SyntheticSymbolMap.empty())
+            return;
+
         ULONG nLoaded;
         ULONG nUnloaded;
 
