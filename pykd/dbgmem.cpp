@@ -124,14 +124,14 @@ loadPtrArray( ULONG64 address, ULONG  number )
         
         if ( loadMemory( address, buffer.get(), number*sizeof(ULONG64) ) )
         {
-            boost::python::dict    arr;
+            boost::python::list    lst;
         
             for ( ULONG  i = 0; i < number; ++i )
-                arr[i] = buffer[i];
+                 lst.append( buffer[i] );
                 
-            return   arr;
+            return   lst;
         }
-       
+        
  	    return boost::python::object();    
     }
     else
@@ -140,12 +140,12 @@ loadPtrArray( ULONG64 address, ULONG  number )
         
         if ( loadMemory( address, buffer.get(), number*sizeof(ULONG) ) )
         {
-            boost::python::dict    arr;
+            boost::python::list    lst;
         
             for ( ULONG  i = 0; i < number; ++i )
-                arr[i] = addr64( buffer[i] );
+                lst.append( addr64( buffer[i] ) );
                 
-            return   arr;
+            return   lst;
         }
        
  	    return boost::python::object();       
