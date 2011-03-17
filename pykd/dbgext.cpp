@@ -85,6 +85,9 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords, loadArray<__int64>, 2, 3 )
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemoryOver, compareMemory, 3, 4 )
 
+#define _DEF_PY_CONST(x)    \
+    boost::python::scope().attr(#x) = ##x
+
 BOOST_PYTHON_MODULE( pykd )
 {
     boost::python::def( "go", &setExecutionStatus<DEBUG_STATUS_GO> );
@@ -156,6 +159,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "delAllSynSymbols", &delAllSyntheticSymbols);
     boost::python::def( "delSynSymbol", &delSyntheticSymbol );
     boost::python::def( "delSynSymbolsMask", &delSyntheticSymbolsMask);
+
     boost::python::class_<typeClass, boost::shared_ptr<typeClass> >( "typeClass" )
         .def("sizeof", &typeClass::size )
         .def("offset", &typeClass::getOffset )
@@ -174,20 +178,20 @@ BOOST_PYTHON_MODULE( pykd )
         .def("delSynSymbol", &dbgModuleClass::delSyntheticSymbol )
         .def("delSynSymbolsMask", &dbgModuleClass::delSyntheticSymbolsMask )
         .def("__getattr__", &dbgModuleClass::getOffset )
-		.def("__str__", &dbgModuleClass::print );
+        .def("__str__", &dbgModuleClass::print );
     boost::python::class_<dbgExtensionClass>( 
             "ext",
             "windbg extension",
              boost::python::init<const char*>( boost::python::args("path"), "__init__  dbgExtensionClass" ) ) 
         .def("call", &dbgExtensionClass::call )
-		.def("__str__", &dbgExtensionClass::print );
+        .def("__str__", &dbgExtensionClass::print );
     boost::python::class_<dbgStackFrameClass>( "dbgStackFrameClass", "dbgStackFrameClass" )
         .def_readonly( "instructionOffset", &dbgStackFrameClass::InstructionOffset )
         .def_readonly( "returnOffset", &dbgStackFrameClass::ReturnOffset )
         .def_readonly( "frameOffset", &dbgStackFrameClass::FrameOffset )
         .def_readonly( "stackOffset", &dbgStackFrameClass::StackOffset )
         .def_readonly( "frameNumber", &dbgStackFrameClass::FrameNumber )
-		.def( "__str__", &dbgStackFrameClass::print );
+        .def( "__str__", &dbgStackFrameClass::print );
     boost::python::class_<dbgOut>( "windbgOut", "windbgOut" )
         .def( "write", &dbgOut::write );
     boost::python::class_<dbgIn>( "windbgIn", "windbgIn" )
@@ -198,9 +202,53 @@ BOOST_PYTHON_MODULE( pykd )
          boost::python::init<ULONG64>( boost::python::args("offset"), "__init__  dbgBreakpointClass" ) ) 
         .def( "set", &dbgBreakpointClass::set )
         .def( "remove", &dbgBreakpointClass::remove )
-		.def( "__str__", &dbgBreakpointClass::print );
-        
-}    
+        .def( "__str__", &dbgBreakpointClass::print );
+
+    // debug status
+    _DEF_PY_CONST(DEBUG_STATUS_NO_CHANGE);
+    _DEF_PY_CONST(DEBUG_STATUS_GO);
+    _DEF_PY_CONST(DEBUG_STATUS_GO_HANDLED);
+    _DEF_PY_CONST(DEBUG_STATUS_GO_NOT_HANDLED);
+    _DEF_PY_CONST(DEBUG_STATUS_STEP_OVER);
+    _DEF_PY_CONST(DEBUG_STATUS_STEP_INTO);
+    _DEF_PY_CONST(DEBUG_STATUS_BREAK);
+    _DEF_PY_CONST(DEBUG_STATUS_NO_DEBUGGEE);
+    _DEF_PY_CONST(DEBUG_STATUS_STEP_BRANCH);
+    _DEF_PY_CONST(DEBUG_STATUS_IGNORE_EVENT);
+    _DEF_PY_CONST(DEBUG_STATUS_RESTART_REQUESTED);
+    _DEF_PY_CONST(DEBUG_STATUS_REVERSE_GO);
+    _DEF_PY_CONST(DEBUG_STATUS_REVERSE_STEP_BRANCH);
+    _DEF_PY_CONST(DEBUG_STATUS_REVERSE_STEP_OVER);
+    _DEF_PY_CONST(DEBUG_STATUS_REVERSE_STEP_INTO);
+
+    // debug status additional mask
+    _DEF_PY_CONST(DEBUG_STATUS_INSIDE_WAIT);
+    _DEF_PY_CONST(DEBUG_STATUS_WAIT_TIMEOUT);
+
+    // break point type
+    _DEF_PY_CONST(DEBUG_BREAKPOINT_CODE);
+    _DEF_PY_CONST(DEBUG_BREAKPOINT_DATA);
+    _DEF_PY_CONST(DEBUG_BREAKPOINT_TIME);
+
+    // break point flag
+    _DEF_PY_CONST(DEBUG_BREAKPOINT_GO_ONLY);
+    _DEF_PY_CONST(DEBUG_BREAKPOINT_DEFERRED);
+    _DEF_PY_CONST(DEBUG_BREAKPOINT_ENABLED);
+    _DEF_PY_CONST(DEBUG_BREAKPOINT_ADDER_ONLY);
+    _DEF_PY_CONST(DEBUG_BREAKPOINT_ONE_SHOT);
+
+    // break point access type
+    _DEF_PY_CONST(DEBUG_BREAK_READ);
+    _DEF_PY_CONST(DEBUG_BREAK_WRITE);
+    _DEF_PY_CONST(DEBUG_BREAK_EXECUTE);
+    _DEF_PY_CONST(DEBUG_BREAK_IO);
+
+    // exception flags
+    _DEF_PY_CONST(EXCEPTION_NONCONTINUABLE);
+
+}
+
+#undef  _DEF_PY_CONST
 
 /////////////////////////////////////////////////////////////////////////////////
 
