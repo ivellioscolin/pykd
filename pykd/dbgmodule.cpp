@@ -108,8 +108,8 @@ findModule( ULONG64 addr )
 
 dbgModuleClass::dbgModuleClass( const std::string &name, ULONG64 base, ULONG size ) :
     m_name( name ),
-    m_base( base ),
-    m_end( base + size )
+    m_base( addr64(base) ),
+    m_end( addr64(base) + size )
 {
     reloadSymbols();
 
@@ -130,7 +130,7 @@ dbgModuleClass::dbgModuleClass( const std::string &name, ULONG64 base, ULONG siz
                 sizeof( nameBuf ),
                 NULL,
                 &offset );
-                
+
         if ( FAILED( hres ) )
             break;
 

@@ -65,7 +65,7 @@ public:
     {}
 
     dbgModuleClass( const std::string &name, ULONG64 base, ULONG size );
-    
+
     ULONG64
     getBegin() const {
         return m_base;

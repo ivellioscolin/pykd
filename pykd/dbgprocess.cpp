@@ -72,25 +72,26 @@ setImplicitThread(
     HRESULT                 hres;  
 
     try {
-  
+
+        newThreadAddr = addr64(newThreadAddr);
         hres = dbgExt->system2->SetImplicitThreadDataOffset( newThreadAddr );
         if ( FAILED( hres ) )
             throw DbgException( "IDebugSystemObjects2::SetImplicitThreadDataOffset  failed" ); 
-            
-        return true;            
-        
+
+        return true;
+
     }
-  	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}
-	
-	return false;	
-}  
+    catch( std::exception  &e )
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+    }
+    catch(...)
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+    }
+
+    return false;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////  
@@ -292,22 +293,23 @@ VOID
 setCurrentProcess(
     ULONG64  processAddr )
 {
-    HRESULT                 hres;  
+    HRESULT hres;
 
     try {
 
+        processAddr = addr64(processAddr);
         hres = dbgExt->system2->SetImplicitProcessDataOffset( processAddr );
         if ( FAILED( hres ) )
             throw DbgException( "IDebugSystemObjects2::SetImplicitProcessDataOffset  failed" ); 
     }
-  	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}
+    catch( std::exception  &e )
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+    }
+    catch(...)
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////
