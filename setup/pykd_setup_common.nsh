@@ -42,9 +42,6 @@ OutFile "${PRODUCT_SHORT_NAME}_${PRODUCT_ARCH}_${PRODUCT_VERSION}_setup.exe"
 
 BrandingText "${PRODUCT_FULL_NAME}"
 
-#Get installation folder from registry if available
-InstallDirRegKey HKLM "Software\${PRODUCT_SHORT_NAME}" "${PRODUCT_ARCH}"
-
 #Request application privileges for Windows Vista and 7
 RequestExecutionLevel admin
 
@@ -116,11 +113,21 @@ Function .onInit
         Abort
     ${EndIf}
 
+    
     !if ${PRODUCT_ARCH} == "x64"
     ${IfNot} ${RunningX64}
         MessageBox MB_OK|MB_ICONEXCLAMATION "This installation requires 64-bit OS."
         Abort
     ${EndIf}
+    !endif
+    
+    # Get installation folder from registry if available
+    !if ${PRODUCT_ARCH} == "x64"
+    ${IfThen} ${RunningX64} ${|} SetRegView 64 ${|}
+    !endif
+    ReadRegStr $INSTDIR HKLM "Software\${PRODUCT_SHORT_NAME}" "InstallPath"
+    !if ${PRODUCT_ARCH} == "x64"
+    ${IfThen} ${RunningX64} ${|} SetRegView 32 ${|}
     !endif
 FunctionEnd
 
@@ -244,5 +251,11 @@ SectionEnd
 
 Section -FinishSection
     #Store installation folder
-    WriteRegStr HKLM "Software\${PRODUCT_SHORT_NAME}" "${PRODUCT_ARCH}" "$INSTDIR"
+    !if ${PRODUCT_ARCH} == "x64"
+    ${IfThen} ${RunningX64} ${|} SetRegView 64 ${|}
+    !endif
+    WriteRegStr HKLM "Software\${PRODUCT_SHORT_NAME}" "InstallPath" "$INSTDIR"
+    !if ${PRODUCT_ARCH} == "x64"
+    ${IfThen} ${RunningX64} ${|} SetRegView 32 ${|}
+    !endif
 SectionEnd
