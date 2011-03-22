@@ -73,8 +73,8 @@ def printDrvMajorTable( drvName ):
      drvObj = typedVar( "nt", "_DRIVER_OBJECT", drvObjPtr )
 
      
-     for i,k in drvObj.MajorFunction.items():
-       dprintln( "MajorFunction[%d] = %s" % ( i, findSymbol( k ) ) )
+     for i in xrange( 0, len( drvObj.MajorFunction ) ):
+       dprintln( "MajorFunction[%d] = %s" % ( i, findSymbol( drvObj.MajorFunction[i] ) ) )
 
 
 

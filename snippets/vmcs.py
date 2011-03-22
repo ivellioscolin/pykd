@@ -185,10 +185,13 @@ def vmcsPrint( addr ):
 if __name__ == "__main__":
 
    if not isSessionStart():
-       print "script is launch out of windbg"
+       dprintln( "script is launch out of windbg" )
        quit( 0 )
 
-   vmcsPrint( int( sys.argv[1], 16 ) )
+   if len( sys.argv ) <= 1:
+       dprintln( "usage: !py vmcs <addr>" )
+   else:
+       vmcsPrint( int( sys.argv[1], 16 ) )
           
           
 

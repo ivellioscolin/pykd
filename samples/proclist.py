@@ -14,9 +14,8 @@ def processInfo():
     processList = typedVarList( nt.PsActiveProcessHead, "nt", "_EPROCESS", "ActiveProcessLinks"  )
 
     for process in processList:
-	dprintln( "".join( [ chr(i) for i in process.ImageFileName.values() ] ) )
+      print "".join( [chr(i) for i in process.ImageFileName if i != 0] )
 
-    return
 
 
 if __name__ == "__main__":
