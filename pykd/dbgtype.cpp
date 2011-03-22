@@ -112,17 +112,34 @@ getTypeClass( const std::string &moduleName, const std::string &typeName )
 boost::python::object
 loadTypedVarList( ULONG64 address, const std::string &moduleName, const std::string &typeName, const std::string &listEntryName )
 {
-    ULONG64     entryAddress = 0;
+    address = addr64(address); 
     
-    boost::python::list    objList;
+    ULONG64                 entryAddress = 0;
 
-    address = addr64(address);
-    for( entryAddress = loadPtrByPtr( address ); entryAddress != address && entryAddress != NULL; entryAddress = loadPtrByPtr( entryAddress ) )
+    const TypeInfo&         typeInfo = TypeInfo::get( moduleName, typeName );
+    
+    boost::python::list     objList;
+    
+    for ( TypeInfo::TypeFieldList::const_iterator  field = typeInfo.getFields().begin(); field != typeInfo.getFields().end(); field++ )
     {
-        objList.append( containingRecord( entryAddress, moduleName, typeName, listEntryName ) );  
+        if ( field->name == listEntryName )
+        {
+            if ( field->type.name() == ( typeName + "*" ) )
+            {
+                for( entryAddress = loadPtrByPtr( address ); entryAddress != address && entryAddress != NULL; entryAddress = loadPtrByPtr( entryAddress + field->offset  ) )
+                    objList.append( loadTypedVar( moduleName, typeName, entryAddress ) );
+            }                
+            else
+            {
+                for( entryAddress = loadPtrByPtr( address ); entryAddress != address && entryAddress != NULL; entryAddress = loadPtrByPtr( entryAddress ) )
+                    objList.append( containingRecord( entryAddress, moduleName, typeName, listEntryName ) );                  
+            }
+            
+            return objList;   
+        }
     }
     
-    return objList;
+    return boost::python::object();
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -130,14 +147,14 @@ loadTypedVarList( ULONG64 address, const std::string &moduleName, const std::str
 boost::python::object
 loadTypedVarArray( ULONG64 address, const std::string &moduleName, const std::string &typeName, long number )
 {
-    boost::python::dict     objArr;
+    boost::python::list     objList;
     
     const TypeInfo&         typeInfo = TypeInfo::get( moduleName, typeName );
     
     for( long i = 0; i < number; ++i )
-        objArr[i] = loadTypedVar( moduleName, typeName, address + i * typeInfo.size() );
+        objList.append( loadTypedVar( moduleName, typeName, address + i * typeInfo.size() ) );
     
-    return objArr;
+    return objList;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -396,12 +413,12 @@ TypeInfo::load( ULONG64 addr, ULONG offset /* = 0 */ ) const
         }
         else
         {
-            boost::python::dict     arr;
+            boost::python::list     arr;
 
             for ( unsigned int i = 0; i < field->size / field->type.size(); ++i )
             {
                 const ULONG locOffset = field->offset + i * (ULONG)field->type.size();
-                arr[i] = field->type.load( addr + locOffset, offset + locOffset );
+                arr.append( field->type.load( addr + locOffset, offset + locOffset ) );
             }
 
             var.attr( field->name.c_str() ) = arr;
