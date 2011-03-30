@@ -615,7 +615,8 @@ void restoreSyntheticSymbolForModule(
 /////////////////////////////////////////////////////////////////////////////////
 
 void restoreSyntheticSymbolForAllModules(
-    IDebugSymbols3 *symbols3
+    IDebugSymbols3 *symbols3,
+    IDebugControl *control
 )
 {
     try
@@ -642,7 +643,7 @@ void restoreSyntheticSymbolForAllModules(
             {
                 for (ULONG i = 0; i < arrModules.size(); ++i)
                 {
-                    ModuleInfo moduleInfo(arrModules[i]);
+                    ModuleInfo moduleInfo(arrModules[i], control);
                     restoreSyntheticSymbolForModuleNoLock(moduleInfo, symbols3);
                 }
             }

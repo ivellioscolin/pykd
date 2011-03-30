@@ -45,11 +45,13 @@ private:
 
     IDebugClient *m_dbgClient;
     IDebugSymbols3 *m_dbgSymbols3;
+    IDebugControl *m_dbgControl;
 
     /////////////////////////////////////////////////////////////////////////////////
     // global singleton
 
     static DbgEventCallbacks *dbgEventCallbacks;
+    static volatile LONG dbgEventCallbacksStartCount;
 
     /////////////////////////////////////////////////////////////////////////////////
 };

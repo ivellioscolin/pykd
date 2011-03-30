@@ -52,14 +52,14 @@ loadMemory( ULONG64 address, PVOID dest, ULONG length, BOOLEAN phyAddr  )
 ///////////////////////////////////////////////////////////////////////////////////
 
 ULONG64
-addr64( ULONG64  addr )
+addr64Ex( ULONG64  addr, IDebugControl *control )
 {
     HRESULT     hres;
 
     try {
 
         ULONG   processorMode;
-        hres = dbgExt->control->GetActualProcessorType( &processorMode );
+        hres = control->GetActualProcessorType( &processorMode );
         if ( FAILED( hres ) )
             throw DbgException( "IDebugControl::GetEffectiveProcessorType  failed" );       
         
@@ -87,6 +87,13 @@ addr64( ULONG64  addr )
 	}
         
     return addr;        
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ULONG64 addr64( ULONG64 addr )
+{
+    return addr64Ex(addr, dbgExt->control);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

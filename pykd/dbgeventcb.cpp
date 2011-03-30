@@ -11,6 +11,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 DbgEventCallbacks *DbgEventCallbacks::dbgEventCallbacks = NULL;
+volatile LONG DbgEventCallbacks::dbgEventCallbacksStartCount = 0;
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -19,8 +20,11 @@ HRESULT DbgEventCallbacks::Start()
     HRESULT hres;
     try
     {
-        Stop();
-        dbgEventCallbacks = new DbgEventCallbacks;
+        if (1 == InterlockedIncrement(&dbgEventCallbacksStartCount))
+        {
+            _ASSERT(!dbgEventCallbacks);
+            dbgEventCallbacks = new DbgEventCallbacks;
+        }
         hres = S_OK;
     }
     catch (HRESULT _hres)
@@ -38,8 +42,12 @@ HRESULT DbgEventCallbacks::Start()
 
 void DbgEventCallbacks::Stop()
 {
-    if (dbgEventCallbacks)
-        dbgEventCallbacks->Deregister();
+    if (0 == InterlockedDecrement(&dbgEventCallbacksStartCount))
+    {
+        _ASSERT(dbgEventCallbacks);
+        if (dbgEventCallbacks)
+            dbgEventCallbacks->Deregister();
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -48,6 +56,7 @@ DbgEventCallbacks::DbgEventCallbacks()
   : m_ReferenceCount(1)
   , m_dbgClient(NULL)
   , m_dbgSymbols3(NULL)
+  , m_dbgControl(NULL)
 {
     HRESULT hres;
     try
@@ -62,6 +71,12 @@ DbgEventCallbacks::DbgEventCallbacks()
         hres = m_dbgClient->QueryInterface(
             __uuidof(IDebugSymbols3),
             reinterpret_cast<PVOID *>(&m_dbgSymbols3));
+        if (FAILED(hres))
+            throw hres;
+
+        hres = m_dbgClient->QueryInterface(
+            __uuidof(IDebugControl),
+            reinterpret_cast<PVOID *>(&m_dbgControl));
         if (FAILED(hres))
             throw hres;
 
@@ -94,6 +109,11 @@ void DbgEventCallbacks::Deregister()
     {
         m_dbgSymbols3->Release();
         m_dbgSymbols3 = NULL;
+    }
+    if (m_dbgControl)
+    {
+        m_dbgControl->Release();
+        m_dbgControl = NULL;
     }
     if (m_dbgClient)
     {
@@ -146,7 +166,7 @@ HRESULT DbgEventCallbacks::ChangeSymbolState(
             return doSymbolsLoaded(Argument);
 
         // f.e. is case ".reload /f image.exe", if for image.exe no symbols
-        restoreSyntheticSymbolForAllModules(m_dbgSymbols3);
+        restoreSyntheticSymbolForAllModules(m_dbgSymbols3, m_dbgControl);
         return S_OK;
     }
 
@@ -169,7 +189,7 @@ HRESULT DbgEventCallbacks::doSymbolsLoaded(
             &dbgModuleParameters);
         if (SUCCEEDED(hres))
         {
-            ModuleInfo moduleInfo(dbgModuleParameters);
+            ModuleInfo moduleInfo(dbgModuleParameters, m_dbgControl);
             restoreSyntheticSymbolForModule(moduleInfo, m_dbgSymbols3);
         }
     }

@@ -54,7 +54,8 @@ void restoreSyntheticSymbolForModule(
 );
 
 void restoreSyntheticSymbolForAllModules(
-    IDebugSymbols3 *symbols3
+    IDebugSymbols3 *symbols3,
+    IDebugControl *control
 );
 
 /////////////////////////////////////////////////////////////////////////////////
