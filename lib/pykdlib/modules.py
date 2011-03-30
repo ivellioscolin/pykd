@@ -7,18 +7,36 @@ import pykd
 
 moduleList = []            
 
-def kernelReloadModules():
+def reloadModules():
 
-    global nt 
     global moduleList
 
-    nt = pykd.loadModule("nt")
+    
+    for m in moduleList: globals()[ m.name().lower() ] = None
 
-    modules = pykd.typedVarList( nt.PsLoadedModuleList, "nt", "_LDR_DATA_TABLE_ENTRY", "InLoadOrderLinks" )
+
+    if pykd.isKernelDebugging():
+
+        global nt 
+
+        nt = pykd.loadModule("nt")
+
+        modules = pykd.typedVarList( nt.PsLoadedModuleList, "nt", "_LDR_DATA_TABLE_ENTRY", "InLoadOrderLinks" )
+
+        moduleList.append( nt )
+
+    else:
+        
+        ntdll = pykd.loadModule("ntdll")
+
+        peb = pykd.typedVar( "ntdll", "_PEB", pykd.getCurrentProcess() )
+
+        ldr = pykd.typedVar( "ntdll", "_PEB_LDR_DATA", peb.Ldr )
+
+        modules = pykd.typedVarList( ldr.InLoadOrderModuleList.getAddress(), "ntdll", "_LDR_DATA_TABLE_ENTRY", "InLoadOrderLinks" ) 
+ 
 
     moduleList = []
-
-    moduleList.append( nt )
 
     for m in modules:	
 
@@ -28,29 +46,20 @@ def kernelReloadModules():
             continue
 
         module = pykd.findModule( m.DllBase )
-
+  
         globals()[ module.name().lower() ] = module
 
         moduleList.append( module )
-
-
-def userReloadModules():
-
-    pass  
 
 
 def printModuleList():
     pykd.dprintln( "\n".join( [ str(m) for m in moduleList ] ) )                      
 
 
+reloadModules()
 
-if pykd.isKernelDebugging():
 
-    kernelReloadModules()
-
-else:
-
-    userReloadModules()         
+    
 
 
 
