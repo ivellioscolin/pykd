@@ -15,7 +15,9 @@ class StlpNodeWrapper:
     def __init__(self, addr):
         # Wrapper specific field
         self.addr = addr
-        self.color = ptrDWord(addr)
+        # Wrapper specific field
+        self.sizeOf = 4 * ptrSize()
+        self.color = ptrByte(addr)
         # By default, fields in structure aligned by 4 Bytes on x86 and by 8 Bytes on x64
         addr += ptrSize()
         self.parent = ptrPtr(addr)
@@ -23,8 +25,6 @@ class StlpNodeWrapper:
         self.left = ptrPtr(addr)
         addr += ptrSize()
         self.right = ptrPtr(addr)
-        # Wrapper specific field
-        self.sizeOf = addr + ptrSize() - self.addr
 
 
 class StlpMapWrapper:
