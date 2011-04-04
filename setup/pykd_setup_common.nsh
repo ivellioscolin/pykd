@@ -11,6 +11,7 @@ SetCompressor LZMA
 !include "WinVer.nsh"
 !include "FileFunc.nsh"
 !include "x64.nsh"
+!include "Sections.nsh"
 
 !addincludedir .\Include
 !addplugindir .\Plugins
@@ -29,6 +30,7 @@ SetCompressor LZMA
 !define PRODUCT_VERSION "0.0.0.16"
 !define PRODUCT_URL  "http://pykd.codeplex.com/"
 !define PRODUCT_NAME_AND_VERSION "${PRODUCT_FULL_NAME} ${PRODUCT_ARCH} ${PRODUCT_VERSION}"
+!define PRODUCT_MANUFACTURER "PyKd Team"
 
 !if ${PRODUCT_ARCH} == "x64"
     !define ARCH "amd64"
@@ -46,6 +48,7 @@ BrandingText "${PRODUCT_FULL_NAME}"
 RequestExecutionLevel admin
 
 ShowInstDetails show
+ShowUninstDetails show
 
 #------------------------------------------------------------------------------
 # Variables
@@ -57,9 +60,11 @@ ShowInstDetails show
 !define MUI_ABORTWARNING
 
 !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\orange-install.ico"
+!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\orange-uninstall.ico"
 
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Header\orange.bmp"
+!define MUI_HEADERIMAGE_UNBITMAP "${NSISDIR}\Contrib\Graphics\Header\orange-uninstall.bmp"
 
 !define MUI_WELCOMEPAGE_TITLE_3LINES
 !define MUI_WELCOMEFINISHPAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Wizard\orange.bmp"
@@ -70,9 +75,11 @@ ShowInstDetails show
 !define MUI_FINISHPAGE_TITLE_3LINES
 !define MUI_FINISHPAGE_TEXT_LARGE
 !define MUI_FINISHPAGE_TEXT "${PRODUCT_NAME_AND_VERSION} was successfully installed.$\n$\n\
-                            Run WinDbg and type $\".load pykd.pyd$\" to start using plugin."
+                            Run WinDbg and type $\".load pykd.pyd$\" to start using it."
 
 !define MUI_FINISHPAGE_NOAUTOCLOSE
+
+!define MUI_COMPONENTSPAGE_SMALLDESC
 
 #------------------------------------------------------------------------------
 # Pages
@@ -80,9 +87,15 @@ ShowInstDetails show
 # Installer Pages
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "pykd_license.txt"
+!insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
+
+# Uninstaller Pages
+#!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_COMPONENTS
+!insertmacro MUI_UNPAGE_INSTFILES
 
 #------------------------------------------------------------------------------
 # Languages (first is default language)
@@ -94,43 +107,53 @@ ShowInstDetails show
 # Installer file version information
 #------------------------------------------------------------------------------
 VIProductVersion "${PRODUCT_VERSION}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "${PRODUCT_SHORT_NAME}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "Comments" "${PRODUCT_NAME_AND_VERSION}"
-#VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "${MANUFACTURER}"
-#VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalTrademarks" "${PRODUCT_NAME} is a trademark of ${MANUFACTURER} company"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "© All rights reserved"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName"     "${PRODUCT_SHORT_NAME}"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "Comments"        "${PRODUCT_NAME_AND_VERSION}"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName"     "${PRODUCT_MANUFACTURER}"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalTrademarks" "${PRODUCT_SHORT_NAME} is a trademark of ${PRODUCT_MANUFACTURER}"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright"  "© All rights reserved 2010-2011"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "${PRODUCT_SHORT_NAME} setup"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${PRODUCT_VERSION}"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion"     "${PRODUCT_VERSION}"
 
 #------------------------------------------------------------------------------
-# Before first page displayed
+# Some logic-lib like macro
 #------------------------------------------------------------------------------
-Function .onInit
-    System::Call 'kernel32::CreateMutexA(i 0, i 0, t "${PRODUCT_SHORT_NAME}_${PRODUCT_ARCH}_setup") i .r1 ?e'
-    Pop $R0
-    ${If} $R0 != 0
-        MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
-        Abort
-    ${EndIf}
+!macro SetRegView64
+    !if ${PRODUCT_ARCH} == "x64"
+    SetRegView 64
+    !endif
+!macroend
+!define SetRegView64 "!insertmacro SetRegView64"
 
-    
+!macro SetRegView32
     !if ${PRODUCT_ARCH} == "x64"
-    ${IfNot} ${RunningX64}
-        MessageBox MB_OK|MB_ICONEXCLAMATION "This installation requires 64-bit OS."
-        Abort
-    ${EndIf}
+    SetRegView 32
     !endif
-    
-    # Get installation folder from registry if available
-    !if ${PRODUCT_ARCH} == "x64"
-    ${IfThen} ${RunningX64} ${|} SetRegView 64 ${|}
-    !endif
-    ReadRegStr $INSTDIR HKLM "Software\${PRODUCT_SHORT_NAME}" "InstallPath"
-    !if ${PRODUCT_ARCH} == "x64"
-    ${IfThen} ${RunningX64} ${|} SetRegView 32 ${|}
-    !endif
-FunctionEnd
+!macroend
+!define SetRegView32 "!insertmacro SetRegView32"
 
+!macro _IsVcRuntimeInstalled _a _b _t _f
+    !insertmacro _LOGICLIB_TEMP
+    Push 'msvcr80.dll'
+    Push 'Microsoft.VC80.CRT,version="8.0.50727.4053",type="win32",processorArchitecture="${ARCH}",publicKeyToken="1fc8b3b9a1e18e3b"'
+    ${WinSxS_HasAssembly}
+    Pop $_LOGICLIB_TEMP
+    !insertmacro _== $_LOGICLIB_TEMP 1 `${_t}` `${_f}`
+!macroend
+
+!define IsVcRuntimeInstalled `"" IsVcRuntimeInstalled ""`
+!define un.IsVcRuntimeInstalled `"" IsVcRuntimeInstalled ""`
+
+!macro _IsPythonInstalled _a _b _t _f
+    !insertmacro _LOGICLIB_TEMP
+    ${SetRegView64}
+    # Check Python ${PYTHON_VERSION} ${PRODUCT_ARCH}...
+    ReadRegStr $_LOGICLIB_TEMP HKLM "Software\Python\PythonCore\${PYTHON_VERSION}\InstallPath" ""
+    ${SetRegView32}
+    !insertmacro _!= $_LOGICLIB_TEMP "" `${_t}` `${_f}`
+!macroend
+!define IsPythonInstalled `"" IsPythonInstalled ""`
+!define un.IsPythonInstalled `"" IsPythonInstalled ""`
 
 #------------------------------------------------------------------------------
 # Check WinDbg executable presence in selected directory
@@ -146,91 +169,8 @@ FunctionEnd
 # Installer Sections
 #------------------------------------------------------------------------------
 
-Section "${PRODUCT_SHORT_NAME}" Section1
-    DetailPrint "Check Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library..."
-    push 'msvcr80.dll'
-    #push 'Microsoft.VC80.CRT,version="8.0.50727.4027",type="win32",processorArchitecture="${ARCH}",publicKeyToken="1fc8b3b9a1e18e3b"'
-    push 'Microsoft.VC80.CRT,version="8.0.50727.4053",type="win32",processorArchitecture="${ARCH}",publicKeyToken="1fc8b3b9a1e18e3b"'
-    call WinSxS_HasAssembly
-    pop $R0
-    
-    ${If} $R0 == 1
-        DetailPrint "Success"
-    ${Else}
-        DetailPrint "Not find"
-        DetailPrint "Going to download and install it."
-        
-        MessageBox MB_YESNOCANCEL|MB_ICONQUESTION "${PRODUCT_SHORT_NAME} requires Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library. Download and install it automatically?$\n\
-                                             Press YES to allow.$\n\
-                                             Press NO to continue without runtime.$\n\
-                                             Press CANCEL to exit from installer." IDYES DownloadAndInstallRuntime IDNO ContinueNoRuntime
-            DetailPrint "${PRODUCT_FULL_NAME} installation cancelled."
-            Abort
-        DownloadAndInstallRuntime:
-            DetailPrint "Downloading Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library..."
-            inetc::get /CAPTION "${PRODUCT_SHORT_NAME}" /QUESTION "" /POPUP "" /TIMEOUT=30000 "${VC_RUNTIME_URL}" "$TEMP\vcredist_${PRODUCT_ARCH}.exe" /END
-            Pop $0
-            ${If} $0 == "OK" 
-                DetailPrint "Successfully downloaded."
-                DetailPrint "Installing Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library..."
-            	IfErrors ClearErrorFlag
-                ClearErrorFlag:
-                ExecWait "$TEMP\vcredist_${PRODUCT_ARCH}.exe"
-                IfErrors RuntimeInstallFailed
-                DetailPrint "Successfully installed."
-            ${Else}
-                RuntimeInstallFailed:
-                DetailPrint "Operation failed. Installation will be continued without Visual C++ runtime."
-                DetailPrint "Please download and install it manually from product download page:"
-                DetailPrint "${VC_RUNTIME_URL}"
-            ${EndIf}
-        ContinueNoRuntime:
-        
-    ${EndIf}
-    
-    
-    DetailPrint "Check Python ${PYTHON_VERSION} ${PRODUCT_ARCH}..."
-    !if ${PRODUCT_ARCH} == "x64"
-    ${IfThen} ${RunningX64} ${|} SetRegView 64 ${|}
-    !endif
-    ReadRegStr $R0 HKLM "Software\Python\PythonCore\${PYTHON_VERSION}\InstallPath" ""
-    !if ${PRODUCT_ARCH} == "x64"
-    ${IfThen} ${RunningX64} ${|} SetRegView 32 ${|}
-    !endif
-    
-    ${If} $R0 == ""
-        DetailPrint "Appropiate Python version was no not find in:"
-        DetailPrint "HKLM\Software\Python\PythonCore\${PYTHON_VERSION}\InstallPath"
-        DetailPrint "Going to download and install it."
-        MessageBox MB_YESNOCANCEL|MB_ICONQUESTION "${PRODUCT_SHORT_NAME} requires Python ${PYTHON_VERSION}. Download and install it automatically?$\n\
-                                             Press YES to allow.$\n\
-                                             Press NO to continue without Python.$\n\
-                                             Press CANCEL to exit from installer." IDYES DownloadAndInstallPython IDNO ContinueNoPython
-            DetailPrint "${PRODUCT_FULL_NAME} installation cancelled."
-            Abort
-        DownloadAndInstallPython:
-            DetailPrint "Downloading Python..."
-            inetc::get /CAPTION "${PRODUCT_SHORT_NAME}" /QUESTION "" /POPUP "" /TIMEOUT=30000 "${PYTHON_URL_BASE}${PYTHON_INSTALLER}" "$TEMP\${PYTHON_INSTALLER}" /END
-            Pop $0
-            ${If} $0 == "OK" 
-                DetailPrint "Successfully downloaded."
-                DetailPrint "Installing Python..."
-            	IfErrors ClearErrorFlag1
-                ClearErrorFlag1:
-                ExecWait '"msiexec" /i "$TEMP\${PYTHON_INSTALLER}"'
-                IfErrors PythonInstallFailed
-                DetailPrint "Successfully installed."
-            ${Else}
-                PythonInstallFailed:
-                DetailPrint "Operation failed. Installation will be continued without Python."
-                DetailPrint "Please download and install it manually:"
-                DetailPrint "${PYTHON_URL_BASE}${PYTHON_INSTALLER}"
-            ${EndIf}
-        ContinueNoPython:
-    ${Else}
-        DetailPrint "Python ${PYTHON_VERSION} ${PRODUCT_ARCH} location: $R0"
-    ${EndIf}
-
+Section "${PRODUCT_SHORT_NAME} ${PRODUCT_ARCH}" sec_pykd
+    SectionIn RO
     
     # Set Section properties
     SetOverwrite on
@@ -238,10 +178,9 @@ Section "${PRODUCT_SHORT_NAME}" Section1
     # CURRENT USER
     SetShellVarContext current
 
-    # Set Section Files and Shortcuts
+    DetailPrint "Extracting extension..."
     SetOutPath "$INSTDIR"
 
-    # Extract files
     !if ${PRODUCT_ARCH} == "x64"
         File "..\x64\Release\pykd.pyd"
     !else
@@ -249,13 +188,199 @@ Section "${PRODUCT_SHORT_NAME}" Section1
     !endif
 SectionEnd
 
-Section -FinishSection
-    #Store installation folder
-    !if ${PRODUCT_ARCH} == "x64"
-    ${IfThen} ${RunningX64} ${|} SetRegView 64 ${|}
-    !endif
-    WriteRegStr HKLM "Software\${PRODUCT_SHORT_NAME}" "InstallPath" "$INSTDIR"
-    !if ${PRODUCT_ARCH} == "x64"
-    ${IfThen} ${RunningX64} ${|} SetRegView 32 ${|}
-    !endif
+Section "Snippets" sec_snippets
+    # Set Section properties
+    SetOverwrite on
+
+    DetailPrint "Extracting snippets..."
+    SetOutPath "$DOCUMENTS\${PRODUCT_SHORT_NAME}"
+    File "..\Snippets\*.py"
 SectionEnd
+
+Section "Python ${PYTHON_VERSION} ${PRODUCT_ARCH}" sec_python
+    DetailPrint "Downloading Python..."
+    inetc::get /CAPTION "${PRODUCT_SHORT_NAME}" /QUESTION "" /POPUP "" /TIMEOUT=30000 "${PYTHON_URL_BASE}${PYTHON_INSTALLER}" "$TEMP\${PYTHON_INSTALLER}" /END
+    Pop $0
+    ${If} $0 == "OK" 
+        DetailPrint "Successfully downloaded."
+        DetailPrint "Installing Python..."
+        IfErrors ClearErrorFlag1
+        ClearErrorFlag1:
+        ExecWait '"msiexec" /i "$TEMP\${PYTHON_INSTALLER}"'
+        IfErrors PythonInstallFailed
+        DetailPrint "Successfully installed."
+    ${Else}
+        PythonInstallFailed:
+        DetailPrint "Operation failed. Installation will be continued without Python."
+        DetailPrint "Please download and install it manually:"
+        DetailPrint "${PYTHON_URL_BASE}${PYTHON_INSTALLER}"
+    ${EndIf}
+SectionEnd
+
+Section "Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime" sec_vcruntime
+    DetailPrint "Downloading Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library..."
+    inetc::get /CAPTION "${PRODUCT_SHORT_NAME}" /QUESTION "" /POPUP "" /TIMEOUT=30000 "${VCRUNTIME_URL}" "$TEMP\vcredist_${PRODUCT_ARCH}.exe" /END
+    Pop $0
+    ${If} $0 == "OK" 
+        DetailPrint "Successfully downloaded."
+        DetailPrint "Installing Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library..."
+        IfErrors ClearErrorFlag
+        ClearErrorFlag:
+        ExecWait "$TEMP\vcredist_${PRODUCT_ARCH}.exe"
+        IfErrors RuntimeInstallFailed
+        DetailPrint "Successfully installed."
+    ${Else}
+        RuntimeInstallFailed:
+        DetailPrint "Operation failed. Installation will be continued without Visual C++ runtime."
+        DetailPrint "Please download and install it manually from product download page:"
+        DetailPrint "${VCRUNTIME_URL}"
+    ${EndIf}
+SectionEnd
+
+Section -FinishSection
+    ${SetRegView64}
+    DetailPrint "Storing installation folder..."
+    WriteRegStr HKLM "Software\${PRODUCT_SHORT_NAME}" "InstallPath" "$INSTDIR"
+    
+    DetailPrint "Adding extension dir and snippets dir to PYTHONPATH..."
+    WriteRegStr HKLM "Software\Python\PythonCore\${PYTHON_VERSION}\PythonPath\${PRODUCT_SHORT_NAME}" "" "$INSTDIR;$DOCUMENTS\${PRODUCT_SHORT_NAME}"
+    
+    DetailPrint "Registering uninstaller..."
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_SHORT_NAME}" "DisplayName" "${PRODUCT_FULL_NAME} (${PRODUCT_ARCH})"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_SHORT_NAME}" "UninstallString" "$LOCALAPPDATA\${PRODUCT_SHORT_NAME}\uninstall_${PRODUCT_ARCH}.exe"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_SHORT_NAME}" "Publisher" "${PRODUCT_MANUFACTURER}"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_SHORT_NAME}" "URLInfoAbout" "${PRODUCT_URL}"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_SHORT_NAME}" "DisplayVersion" "${PRODUCT_VERSION}"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_SHORT_NAME}" "DisplayIcon" "$LOCALAPPDATA\${PRODUCT_SHORT_NAME}\uninstall_${PRODUCT_ARCH}.exe"
+    ${SetRegView32}
+    
+    DetailPrint "Writing uninstaller..."
+    CreateDirectory "$LOCALAPPDATA\${PRODUCT_SHORT_NAME}"
+    WriteUninstaller "$LOCALAPPDATA\${PRODUCT_SHORT_NAME}\uninstall_${PRODUCT_ARCH}.exe"
+SectionEnd
+
+#------------------------------------------------------------------------------
+# Before first page displayed
+#------------------------------------------------------------------------------
+
+# Workaround to allow ${IsVcRuntimeInstalled} work properly
+!define WinSxS_HasAssembly `Call WinSxS_HasAssembly`
+
+Function .onInit
+    System::Call 'kernel32::CreateMutexA(i 0, i 0, t "${PRODUCT_SHORT_NAME}_${PRODUCT_ARCH}_setup") i .r1 ?e'
+    Pop $R0
+    ${If} $R0 != 0
+        MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
+        Abort
+    ${EndIf}
+
+    !if ${PRODUCT_ARCH} == "x64"
+    ${IfNot} ${RunningX64}
+        MessageBox MB_OK|MB_ICONEXCLAMATION "This installation requires 64-bit OS."
+        Abort
+    ${EndIf}
+    !endif
+    
+    ${SetRegView64}
+    # Get installation folder from registry if available
+    ReadRegStr $INSTDIR HKLM "Software\${PRODUCT_SHORT_NAME}" "InstallPath"
+    ${SetRegView32}
+    
+    ${If} ${IsPythonInstalled}
+        !insertmacro UnselectSection ${sec_python}
+        SectionSetText ${sec_python} ""
+    ${EndIf}
+    
+    ${If} ${IsVcRuntimeInstalled}
+        !insertmacro UnselectSection ${sec_vcruntime}
+        SectionSetText ${sec_vcruntime} ""
+    ${EndIf}
+FunctionEnd
+
+#------------------------------------------------------------------------------
+# Installer sections descriptions
+#------------------------------------------------------------------------------
+
+LangString DESC_sec_pykd      ${LANG_ENGLISH} "${PRODUCT_FULL_NAME}"
+LangString DESC_sec_snippets  ${LANG_ENGLISH} "Useful code snippets. Will be installed in $DOCUMENTS\${PRODUCT_SHORT_NAME}"
+LangString DESC_sec_python    ${LANG_ENGLISH} "Let installer download and setup Python ${PYTHON_VERSION} ${PRODUCT_ARCH}"
+LangString DESC_sec_vcruntime ${LANG_ENGLISH} "Let installer download and setup Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library"
+
+!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+    !insertmacro MUI_DESCRIPTION_TEXT ${sec_pykd}      $(DESC_sec_pykd)
+    !insertmacro MUI_DESCRIPTION_TEXT ${sec_snippets}  $(DESC_sec_snippets)
+    !insertmacro MUI_DESCRIPTION_TEXT ${sec_python}    $(DESC_sec_python)
+    !insertmacro MUI_DESCRIPTION_TEXT ${sec_vcruntime} $(DESC_sec_vcruntime)
+!insertmacro MUI_FUNCTION_DESCRIPTION_END
+
+#------------------------------------------------------------------------------
+# Uninstaller sections
+#------------------------------------------------------------------------------
+Section "un.${PRODUCT_SHORT_NAME} ${PRODUCT_ARCH}" unsec_pykd
+    SectionIn RO
+
+    ${SetRegView64}
+    DetailPrint "Retriving installation folder from registry..."
+    ReadRegStr $INSTDIR HKLM "Software\${PRODUCT_SHORT_NAME}" "InstallPath"
+
+    DetailPrint "Deleting extension dir and snippets dir from PYTHONPATH..."
+    DeleteRegKey HKLM "Software\Python\PythonCore\${PYTHON_VERSION}\PythonPath\${PRODUCT_SHORT_NAME}"
+    
+    DetailPrint "Unregistering uninstaller..."
+    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_SHORT_NAME}"
+    ${SetRegView32}
+
+    DetailPrint "Deleting extension..."
+    Delete "$INSTDIR\pykd.pyd"
+    
+    # Let user delete snippets himself
+    #RMDir "$DOCUMENTS\${PRODUCT_SHORT_NAME}"
+    
+    DetailPrint "Deleting uninstaller..."
+    Delete "$LOCALAPPDATA\${PRODUCT_SHORT_NAME}\uninstall_${PRODUCT_ARCH}.exe"
+    RMDir "$LOCALAPPDATA\${PRODUCT_SHORT_NAME}"
+SectionEnd
+
+Section /o "un.Python ${PYTHON_VERSION} ${PRODUCT_ARCH}" unsec_python
+    DetailPrint "Uninstalling Python..."
+    ExecWait '"msiexec" /x ${PYTHON_PRODUCT_CODE}'
+SectionEnd
+
+Section /o "un.Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime" unsec_vcruntime
+    DetailPrint "Uninstalling Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library..."
+    ExecWait '"msiexec" /x ${VCRUNTIME_PRODUCT_CODE}'
+SectionEnd
+
+#------------------------------------------------------------------------------
+# Before first page displayed
+#------------------------------------------------------------------------------
+
+# Workaround to allow ${IsVcRuntimeInstalled} work properly
+!undef WinSxS_HasAssembly
+!define WinSxS_HasAssembly `Call un.WinSxS_HasAssembly`
+
+Function un.onInit
+    ${IfNot} ${IsPythonInstalled}
+        !insertmacro UnselectSection ${unsec_python}
+        SectionSetText ${unsec_python} ""
+    ${EndIf}
+
+    ${IfNot} ${IsVcRuntimeInstalled}
+        !insertmacro UnselectSection ${unsec_vcruntime}
+        SectionSetText ${unsec_vcruntime} ""
+    ${EndIf}
+FunctionEnd
+
+#------------------------------------------------------------------------------
+# Uninstaller sections descriptions
+#------------------------------------------------------------------------------
+
+LangString DESC_unsec_pykd      ${LANG_ENGLISH} "${PRODUCT_FULL_NAME}"
+LangString DESC_unsec_python    ${LANG_ENGLISH} "Uninstall Python ${PYTHON_VERSION} ${PRODUCT_ARCH}"
+LangString DESC_unsec_vcruntime ${LANG_ENGLISH} "Uninstall Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library"
+
+!insertmacro MUI_UNFUNCTION_DESCRIPTION_BEGIN
+    !insertmacro MUI_DESCRIPTION_TEXT ${unsec_pykd}      $(DESC_unsec_pykd)
+    !insertmacro MUI_DESCRIPTION_TEXT ${unsec_python}    $(DESC_unsec_python)
+    !insertmacro MUI_DESCRIPTION_TEXT ${unsec_vcruntime} $(DESC_unsec_vcruntime)
+!insertmacro MUI_UNFUNCTION_DESCRIPTION_END
