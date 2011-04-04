@@ -77,6 +77,11 @@ public:
     getEnd() const {
         return m_end;
     }
+    
+    ULONG
+    getSize() const {
+        return (ULONG)( m_end - m_base );
+    }        
 
     bool
     contain( ULONG64  addr ) const {
