@@ -10,7 +10,6 @@ def println(msg):
     else:
         print msg
 
-
 class StlpNodeWrapper:
     def __init__(self, addr):
         # Wrapper specific field
@@ -80,8 +79,8 @@ def dumpStlportMap(addr):
 
 def printUsage():
     println("Usage:")
-    println("!py dump_stlp_map map_address [\"EXACT MAP PAIR TYPE\"]")
-    println("To obtain exact map pair type use:")
+    println("!py dump_stlp_map <map_address|variable_name> [\"accurate map pair type\"]")
+    println("To retrive accurate map pair type use:")
     println("dt -r ModuleName!stlp_std::pair*")
     println("Find required type in the list and copy paste it as parameter.")
 
@@ -96,7 +95,7 @@ if __name__ == "__main__":
         printUsage()
         quit(0)
     else:
-        mapAddr = int(sys.argv[1], 16)
+        mapAddr = int(expr(sys.argv[1]))
     
     addrList = dumpStlportMap(mapAddr)
     for addr in addrList:
