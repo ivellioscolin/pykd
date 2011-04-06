@@ -59,15 +59,15 @@ ShowUninstDetails show
 #------------------------------------------------------------------------------
 !define MUI_ABORTWARNING
 
-!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\orange-install.ico"
-!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\orange-uninstall.ico"
+!define MUI_ICON "MUIOrangeVistaTheme\Clean\installer.ico"
+!define MUI_UNICON "MUIOrangeVistaTheme\Clean\uninstaller.ico"
 
 !define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Header\orange.bmp"
-!define MUI_HEADERIMAGE_UNBITMAP "${NSISDIR}\Contrib\Graphics\Header\orange-uninstall.bmp"
+!define MUI_HEADERIMAGE_BITMAP "MUIOrangeVistaTheme\Clean\header-l.bmp"
+!define MUI_HEADERIMAGE_UNBITMAP "MUIOrangeVistaTheme\Clean\header-l-un.bmp"
 
 !define MUI_WELCOMEPAGE_TITLE_3LINES
-!define MUI_WELCOMEFINISHPAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Wizard\orange.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "MUIOrangeVistaTheme\Clean\wizard.bmp"
 
 !define MUI_DIRECTORYPAGE_TEXT_TOP "Please specify path to $\"winext$\" subfolder of Debugging Tools for Windows (${PRODUCT_ARCH})."
 !define MUI_DIRECTORYPAGE_TEXT_DESTINATION "Debugging Tools for Windows (${PRODUCT_ARCH})\winext folder"
