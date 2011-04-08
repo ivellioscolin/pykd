@@ -282,7 +282,7 @@ dbgModuleClass::getImagePath()
         if ( FAILED( hres ) )
             throw DbgException( "IDebugSymbol3::GetImagePathWide  failed" );
             
-	std::vector<WCHAR> pathBuffer(pathSize);
+	    std::vector<WCHAR> pathBuffer(pathSize);
         
         hres = dbgExt->symbols3->GetSymbolPathWide( &pathBuffer[0], pathSize, NULL );
         if ( FAILED( hres ) )
@@ -363,7 +363,7 @@ dbgModuleClass::print() const
             0);
 		std::string fullname(&v[0]);
 		fmt % m_base % (m_end - m_base) % m_name % fullname;
-		return fmt.str();
+				return fmt.str();
 	}
 	catch (std::exception & e)
 	{

@@ -66,7 +66,7 @@ public:
 
     dbgModuleClass() :
         m_base( 0 ),
-        m_end( 0 )     
+        m_end( 0 )
     {}
 
     dbgModuleClass( const std::string &name, ULONG64 base, ULONG size );
@@ -114,6 +114,16 @@ public:
     getPdbName() const {
         return std::wstring( m_debugInfo.LoadedPdbName );
     }
+    
+    ULONG
+    getCheckSum() const {
+        return m_debugInfo.CheckSum;
+    }
+    
+    ULONG
+    getTimeStamp() const {
+        return m_debugInfo.TimeDateStamp;
+    }        
 
     bool 
     addSyntheticSymbol( ULONG64 offset, ULONG size, const std::string &symName );
@@ -135,7 +145,7 @@ private:
     ULONG64         m_base;
 
     ULONG64         m_end;
-
+    
     std::string     m_name;
 
     std::wstring    m_imageFullName;
