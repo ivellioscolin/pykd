@@ -1,57 +1,44 @@
 
 #pragma once
 
+//////////////////////////////////////////////////////////////////////////////
+
 // monitoring and processing debug events
-class DbgEventCallbacks : public DebugBaseEventCallbacks
+class DbgEventCallbacksManager : public DebugBaseEventCallbacks
 {
 public:
 
-    static HRESULT Start();
-    static void Stop();
+    DbgEventCallbacksManager( IDebugClient  *client = NULL );
+    
+    virtual ~DbgEventCallbacksManager();
 
 private:
-
-    // may generate HRESULT exception if not registered
-    DbgEventCallbacks();
-    void Deregister();
 
     /////////////////////////////////////////////////////////////////////////////////
     // IUnknown interface implementation
 
-    STDMETHOD_(ULONG, AddRef)();
-    STDMETHOD_(ULONG, Release)();
-
+    STDMETHOD_(ULONG, AddRef)() { return 1; }
+    STDMETHOD_(ULONG, Release)() { return 1; }
+    
     /////////////////////////////////////////////////////////////////////////////////
     // IDebugEventCallbacks interface implementation
 
     STDMETHOD(GetInterestMask)(
         __out PULONG Mask
-    );
+    );    
 
     STDMETHOD(ChangeSymbolState)(
         __in ULONG Flags,
         __in ULONG64 Argument
     );
-
-    /////////////////////////////////////////////////////////////////////////////////
-
-    HRESULT doSymbolsLoaded(
-        ULONG64 moduleBase
+    
+    STDMETHOD(Breakpoint)(
+        __in PDEBUG_BREAKPOINT Bp
     );
-
-    /////////////////////////////////////////////////////////////////////////////////
-
-    volatile LONG m_ReferenceCount;
-
-    IDebugClient *m_dbgClient;
-    IDebugSymbols3 *m_dbgSymbols3;
-    IDebugControl *m_dbgControl;
-
-    /////////////////////////////////////////////////////////////////////////////////
-    // global singleton
-
-    static DbgEventCallbacks *dbgEventCallbacks;
-    static volatile LONG dbgEventCallbacksStartCount;
-
-    /////////////////////////////////////////////////////////////////////////////////
+    
+private:
+  
+    IDebugClient4       *m_debugClient;
 };
+
+//////////////////////////////////////////////////////////////////////////////

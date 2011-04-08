@@ -122,14 +122,32 @@ dbgExtensionClass::print() const
 
 ///////////////////////////////////////////////////////////////////////////////
 
-
+dbgBreakpointClass::breakpointMap       dbgBreakpointClass::m_breakMap;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-dbgBreakpointClass::dbgBreakpointClass( ULONG64 offset )
+HRESULT dbgBreakpointClass::onBreakpointEvnet( IDebugBreakpoint*  bp )
+{
+    try {
+
+        breakpointMap::iterator   it = m_breakMap.find( bp );
+        if ( it != m_breakMap.end() )    
+            return  boost::python::extract<HRESULT>( it->second->m_callback() );
+            
+    }
+    catch(...)
+    {}
+    
+    return DEBUG_STATUS_NO_CHANGE;               
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+dbgBreakpointClass::dbgBreakpointClass( ULONG64 offset, boost::python::object  &callback )
 {
     m_offset = offset;
     m_breakpoint = NULL;
+    m_callback = callback;
 
     set();    
 }
@@ -163,7 +181,9 @@ dbgBreakpointClass::set()
             
         hres = m_breakpoint->SetFlags( DEBUG_BREAKPOINT_ENABLED );
         if (  FAILED( hres ) )
-            throw  DbgException( "IDebugBreakpoint::SetFlags  failed" );           
+            throw  DbgException( "IDebugBreakpoint::SetFlags  failed" );   
+            
+        m_breakMap.insert( std::make_pair( m_breakpoint, this ) );
             
         return true;                      
     } 
@@ -189,6 +209,11 @@ dbgBreakpointClass::remove()
     if ( m_breakpoint )
     {
         dbgExt->control->RemoveBreakpoint( m_breakpoint );
+        
+        breakpointMap::iterator   bp = m_breakMap.find( m_breakpoint );
+        if ( bp != m_breakMap.end() )
+            m_breakMap.erase( bp );
+        
         m_breakpoint = NULL;
     }
 }
@@ -285,3 +310,4 @@ evaluate( const std::string  &expression )
 }
 
 /////////////////////////////////////////////////////////////////////////////// 
+

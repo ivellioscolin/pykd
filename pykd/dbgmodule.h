@@ -3,6 +3,9 @@
 #include <string>
 #include <map>
 
+#include "dbgext.h"
+#include "dbgmem.h"
+
 /////////////////////////////////////////////////////////////////////////////////
 
 // global unique module data

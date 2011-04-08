@@ -24,7 +24,7 @@ getThreadList()
         if ( FAILED( hres ) )
             throw DbgException( "IDebugSystemObjects::GetNumberThreads failed" );
             
-	boost::scoped_array<ULONG> ids(new ULONG[threadCount]);
+	    boost::scoped_array<ULONG> ids(new ULONG[threadCount]);
         hres = dbgExt->system->GetThreadIdsByIndex( 0, threadCount, ids.get(), NULL );
         if ( FAILED( hres ) )
             throw DbgException( "IDebugSystemObjects::GetThreadIdsByIndex failed" );

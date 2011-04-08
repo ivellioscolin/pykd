@@ -574,8 +574,7 @@ ULONG delSyntheticSymbolsMask(
 /////////////////////////////////////////////////////////////////////////////////
 
 static void restoreSyntheticSymbolForModuleNoLock(
-    const ModuleInfo &moduleInfo,
-    IDebugSymbols3 *symbols3
+    const ModuleInfo &moduleInfo 
 )
 {
     SynSymbolsMap::const_iterator itSynSymbols = 
@@ -587,7 +586,7 @@ static void restoreSyntheticSymbolForModuleNoLock(
         while (itSynSymbol != itSynSymbols->second.end())
         {
             DEBUG_MODULE_AND_ID dbgModuleAndId;
-            symbols3->AddSyntheticSymbol(
+            dbgExt->symbols3->AddSyntheticSymbol(
                 moduleInfo.m_base + itSynSymbol->first,
                 itSynSymbol->second.m_size,
                 itSynSymbol->second.m_name.c_str(),
@@ -602,22 +601,18 @@ static void restoreSyntheticSymbolForModuleNoLock(
 /////////////////////////////////////////////////////////////////////////////////
 
 void restoreSyntheticSymbolForModule(
-    const ModuleInfo &moduleInfo,
-    IDebugSymbols3 *symbols3
+    const ModuleInfo &moduleInfo 
 )
 {
     _SynSymbolsMapScopedLock();
 
     // see (**1)
-    restoreSyntheticSymbolForModuleNoLock(moduleInfo, symbols3);
+    restoreSyntheticSymbolForModuleNoLock(moduleInfo);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
-void restoreSyntheticSymbolForAllModules(
-    IDebugSymbols3 *symbols3,
-    IDebugControl *control
-)
+void restoreSyntheticSymbolForAllModules()
 {
     try
     {
@@ -629,12 +624,12 @@ void restoreSyntheticSymbolForAllModules(
         ULONG nLoaded;
         ULONG nUnloaded;
 
-        HRESULT hres = symbols3->GetNumberModules(&nLoaded, &nUnloaded);
+        HRESULT hres = dbgExt->symbols3->GetNumberModules(&nLoaded, &nUnloaded);
         if (SUCCEEDED(hres) && (nLoaded || nUnloaded))
         {
             std::vector<DEBUG_MODULE_PARAMETERS> arrModules(nLoaded + nUnloaded);
             hres = 
-                symbols3->GetModuleParameters(
+                dbgExt->symbols3->GetModuleParameters(
                     (ULONG)arrModules.size(),
                     NULL,
                     0,
@@ -643,8 +638,8 @@ void restoreSyntheticSymbolForAllModules(
             {
                 for (ULONG i = 0; i < arrModules.size(); ++i)
                 {
-                    ModuleInfo moduleInfo(arrModules[i], control);
-                    restoreSyntheticSymbolForModuleNoLock(moduleInfo, symbols3);
+                    ModuleInfo moduleInfo(arrModules[i]);
+                    restoreSyntheticSymbolForModuleNoLock(moduleInfo);
                 }
             }
         }

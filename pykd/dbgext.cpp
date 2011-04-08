@@ -29,48 +29,15 @@
 #include "dbgprocess.h"
 #include "dbgsynsym.h"
 
-/////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
-// указатель на текущйи интерфейс
+// указатель на текущий интерфейс
 DbgExt    *dbgExt = NULL;
 
+static bool isWindbgExt();
 
-/////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
-class WindbgGlobalSession 
-{
-public:
-
-    WindbgGlobalSession() {
-    
-        boost::python::import( "pykd" );
-        
-        main = boost::python::import("__main__");
-        
-        // перенаправление стандартных потоков ВВ
-        boost::python::object       sys = boost::python::import( "sys");
-        
-        dbgOut                      dout;
-        sys.attr("stdout") = boost::python::object( dout );
-
-        dbgIn                       din;
-        sys.attr("stdin") = boost::python::object( din );
-    }
-    
-    boost::python::object
-    global() {
-        return main.attr("__dict__");
-    }
-
-private:
-   
-    boost::python::object       main;
-   
-};   
-
-WindbgGlobalSession     *windbgGlobalSession = NULL; 
-
-/////////////////////////////////////////////////////////////////////////////////
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprint, DbgPrint::dprint, 1, 2 )
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln, DbgPrint::dprintln, 1, 2 )
 
@@ -94,8 +61,8 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "trace", &setExecutionStatus<DEBUG_STATUS_STEP_INTO> );
     boost::python::def( "step", &setExecutionStatus<DEBUG_STATUS_STEP_OVER> );   
     boost::python::def( "expr", &evaluate ); 
-    boost::python::def( "createSession", &dbgCreateSession );   // deprecated
-    boost::python::def( "isSessionStart", &dbgIsSessionStart );
+    boost::python::def( "isWindbgExt", &isWindbgExt );
+    boost::python::def( "isSessionStart", &isWindbgExt );
     boost::python::def( "symbolsPath", &dbgSymPath );
     boost::python::def( "dprint", &DbgPrint::dprint, dprint( boost::python::args( "str", "dml" ), ""  ) );
     boost::python::def( "dprintln", &DbgPrint::dprintln, dprintln( boost::python::args( "str", "dml" ), ""  ) );
@@ -200,7 +167,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::class_<dbgBreakpointClass>( 
          "bp",
          "break point",
-         boost::python::init<ULONG64>( boost::python::args("offset"), "__init__  dbgBreakpointClass" ) ) 
+         boost::python::init<ULONG64,boost::python::object&>( boost::python::args("offset", "callback"), "__init__  dbgBreakpointClass" ) ) 
         .def( "set", &dbgBreakpointClass::set )
         .def( "remove", &dbgBreakpointClass::remove )
         .def( "__str__", &dbgBreakpointClass::print );
@@ -268,6 +235,86 @@ BOOST_PYTHON_MODULE( pykd )
 
 /////////////////////////////////////////////////////////////////////////////////
 
+class WindbgGlobalSession 
+{
+public:
+    
+    static
+    boost::python::object
+    global() {
+        return windbgGlobalSession->main.attr("__dict__");
+    }
+    
+    static 
+    VOID
+    StartWindbgSession() {
+        if ( 1 == InterlockedIncrement( &sessionCount ) )
+        {
+            windbgGlobalSession = new WindbgGlobalSession();
+        }
+    }
+    
+    static
+    VOID
+    StopWindbgSession() {
+        if ( 0 == InterlockedDecrement( &sessionCount ) )
+        {
+            delete windbgGlobalSession;
+            windbgGlobalSession = NULL;
+        }            
+    }
+    
+    static
+    bool isInit() {
+        return windbgGlobalSession != NULL;
+    }
+    
+
+private:
+
+    WindbgGlobalSession() {
+
+        PyImport_AppendInittab("pykd", initpykd ); 
+
+        Py_Initialize();    
+    
+        boost::python::import( "pykd" );
+        
+        main = boost::python::import("__main__");
+        
+        // перенаправление стандартных потоков ВВ
+        boost::python::object       sys = boost::python::import( "sys");
+        
+        dbgOut                      dout;
+        sys.attr("stdout") = boost::python::object( dout );
+
+        dbgIn                       din;
+        sys.attr("stdin") = boost::python::object( din );
+    }
+    
+    ~WindbgGlobalSession() {
+        Py_Finalize();
+    }
+   
+    boost::python::object           main;
+    
+    DbgEventCallbacksManager        callbackMgr;
+    
+    static volatile LONG            sessionCount;      
+    
+    static WindbgGlobalSession     *windbgGlobalSession;     
+};   
+
+volatile LONG            WindbgGlobalSession::sessionCount = 0;
+
+WindbgGlobalSession     *WindbgGlobalSession::windbgGlobalSession = NULL; 
+
+bool isWindbgExt() {
+    return WindbgGlobalSession::isInit();
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
 HRESULT
 CALLBACK
 DebugExtensionInitialize(
@@ -276,14 +323,10 @@ DebugExtensionInitialize(
 {
     *Version = DEBUG_EXTENSION_VERSION( 1, 0 );
     *Flags = 0;
-
-    PyImport_AppendInittab("pykd", initpykd ); 
-
-    Py_Initialize();
-
-    windbgGlobalSession = new WindbgGlobalSession();
-
-    return setDbgSessionStarted();
+ 
+    WindbgGlobalSession::StartWindbgSession();
+    
+    return S_OK;
 }
 
 
@@ -291,38 +334,34 @@ VOID
 CALLBACK
 DebugExtensionUninitialize()
 {
-    DbgEventCallbacks::Stop();
-
-    delete windbgGlobalSession;
-    windbgGlobalSession = NULL;
-
-    Py_Finalize();
+    WindbgGlobalSession::StopWindbgSession();
 }
 
-
-void
-SetupDebugEngine( IDebugClient4 *client, DbgExt *dbgExt  )
+DbgExt::DbgExt( IDebugClient4 *masterClient )
 {
-    client->QueryInterface( __uuidof(IDebugClient), (void **)&dbgExt->client );
-    client->QueryInterface( __uuidof(IDebugClient4), (void **)&dbgExt->client4 );
+    masterClient->QueryInterface( __uuidof(IDebugClient), (void **)&client );
+    masterClient->QueryInterface( __uuidof(IDebugClient4), (void **)&client4 );
     
     
-    client->QueryInterface( __uuidof(IDebugControl), (void **)&dbgExt->control );
-    client->QueryInterface( __uuidof(IDebugControl4), (void **)&dbgExt->control4 );
+    masterClient->QueryInterface( __uuidof(IDebugControl), (void **)&control );
+    masterClient->QueryInterface( __uuidof(IDebugControl4), (void **)&control4 );
     
-    client->QueryInterface( __uuidof(IDebugRegisters), (void **)&dbgExt->registers );
+    masterClient->QueryInterface( __uuidof(IDebugRegisters), (void **)&registers );
     
-    client->QueryInterface( __uuidof(IDebugSymbols), (void ** )&dbgExt->symbols );
-    client->QueryInterface( __uuidof(IDebugSymbols2), (void ** )&dbgExt->symbols2 );    
-    client->QueryInterface( __uuidof(IDebugSymbols3), (void ** )&dbgExt->symbols3 );      
+    masterClient->QueryInterface( __uuidof(IDebugSymbols), (void ** )&symbols );
+    masterClient->QueryInterface( __uuidof(IDebugSymbols2), (void ** )&symbols2 );    
+    masterClient->QueryInterface( __uuidof(IDebugSymbols3), (void ** )&symbols3 );      
     
-    client->QueryInterface( __uuidof(IDebugDataSpaces), (void **)&dbgExt->dataSpaces );
-    client->QueryInterface( __uuidof(IDebugDataSpaces4), (void **)&dbgExt->dataSpaces4 );
+    masterClient->QueryInterface( __uuidof(IDebugDataSpaces), (void **)&dataSpaces );
+    masterClient->QueryInterface( __uuidof(IDebugDataSpaces4), (void **)&dataSpaces4 );
     
-    client->QueryInterface( __uuidof(IDebugAdvanced2), (void **)&dbgExt->advanced2 );
+    masterClient->QueryInterface( __uuidof(IDebugAdvanced2), (void **)&advanced2 );
     
-    client->QueryInterface( __uuidof(IDebugSystemObjects), (void**)&dbgExt->system );
-    client->QueryInterface( __uuidof(IDebugSystemObjects2), (void**)&dbgExt->system2 );
+    masterClient->QueryInterface( __uuidof(IDebugSystemObjects), (void**)&system );
+    masterClient->QueryInterface( __uuidof(IDebugSystemObjects2), (void**)&system2 );
+    
+    m_previosExt = dbgExt;
+    dbgExt = this;
 }
 
 DbgExt::~DbgExt()
@@ -365,6 +404,8 @@ DbgExt::~DbgExt()
         
     if ( system2 )
         system2->Release();
+        
+    dbgExt = m_previosExt;
 }
 
 /////////////////////////////////////////////////////////////////////////////////    
@@ -373,15 +414,12 @@ HRESULT
 CALLBACK
 py( PDEBUG_CLIENT4 client, PCSTR args)
 {
+    DbgExt      ext( client );
 
     PyThreadState   *globalInterpreter = PyThreadState_Swap( NULL );
     PyThreadState   *localInterpreter = Py_NewInterpreter();
 
     try {
-    
-        DbgExt      ext;
-        SetupDebugEngine( client, &ext );
-        dbgExt = &ext;
 
         boost::python::import( "pykd" ); 
 
@@ -435,7 +473,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
         {
             DWORD       oldCurDirLen = GetCurrentDirectoryA( 0, NULL );
 
-	    std::vector<char> oldCurDirCstr(oldCurDirLen);
+	        std::vector<char> oldCurDirCstr(oldCurDirLen);
             
             GetCurrentDirectoryA( oldCurDirLen, &oldCurDirCstr[0] );
             
@@ -495,16 +533,14 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 {
     try {
 
-        DbgExt      ext;
+        DbgExt      ext( client );
 
-        SetupDebugEngine( client, &ext );
-        dbgExt = &ext;
-
+  
         if ( !std::string( args ).empty() )
         {
             try
             {
-                boost::python::exec( args, windbgGlobalSession->global(), windbgGlobalSession->global() );
+                boost::python::exec( args, WindbgGlobalSession::global(), WindbgGlobalSession::global() );
             }
             catch( boost::python::error_already_set const & )
             {
@@ -555,7 +591,7 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
                 
                 if ( !stopInput )
                     try {
-                        boost::python::exec( str, windbgGlobalSession->global(), windbgGlobalSession->global() );
+                        boost::python::exec( str, WindbgGlobalSession::global(), WindbgGlobalSession::global() );
                     }
                     catch( boost::python::error_already_set const & )
                     {
@@ -596,12 +632,12 @@ HRESULT
 CALLBACK
 pythonpath( PDEBUG_CLIENT4 client, PCSTR args )
 {
-    DbgExt      ext;
+    //DbgExt      ext;
 
-    SetupDebugEngine( client, &ext );  
-    dbgExt = &ext;
+    //SetupDebugEngine( client, &ext );  
+    //dbgExt = &ext;
 
-    //DbgPrint::dprintln( dbgPythonPath.getStr() );
+    ////DbgPrint::dprintln( dbgPythonPath.getStr() );
 
     return S_OK;
 }

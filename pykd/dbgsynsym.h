@@ -49,13 +49,8 @@ void delAllSyntheticSymbolsForModule(
 // External callbacks
 
 void restoreSyntheticSymbolForModule(
-    const ModuleInfo &moduleInfo,
-    IDebugSymbols3 *symbols3
-);
+    const ModuleInfo &moduleInfo );
 
-void restoreSyntheticSymbolForAllModules(
-    IDebugSymbols3 *symbols3,
-    IDebugControl *control
-);
+void restoreSyntheticSymbolForAllModules();
 
 /////////////////////////////////////////////////////////////////////////////////

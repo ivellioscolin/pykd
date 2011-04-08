@@ -1,202 +1,120 @@
 
 #include "stdafx.h"
-
+#include "dbgeng.h"
 #include "dbgext.h"
-#include "dbgmem.h"
-#include "dbgmodule.h"
-#include "dbgexcept.h"
-#include "dbgsynsym.h"
 #include "dbgeventcb.h"
+#include "dbgexcept.h"
+#include "dbgmodule.h"
+#include "dbgsynsym.h"
+#include "dbgcmd.h"
 
-/////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
-DbgEventCallbacks *DbgEventCallbacks::dbgEventCallbacks = NULL;
-volatile LONG DbgEventCallbacks::dbgEventCallbacksStartCount = 0;
-
-/////////////////////////////////////////////////////////////////////////////////
-
-HRESULT DbgEventCallbacks::Start()
+DbgEventCallbacksManager::DbgEventCallbacksManager( IDebugClient  *client )
 {
-    HRESULT hres;
-    try
-    {
-        if (1 == InterlockedIncrement(&dbgEventCallbacksStartCount))
+    HRESULT     hres;
+
+    m_debugClient = NULL;
+    
+    try {
+
+        if ( client == NULL )
         {
-            _ASSERT(!dbgEventCallbacks);
-            dbgEventCallbacks = new DbgEventCallbacks;
+            // случай, когда мы работаем в windbg. ћы не хотим мен€ть поведение клиента отладчика - он
+            // должен продолжать обработку событий, поэтому мы создаем своего клиента
+            hres = DebugCreate( __uuidof(IDebugClient4),  reinterpret_cast<PVOID*>(&m_debugClient));
+            if (FAILED(hres))
+                throw DbgException( "DebugCreate failed" );  
         }
-        hres = S_OK;
-    }
-    catch (HRESULT _hres)
-    {
-        hres = _hres;
-    }
-    catch (...)
-    {
-        hres = E_OUTOFMEMORY;
-    }
-    return hres;
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-void DbgEventCallbacks::Stop()
-{
-    if (0 == InterlockedDecrement(&dbgEventCallbacksStartCount))
-    {
-        _ASSERT(dbgEventCallbacks);
-        if (dbgEventCallbacks)
-            dbgEventCallbacks->Deregister();
-    }
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-DbgEventCallbacks::DbgEventCallbacks()
-  : m_ReferenceCount(1)
-  , m_dbgClient(NULL)
-  , m_dbgSymbols3(NULL)
-  , m_dbgControl(NULL)
-{
-    HRESULT hres;
-    try
-    {
-        // monitor "global" WinDbg events
-        hres = DebugCreate(
-            __uuidof(IDebugClient),
-            reinterpret_cast<PVOID *>(&m_dbgClient));
+        else
+        {
+            // случай, когда мы работаем отдельно. ¬ этом случае клиент весь в нашем распор€жении
+            hres =client->QueryInterface( __uuidof(IDebugClient4),  reinterpret_cast<PVOID*>(&m_debugClient));
+            if (FAILED(hres))
+                throw DbgException( "DebugCreate failed" );
+        }                
+            
+        hres = m_debugClient->SetEventCallbacks(this);
         if (FAILED(hres))
-            throw hres;
-
-        hres = m_dbgClient->QueryInterface(
-            __uuidof(IDebugSymbols3),
-            reinterpret_cast<PVOID *>(&m_dbgSymbols3));
-        if (FAILED(hres))
-            throw hres;
-
-        hres = m_dbgClient->QueryInterface(
-            __uuidof(IDebugControl),
-            reinterpret_cast<PVOID *>(&m_dbgControl));
-        if (FAILED(hres))
-            throw hres;
-
-        hres = m_dbgClient->SetEventCallbacks(this);
-        if (FAILED(hres))
-            throw hres;
-
-        hres = S_OK;
-    }
-    catch(HRESULT _hres)
-    {
-        hres = _hres;
-    }
-    catch(...)
-    {
-        hres = S_FALSE;
-    }
-    if (S_OK != hres)
-    {
-        Deregister();
-        throw hres;
-    }
+            throw DbgException( "IDebugClient::SetEventCallbacks" );           
+            
+    }    
+  	catch( std::exception& )
+	{
+		//dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		//dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}
 }
 
-/////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
-void DbgEventCallbacks::Deregister()
+DbgEventCallbacksManager::~DbgEventCallbacksManager()
 {
-    if (m_dbgSymbols3)
-    {
-        m_dbgSymbols3->Release();
-        m_dbgSymbols3 = NULL;
-    }
-    if (m_dbgControl)
-    {
-        m_dbgControl->Release();
-        m_dbgControl = NULL;
-    }
-    if (m_dbgClient)
-    {
-        m_dbgClient->Release();
-        m_dbgClient = NULL;
-    }
-    Release();
+    if ( m_debugClient )
+        m_debugClient->Release();
 }
 
-/////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
-ULONG DbgEventCallbacks::AddRef()
-{
-    return InterlockedIncrement(&m_ReferenceCount);
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-ULONG DbgEventCallbacks::Release()
-{
-    ULONG nResult = InterlockedDecrement(&m_ReferenceCount);
-    if (!nResult)
-    {
-        dbgEventCallbacks = NULL;
-        delete this;
-    }
-    return nResult;
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-HRESULT DbgEventCallbacks::GetInterestMask(
+HRESULT DbgEventCallbacksManager::GetInterestMask(
     __out PULONG Mask
 )
 {
-    *Mask = DEBUG_EVENT_CHANGE_SYMBOL_STATE;
+    *Mask =  DEBUG_EVENT_CHANGE_SYMBOL_STATE | DEBUG_EVENT_BREAKPOINT;
     return S_OK;
 }
 
-/////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
-HRESULT DbgEventCallbacks::ChangeSymbolState(
+HRESULT DbgEventCallbacksManager::ChangeSymbolState(
     __in ULONG Flags,
     __in ULONG64 Argument
 )
 {
+    DbgExt      ext( m_debugClient );
+
     if ((DEBUG_CSS_LOADS & Flags))
     {
         if (Argument)
-            return doSymbolsLoaded(Argument);
+        {
+            DEBUG_MODULE_PARAMETERS dbgModuleParameters={};
+            
+            HRESULT hres = dbgExt->symbols3->GetModuleParameters(
+                1,
+                &Argument,
+                0,
+                &dbgModuleParameters);
+    
+            if (SUCCEEDED(hres))
+            {
+                 ModuleInfo     moduleInfo(dbgModuleParameters);
+                 
+                 restoreSyntheticSymbolForModule(moduleInfo);
+            }        
+            
+            return S_OK;        
+        }
 
-        // f.e. is case ".reload /f image.exe", if for image.exe no symbols
-        restoreSyntheticSymbolForAllModules(m_dbgSymbols3, m_dbgControl);
+        //// f.e. is case ".reload /f image.exe", if for image.exe no symbols
+        restoreSyntheticSymbolForAllModules();
+        
         return S_OK;
     }
 
     return S_OK;
 }
 
-/////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
-HRESULT DbgEventCallbacks::doSymbolsLoaded(
-    ULONG64 moduleBase
+HRESULT DbgEventCallbacksManager::Breakpoint(
+    __in IDebugBreakpoint *  bp
 )
 {
-    try
-    {
-        DEBUG_MODULE_PARAMETERS dbgModuleParameters;
-        HRESULT hres = m_dbgSymbols3->GetModuleParameters(
-            1,
-            &moduleBase,
-            0,
-            &dbgModuleParameters);
-        if (SUCCEEDED(hres))
-        {
-            ModuleInfo moduleInfo(dbgModuleParameters, m_dbgControl);
-            restoreSyntheticSymbolForModule(moduleInfo, m_dbgSymbols3);
-        }
-    }
-    catch (...)
-    {
-    }
-    return S_OK;
-}
+    return dbgBreakpointClass::onBreakpointEvnet( bp );
+}    
 
-/////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+

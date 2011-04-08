@@ -10,6 +10,7 @@
 #include "dbgsystem.h"
 #include "dbgcmd.h"
 
+
 /////////////////////////////////////////////////////////////////////////////////
 
 bool
@@ -18,9 +19,17 @@ dbgLoadDump( const std::wstring &fileName )
     HRESULT     hres;
     
     try {
-      
-        if ( !dbgSessionStarted )
-           dbgCreateSession();
+        
+        if ( dbgExt )
+            return false;
+        
+        IDebugClient4     *client = NULL;
+        hres = DebugCreate( __uuidof(IDebugClient4), (void **)&client );
+        if ( FAILED( hres ) )
+            return false;
+    
+        dbgExt = new DbgExt( client );
+        new DbgEventCallbacksManager( (IDebugClient*)client );
        
         hres = dbgExt->client4->OpenDumpFileWide( fileName.c_str(), NULL );
        
@@ -53,8 +62,16 @@ startProcess( const std::wstring  &processName )
 
     try {
 
-        if ( !dbgSessionStarted )
-            dbgCreateSession();
+        if ( dbgExt )
+            return false;
+        
+        IDebugClient4     *client = NULL;
+        hres = DebugCreate( __uuidof(IDebugClient4), (void **)&client );
+        if ( FAILED( hres ) )
+            return false;
+    
+        dbgExt = new DbgExt( client );   
+        new DbgEventCallbacksManager( (IDebugClient*)client );
 
         ULONG       opt;
         hres = dbgExt->control->GetEngineOptions( &opt );

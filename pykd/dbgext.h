@@ -3,7 +3,9 @@
 #include <dbgeng.h>
 #include <dbghelp.h>
 
-struct DbgExt {
+class DbgExt {
+
+public:
 
     IDebugClient            *client;
     IDebugClient4           *client4;
@@ -24,28 +26,15 @@ struct DbgExt {
     
     IDebugSystemObjects     *system;
     IDebugSystemObjects2    *system2;
-    
-    DbgExt() :
-        client( NULL ),
-        client4( NULL ),
-        control( NULL ),
-        control4( NULL ),
-        registers( NULL ),
-        symbols( NULL ),
-        symbols2( NULL ),
-        symbols3( NULL ),
-        dataSpaces( NULL ),
-        dataSpaces4( NULL ),
-        advanced2( NULL ),
-        system( NULL ),
-        system2( NULL )
-        {}
+           
+    DbgExt( IDebugClient4 *client );          
             
     ~DbgExt();
+    
+private:    
+
+    DbgExt      *m_previosExt;
 };
 
 extern DbgExt    *dbgExt;
-
-void
-SetupDebugEngine( IDebugClient4 *client, DbgExt *dbgExt  );
 
