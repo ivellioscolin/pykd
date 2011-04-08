@@ -52,48 +52,41 @@ loadMemory( ULONG64 address, PVOID dest, ULONG length, BOOLEAN phyAddr  )
 ///////////////////////////////////////////////////////////////////////////////////
 
 ULONG64
-addr64Ex( ULONG64  addr, IDebugControl *control )
+addr64( ULONG64  addr)
 {
     HRESULT     hres;
 
     try {
 
         ULONG   processorMode;
-        hres = control->GetActualProcessorType( &processorMode );
+        hres = dbgExt->control->GetActualProcessorType( &processorMode );
         if ( FAILED( hres ) )
-            throw DbgException( "IDebugControl::GetEffectiveProcessorType  failed" );       
-        
+            throw DbgException( "IDebugControl::GetEffectiveProcessorType  failed" );
+
         switch( processorMode )
         {
         case IMAGE_FILE_MACHINE_I386:
             if ( *( (ULONG*)&addr + 1 ) == 0 )
                 return (ULONG64)(LONG)addr;
-            
+
         case IMAGE_FILE_MACHINE_AMD64:
             break;
-            
+
         default:
-            throw DbgException( "Unknown processor type" );  
+            throw DbgException( "Unknown processor type" );
             break;
         }
     }
-  	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}
-        
-    return addr;        
-}
+    catch( std::exception  &e )
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+    }
+    catch(...)
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+    }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-ULONG64 addr64( ULONG64 addr )
-{
-    return addr64Ex(addr, dbgExt->control);
+    return addr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

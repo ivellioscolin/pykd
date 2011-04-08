@@ -30,17 +30,15 @@ struct ModuleInfo
     {
     }
     ModuleInfo(
-        const IMAGEHLP_MODULEW64 &dbgImageHelperInfo,
-        IDebugControl *control = dbgExt->control
+        const IMAGEHLP_MODULEW64 &dbgImageHelperInfo
     ) : m_base(addr64(dbgImageHelperInfo.BaseOfImage))
       , m_timeDataStamp(dbgImageHelperInfo.TimeDateStamp)
       , m_checkSumm(dbgImageHelperInfo.CheckSum)
     {
     }
     ModuleInfo(
-        const DEBUG_MODULE_PARAMETERS &dbgModuleParameters,
-        IDebugControl *control = dbgExt->control
-    ) : m_base(addr64Ex(dbgModuleParameters.Base, control))
+        const DEBUG_MODULE_PARAMETERS &dbgModuleParameters
+    ) : m_base(addr64(dbgModuleParameters.Base))
       , m_timeDataStamp(dbgModuleParameters.TimeDateStamp)
       , m_checkSumm(dbgModuleParameters.Checksum)
     {

@@ -80,9 +80,6 @@ bool
 compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, BOOLEAN phyAddr = FALSE );
 
 ULONG64
-addr64Ex( ULONG64  addr, IDebugControl *control );
-
-ULONG64
 addr64( ULONG64  addr );
 
 boost::python::object
