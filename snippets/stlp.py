@@ -1,4 +1,4 @@
-"""Dump STLPort map"""
+"""Dump STLPort containers"""
 
 import sys
 from pykd import *
@@ -79,10 +79,10 @@ def dumpStlportMap(addr):
 
 def printUsage():
     println("Usage:")
-    println("!py dump_stlp_map <map_address|variable_name> [\"accurate map pair type\"]")
-    println("To retrive accurate map pair type use:")
+    println("!py stlp map <map_address|variable_name> [\"accurate map pair type\"]")
+    println("Use dt command to retrive accurate map pair type:")
     println("dt -r ModuleName!stlp_std::pair*")
-    println("Find required type in the list and copy paste it as parameter.")
+    println("Find required type in the list and copy paste it as script parameter. Don't forget about quotes.")
 
 if __name__ == "__main__":
     global runningAsWinDbgExtension
@@ -91,18 +91,18 @@ if __name__ == "__main__":
     mapAddr = 0
 
     argc = len(sys.argv)
-    if (argc < 2):
+    if (argc < 3 or sys.argv[1] != "map"):
         printUsage()
         quit(0)
     else:
-        mapAddr = int(expr(sys.argv[1]))
+        mapAddr = int(expr(sys.argv[2]))
     
     addrList = dumpStlportMap(mapAddr)
     for addr in addrList:
-        if (argc == 2):
+        if (argc == 3):
             println("0x%x" % addr)
         else:
-            s = "dt -r " + sys.argv[2] + " 0x%x" % addr
+            s = "dt -r " + sys.argv[3] + " 0x%x" % addr
             #println(s)
             println("------------------------------------------------")
             println(dbgCommand(s))
