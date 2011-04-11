@@ -95,7 +95,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "loadSignQWords", &loadArray<__int64>, loadSignQWords( boost::python::args( "address", "number",  "phyAddr"  ), "" ) );
     boost::python::def( "loadPtrs", &loadPtrArray );
     boost::python::def( "loadUnicodeString", &loadUnicodeStr );
-    boost::python::def( "loadAnsiString", &loadAnsiStr );   
+    boost::python::def( "loadAnsiString", &loadAnsiStr );
     boost::python::def( "loadCStr", &loadCStr );
     boost::python::def( "loadWStr", &loadWStr );
     boost::python::def( "loadLinkedList", &loadLinkedList ); 
@@ -110,29 +110,29 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "ptrPtr", &loadPtrByPtr );   
     boost::python::def( "ptrMWord", &loadMWord );
     boost::python::def( "ptrSignMWord", &loadSignMWord );
-    boost::python::def( "compareMemory", &compareMemory, compareMemoryOver( boost::python::args( "addr1", "addr2", "length", "phyAddr" ), "" ) );
-    boost::python::def( "getCurrentStack", &getCurrentStack );
-    boost::python::def( "locals", &getLocals );
-    boost::python::def( "reloadModule", &reloadModule );
-    boost::python::def( "getPdbFile", &getPdbFile );
-    boost::python::def( "getImplicitThread", &getImplicitThread );
-    boost::python::def( "setImplicitThread", &setImplicitThread );
-    boost::python::def( "getThreadList", &getThreadList );
-    boost::python::def( "getCurrentProcess", &getCurrentProcess );
-    boost::python::def( "setCurrentProcess", &setCurrentProcess );
-    boost::python::def( "getProcessorMode", &getProcessorMode );
-    boost::python::def( "setProcessorMode", &setProcessorMode );
-    boost::python::def( "addSynSymbol", &addSyntheticSymbol );
-    boost::python::def( "delAllSynSymbols", &delAllSyntheticSymbols);
-    boost::python::def( "delSynSymbol", &delSyntheticSymbol );
-    boost::python::def( "delSynSymbolsMask", &delSyntheticSymbolsMask);
+    boost::python::def( "compareMemory", &compareMemory, compareMemoryOver( boost::python::args( "addr1", "addr2", "length", "phyAddr" ), "compare two memory buffers by virtual or physical addresses" ) );
+    boost::python::def( "getCurrentStack", &getCurrentStack, "get list of dbgStackFrameClass for current stack" );
+    boost::python::def( "locals", &getLocals, "get dict of locals variables (each item is typedVarClass)" );
+    boost::python::def( "reloadModule", &reloadModule, "reload symbols by module name" );
+    boost::python::def( "getPdbFile", &getPdbFile, "get PDB (Program DataBase, debug information) file" );
+    boost::python::def( "getImplicitThread", &getImplicitThread, "get implicit thread for current process" );
+    boost::python::def( "setImplicitThread", &setImplicitThread, "set implicit thread for current process" );
+    boost::python::def( "getThreadList", &getThreadList, "get list of threads (each item is numeric address of thread)" );
+    boost::python::def( "getCurrentProcess", &getCurrentProcess, "get current process (numeric address)" );
+    boost::python::def( "setCurrentProcess", &setCurrentProcess, "set current process by address" );
+    boost::python::def( "getProcessorMode", &getProcessorMode, "get current processor mode as string: X86, ARM, IA64 or X64" );
+    boost::python::def( "setProcessorMode", &setProcessorMode, "set current processor mode by string (X86, ARM, IA64 or X64)" );
+    boost::python::def( "addSynSymbol", &addSyntheticSymbol, "add new synthetic symbol by virtual address" );
+    boost::python::def( "delAllSynSymbols", &delAllSyntheticSymbols, "delete all synthetic symbol for all modules");
+    boost::python::def( "delSynSymbol", &delSyntheticSymbol, "delete synthetic symbols by virtual address" );
+    boost::python::def( "delSynSymbolsMask", &delSyntheticSymbolsMask, "delete synthetic symbols by mask of module and symbol name");
 
-    boost::python::class_<typeClass, boost::shared_ptr<typeClass> >( "typeClass" )
-        .def("sizeof", &typeClass::size )
-        .def("offset", &typeClass::getOffset )
-        .def("__str__", &typeClass::print);
-    boost::python::class_<typedVarClass, boost::python::bases<typeClass>, boost::shared_ptr<typedVarClass> >( "typedVarClass" )
-        .def("getAddress", &typedVarClass::getAddress );
+    boost::python::class_<typeClass, boost::shared_ptr<typeClass> >( "typeClass", "class of non-primitive type: structure, union, etc. attributes is a fields of non-primitive type" )
+        .def("sizeof", &typeClass::size, "get full size of non-primitive type" )
+        .def("offset", &typeClass::getOffset, "get offset as field of parent" )
+        .def("__str__", &typeClass::print, "cast to string: print names and offsets of fields");
+    boost::python::class_<typedVarClass, boost::python::bases<typeClass>, boost::shared_ptr<typedVarClass> >( "typedVarClass", "class of non-primitive type object, child class of typeClass. data from target is copied into object instance" )
+        .def("getAddress", &typedVarClass::getAddress, "get virtual address" );
     boost::python::class_<dbgModuleClass>( "dbgModuleClass" )
         .def("begin", &dbgModuleClass::getBegin )
         .def("end", &dbgModuleClass::getEnd )
