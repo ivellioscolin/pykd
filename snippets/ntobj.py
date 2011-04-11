@@ -158,13 +158,13 @@ if __name__ == "__main__":
   # Print all thread and process
   # 
 
-  def printObjectTable(pObejctTable, bHeaders):
+  def printObjectTable(pObjectTable, bHeaders):
     """
     Print content of object table
     """
-    lstObejcts = getListByHandleTable(pObejctTable, bContainHeaders=bHeaders)
-    dprintln("%u objects:" % len(lstObejcts))
-    for obj in lstObejcts:
+    lstObjects = getListByHandleTable(pObjectTable, bContainHeaders=bHeaders)
+    dprintln("%u objects:" % len(lstObjects))
+    for obj in lstObjects:
       dprintln("obj: 0x%X" % obj + " type: 0x%X" % getType(obj))
 
 
