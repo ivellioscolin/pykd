@@ -141,18 +141,30 @@ BOOST_PYTHON_MODULE( pykd )
         "Load string from the target buffer containing 0-terminated ansi-string" );
     boost::python::def( "loadWStr", &loadWStr,
         "Load string from the target buffer containing 0-terminated unicode-string" );
-    boost::python::def( "loadLinkedList", &loadLinkedList ); 
-    boost::python::def( "ptrByte", &loadByPtr<unsigned char> );
-    boost::python::def( "ptrSignByte", &loadByPtr<char> );
-    boost::python::def( "ptrWord", &loadByPtr<unsigned short> );
-    boost::python::def( "ptrSignWord", &loadByPtr<short> );
-    boost::python::def( "ptrDWord", &loadByPtr<unsigned long> );
-    boost::python::def( "ptrSignDWord", &loadByPtr<long> );
-    boost::python::def( "ptrQWord", &loadByPtr<unsigned __int64> );
-    boost::python::def( "ptrSignQWord", &loadByPtr<__int64> );
-    boost::python::def( "ptrPtr", &loadPtrByPtr );   
-    boost::python::def( "ptrMWord", &loadMWord );
-    boost::python::def( "ptrSignMWord", &loadSignMWord );
+    boost::python::def( "loadLinkedList", &loadLinkedList,
+        "Return list of instances of the typedVarClass loaded from linked list in the target memory" );
+    boost::python::def( "ptrByte", &loadByPtr<unsigned char>,
+        "Return 1-byte unsigned value loaded by pointer" );
+    boost::python::def( "ptrSignByte", &loadByPtr<char>,
+        "Return 1-byte signed value loaded by pointer" );
+    boost::python::def( "ptrWord", &loadByPtr<unsigned short>,
+        "Return 2-byte unsigned value loaded by pointer" );
+    boost::python::def( "ptrSignWord", &loadByPtr<short>,
+        "Return 2-byte signed value loaded by pointer" );
+    boost::python::def( "ptrDWord", &loadByPtr<unsigned long>,
+        "Return 4-byte unsigned value loaded by pointer" );
+    boost::python::def( "ptrSignDWord", &loadByPtr<long>,
+        "Return 4-byte signed value loaded by pointer" );
+    boost::python::def( "ptrQWord", &loadByPtr<unsigned __int64>,
+        "Return 8-byte unsigned value loaded by pointer" );        
+    boost::python::def( "ptrSignQWord", &loadByPtr<__int64>,
+        "Return 8-byte signed value loaded by pointer" );      
+    boost::python::def( "ptrPtr", &loadPtrByPtr,
+        "Return pointer value loaded by pointer" );  
+    boost::python::def( "ptrMWord", &loadMWord,
+        "Return unsigned machine word ( 4-bytes for x86 and 8-bytes for x64 ) loaded by pointer" ); 
+    boost::python::def( "ptrSignMWord", &loadSignMWord,
+        "Return signed machine word ( 4-bytes for x86 and 8-bytes for x64 ) loaded by pointer" );     
     boost::python::def( "compareMemory", &compareMemory, compareMemoryOver( boost::python::args( "addr1", "addr2", "length", "phyAddr" ), 
         "Compare two memory buffers by virtual or physical addresses" ) );
     boost::python::def( "getCurrentStack", &getCurrentStack, 
@@ -188,28 +200,50 @@ BOOST_PYTHON_MODULE( pykd )
 
     boost::python::class_<typeClass, boost::shared_ptr<typeClass> >( "typeClass", 
         "Class representing non-primitive type info: structure, union, etc. attributes is a fields of non-primitive type" )
-        .def("sizeof", &typeClass::size, "Return full size of non-primitive type" )
-        .def("offset", &typeClass::getOffset, "Return offset as field of parent" )
-        .def("__str__", &typeClass::print, "Return a nice string represention: print names and offsets of fields");
+        .def("sizeof", &typeClass::size, 
+            "Return full size of non-primitive type" )
+        .def("offset", &typeClass::getOffset, 
+            "Return offset as field of parent" )
+        .def("__str__", &typeClass::print, 
+            "Return a nice string represention: print names and offsets of fields");
+        
     boost::python::class_<typedVarClass, boost::python::bases<typeClass>, boost::shared_ptr<typedVarClass> >( "typedVarClass", 
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance" )
-        .def("getAddress", &typedVarClass::getAddress, "Return virtual address" );
-    boost::python::class_<dbgModuleClass>( "dbgModuleClass" )
-        .def("begin", &dbgModuleClass::getBegin )
-        .def("end", &dbgModuleClass::getEnd )
-        .def("size", &dbgModuleClass::getSize )
-        .def("name", &dbgModuleClass::getName )
-        .def("contain", &dbgModuleClass::contain )
-        .def("image", &dbgModuleClass::getImageSymbolName )
-        .def("pdb", &dbgModuleClass::getPdbName )
-        .def("checksum", &dbgModuleClass::getCheckSum )
-        .def("timestamp", &dbgModuleClass::getTimeStamp )
-        .def("addSynSymbol", &dbgModuleClass::addSyntheticSymbol )
-        .def("delAllSynSymbols", &dbgModuleClass::delAllSyntheticSymbols )
-        .def("delSynSymbol", &dbgModuleClass::delSyntheticSymbol )
+        .def("getAddress", &typedVarClass::getAddress, 
+            "Return virtual address" );
+        
+    boost::python::class_<dbgModuleClass>( "dbgModuleClass",
+        "Class representing module in the target memory" )
+        .def("begin", &dbgModuleClass::getBegin,
+            "Return start address of the module" )            
+        .def("end", &dbgModuleClass::getEnd,
+            "Return end address of the module" )
+        .def("size", &dbgModuleClass::getSize,
+            "Return size of the module" )
+        .def("name", &dbgModuleClass::getName,
+            "Return name of the module" )
+        .def("contain", &dbgModuleClass::contain,
+            "Check if the address belongs to the module")
+        .def("image", &dbgModuleClass::getImageSymbolName,
+            "Return the full path to the module's image file" )
+        .def("pdb", &dbgModuleClass::getPdbName,
+            "Return the full path to the module's pdb file ( symbol information )" )
+        .def("checksum", &dbgModuleClass::getCheckSum,
+            "Return checksum of the module ( from PE header )" )
+        .def("timestamp", &dbgModuleClass::getTimeStamp,
+            "Return timestamp of the module ( from PE header )" )
+        .def("addSynSymbol", &dbgModuleClass::addSyntheticSymbol,
+            "Add synthetic symbol for the module" )
+        .def("delAllSynSymbols", &dbgModuleClass::delAllSyntheticSymbols,
+            "Remove all synthetic symbols for the module" )
+        .def("delSynSymbol", &dbgModuleClass::delSyntheticSymbol,
+            "Remove specified synthetic symbol for the module" )
         .def("delSynSymbolsMask", &dbgModuleClass::delSyntheticSymbolsMask )
-        .def("__getattr__", &dbgModuleClass::getOffset )
-        .def("__str__", &dbgModuleClass::print );
+        .def("__getattr__", &dbgModuleClass::getOffset,
+            "Return address of the symbol" )
+        .def("__str__", &dbgModuleClass::print,
+            "Return a nice string represention of the dbgModuleClass" );
+            
     boost::python::class_<dbgExtensionClass>( 
             "ext",
             "windbg extension",
