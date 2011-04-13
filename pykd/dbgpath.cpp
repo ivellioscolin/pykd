@@ -124,7 +124,7 @@ DbgPythonPath::findPath(
         if ( bufSize > 0 )
         {
             bufSize += 1;
-			std::vector<char> fullFileNameCStr(bufSize);
+            std::vector<char> fullFileNameCStr(bufSize);
             char    *partFileNameCStr = NULL;
             
             bufSize = SearchPathA(

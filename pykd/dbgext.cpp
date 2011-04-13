@@ -246,28 +246,40 @@ BOOST_PYTHON_MODULE( pykd )
             
     boost::python::class_<dbgExtensionClass>( 
             "ext",
-            "windbg extension",
+            "windbg extension wrapper",
              boost::python::init<const char*>( boost::python::args("path"), "__init__  dbgExtensionClass" ) ) 
-        .def("call", &dbgExtensionClass::call )
-        .def("__str__", &dbgExtensionClass::print );
-    boost::python::class_<dbgStackFrameClass>( "dbgStackFrameClass", "dbgStackFrameClass" )
-        .def_readonly( "instructionOffset", &dbgStackFrameClass::InstructionOffset )
-        .def_readonly( "returnOffset", &dbgStackFrameClass::ReturnOffset )
-        .def_readonly( "frameOffset", &dbgStackFrameClass::FrameOffset )
-        .def_readonly( "stackOffset", &dbgStackFrameClass::StackOffset )
-        .def_readonly( "frameNumber", &dbgStackFrameClass::FrameNumber )
-        .def( "__str__", &dbgStackFrameClass::print );
+        .def("call", &dbgExtensionClass::call,
+            "Call extension command" )
+        .def("__str__", &dbgExtensionClass::print,
+            "Return a nice string represention of the dbgExtensionClass" );
+    boost::python::class_<dbgStackFrameClass>( "dbgStackFrameClass", 
+         "Class representing a frame of the call satck" )
+        .def_readonly( "instructionOffset", &dbgStackFrameClass::InstructionOffset,
+            "Return a frame's instruction offset" )
+        .def_readonly( "returnOffset", &dbgStackFrameClass::ReturnOffset,
+            "Return a frame's return offset" )
+        .def_readonly( "frameOffset", &dbgStackFrameClass::FrameOffset,
+            "Return a frame's offset" )
+        .def_readonly( "stackOffset", &dbgStackFrameClass::StackOffset,
+            "Return a frame's stack offset" )
+        .def_readonly( "frameNumber", &dbgStackFrameClass::FrameNumber,
+            "Return a frame's number" )
+        .def( "__str__", &dbgStackFrameClass::print,
+            "Return a nice string represention of the dbgStackFrameClass" );
     boost::python::class_<dbgOut>( "windbgOut", "windbgOut" )
         .def( "write", &dbgOut::write );
     boost::python::class_<dbgIn>( "windbgIn", "windbgIn" )
         .def( "readline", &dbgIn::readline );                
-    boost::python::class_<dbgBreakpointClass>( 
-         "bp",
-         "break point",
-         boost::python::init<ULONG64,boost::python::object&>( boost::python::args("offset", "callback"), "__init__  dbgBreakpointClass" ) ) 
-        .def( "set", &dbgBreakpointClass::set )
-        .def( "remove", &dbgBreakpointClass::remove )
-        .def( "__str__", &dbgBreakpointClass::print );
+    boost::python::class_<dbgBreakpointClass>( "bp",
+         "Class representing breakpoint",
+         boost::python::init<ULONG64,boost::python::object&>( boost::python::args("offset", "callback"), 
+            "dbgBreakpointClass constructor" ) )
+        .def( "set", &dbgBreakpointClass::set,
+            "Set a breakpoint at the specified address" )
+        .def( "remove", &dbgBreakpointClass::remove,
+            "Remove a breakpoint set before" )
+        .def( "__str__", &dbgBreakpointClass::print,
+            "Return a nice string represention of the breakpoint class"  );
 
     // debug status
     _DEF_PY_CONST(DEBUG_STATUS_NO_CHANGE);
