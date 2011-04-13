@@ -566,22 +566,14 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
         std::string     filePath;
         DbgPythonPath   dbgPythonPath;
         
+        
         if ( dbgPythonPath.findPath( argsList[0], fullFileName, filePath ) )
         {
-            DWORD       oldCurDirLen = GetCurrentDirectoryA( 0, NULL );
-
-	        std::vector<char> oldCurDirCstr(oldCurDirLen);
-            
-            GetCurrentDirectoryA( oldCurDirLen, &oldCurDirCstr[0] );
-            
-           // SetCurrentDirectoryA( filePath.c_str() );
-            
-            try {                  
-            
+            try {             
+          
                 boost::python::object       result;
         
                 result =  boost::python::exec_file( fullFileName.c_str(), global, global );
-                
             }                
             catch( boost::python::error_already_set const & )
             {
@@ -603,13 +595,11 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
                 Py_XDECREF(errtype);
                 Py_XDECREF(traceback);        
             }  
-            
-            SetCurrentDirectoryA( &oldCurDirCstr[0] );
         }
         else
         {
       		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "script file not found\n" );
-        }           
+        }  
     }
    
     catch(...)

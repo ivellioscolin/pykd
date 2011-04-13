@@ -86,6 +86,7 @@ DbgPythonPath::findPath(
             
     if ( bufSize > 0 )    
     {
+        bufSize += 1;
 		std::vector<char> fullFileNameCStr(bufSize);
         char    *partFileNameCStr = NULL;
 
@@ -95,12 +96,14 @@ DbgPythonPath::findPath(
             pyExt ? NULL : ".py",
             bufSize,
             &fullFileNameCStr[0],
-            &partFileNameCStr );              
+           &partFileNameCStr );          
 
         fullFileName = std::string( &fullFileNameCStr[0] );
-        filePath = std::string( &fullFileNameCStr[0], partFileNameCStr );
-
-        return true;        
+        if ( !fullFileName.empty() )
+        {
+            filePath = std::string( &fullFileNameCStr[0], partFileNameCStr );
+            return true;        
+        }            
     }                
             
     // 2. »щем во всех директори€х, указанных в m_pathList
@@ -120,21 +123,24 @@ DbgPythonPath::findPath(
                 
         if ( bufSize > 0 )
         {
+            bufSize += 1;
 			std::vector<char> fullFileNameCStr(bufSize);
             char    *partFileNameCStr = NULL;
             
-            SearchPathA(
+            bufSize = SearchPathA(
                 (*it).c_str(),
                 fileName.c_str(),
                 pyExt ? NULL : ".py",
                 bufSize,
                 &fullFileNameCStr[0],
-                &partFileNameCStr );              
-            
-            fullFileName = std::string( &fullFileNameCStr[0] );
-            filePath = std::string( &fullFileNameCStr[0], partFileNameCStr );
-            
-            return true;
+                &partFileNameCStr );          
+                
+            fullFileName = std::string( &fullFileNameCStr[0] );                
+            if ( !fullFileName.empty() )
+            {                    
+                filePath = std::string( &fullFileNameCStr[0], partFileNameCStr );
+                return true;
+            }                
         }                  
     }
     
