@@ -80,14 +80,14 @@ def printDrvMajorTable( drvName ):
 
 if __name__ == "__main__":
 
-   if not isSessionStart():
-      createSession()
+   if not isWindbgExt():
       loadDump( sys.argv[1] )
 
-   loadSymbols();
-
-
-   printDrvMajorTable( "afd" )
+   if isKernelDebugging():
+       loadSymbols();
+       printDrvMajorTable( "afd" )
+   else:
+       dprintln( "not a kernel debugging" )
 
    
     

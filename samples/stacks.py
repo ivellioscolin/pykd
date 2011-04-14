@@ -56,10 +56,14 @@ def printStack():
 
 if __name__ == "__main__":
 
-    if not isSessionStart():
-        createSession()
-        loadDump( sys.argv[1] )
-        dprintln( sys.argv[1] + " - loaded OK" )
+    while True:
 
-    printStack()
+        if not isWindbgExt():
+            if not loadDump( sys.argv[1] ):
+                dprintln( sys.argv[1] + " - load failed" )
+                break
+                
+        printStack()
+        break      
+
 

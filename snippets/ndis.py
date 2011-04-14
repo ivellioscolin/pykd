@@ -81,6 +81,16 @@ def printNdisObj():
         printBreakLine()
 
 if __name__ == "__main__":
+
+    if not isWindbgExt():
+        dprintln( "script is launch out of windbg" )
+        quit(0)
+
+    if not isKernelDebugging:
+        dprintln( "script for kernel mode only" )
+        quit(0)
+
+
     printNdisObj()    
 
 

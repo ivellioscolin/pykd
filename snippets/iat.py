@@ -56,7 +56,7 @@ def iat( moduleName, mask = "*" ):
 
 if __name__ == "__main__":
 
-    if not isSessionStart():
+    if not isWindbgExt():
         print "script is launch out of windbg"
         quit( 0 )
 

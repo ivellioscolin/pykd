@@ -48,6 +48,8 @@ def printDetail( name ):
      
     if name in pykd.__dict__:
         help( "pykd.%s" % name )
+   
+    dprintln( "\n\n<link cmd=\"!py help\">View content</link>", True )
     
 
 

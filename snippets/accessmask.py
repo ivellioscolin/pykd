@@ -91,7 +91,7 @@ argc = len(sys.argv)
 if argc == 1 :
 	dprintln("Syntax: [object type] <;hex mask>;")
 	dprintln("Supported object types: process, thread, file, generic")
-	quit( "" )
+	quit( 0 )
 
 type = (argc > 2 and sys.argv[1]) or "generic"
 if argc > 2 :

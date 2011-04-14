@@ -168,7 +168,7 @@ if __name__ == "__main__":
       dprintln("obj: 0x%X" % obj + " type: 0x%X" % getType(obj))
 
 
-  if not isSessionStart():
+  if not isWindbgExt():
     print "Script is launch out of WinDBG"
     quit(0)
 

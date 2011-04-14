@@ -3,13 +3,9 @@ import sys
 from pykd import *
 
 
-def loadSymbols():
-
-   global nt
-   nt = loadModule( "nt" )
-
-
 def processInfo():
+
+    nt = loadModule( "nt" )
 
     processList = typedVarList( nt.PsActiveProcessHead, "nt", "_EPROCESS", "ActiveProcessLinks"  )
 
@@ -20,11 +16,18 @@ def processInfo():
 
 if __name__ == "__main__":
 
-    if not isSessionStart():
-        createSession()
-        loadDump( sys.argv[1] )
-        dprintln( sys.argv[1] + " - loaded OK" )
 
-    loadSymbols()
+    while True:
 
-    processInfo()
+        if not isWindbgExt():
+            if not loadDump( sys.argv[1] ):
+                dprintln( sys.argv[1] + " - load failed" )
+                break
+
+        if not isKernelDebugging():
+            dprintln( "not a kernel debugging" )
+            break 
+                 
+        processInfo()
+        break      
+

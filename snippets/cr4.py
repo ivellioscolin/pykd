@@ -22,7 +22,7 @@ def cr4( value = 0 ):
    
 if __name__ == "__main__":
 
-   if not isSessionStart():
+   if not isWindbgExt():
        print "script is launch out of windbg"
        quit( 0 )
 

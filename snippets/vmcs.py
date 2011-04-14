@@ -184,7 +184,7 @@ def vmcsPrint( addr ):
 
 if __name__ == "__main__":
 
-   if not isSessionStart():
+   if not isWindbgExt():
        dprintln( "script is launch out of windbg" )
        quit( 0 )
 

@@ -87,7 +87,7 @@ def printUsage():
 if __name__ == "__main__":
     global runningAsWinDbgExtension
 
-    runningAsWinDbgExtension = not isSessionStart()
+    runningAsWinDbgExtension = isWindbgExt()
     mapAddr = 0
 
     argc = len(sys.argv)

@@ -43,6 +43,7 @@ if __name__ == "__main__":
 
     if len( sys.argv ) < 2:
         printUsage()
+        quit(0)
 
     if len( sys.argv ) == 2:
         items = getAVLTable( addr64( expr( sys.argv[1] ) ) )

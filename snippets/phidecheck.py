@@ -8,7 +8,7 @@ import ntobj
 
 if __name__ == "__main__":
 
-  if not isSessionStart():
+  if not isWindbgExt():
     print "Script is launch out of WinDBG"
     quit(0)
 

@@ -52,11 +52,14 @@ def checkInterrupt():
 
 if __name__ == "__main__":
 
-   if not isSessionStart():
-      createSession()
-      loadDump( sys.argv[1] )
+   if not isWindbgExt():
+      loadDump( sys.argv[1] ) 
 
-   checkInterrupt()
+   if isKernelDebugging():
+       checkInterrupt()
+   else:
+       dprintln( "not a kernel debugging" )
+
 
 
 

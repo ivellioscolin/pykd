@@ -52,9 +52,19 @@ def checkSSDT():
 
 if __name__ == "__main__":
 
-   if not isSessionStart():
-      createSession()
-      loadDump( sys.argv[1] )
 
-   checkSSDT()
+    while True:
+
+        if not isWindbgExt():
+            if not loadDump( sys.argv[1] ):
+                dprintln( sys.argv[1] + " - load failed" )
+                break
+
+        if not isKernelDebugging():
+            dprintln( "not a kernel debugging" )
+            break 
+                 
+        checkSSDT()
+        break      
+
 	
