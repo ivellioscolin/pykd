@@ -179,3 +179,34 @@ isKernelDebugging()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+bool
+isDumpAnalyzing()
+{
+    HRESULT         hres;
+    bool            result = false;
+     
+    try {
+    
+        ULONG       debugClass, debugQualifier;
+    
+        hres = dbgExt->control->GetDebuggeeType( &debugClass, &debugQualifier );
+    
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
+         
+        result = debugQualifier >= DEBUG_DUMP_SMALL;
+                       
+    }
+	catch( std::exception  &e )
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+	}
+	catch(...)
+	{
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+	}	
+	
+	return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////////

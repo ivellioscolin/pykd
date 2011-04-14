@@ -25,4 +25,7 @@ reloadModule( const char * moduleName  );
 bool
 isKernelDebugging();
 
+bool
+isDumpAnalyzing();
+
 /////////////////////////////////////////////////////////////////////////////////

@@ -15,6 +15,8 @@ public:
         DebugCreate( __uuidof(IDebugClient4), (void **)&client );
     
         m_ext = new DbgExt( client );
+        
+        client->Release();
     }
     
     ~dbgClient() 

@@ -87,6 +87,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if target system has 64 address space" );
     boost::python::def( "isKernelDebugging", &isKernelDebugging,
         "Check if kernel dubugging is running" );
+    boost::python::def( "isDumpAnalyzing", &isDumpAnalyzing,
+        "Check if it is a dump analyzing ( not living debuggee )" );
     boost::python::def( "ptrSize", ptrSize,
         "Return pointer size ( in bytes )" );
     boost::python::def( "reg", &loadRegister,
@@ -338,7 +340,28 @@ BOOST_PYTHON_MODULE( pykd )
     _DEF_PY_CONST(DEBUG_EVENT_CHANGE_DEBUGGEE_STATE);
     _DEF_PY_CONST(DEBUG_EVENT_CHANGE_ENGINE_STATE);
     _DEF_PY_CONST(DEBUG_EVENT_CHANGE_SYMBOL_STATE);
+    
+    // debugger type
+    //_DEF_PY_CONST(DEBUG_CLASS_UNINITIALIZED);
+    //_DEF_PY_CONST(DEBUG_CLASS_KERNEL);
+    //_DEF_PY_CONST(DEBUG_CLASS_USER_WINDOWS);
+    //_DEF_PY_CONST(DEBUG_CLASS_IMAGE_FILE);
+    //
+    //_DEF_PY_CONST(DEBUG_KERNEL_CONNECTION);
+    //_DEF_PY_CONST(DEBUG_KERNEL_LOCAL);
+    //_DEF_PY_CONST(DEBUG_KERNEL_EXDI_DRIVER);
+    //_DEF_PY_CONST(DEBUG_KERNEL_IDNA);
+    //_DEF_PY_CONST(DEBUG_KERNEL_SMALL_DUMP); 
+    //_DEF_PY_CONST(DEBUG_KERNEL_DUMP); 
+    //_DEF_PY_CONST(DEBUG_KERNEL_FULL_DUMP);
 
+    //_DEF_PY_CONST(DEBUG_USER_WINDOWS_PROCESS);    
+    //_DEF_PY_CONST(DEBUG_USER_WINDOWS_PROCESS_SERVER);
+    //_DEF_PY_CONST(DEBUG_USER_WINDOWS_IDNA);
+    //_DEF_PY_CONST(DEBUG_USER_WINDOWS_SMALL_DUMP);
+    //_DEF_PY_CONST(DEBUG_USER_WINDOWS_SMALL_DUMP);
+    //_DEF_PY_CONST(DEBUG_USER_WINDOWS_DUMP);
+    //_DEF_PY_CONST(DEBUG_USER_WINDOWS_DUMP_WINDOWS_CE);
 }
 
 #undef  _DEF_PY_CONST
