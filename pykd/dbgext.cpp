@@ -473,25 +473,43 @@ DebugExtensionUninitialize()
 
 DbgExt::DbgExt( IDebugClient4 *masterClient )
 {
+    client = NULL;
     masterClient->QueryInterface( __uuidof(IDebugClient), (void **)&client );
+  
+    client4 = NULL;
     masterClient->QueryInterface( __uuidof(IDebugClient4), (void **)&client4 );
-    
-    
+   
+    control = NULL; 
     masterClient->QueryInterface( __uuidof(IDebugControl), (void **)&control );
+    
+    control4 = NULL;
     masterClient->QueryInterface( __uuidof(IDebugControl4), (void **)&control4 );
     
+    registers = NULL;
     masterClient->QueryInterface( __uuidof(IDebugRegisters), (void **)&registers );
     
+    symbols = NULL;
     masterClient->QueryInterface( __uuidof(IDebugSymbols), (void ** )&symbols );
+    
+    symbols2 = NULL;
     masterClient->QueryInterface( __uuidof(IDebugSymbols2), (void ** )&symbols2 );    
+    
+    symbols3 = NULL;
     masterClient->QueryInterface( __uuidof(IDebugSymbols3), (void ** )&symbols3 );      
     
+    dataSpaces = NULL;
     masterClient->QueryInterface( __uuidof(IDebugDataSpaces), (void **)&dataSpaces );
+    
+    dataSpaces4 = NULL;
     masterClient->QueryInterface( __uuidof(IDebugDataSpaces4), (void **)&dataSpaces4 );
     
+    advanced2 = NULL;
     masterClient->QueryInterface( __uuidof(IDebugAdvanced2), (void **)&advanced2 );
     
+    system = NULL;
     masterClient->QueryInterface( __uuidof(IDebugSystemObjects), (void**)&system );
+    
+    system2 = NULL;
     masterClient->QueryInterface( __uuidof(IDebugSystemObjects2), (void**)&system2 );
     
     m_previosExt = dbgExt;

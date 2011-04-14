@@ -11,6 +11,8 @@ public:
 
     dbgClient() 
     {
+        m_callbacks = NULL;
+        
         IDebugClient4     *client = NULL;
         DebugCreate( __uuidof(IDebugClient4), (void **)&client );
     

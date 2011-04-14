@@ -39,7 +39,10 @@ DbgEventCallbacksManager::DbgEventCallbacksManager( IDebugClient  *client )
 DbgEventCallbacksManager::~DbgEventCallbacksManager()
 {
     if ( m_debugClient )
+    {
+        m_debugClient->SetEventCallbacks( NULL );
         m_debugClient->Release();
+    }        
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
