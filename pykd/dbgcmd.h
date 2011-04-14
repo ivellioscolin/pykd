@@ -9,17 +9,17 @@ std::string
 dbgCommand( const std::string &command );
 
 template <ULONG status>
-void
+bool
 setExecutionStatus()
 {
     HRESULT     hres;
     
     try {
-    
+  
         hres = dbgExt->control->SetExecutionStatus( status );
         
         if ( FAILED( hres ) )
-            throw  DbgException( "IDebugControl::SetExecutionStatus  failed" ); 
+            return false;
             
         ULONG    currentStatus;                
           
@@ -36,7 +36,9 @@ setExecutionStatus()
                 throw  DbgException( "IDebugControl::GetExecutionStatus  failed" ); 
                
                 
-        } while( currentStatus != DEBUG_STATUS_BREAK && currentStatus != DEBUG_STATUS_NO_DEBUGGEE );                    
+        } while( currentStatus != DEBUG_STATUS_BREAK && currentStatus != DEBUG_STATUS_NO_DEBUGGEE );
+        
+        return true;
             
     } 
 	catch( std::exception  &e )
@@ -47,6 +49,8 @@ setExecutionStatus()
 	{
 		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}	
+	
+	return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
