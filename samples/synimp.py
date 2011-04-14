@@ -37,10 +37,6 @@ def addSymSymbolsByImports(dbgModule):
 
 if __name__ == "__main__":
 
-  if not isSessionStart():
-    print "Script is launch out of WinDBG"
-    quit(0)
-
   argc = len(sys.argv)
   if (2 == argc):
     addSymSymbolsByImports(findModule(expr(sys.argv[1])))
