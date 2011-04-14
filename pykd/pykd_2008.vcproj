@@ -452,6 +452,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgclient.h"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgcmd.h"
 				>
 			</File>
@@ -497,10 +501,6 @@
 			</File>
 			<File
 				RelativePath=".\dbgreg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgsession.h"
 				>
 			</File>
 			<File
