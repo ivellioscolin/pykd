@@ -6,9 +6,14 @@
 #include "dbgdump.h"
 #include "dbgexcept.h"
 #include "dbgeventcb.h"
-#include "dbgsession.h"
 #include "dbgsystem.h"
 #include "dbgcmd.h"
+#include "dbgclient.h"
+
+/////////////////////////////////////////////////////////////////////////////////
+
+static
+bool  dbgStarted = false;
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -19,17 +24,11 @@ dbgLoadDump( const std::wstring &fileName )
     HRESULT     hres;
     
     try {
-        
-        if ( dbgExt )
-            return false;
-        
-        IDebugClient4     *client = NULL;
-        hres = DebugCreate( __uuidof(IDebugClient4), (void **)&client );
-        if ( FAILED( hres ) )
-            return false;
     
-        dbgExt = new DbgExt( client );
-        new DbgEventCallbacksManager( (IDebugClient*)client );
+        if ( dbgStarted || isWindbgExt() )
+            return false;
+        
+        g_dbgClient.startEventsMgr();
        
         hres = dbgExt->client4->OpenDumpFileWide( fileName.c_str(), NULL );
        
@@ -39,6 +38,8 @@ dbgLoadDump( const std::wstring &fileName )
         hres = dbgExt->control->WaitForEvent(DEBUG_WAIT_DEFAULT, INFINITE);
         if ( FAILED( hres ) )
             throw DbgException( "IDebugControl::WaitForEvent failed" );
+            
+        dbgStarted = true;            
 
         return true;
     }
@@ -61,17 +62,11 @@ startProcess( const std::wstring  &processName )
     HRESULT     hres;
 
     try {
-
-        if ( dbgExt )
-            return false;
         
-        IDebugClient4     *client = NULL;
-        hres = DebugCreate( __uuidof(IDebugClient4), (void **)&client );
-        if ( FAILED( hres ) )
-            return false;
-    
-        dbgExt = new DbgExt( client );   
-        new DbgEventCallbacksManager( (IDebugClient*)client );
+        if ( dbgStarted || isWindbgExt() )
+            return false;        
+        
+        g_dbgClient.startEventsMgr();        
 
         ULONG       opt;
         hres = dbgExt->control->GetEngineOptions( &opt );
@@ -93,6 +88,8 @@ startProcess( const std::wstring  &processName )
         hres = dbgExt->control->WaitForEvent(DEBUG_WAIT_DEFAULT, INFINITE);
         if ( FAILED( hres ) )
             throw DbgException( "IDebugControl::WaitForEvent failed" );
+            
+        dbgStarted = true;            
 
         return true;
     }

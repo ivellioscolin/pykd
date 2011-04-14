@@ -38,3 +38,5 @@ private:
 
 extern DbgExt    *dbgExt;
 
+
+bool isWindbgExt();

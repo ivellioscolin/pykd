@@ -22,19 +22,20 @@
 #include "dbgdump.h"
 #include "dbgexcept.h"
 #include "dbgeventcb.h"
-#include "dbgsession.h"
 #include "dbgcallback.h"
 #include "dbgpath.h"
 #include "dbginput.h"
 #include "dbgprocess.h"
 #include "dbgsynsym.h"
+#include "dbgclient.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
 // указатель на текущий интерфейс
 DbgExt    *dbgExt = NULL;
 
-static bool isWindbgExt();
+// глобальный клиент 
+dbgClient    g_dbgClient;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -382,7 +383,7 @@ public:
 private:
 
     WindbgGlobalSession() {
-
+                 
         PyImport_AppendInittab("pykd", initpykd ); 
 
         Py_Initialize();    
@@ -399,19 +400,20 @@ private:
 
         dbgIn                       din;
         sys.attr("stdin") = boost::python::object( din );
+        
+        g_dbgClient.startEventsMgr();
     }
     
     ~WindbgGlobalSession() {
         Py_Finalize();
+        g_dbgClient.removeEventsMgr();
     }
    
     boost::python::object           main;
-    
-    DbgEventCallbacksManager        callbackMgr;
-    
+
     static volatile LONG            sessionCount;      
     
-    static WindbgGlobalSession     *windbgGlobalSession;     
+    static WindbgGlobalSession      *windbgGlobalSession;     
 };   
 
 volatile LONG            WindbgGlobalSession::sessionCount = 0;
@@ -633,12 +635,13 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
     try {
 
         DbgExt      ext( client );
-
   
         if ( !std::string( args ).empty() )
         {
             try
             {
+                OutputReader        outputReader( dbgExt->client );
+            
                 boost::python::exec( args, WindbgGlobalSession::global(), WindbgGlobalSession::global() );
             }
             catch( boost::python::error_already_set const & )
@@ -676,7 +679,7 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
                     
                 do {    
                                 
-                    OutputReader        outputReader( dbgExt->client );                    
+                    OutputReader        outputReader( (IDebugClient*)client );                    
                     
                     HRESULT   hres = dbgExt->control->Input( str, sizeof(str), &inputSize );
                 

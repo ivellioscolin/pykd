@@ -13,39 +13,24 @@
 DbgEventCallbacksManager::DbgEventCallbacksManager( IDebugClient  *client )
 {
     HRESULT     hres;
-
-    m_debugClient = NULL;
-    
+   
     try {
 
-        if ( client == NULL )
-        {
-            // случай, когда мы работаем в windbg. ћы не хотим мен€ть поведение клиента отладчика - он
-            // должен продолжать обработку событий, поэтому мы создаем своего клиента
-            hres = DebugCreate( __uuidof(IDebugClient4),  reinterpret_cast<PVOID*>(&m_debugClient));
-            if (FAILED(hres))
-                throw DbgException( "DebugCreate failed" );  
-        }
-        else
-        {
-            // случай, когда мы работаем отдельно. ¬ этом случае клиент весь в нашем распор€жении
-            hres =client->QueryInterface( __uuidof(IDebugClient4),  reinterpret_cast<PVOID*>(&m_debugClient));
-            if (FAILED(hres))
-                throw DbgException( "DebugCreate failed" );
-        }                
+        m_debugClient = client;
+        m_debugClient->AddRef();
             
         hres = m_debugClient->SetEventCallbacks(this);
         if (FAILED(hres))
             throw DbgException( "IDebugClient::SetEventCallbacks" );           
             
     }    
-  	catch( std::exception& )
+  	catch( std::exception&  e)
 	{
-		//dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
 	}
 	catch(...)
 	{
-		//dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
 	}
 }
 
@@ -74,8 +59,6 @@ HRESULT DbgEventCallbacksManager::ChangeSymbolState(
     __in ULONG64 Argument
 )
 {
-    DbgExt      ext( m_debugClient );
-
     if ((DEBUG_CSS_LOADS & Flags))
     {
         if (Argument)

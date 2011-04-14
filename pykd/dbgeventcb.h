@@ -38,7 +38,7 @@ private:
     
 private:
   
-    IDebugClient4       *m_debugClient;
+    IDebugClient       *m_debugClient;
 };
 
 //////////////////////////////////////////////////////////////////////////////
