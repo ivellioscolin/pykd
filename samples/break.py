@@ -16,8 +16,7 @@ def bpCallback():
 
     dprintln( "NtCreateFile: " + name )
 
-    return DEBUG_STATUS_NO_CHANGE
-
+    return DEBUG_STATUS_GO_HANDLED
 
 
 
@@ -25,15 +24,17 @@ if not isWindbgExt():
     startProcess("notepad.exe")
 
 
+
 if not isDumpAnalyzing() and not isKernelDebugging():
     	
     nt = loadModule("ntdll")
 
     b1 = bp( nt.NtCreateFile, bpCallback )
+   
+    # wait for user break, exceptions or process exit
+    go()
 
-    while go(): pass
-
-    dprintln( "exit process" )
+    dprintln( "stopped" )    
 
 else:
 

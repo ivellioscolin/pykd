@@ -1,3 +1,21 @@
+version 0.0.17 15/04/2011
+[+] added:  isDumpAnalyzing function. Check if it is a dump analyzing or live debuggiv
+[+] added : loadChars routine. Load raw buffer. 
+[+] added : docstrings for all functions and classes
+[+] added : checksum() and timestamp() methods for dbgModuleClass
+[+] added : callbacks for bp class ( breakpoint ) 
+
+[~] removed : isSessionStart() function
+
+[~] updated : typedVarList can parse lists with LIST_ENTRY and lists with links pointing to the head of the next element
+
+[!] fixed : issue 8470 ( python.exe crashes after first pykd call )
+[!] fixed : issue 8614 ( go() works incorrectly while process is terminating )
+[!] fixed : issue 8499 ( !py command crashs with wrong script's path )
+[!] fixed : issue 8578 ( findModule returns None for WOW64 process )
+[!] fixed : issue 8493 ( loadPtrs returns dict instead list ) 
+[!] fixed : issue 8469 ( dprintln does not work in console mode ) 
+
 version 0.0.16 03/03/2011
 [+] added : isValid() routine; it validates virtual address 
 [+] added : image() and pdb() method for dbgModuleClass class. They return paths to pdb and image files. 
