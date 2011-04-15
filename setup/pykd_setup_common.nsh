@@ -27,7 +27,7 @@ SetCompressor LZMA
 
 !define PRODUCT_SHORT_NAME "pykd"
 !define PRODUCT_FULL_NAME  "Python extension for WinDbg"
-!define PRODUCT_VERSION "0.0.0.16"
+!define PRODUCT_VERSION "0.0.0.17"
 !define PRODUCT_URL  "http://pykd.codeplex.com/"
 !define PRODUCT_NAME_AND_VERSION "${PRODUCT_FULL_NAME} ${PRODUCT_ARCH} ${PRODUCT_VERSION}"
 !define PRODUCT_MANUFACTURER "PyKd Team"
