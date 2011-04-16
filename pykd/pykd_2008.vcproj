@@ -226,6 +226,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/pdbpath:none"
 				AdditionalDependencies="dbgeng.lib"
 				OutputFile="$(OutDir)\$(ProjectName).pyd"
 				LinkIncremental="1"
@@ -303,6 +304,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/pdbpath:none"
 				AdditionalDependencies="dbgeng.lib"
 				OutputFile="$(OutDir)\$(ProjectName).pyd"
 				LinkIncremental="1"
