@@ -86,6 +86,8 @@ public:
         {}
 
     TypeInfo( const std::string  &moduleName, const std::string  &typeName );
+    
+    TypeInfo( const std::string  &moduleName, ULONG typeId );    
 
     boost::python::object
     load( ULONG64 addr, ULONG offset = 0 ) const;

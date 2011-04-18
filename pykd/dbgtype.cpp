@@ -334,9 +334,79 @@ TypeInfo::TypeInfo( const std::string  &moduleName, const std::string  &typeName
             std::string     fieldTypeNameStr( fieldTypeName );
             if ( fieldTypeNameStr == "__unnamed" 
              ||  fieldTypeNameStr.find("<unnamed-tag>") < fieldTypeNameStr.size() )
-                continue;   
+            {
+                m_fields.push_back( TypeField( fieldName, TypeInfo( moduleName, fieldTypeId ), fieldSize, fieldOffset ) );
+            }
+            else
+            {
+                m_fields.push_back( TypeField( fieldName, get(moduleName, fieldTypeName), fieldSize, fieldOffset ) );
+            }                
+       }
+    }
+    catch( std::exception  &e )
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+    }
+    catch(...)
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+    }
+}
 
-            m_fields.push_back( TypeField( fieldName, get(moduleName, fieldTypeName), fieldSize, fieldOffset ) );
+/////////////////////////////////////////////////////////////////////////////////
+
+TypeInfo::TypeInfo( const std::string  &moduleName, ULONG typeId )
+{
+    HRESULT      hres;
+
+    m_size = 0;
+    m_baseType = false;
+    m_pointer = false;
+    
+    try {
+
+        ULONG64     moduleBase = 0;
+        hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
+        if ( FAILED( hres ) )
+            throw  DbgException( "IDebugSymbol::GetModuleByModuleName  failed" ); 
+
+        hres = dbgExt->symbols->GetTypeSize( moduleBase, typeId, &m_size );
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugSymbol::GetTypeSize failed" );
+            
+        for ( ULONG   i = 0; ; ++i )
+        {
+            char   fieldName[100];
+            hres = dbgExt->symbols2->GetFieldName( moduleBase, typeId, i, fieldName, sizeof(fieldName), NULL );
+            
+            if ( FAILED( hres ) )
+                break;  
+            
+            ULONG   fieldTypeId;
+            ULONG   fieldOffset;
+            hres = dbgExt->symbols3->GetFieldTypeAndOffset( moduleBase, typeId, fieldName, &fieldTypeId, &fieldOffset );
+
+            if ( FAILED( hres ) )
+                throw  DbgException( "IDebugSymbol3::GetFieldTypeAndOffset  failed" ); 
+
+            ULONG   fieldSize;                
+            hres = dbgExt->symbols->GetTypeSize( moduleBase, fieldTypeId, &fieldSize );
+            if ( FAILED( hres ) )
+                throw DbgException( "IDebugSymbol::GetTypeSize failed" );
+
+            char    fieldTypeName[100];
+            hres = dbgExt->symbols->GetTypeName( moduleBase, fieldTypeId, fieldTypeName, sizeof(fieldTypeName), NULL );
+
+            std::string     fieldTypeNameStr( fieldTypeName );
+            if ( fieldTypeNameStr == "__unnamed" 
+             ||  fieldTypeNameStr.find("<unnamed-tag>") < fieldTypeNameStr.size() )
+            {
+                m_fields.push_back( TypeField( fieldName, TypeInfo( moduleName, fieldTypeId ), fieldSize, fieldOffset ) );
+            }
+            else
+            {
+                m_fields.push_back( TypeField( fieldName, get(moduleName, fieldTypeName), fieldSize, fieldOffset ) );
+            }                
        }
     }
     catch( std::exception  &e )
