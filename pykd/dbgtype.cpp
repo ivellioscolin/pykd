@@ -177,11 +177,11 @@ isBaseType( const std::string  &typeName );
 
 template< typename valType>
 boost::python::object
-valueLoader( ULONG64 address, ULONG size );
+valueLoader( PVOID address, ULONG size );
 
 template<>
 boost::python::object
-valueLoader<void*>( ULONG64 address, ULONG size )
+valueLoader<void*>( PVOID address, ULONG size )
 {
     if ( is64bitSystem() )
         return valueLoader<__int64>( address, size );
@@ -190,7 +190,7 @@ valueLoader<void*>( ULONG64 address, ULONG size )
 }
 
 boost::python::object
-voidLoader( ULONG64 address, ULONG size ) {
+voidLoader( PVOID address, ULONG size ) {
     return boost::python::object();
 }
 
@@ -214,7 +214,7 @@ basicTypeNames[] = {
 
 typedef
 boost::python::object
-(*basicTypeLoader)( ULONG64 address, ULONG size );
+(*basicTypeLoader)( PVOID address, ULONG size );
     
 basicTypeLoader     basicTypeLoaders[] = {
     valueLoader<unsigned char>,
@@ -452,84 +452,6 @@ TypeInfo::setupBaseType()
 
 /////////////////////////////////////////////////////////////////////////////////
 
-/*
-TypeInfo::TypeInfo( const std::string  &moduleName, const std::string  &typeName )
-{
-
-}
-*/
-
-/////////////////////////////////////////////////////////////////////////////////
-
-/*
-TypeInfo::TypeInfo( const std::string  &moduleName, ULONG typeId )
-{
-    HRESULT      hres;
-
-    m_size = 0;
-    m_baseType = false;
-    m_pointer = false;
-    
-    try {
-
-        ULONG64     moduleBase = 0;
-        hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
-        if ( FAILED( hres ) )
-            throw  DbgException( "IDebugSymbol::GetModuleByModuleName  failed" ); 
-
-        hres = dbgExt->symbols->GetTypeSize( moduleBase, typeId, &m_size );
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugSymbol::GetTypeSize failed" );
-            
-        for ( ULONG   i = 0; ; ++i )
-        {
-            char   fieldName[100];
-            hres = dbgExt->symbols2->GetFieldName( moduleBase, typeId, i, fieldName, sizeof(fieldName), NULL );
-            
-            if ( FAILED( hres ) )
-                break;  
-            
-            ULONG   fieldTypeId;
-            ULONG   fieldOffset;
-            hres = dbgExt->symbols3->GetFieldTypeAndOffset( moduleBase, typeId, fieldName, &fieldTypeId, &fieldOffset );
-
-            if ( FAILED( hres ) )
-                throw  DbgException( "IDebugSymbol3::GetFieldTypeAndOffset  failed" ); 
-
-            ULONG   fieldSize;                
-            hres = dbgExt->symbols->GetTypeSize( moduleBase, fieldTypeId, &fieldSize );
-            if ( FAILED( hres ) )
-                throw DbgException( "IDebugSymbol::GetTypeSize failed" );
-
-            char    fieldTypeName[100];
-            hres = dbgExt->symbols->GetTypeName( moduleBase, fieldTypeId, fieldTypeName, sizeof(fieldTypeName), NULL );
-
-            std::string     fieldTypeNameStr( fieldTypeName );
-            if ( fieldTypeNameStr == "__unnamed" 
-             ||  fieldTypeNameStr.find("<unnamed-tag>") < fieldTypeNameStr.size() )
-            {
-                m_fields.push_back( TypeField( fieldName, TypeInfo( moduleName, fieldTypeId ), fieldSize, fieldOffset ) );
-            }
-            else
-            {
-                m_fields.push_back( TypeField( fieldName, get(moduleName, fieldTypeName), fieldSize, fieldOffset ) );
-            }                
-       }
-    }
-    catch( std::exception  &e )
-    {
-        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-    }
-    catch(...)
-    {
-        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-    }
-}
-
-*/
-
-/////////////////////////////////////////////////////////////////////////////////
-
 boost::python::object
 TypeInfo::build( ULONG offset /* = 0 */ ) const
 {
@@ -566,18 +488,29 @@ TypeInfo::build( ULONG offset /* = 0 */ ) const
 /////////////////////////////////////////////////////////////////////////////////
 
 boost::python::object
-TypeInfo::load( ULONG64 addr, ULONG offset /* = 0 */ ) const
+TypeInfo::load( ULONG64 targetAddr, PVOID cacheBuffer , ULONG offset /* = 0 */ ) const
 {
-    if ( !isOffsetValid( addr) )
+    if ( !isOffsetValid( targetAddr) )
         return boost::python::object();
-
+        
+    boost::scoped_array<char>       rawBuffer;    
+        
+    if ( cacheBuffer == NULL )
+    {
+        rawBuffer.reset( new char[ m_size ] );
+        cacheBuffer = rawBuffer.get();
+        
+        if ( !loadMemory( targetAddr, cacheBuffer, m_size ) )
+            return boost::python::object();
+    }           
+    
     if ( m_pointer )
-        return ptrLoader( addr );
-
+        return ptrLoader( (PVOID)( (ULONG_PTR)cacheBuffer + offset ) );
+        
     if ( m_baseType )
-        return loadBaseType( addr );
+        return loadBaseType( (PVOID)( (ULONG_PTR)cacheBuffer + offset ) );   
 
-    boost::shared_ptr<typedVarClass>    ptr( new typedVarClass( *this, offset, addr ) );
+    boost::shared_ptr<typedVarClass>    ptr( new typedVarClass( *this, offset, targetAddr ) );
     boost::python::object               var( ptr );
     ptr->setPyObj( var );
 
@@ -588,7 +521,7 @@ TypeInfo::load( ULONG64 addr, ULONG offset /* = 0 */ ) const
         if ( field->size == field->type.size() )
         {
             var.attr( field->name.c_str() ) = 
-                field->type.load( addr + field->offset, offset + field->offset );
+                field->type.load( targetAddr + field->offset, cacheBuffer, offset + field->offset );
         }
         else
         {
@@ -597,7 +530,7 @@ TypeInfo::load( ULONG64 addr, ULONG offset /* = 0 */ ) const
             for ( unsigned int i = 0; i < field->size / field->type.size(); ++i )
             {
                 const ULONG locOffset = field->offset + i * (ULONG)field->type.size();
-                arr.append( field->type.load( addr + locOffset, offset + locOffset ) );
+                arr.append( field->type.load( targetAddr + locOffset, cacheBuffer, offset + locOffset ) );
             }
 
             var.attr( field->name.c_str() ) = arr;
@@ -633,7 +566,7 @@ isBaseType( const std::string  &typeName )
 /////////////////////////////////////////////////////////////////////////////////
 
 boost::python::object
-TypeInfo::loadBaseType( ULONG64 address ) const
+TypeInfo::loadBaseType( PVOID address ) const
 {
    for ( int i = 0; i < sizeof( basicTypeNames ) / sizeof( char* ); ++i )
    {
@@ -657,15 +590,18 @@ TypeInfo::loadBaseType( ULONG64 address ) const
 
 template< typename valType>
 boost::python::object
-valueLoader( ULONG64 address, ULONG size )
+valueLoader( PVOID address, ULONG size )
 {
     if ( size == sizeof(valType) )
     {
-        valType     v = 0;          
-        if ( loadMemory( address, &v, sizeof(v) ) )
-        {
-            return boost::python::long_( (unsigned __int64)v );
-        }            
+        valType     v = *(valType*)address;
+        return boost::python::long_( (unsigned __int64)v );
+        
+        
+        //if ( loadMemory( address, &v, sizeof(v) ) )
+        //{
+        //    return boost::python::long_( (unsigned __int64)v );
+        //}            
     }
     else
     {    
@@ -673,9 +609,8 @@ valueLoader( ULONG64 address, ULONG size )
 
         for ( unsigned int i = 0; i < size / sizeof(valType); ++i )
         {
-            valType  v = 0;
-            if ( !loadMemory( address + i * sizeof(valType), &v, sizeof(v) ) )
-                    return boost::python::object();
+            valType  v = *( (valType*)address + i );
+            //if ( !loadMemory( address + i * sizeof(valType), &v, sizeof(v) ) )
 
             arr[i] = boost::python::long_( (unsigned __int64)v );    
         }

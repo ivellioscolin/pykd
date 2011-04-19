@@ -5,6 +5,7 @@
 #include <list>
 
 #include "dbgmem.h"
+#include "dbgsystem.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -92,13 +93,8 @@ public:
         m_typeName( typeName )
         {}  
             
-
-/*    TypeInfo( const std::string  &moduleName, const std::string  &typeName );
-    
-    TypeInfo( const std::string  &moduleName, ULONG typeId );   */ 
-
     boost::python::object
-    load( ULONG64 addr, ULONG offset = 0 ) const;
+    load( ULONG64 targetAddr, PVOID cacheBuffer = NULL, ULONG offset = 0 ) const;
 
     boost::python::object
     build( ULONG offset = 0 ) const;
@@ -138,11 +134,14 @@ private:
     static TypeInfoMap                          g_typeInfoCache; 
 
     boost::python::object
-    loadBaseType( ULONG64 addr ) const;
+    loadBaseType( PVOID addr ) const;
 
     boost::python::object
-    ptrLoader( ULONG64 addr ) const  {
-        return boost::python::object( loadPtrByPtr( addr ) );
+    ptrLoader( PVOID addr ) const  {
+        if ( is64bitSystem() )
+            return boost::python::object( *(PULONG64)addr );
+        else
+            return boost::python::object( addr64( *(PULONG)addr ) );
     }
 
     void
