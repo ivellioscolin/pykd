@@ -84,17 +84,24 @@ public:
         m_baseType( false ),
         m_pointer( false )
         {}
+        
+    TypeInfo( const std::string  &typeName ) :
+        m_size( 0 ),
+        m_baseType( false ),
+        m_pointer( false ),
+        m_typeName( typeName )
+        {}  
+            
 
-    TypeInfo( const std::string  &moduleName, const std::string  &typeName );
+/*    TypeInfo( const std::string  &moduleName, const std::string  &typeName );
     
-    TypeInfo( const std::string  &moduleName, ULONG typeId );    
+    TypeInfo( const std::string  &moduleName, ULONG typeId );   */ 
 
     boost::python::object
     load( ULONG64 addr, ULONG offset = 0 ) const;
 
     boost::python::object
     build( ULONG offset = 0 ) const;
-
 
     ULONG64
     size() const 
@@ -107,9 +114,6 @@ public:
     {
         return m_typeName;
     }
-
-    static const TypeInfo&
-    get( const std::string  &moduleName, const std::string  &typeName );  
 
     const TypeFieldList&
     getFields() const {
@@ -125,6 +129,9 @@ public:
     isPtr() const {
         return m_pointer;
     }
+    
+    static const TypeInfo*
+    get( const std::string  &moduleName, const std::string  &typeName );     
 
 private:
 
@@ -140,6 +147,9 @@ private:
 
     void
     setupBaseType();
+    
+    static bool
+    getById( const std::string  &moduleName, ULONG typeId, TypeInfo& typeInfo );
 
 private:
 

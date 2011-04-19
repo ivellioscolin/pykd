@@ -16,7 +16,9 @@ using namespace std;
 boost::python::object
 loadTypedVar( const std::string &moduleName, const std::string &typeName, ULONG64 address )
 {
-    return TypeInfo::get( moduleName, typeName ).load( address );
+    const TypeInfo        *typeInfo = TypeInfo::get( moduleName, typeName );
+
+    return typeInfo != NULL ? typeInfo->load( address ) : boost::python::object();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +37,9 @@ sizeofType( const std::string &moduleName, const std::string &typeName )
         if ( FAILED( hres ) )
             throw  DbgException( "IDebugSymbol::GetModuleByModuleName  failed" ); 
     
-        typeSize = (ULONG)TypeInfo::get( moduleName, typeName ).size();
+        const TypeInfo        *typeInfo = TypeInfo::get( moduleName, typeName );
+        
+        return typeInfo != NULL ? (ULONG)typeInfo->size() : 0L;
     }
     catch( std::exception  &e )
     {
@@ -73,7 +77,7 @@ containingRecord( ULONG64 address, const std::string &moduleName, const std::str
         ULONG       fieldOffset;
         hres = dbgExt->symbols3->GetFieldTypeAndOffset( moduleBase, typeId, fieldName.c_str(), &fieldTypeId, &fieldOffset );   
         
-        return TypeInfo::get( moduleName, typeName ).load( address - fieldOffset );
+        return loadTypedVar( moduleName, typeName, address - fieldOffset );
     }
     catch( std::exception  &e )
     {
@@ -94,7 +98,9 @@ getTypeClass( const std::string &moduleName, const std::string &typeName )
 {
     try
     {
-        return TypeInfo::get( moduleName, typeName ).build();
+        const TypeInfo        *typeInfo = TypeInfo::get( moduleName, typeName );
+
+        return typeInfo != NULL ? typeInfo->build() : boost::python::object();
     }
     catch( std::exception  &e )
     {
@@ -104,6 +110,7 @@ getTypeClass( const std::string &moduleName, const std::string &typeName )
     {
         dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
     }
+    
     return boost::python::object();
 }
 
@@ -116,11 +123,14 @@ loadTypedVarList( ULONG64 address, const std::string &moduleName, const std::str
     
     ULONG64                 entryAddress = 0;
 
-    const TypeInfo&         typeInfo = TypeInfo::get( moduleName, typeName );
+    const TypeInfo          *typeInfo = TypeInfo::get( moduleName, typeName );
+    
+    if ( !typeInfo )
+        return boost::python::object();    
     
     boost::python::list     objList;
     
-    for ( TypeInfo::TypeFieldList::const_iterator  field = typeInfo.getFields().begin(); field != typeInfo.getFields().end(); field++ )
+    for ( TypeInfo::TypeFieldList::const_iterator  field = typeInfo->getFields().begin(); field != typeInfo->getFields().end(); field++ )
     {
         if ( field->name == listEntryName )
         {
@@ -149,10 +159,13 @@ loadTypedVarArray( ULONG64 address, const std::string &moduleName, const std::st
 {
     boost::python::list     objList;
     
-    const TypeInfo&         typeInfo = TypeInfo::get( moduleName, typeName );
+    const TypeInfo          *typeInfo = TypeInfo::get( moduleName, typeName );
+    
+    if ( !typeInfo )
+        return boost::python::object();        
     
     for( long i = 0; i < number; ++i )
-        objList.append( loadTypedVar( moduleName, typeName, address + i * typeInfo.size() ) );
+        objList.append( loadTypedVar( moduleName, typeName, address + i * typeInfo->size() ) );
     
     return objList;
 }
@@ -239,72 +252,126 @@ size_t   basicTypeSizes[] = {
 
 TypeInfo::TypeInfoMap    TypeInfo::g_typeInfoCache;
 
-const TypeInfo&
+const TypeInfo*
 TypeInfo::get( const std::string  &moduleName, const std::string  &typeName )
-{
-    TypeInfoMap::iterator     findIt = g_typeInfoCache.find( TypeName( moduleName, typeName ) );
-
-    if ( findIt != g_typeInfoCache.end() )
-        return  findIt->second;
-
-    TypeInfo        typeInfo( moduleName, typeName );
-
-    return g_typeInfoCache.insert( std::make_pair( TypeName( moduleName, typeName ), typeInfo) ).first->second;
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-void
-TypeInfo::setupBaseType()
-{
-   for ( int i = 0; i < sizeof( basicTypeSizes ) / sizeof( size_t ); ++i )
-   {
-        if ( m_typeName == basicTypeNames[i] ||
-            m_typeName == ( std::string( basicTypeNames[i] ) + "[]" ) )
-        {
-            m_size = (ULONG)basicTypeSizes[i];
-            return;   
-        }
-    }            
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-TypeInfo::TypeInfo( const std::string  &moduleName, const std::string  &typeName )
-{
+{   
     HRESULT      hres;
 
-    m_typeName = typeName;
-    m_size = 0;
-    m_baseType = false;
-    m_pointer = false;
     try {
+    
+        TypeInfoMap::iterator     findIt = g_typeInfoCache.find( TypeName( moduleName, typeName ) );
 
-        if (  typeName.find("*") < typeName.size() )
-        {
-            m_pointer = true;
-            m_size = ptrSize();
-            return;
-        }
+        if ( findIt != g_typeInfoCache.end() )
+            return  &findIt->second;        
+            
+        TypeInfo        typeInfo( typeName );    
+        
+        do {  
+    
+            if (  typeName.find("*") < typeName.size() )
+            {
+                typeInfo.m_pointer = true;
+                typeInfo.m_size = ptrSize();
+                break;
+            }
 
-        m_baseType = isBaseType( typeName );
-        if ( m_baseType )
-        {
-            setupBaseType();
-            return;
-        }
+            typeInfo.m_baseType = isBaseType( typeName );
+            if ( typeInfo.m_baseType )
+            {
+                typeInfo.setupBaseType();
+                break;
+            }
+
+            ULONG64     moduleBase = 0;
+            hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
+            if ( FAILED( hres ) )
+                throw  DbgException( "IDebugSymbol::GetModuleByModuleName  failed" ); 
+
+            ULONG       typeId = 0;
+            hres = dbgExt->symbols->GetTypeId( moduleBase, typeInfo.m_typeName.c_str(), &typeId );
+            if ( FAILED( hres ) )
+                throw  DbgException( "IDebugSymbol::GetTypeId  failed" );
+
+            hres = dbgExt->symbols->GetTypeSize( moduleBase, typeId, &typeInfo.m_size );
+            if ( FAILED( hres ) )
+                throw DbgException( "IDebugSymbol::GetTypeSize failed" );
+                
+            for ( ULONG   i = 0; ; ++i )
+            {
+                char   fieldName[100];
+                hres = dbgExt->symbols2->GetFieldName( moduleBase, typeId, i, fieldName, sizeof(fieldName), NULL );
+                
+                if ( FAILED( hres ) )
+                    break;  
+                
+                ULONG   fieldTypeId;
+                ULONG   fieldOffset;
+                hres = dbgExt->symbols3->GetFieldTypeAndOffset( moduleBase, typeId, fieldName, &fieldTypeId, &fieldOffset );
+
+                if ( FAILED( hres ) )
+                    throw  DbgException( "IDebugSymbol3::GetFieldTypeAndOffset  failed" ); 
+
+                ULONG   fieldSize;                
+                hres = dbgExt->symbols->GetTypeSize( moduleBase, fieldTypeId, &fieldSize );
+                if ( FAILED( hres ) )
+                    throw DbgException( "IDebugSymbol::GetTypeSize failed" );
+
+                char    fieldTypeName[100];
+                hres = dbgExt->symbols->GetTypeName( moduleBase, fieldTypeId, fieldTypeName, sizeof(fieldTypeName), NULL );
+
+                std::string     fieldTypeNameStr( fieldTypeName );
+                
+                if ( fieldTypeNameStr == "__unnamed" 
+                 ||  fieldTypeNameStr.find("<unnamed-tag>") < fieldTypeNameStr.size() )
+                {
+                    TypeInfo   unnamedType;
+                    if ( !getById( moduleName, fieldTypeId, unnamedType ) )
+                        return NULL;
+                        
+                     typeInfo.m_fields.push_back( TypeField( fieldName, unnamedType, fieldSize, fieldOffset ) );     
+                }
+                else
+                {
+                    const TypeInfo  *fieldTypeInfo = get( moduleName, fieldTypeName );
+                    if ( !fieldTypeInfo )
+                        return NULL;
+                        
+                    typeInfo.m_fields.push_back( TypeField( fieldName, *fieldTypeInfo, fieldSize, fieldOffset ) );                         
+                }   
+           }
+           
+        } while( FALSE );          
+       
+        return &g_typeInfoCache.insert( std::make_pair( TypeName( moduleName, typeName ), typeInfo) ).first->second;
+    }
+    catch( std::exception& )
+    {
+        //dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+        // это нормально: на вход был передан не верный тип
+    }
+    catch(...)
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+    }    
+    
+    return NULL;    
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+bool
+TypeInfo::getById( const std::string  &moduleName, ULONG typeId, TypeInfo& typeInfo )
+{
+    HRESULT      hres;
+    
+    try {
 
         ULONG64     moduleBase = 0;
         hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
         if ( FAILED( hres ) )
             throw  DbgException( "IDebugSymbol::GetModuleByModuleName  failed" ); 
 
-        ULONG       typeId = 0;
-        hres = dbgExt->symbols->GetTypeId( moduleBase, m_typeName.c_str(), &typeId );
-        if ( FAILED( hres ) )
-            throw  DbgException( "IDebugSymbol::GetTypeId  failed" );
-
-        hres = dbgExt->symbols->GetTypeSize( moduleBase, typeId, &m_size );
+        hres = dbgExt->symbols->GetTypeSize( moduleBase, typeId, &typeInfo.m_size );
         if ( FAILED( hres ) )
             throw DbgException( "IDebugSymbol::GetTypeSize failed" );
             
@@ -332,29 +399,69 @@ TypeInfo::TypeInfo( const std::string  &moduleName, const std::string  &typeName
             hres = dbgExt->symbols->GetTypeName( moduleBase, fieldTypeId, fieldTypeName, sizeof(fieldTypeName), NULL );
 
             std::string     fieldTypeNameStr( fieldTypeName );
+
             if ( fieldTypeNameStr == "__unnamed" 
              ||  fieldTypeNameStr.find("<unnamed-tag>") < fieldTypeNameStr.size() )
             {
-                m_fields.push_back( TypeField( fieldName, TypeInfo( moduleName, fieldTypeId ), fieldSize, fieldOffset ) );
+                TypeInfo   unnamedType;
+                if ( !getById( moduleName, fieldTypeId, unnamedType ) )
+                    return false;
+                    
+                 typeInfo.m_fields.push_back( TypeField( fieldName, unnamedType, fieldSize, fieldOffset ) );     
             }
             else
             {
-                m_fields.push_back( TypeField( fieldName, get(moduleName, fieldTypeName), fieldSize, fieldOffset ) );
-            }                
+                const TypeInfo      *fieldTypeInfo = get( moduleName, fieldTypeName );
+                if ( !fieldTypeInfo )
+                    return false;
+                    
+                typeInfo.m_fields.push_back( TypeField( fieldName, *fieldTypeInfo, fieldSize, fieldOffset ) );                         
+            }   
        }
+       
+       return true;
     }
-    catch( std::exception  &e )
+    catch( std::exception& )
     {
-        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+        //dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+        // это нормально: на вход был передан не верный тип
     }
     catch(...)
     {
         dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-    }
+    }   
+    
+    return false; 
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
+void
+TypeInfo::setupBaseType()
+{
+   for ( int i = 0; i < sizeof( basicTypeSizes ) / sizeof( size_t ); ++i )
+   {
+        if ( m_typeName == basicTypeNames[i] ||
+            m_typeName == ( std::string( basicTypeNames[i] ) + "[]" ) )
+        {
+            m_size = (ULONG)basicTypeSizes[i];
+            return;   
+        }
+    }            
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+/*
+TypeInfo::TypeInfo( const std::string  &moduleName, const std::string  &typeName )
+{
+
+}
+*/
+
+/////////////////////////////////////////////////////////////////////////////////
+
+/*
 TypeInfo::TypeInfo( const std::string  &moduleName, ULONG typeId )
 {
     HRESULT      hres;
@@ -418,6 +525,8 @@ TypeInfo::TypeInfo( const std::string  &moduleName, ULONG typeId )
         dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
     }
 }
+
+*/
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -554,7 +663,9 @@ valueLoader( ULONG64 address, ULONG size )
     {
         valType     v = 0;          
         if ( loadMemory( address, &v, sizeof(v) ) )
+        {
             return boost::python::long_( (unsigned __int64)v );
+        }            
     }
     else
     {    
