@@ -56,7 +56,7 @@ def getObjectByName( objName ):
 	return
 
     rootDir = typedVar( "nt", "_OBJECT_DIRECTORY", ptrPtr( nt.ObpRootDirectoryObject ) )
-   
+  
     return getObjectInDir( rootDir, objName[1:] )
 
 

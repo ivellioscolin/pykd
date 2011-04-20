@@ -6,7 +6,7 @@ import sys
 
 
 def usage():
-    pass
+    print "python pytowiki.py module_name"
 
 
 class CodeplexFormatter:
@@ -83,13 +83,6 @@ def buildDoc( ioStream, formatter, apiInfo ):
             if m.__doc__ != None:
                 ioStream.write( formatter.header4( formatter.escapeMarkup( m.__name__ ) ) )
                 ioStream.write( formatter.escapeMarkup( m.__doc__ ) + formatter.endl() )
-
-
-def buildFuncDir( ioStream, funcs ):
-    pass
-
-def buildClassDir( ioStream, classes ):
-    pass
 
 
 def main():
