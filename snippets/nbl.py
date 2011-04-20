@@ -9,13 +9,25 @@ IPv4 = 0x0008
 ARP = 0x0608
 IPv6 = 0xdd86
 
+ICMP_PROTO = 0x01
+UDP_PROTO = 0x11
+TCP_PROTO = 0x06
+
 
 def getHostWord( dataPos ):
-   return ( dataPos.next() << 8 ) + dataPos.next()   
+    return ( dataPos.next() << 8 ) + dataPos.next()   
 
 
 def getNetWord( dataPos ):
-   return dataPos.next() + ( dataPos.next() << 8 )
+    return dataPos.next() + ( dataPos.next() << 8 )
+
+
+def getHostDWord( dataPos ):
+    return ( dataPos.next() << 24 ) + ( dataPos.next() << 16 ) + ( dataPos.next() << 8 ) + dataPos.next()
+
+
+def getNetDWord( dataPos ):
+    return dataPos.next() + ( dataPos.next() << 8 ) + ( dataPos.next() << 16 ) + ( dataPos.next() << 24 )
 
 
 
@@ -45,7 +57,7 @@ class UdpPacket:
             s += "\tChecksum: %#x\n" % self.checksum
             s += "\n"
         else:
-            s += "FAILED\n"
+            s += "MALFORMED\n"
 
         return s
 
@@ -70,21 +82,31 @@ class IpAddress:
         return "%d.%d.%d.%d" % tuple( self.addr[0:4] ) 
 
 
+class Ip6Address:
+   
+    def __init__( self, dataPos ):
+        pass
+
+    def __str__( self ):
+        return ""
+
+
 class IpProtocol:
 
-   def __init__( self, dataPos ):
-       self.typeVal = dataPos.next()
+    def __init__( self, dataPos ):
+        self.typeVal = dataPos.next()
 
-   def isUDP( self ):
-       return self.typeVal==0x11
+    def isICMP( self ):
+        return self.typeVal==ICMP_PROTO
 
-   def isTCP( self ):
-       return self.typeVal==0x06
+    def isUDP( self ):
+        return self.typeVal==UDP_PROTO
 
-   def __str__( self ):
-       if self.isUDP() : return "UDP"
-       if self.isTCP() : return "TCP"
-       else: return "%x" % self.typeVal
+    def isTCP( self ):
+        return self.typeVal==TCP_PROTO
+
+    def __str__( self ):
+        return { ICMP_PROTO: "ICMP", UDP_PROTO: "UDP", TCP_PROTO: "TCP" }.get( self.typeVal, hex(self.typeVal) )
 
 
 
@@ -135,7 +157,7 @@ class IpPacket:
             s += str( self.nextLayerPckt )
 
         else:
-            s += "FAILED\n"
+            s += "MALFORMED\n"
 
         return s
 
@@ -143,9 +165,43 @@ class IpPacket:
 class Ip6Packet():
 
    def  __init__( self, dataPos ):
-       pass
+  
+       self.parsed = False
+        
+       try:
+           
+           t = getNetDWord( dataPos )
+           self.version = ( t >> 28 ) & 0xF
+           self.trafficClass = ( t >> 20 ) & 0xFF
+           self.flowLabel = t & 0xFFF
+           self.payloadLength = getNetWord( dataPos )
+           self.nextHeader = dataPos.next()
+           self.hopLimit = dataPos.next()
+           self.srcAddr = Ip6Address( dataPos )
+           self.destAddr = Ip6Address( dataPos ) 
 
+           self.parsed = True     
+        
+       except StopIteration:
+           pass
+ 
    def __str__( self ):
+
+       s = "IPv6 header"
+
+       if self.parsed:
+           s += "OK\n"
+           s += "\tversion: %x\n" % self.version       
+           s += "\ttraffic class %x\n" % self.trafficClass
+           s += "\tflowLabel: %x\n" % self.flowLabel
+           s += "\tpayloadLength: %x\n" % self.payloadLength
+           s += "\tnextHeader: %x\n" % self.nextHeader
+           s += "\thopLimit: %d\n" % self.hopLimit
+           s += "\tsrcAddr: " + str(self.srcAddr) + "\n"
+           s += "\tdestAddr: " + str(self.destAddr) + "\n"
+       else:
+           s += "MALFORMED\n"
+
        return ""
 
 
