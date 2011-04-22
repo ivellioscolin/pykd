@@ -198,6 +198,21 @@ loadChars( ULONG64 address, ULONG  number, BOOLEAN phyAddr  )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+boost::python::object
+loadWChars( ULONG64 address, ULONG  number, BOOLEAN phyAddr  )
+{
+    std::vector<wchar_t>   buffer(number);
+    
+    if ( loadMemory( address, &buffer[0], (ULONG)buffer.size(), phyAddr ) ) 
+    {
+        return boost::python::object(std::wstring( buffer.begin(), buffer.end() ) );
+    }
+    
+  	return boost::python::object();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 ULONG64
 loadPtrByPtr( ULONG64 address )
 {

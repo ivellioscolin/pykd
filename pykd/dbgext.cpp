@@ -43,6 +43,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( dprint, DbgPrint::dprint, 1, 2 )
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln, DbgPrint::dprintln, 1, 2 )
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadCharsOv, loadChars, 2, 3 )
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadWCharsOv, loadWChars, 2, 3 )
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadBytes, loadArray<unsigned char>, 2, 3 )
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadWords, loadArray<unsigned short>, 2, 3 )
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadDWords, loadArray<unsigned long>, 2, 3 )
@@ -118,6 +119,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Extend address to 64 bits formats ( for x86 )" );
     boost::python::def( "loadChars", loadChars, loadCharsOv( boost::python::args( "address", "number",  "phyAddr" ),
         "Load string from the target buffer" ) );
+    boost::python::def( "loadWChars", loadWChars, loadWCharsOv( boost::python::args( "address", "number",  "phyAddr" ),        
+        "Load unicode string from the target buffer" ) );
     boost::python::def( "loadBytes", &loadArray<unsigned char>, loadBytes( boost::python::args( "address", "number",  "phyAddr"  ), 
         "Return list of unsigned bytes" ) );
     boost::python::def( "loadWords", &loadArray<unsigned short>, loadWords( boost::python::args( "address", "number",  "phyAddr"  ), 
