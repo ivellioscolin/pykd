@@ -78,7 +78,6 @@
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
-				Profile="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -159,7 +158,6 @@
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="17"
-				Profile="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -368,6 +366,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgmodevent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgmodule.cpp"
 				>
 			</File>
@@ -483,6 +485,10 @@
 			</File>
 			<File
 				RelativePath=".\dbgmem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgmodevent.h"
 				>
 			</File>
 			<File

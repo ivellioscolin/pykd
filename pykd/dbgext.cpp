@@ -28,6 +28,7 @@
 #include "dbgprocess.h"
 #include "dbgsynsym.h"
 #include "dbgclient.h"
+#include "dbgmodevent.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -221,7 +222,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::class_<dbgModuleClass>( "dbgModuleClass",
         "Class representing module in the target memory" )
         .def("begin", &dbgModuleClass::getBegin,
-            "Return start address of the module" )            
+            "Return start address of the module" )
         .def("end", &dbgModuleClass::getEnd,
             "Return end address of the module" )
         .def("size", &dbgModuleClass::getSize,
@@ -249,7 +250,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return address of the symbol" )
         .def("__str__", &dbgModuleClass::print,
             "Return a nice string represention of the dbgModuleClass" );
-            
+
     boost::python::class_<dbgExtensionClass>( 
             "ext",
             "windbg extension wrapper",
@@ -275,7 +276,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::class_<dbgOut>( "windbgOut", "windbgOut" )
         .def( "write", &dbgOut::write );
     boost::python::class_<dbgIn>( "windbgIn", "windbgIn" )
-        .def( "readline", &dbgIn::readline );                
+        .def( "readline", &dbgIn::readline );
     boost::python::class_<dbgBreakpointClass>( "bp",
          "Class representing breakpoint",
          boost::python::init<ULONG64,boost::python::object&>( boost::python::args("offset", "callback"), 
@@ -286,6 +287,15 @@ BOOST_PYTHON_MODULE( pykd )
             "Remove a breakpoint set before" )
         .def( "__str__", &dbgBreakpointClass::print,
             "Return a nice string represention of the breakpoint class"  );
+
+    boost::python::class_<moduleEventsWrap, boost::noncopyable>( "modEvents",
+        "Class for processing of events: loading and unloading modules" )
+        .def( "onLoad", &moduleEvents::onLoad, &moduleEventsWrap::onLoadDef,
+            "Load module event. Parameter is instance of dbgModuleClass. "
+            "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" )
+        .def( "onUnload", &moduleEvents::onUnload, &moduleEventsWrap::onUnloadDef,
+            "Unload module event. Parameter is instance of dbgModuleClass. "
+            "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" );
 
     // debug status
     _DEF_PY_CONST(DEBUG_STATUS_NO_CHANGE);

@@ -7,6 +7,7 @@
 #include "dbgmodule.h"
 #include "dbgsynsym.h"
 #include "dbgcmd.h"
+#include "dbgmodevent.h"
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -51,7 +52,11 @@ HRESULT DbgEventCallbacksManager::GetInterestMask(
     __out PULONG Mask
 )
 {
-    *Mask =  DEBUG_EVENT_CHANGE_SYMBOL_STATE | DEBUG_EVENT_BREAKPOINT;
+    *Mask = 
+        DEBUG_EVENT_CHANGE_SYMBOL_STATE |
+        DEBUG_EVENT_BREAKPOINT | 
+        DEBUG_EVENT_LOAD_MODULE | 
+        DEBUG_EVENT_UNLOAD_MODULE;
     return S_OK;
 }
 
@@ -66,27 +71,25 @@ HRESULT DbgEventCallbacksManager::ChangeSymbolState(
     {
         if (Argument)
         {
-            DEBUG_MODULE_PARAMETERS dbgModuleParameters={};
-            
+            DEBUG_MODULE_PARAMETERS dbgModuleParameters;
             HRESULT hres = dbgExt->symbols3->GetModuleParameters(
                 1,
                 &Argument,
                 0,
                 &dbgModuleParameters);
-    
+
             if (SUCCEEDED(hres))
             {
                  ModuleInfo     moduleInfo(dbgModuleParameters);
-                 
                  restoreSyntheticSymbolForModule(moduleInfo);
-            }        
-            
-            return S_OK;        
+            }
+
+            return S_OK;
         }
 
         //// f.e. is case ".reload /f image.exe", if for image.exe no symbols
         restoreSyntheticSymbolForAllModules();
-        
+
         return S_OK;
     }
 
@@ -100,7 +103,45 @@ HRESULT DbgEventCallbacksManager::Breakpoint(
 )
 {
     return dbgBreakpointClass::onBreakpointEvnet( bp );
-}    
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+HRESULT DbgEventCallbacksManager::LoadModule(
+    __in ULONG64 ImageFileHandle,
+    __in ULONG64 BaseOffset,
+    __in ULONG ModuleSize,
+    __in PCSTR ModuleName,
+    __in PCSTR ImageName,
+    __in ULONG CheckSum,
+    __in ULONG TimeDateStamp
+)
+{
+    try
+    {
+        return moduleEvents::onLoadModule(BaseOffset);
+    }
+    catch (std::exception &)
+    {
+    }
+    return DEBUG_STATUS_NO_CHANGE;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+HRESULT DbgEventCallbacksManager::UnloadModule(
+    __in PCSTR ImageBaseName,
+    __in ULONG64 BaseOffset
+)
+{
+    try
+    {
+        return moduleEvents::onUnloadModule(BaseOffset);
+    }
+    catch (std::exception &)
+    {
+    }
+    return DEBUG_STATUS_NO_CHANGE;
+}
+
+///////////////////////////////////////////////////////////////////////////////////

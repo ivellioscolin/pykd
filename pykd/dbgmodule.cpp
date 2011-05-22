@@ -47,61 +47,82 @@ loadModule( const std::string &moduleName )
 
 /////////////////////////////////////////////////////////////////////////////////
 
+void queryModuleParams(
+    __in ULONG64 addr,
+    __out std::string &name,
+    __out ULONG64 &base,
+    __out ULONG &size
+)
+{
+    addr = addr64( addr );
+
+    ULONG moduleIndex;
+    HRESULT hres = 
+        dbgExt->symbols->GetModuleByOffset( addr, 0, &moduleIndex, &base);
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol::GetModuleByOffset failed" );
+
+    DEBUG_MODULE_PARAMETERS moduleParam = { 0 };
+    hres = dbgExt->symbols->GetModuleParameters( 1, &base, 0, &moduleParam );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol::GetModuleParameters failed" );
+    size = moduleParam.Size;
+
+    ULONG moduleNameChars = 0;
+    dbgExt->symbols->GetModuleNames(
+        moduleIndex,
+        0,
+        NULL,
+        0,
+        NULL,
+        NULL,
+        0,
+        &moduleNameChars,
+        NULL,
+        0,
+        NULL );
+    name.resize(moduleNameChars + 1);
+    hres = dbgExt->symbols->GetModuleNames(
+        moduleIndex,
+        0,
+        NULL,
+        0,
+        NULL,
+        &name[0],
+        (ULONG)name.size(),
+        NULL,
+        NULL,
+        0,
+        NULL );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol::GetModuleNames  failed" );
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
 boost::python::object
 findModule( ULONG64 addr )
 {
-    HRESULT         hres;
-    
-    addr = addr64( addr );
-      
     try {
-    
-        ULONG     moduleIndex;
-        ULONG64   moduleBase;            
-        hres = dbgExt->symbols->GetModuleByOffset( addr, 0, &moduleIndex, &moduleBase );    
-        
-        if ( FAILED( hres ) )
-        {
-            return boost::python::object();   
-        }       
-        
-        DEBUG_MODULE_PARAMETERS     moduleParam = { 0 };
-        hres = dbgExt->symbols->GetModuleParameters( 1, &moduleBase, 0, &moduleParam );
-        if ( FAILED( hres ) )
-             throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );      
-             
-        char   moduleName[0x100];             
-             
-        hres = 
-            dbgExt->symbols->GetModuleNames(  
-                moduleIndex,
-                0,
-                NULL,
-                0,
-                NULL,
-                moduleName,
-                sizeof( moduleName ),
-                NULL,
-                NULL,
-                0,
-                NULL );
-                
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugSymbol::GetModuleNames  failed" );                 
-             
-        return boost::python::object( dbgModuleClass( moduleName, moduleBase, moduleParam.Size ) );            
-        
+        ULONG64 moduleBase;
+        ULONG moduleSize;
+        std::string moduleName;
+        queryModuleParams(addr, moduleName, moduleBase, moduleSize);
+        return 
+            boost::python::object(
+                dbgModuleClass( moduleName, moduleBase, moduleSize )
+            );
     }
-	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}	 
-	
-	return boost::python::object();    
+    catch( std::exception  &e )
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
+    }
+    catch(...)
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
+    }
+
+    return boost::python::object();    
 }
 
 /////////////////////////////////////////////////////////////////////////////////

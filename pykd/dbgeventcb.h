@@ -25,19 +25,33 @@ private:
 
     STDMETHOD(GetInterestMask)(
         __out PULONG Mask
-    );    
+    );
 
     STDMETHOD(ChangeSymbolState)(
         __in ULONG Flags,
         __in ULONG64 Argument
     );
-    
+
     STDMETHOD(Breakpoint)(
         __in PDEBUG_BREAKPOINT Bp
     );
-    
+
+    STDMETHOD(LoadModule)(
+        __in ULONG64 ImageFileHandle,
+        __in ULONG64 BaseOffset,
+        __in ULONG ModuleSize,
+        __in PCSTR ModuleName,
+        __in PCSTR ImageName,
+        __in ULONG CheckSum,
+        __in ULONG TimeDateStamp
+    );
+
+    STDMETHOD(UnloadModule)(
+        __in PCSTR ImageBaseName,
+        __in ULONG64 BaseOffset
+    );
+
 private:
-  
     IDebugClient       *m_debugClient;
 };
 

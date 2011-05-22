@@ -162,6 +162,14 @@ private:
 boost::python::object
 loadModule( const std::string &moduleName );
 
+// query module parameters (for construct dbgModuleClass) by virtual address
+// error : DbgException exception
+void queryModuleParams(
+    __in ULONG64 addr,
+    __out std::string &name,
+    __out ULONG64 &base,
+    __out ULONG &size
+);
 
 boost::python::object
 findModule( ULONG64 addr );

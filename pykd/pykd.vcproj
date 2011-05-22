@@ -376,6 +376,10 @@
 				RelativePath=".\dbgmem.cpp"
 				>
 			</File>
+  		<File
+				RelativePath=".\dbgmodevent.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\dbgmodule.cpp"
 				>
@@ -492,6 +496,10 @@
 			</File>
 			<File
 				RelativePath=".\dbgmem.h"
+				>
+			</File>
+  		<File
+				RelativePath=".\dbgmodevent.h"
 				>
 			</File>
 			<File
