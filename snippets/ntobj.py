@@ -73,7 +73,6 @@ def getObjectNameInfoFromInfoMask(p):
 # Select platform-specific function for getting name of object
 getObjectNameInfo = None
 try:
-  getTypeClass("nt", "_OBJECT_HEADER").NameInfoOffset
   getObjectNameInfo = getObjectNameInfoFromHeader
 except AttributeError:
   getObjectNameInfo = getObjectNameInfoFromInfoMask

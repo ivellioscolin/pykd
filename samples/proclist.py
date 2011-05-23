@@ -10,24 +10,24 @@ def processInfo():
     processList = typedVarList( nt.PsActiveProcessHead, "nt", "_EPROCESS", "ActiveProcessLinks"  )
 
     for process in processList:
-      print "".join( [chr(i) for i in process.ImageFileName if i != 0] )
+        print "".join( [chr(i) for i in process.ImageFileName if i != 0] )
 
 
+def main():
 
-if __name__ == "__main__":
+    if not isWindbgExt():
+        if not loadDump( sys.argv[1] ):
+             dprintln( sys.argv[1] + " - load failed" )
+             return
 
-
-    while True:
-
-        if not isWindbgExt():
-            if not loadDump( sys.argv[1] ):
-                dprintln( sys.argv[1] + " - load failed" )
-                break
-
-        if not isKernelDebugging():
-            dprintln( "not a kernel debugging" )
-            break 
+    if not isKernelDebugging():
+        dprintln( "not a kernel debugging" )
+        return   
                  
-        processInfo()
-        break      
+    processInfo()
+
+	
+if __name__ == "__main__":
+    main()
+
 

@@ -46,7 +46,7 @@ def iat( moduleName, mask = "*" ):
         else:
             iatEntry = ptrQWord( iatAddr + i*pSize )
 
-        if  iatEntry != 0:
+        if  iatEntry != None and iatEntry != 0:
             symbolName = findSymbol( iatEntry ) 
             if fnmatch.fnmatch( symbolName, mask ): 
                 dprintln( symbolName )

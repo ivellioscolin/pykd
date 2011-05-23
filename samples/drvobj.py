@@ -44,6 +44,8 @@ def getObjectInDir( dirObj, objName ):
               else:
                   dirEntry = 0    
 
+    return None      
+
 
 
                                                                           
