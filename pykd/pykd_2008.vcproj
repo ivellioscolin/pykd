@@ -358,6 +358,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgevent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgeventcb.cpp"
 				>
 			</File>
@@ -371,10 +375,6 @@
 			</File>
 			<File
 				RelativePath=".\dbgmem.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgmodevent.cpp"
 				>
 			</File>
 			<File
@@ -411,6 +411,10 @@
 			</File>
 			<File
 				RelativePath=".\dbgtype.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\pykd.cpp"
 				>
 			</File>
 			<File
@@ -480,6 +484,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgevent.h"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgeventcb.h"
 				>
 			</File>
@@ -497,10 +505,6 @@
 			</File>
 			<File
 				RelativePath=".\dbgmem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgmodevent.h"
 				>
 			</File>
 			<File

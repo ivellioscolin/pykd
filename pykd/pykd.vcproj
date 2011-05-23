@@ -385,7 +385,7 @@
 				>
 			</File>
   		<File
-				RelativePath=".\dbgmodevent.cpp"
+				RelativePath=".\dbgevent.cpp"
 				>
 			</File>
 			<File
@@ -511,7 +511,7 @@
 				>
 			</File>
   		<File
-				RelativePath=".\dbgmodevent.h"
+				RelativePath=".\dbgevent.h"
 				>
 			</File>
 			<File

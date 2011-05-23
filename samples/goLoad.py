@@ -6,19 +6,19 @@ from pykd import *
 import fnmatch
 import sys
 
-class modLoad(modEvents):
+class loadHandler(debugEvent):
   def __init__(self, mask):
-    modEvents.__init__(self)
+    debugEvent.__init__(self)
     self.mask = mask
 
-  def onLoad(self, module):
+  def onLoadModule(self, module):
     if fnmatch.fnmatch( module.name(), self.mask ):
       return DEBUG_STATUS_BREAK
     return DEBUG_STATUS_NO_CHANGE
 
 if __name__ == "__main__":
   if len(sys.argv) == 2:
-    loadHandler = modLoad( sys.argv[1] )
+    loadHandler = loadHandler( sys.argv[1] )
     go()
   else:
     dprintln( "Wait (execute) for load target module\nInvalid command line" )

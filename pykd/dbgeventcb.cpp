@@ -7,7 +7,7 @@
 #include "dbgmodule.h"
 #include "dbgsynsym.h"
 #include "dbgbreak.h"
-#include "dbgmodevent.h"
+#include "dbgevent.h"
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -119,7 +119,7 @@ HRESULT DbgEventCallbacksManager::LoadModule(
 {
     try
     {
-        return moduleEvents::onLoadModule(BaseOffset);
+        return debugEvent::moduleLoaded(BaseOffset);
     }
     catch (std::exception &)
     {
@@ -136,7 +136,7 @@ HRESULT DbgEventCallbacksManager::UnloadModule(
 {
     try
     {
-        return moduleEvents::onUnloadModule(BaseOffset);
+        return debugEvent::moduleUnloaded(BaseOffset);
     }
     catch (std::exception &)
     {

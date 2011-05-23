@@ -8,16 +8,16 @@
 
 #include "dbgmodule.h"
 #include "dbgcallback.h"
-#include "dbgmodevent.h"
+#include "dbgevent.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
-moduleEvents::modCallbacksColl moduleEvents::modCallbacks;
-moduleEvents::modCallbacksLock moduleEvents::modCallbacksMtx;
+debugEvent::modCallbacksColl debugEvent::modCallbacks;
+debugEvent::modCallbacksLock debugEvent::modCallbacksMtx;
 
 /////////////////////////////////////////////////////////////////////////////////
 
-moduleEvents::moduleEvents()
+debugEvent::debugEvent()
 {
     modCallbacksScopedLock lock(modCallbacksMtx);
     modCallbacks.insert(this);
@@ -25,7 +25,7 @@ moduleEvents::moduleEvents()
 
 /////////////////////////////////////////////////////////////////////////////////
 
-moduleEvents::~moduleEvents()
+debugEvent::~debugEvent()
 {
     modCallbacksScopedLock lock(modCallbacksMtx);
     modCallbacks.erase(this);
@@ -33,7 +33,7 @@ moduleEvents::~moduleEvents()
 
 /////////////////////////////////////////////////////////////////////////////////
 
-ULONG moduleEvents::onLoadModule(__in ULONG64 addr)
+ULONG debugEvent::moduleLoaded(__in ULONG64 addr)
 {
     modCallbacksScopedLock lock(modCallbacksMtx);
     if (modCallbacks.empty())
@@ -51,7 +51,7 @@ ULONG moduleEvents::onLoadModule(__in ULONG64 addr)
     modCallbacksColl::iterator itCallback = modCallbacks.begin();
     while (itCallback != modCallbacks.end())
     {
-        const ULONG retValue = (*itCallback)->onLoad(module);
+        const ULONG retValue = (*itCallback)->onLoadModule(module);
         if (DEBUG_STATUS_NO_CHANGE != retValue)
             return retValue;
 
@@ -62,7 +62,7 @@ ULONG moduleEvents::onLoadModule(__in ULONG64 addr)
 
 /////////////////////////////////////////////////////////////////////////////////
 
-ULONG moduleEvents::onUnloadModule(__in ULONG64 addr)
+ULONG debugEvent::moduleUnloaded(__in ULONG64 addr)
 {
     modCallbacksScopedLock lock(modCallbacksMtx);
     if (modCallbacks.empty())
@@ -80,7 +80,7 @@ ULONG moduleEvents::onUnloadModule(__in ULONG64 addr)
     modCallbacksColl::iterator itCallback = modCallbacks.begin();
     while (itCallback != modCallbacks.end())
     {
-        const ULONG retValue = (*itCallback)->onUnload(module);
+        const ULONG retValue = (*itCallback)->onUnloadModule(module);
         if (DEBUG_STATUS_NO_CHANGE != retValue)
             return retValue;
 
@@ -91,26 +91,22 @@ ULONG moduleEvents::onUnloadModule(__in ULONG64 addr)
 
 /////////////////////////////////////////////////////////////////////////////////
 
-ULONG moduleEventsWrap::onLoad(
-    const dbgModuleClass &module
-)
+ULONG debugEventWrap::onLoadModule(const dbgModuleClass &module)
 {
-    if (boost::python::override override = get_override("onLoad"))
+    if (boost::python::override override = get_override("onLoadModule"))
         return override(module);
 
-    return moduleEvents::onLoad(module);
+    return debugEvent::onLoadModule(module);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
-ULONG moduleEventsWrap::onUnload(
-    const dbgModuleClass &module
-)
+ULONG debugEventWrap::onUnloadModule(const dbgModuleClass &module)
 {
-    if (boost::python::override override = get_override("onUnload"))
+    if (boost::python::override override = get_override("onUnloadModule"))
         return override(module);
 
-    return moduleEvents::onUnload(module);
+    return debugEvent::onUnloadModule(module);
 }
 
 /////////////////////////////////////////////////////////////////////////////////

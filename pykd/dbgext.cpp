@@ -28,7 +28,7 @@
 #include "dbgprocess.h"
 #include "dbgsynsym.h"
 #include "dbgclient.h"
-#include "dbgmodevent.h"
+#include "dbgevent.h"
 #include "dbgbreak.h"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -332,29 +332,29 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__str__", &dbgBreakpointClass::print,
             "Return a nice string represention of the breakpoint class"  );
             
-    boost::python::class_<moduleEventsWrap, boost::noncopyable>( "modEvents",
-        "Class for processing of events: loading and unloading modules" )
-        .def( "onLoad", &moduleEvents::onLoad, &moduleEventsWrap::onLoadDef,
+    boost::python::class_<debugEventWrap, boost::noncopyable>( "debugEvent",
+        "Base class for debug events handlers" )
+        .def( "onLoadModule", &debugEvent::onLoadModule, &debugEventWrap::onLoadModuleDef,
             "Load module event. Parameter is instance of dbgModuleClass. "
             "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" )
-        .def( "onUnload", &moduleEvents::onUnload, &moduleEventsWrap::onUnloadDef,
+        .def( "onUnloadModule", &debugEvent::onUnloadModule, &debugEventWrap::onUnloadModuleDef,
             "Unload module event. Parameter is instance of dbgModuleClass. "
-            "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" );            
-            
-    // исключения       
+            "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" );
+
+    // исключения
     boost::python::class_<DbgException>  dbgExceptionClass( "BaseException",
         "Pykd base exception class",
         boost::python::no_init );
          //boost::python::init<std::string>() );
-         
+
     dbgExceptionClass     
         .def( boost::python::init<std::string>( boost::python::args("desc"), "constructor" ) )
         .def( "desc", &DbgException::getDesc,
-            "Get exception description" );                 
-         
+            "Get exception description" );
+
     boost::python::class_<TypeException, boost::python::bases<DbgException> >  typeExceptionClass( "TypeException",
         "Type exception class",
-        boost::python::no_init );        
+        boost::python::no_init );
 
     boost::python::class_<MemoryException, boost::python::bases<DbgException> > memoryExceptionClass( "MemoryException",
         "Memory exception class",
@@ -365,7 +365,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "getAddress", &MemoryException::getAddress,
             "Return target address" );
         
-    baseExceptionType = dbgExceptionClass.ptr();                                                    
+    baseExceptionType = dbgExceptionClass.ptr();
     typeExceptionType = typeExceptionClass.ptr();
     memoryExceptionType = memoryExceptionClass.ptr();
 
@@ -373,7 +373,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::register_exception_translator<TypeException>( &TypeException::exceptionTranslate );   
     boost::python::register_exception_translator<IndexException>( &IndexException::translate); 
     boost::python::register_exception_translator<MemoryException>( &MemoryException::translate );
-            
+
 
     // debug status
     DEF_PY_CONST(DEBUG_STATUS_NO_CHANGE);
