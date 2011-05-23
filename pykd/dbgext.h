@@ -9,6 +9,7 @@ public:
 
     IDebugClient            *client;
     IDebugClient4           *client4;
+    IDebugClient5           *client5;
     
     IDebugControl           *control;
     IDebugControl4          *control4;

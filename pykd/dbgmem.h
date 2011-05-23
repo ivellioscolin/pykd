@@ -4,7 +4,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////
 
-bool
+void
 loadMemory( ULONG64 address, PVOID dest, ULONG length, BOOLEAN phyAddr = FALSE );
 
 ULONG64
@@ -23,17 +23,14 @@ loadArray( ULONG64 address, ULONG  number, BOOLEAN phyAddr = FALSE )
 {
     boost::scoped_array<T> buffer(new T[number]);
     
-    if ( loadMemory( address, buffer.get(), number*sizeof(T), phyAddr ) )
-    {
-        boost::python::list    lst;
+    loadMemory( address, buffer.get(), number*sizeof(T), phyAddr );
+
+    boost::python::list    lst;
     
-        for ( ULONG  i = 0; i < number; ++i )
-            lst.append( buffer[i] );
+    for ( ULONG  i = 0; i < number; ++i )
+        lst.append( buffer[i] );
             
-        return   lst;
-    }
-   
- 	return boost::python::object();
+    return   lst;
 }
 
 boost::python::object
@@ -48,12 +45,9 @@ loadByPtr( ULONG64 address )
 {
     T   value;
     
-    if ( loadMemory( address, &value, sizeof(T) ) )
-    {
-        return boost::python::object( value );
-    }    
+    loadMemory( address, &value, sizeof(T) );
     
-    return boost::python::object();
+    return boost::python::object( value );
 }
 
 template<>
@@ -72,13 +66,13 @@ loadAnsiStr( ULONG64 address );
 boost::python::object
 loadCStr( ULONG64 address ); 
 
-bool
+void
 loadCStrToBuffer( ULONG64 address, PCHAR buffer, ULONG  bufferLen );
 
 boost::python::object
 loadWStr( ULONG64 address ); 
 
-bool
+void
 loadWStrToBuffer( ULONG64 address, PWCHAR buffer, ULONG  bufferLen );
 
 bool

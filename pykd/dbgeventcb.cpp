@@ -6,7 +6,7 @@
 #include "dbgexcept.h"
 #include "dbgmodule.h"
 #include "dbgsynsym.h"
-#include "dbgcmd.h"
+#include "dbgbreak.h"
 #include "dbgmodevent.h"
 
 ///////////////////////////////////////////////////////////////////////////////////

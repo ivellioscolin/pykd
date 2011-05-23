@@ -388,7 +388,7 @@ getLocals()
             if ( FAILED( hres ) )
                 throw DbgException( "IDebugSymbolGroup2::GetSymbolOffset  failed" );               
                             
-            arr[ varName ] = loadTypedVar( moduleName, typeName, varOffset );
+            arr[ varName ] = TypedVar( moduleName, typeName, varOffset );
         }    
         
         return arr;

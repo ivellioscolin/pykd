@@ -29,6 +29,7 @@
 #include "dbgsynsym.h"
 #include "dbgclient.h"
 #include "dbgmodevent.h"
+#include "dbgbreak.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -56,8 +57,16 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords, loadArray<__int64>, 2, 3 )
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemoryOver, compareMemory, 3, 4 )
 
-#define _DEF_PY_CONST(x)    \
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( appendOver, TypeInfo::appendField, 2, 3 )
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( loadOver, TypeInfo::loadVar, 1, 2 )
+
+
+#define DEF_PY_CONST(x)    \
     boost::python::scope().attr(#x) = ##x
+    
+#define DEF_PY_GLOBAL(x,y)  \
+    boost::python::scope().attr(x) = ##y
+
 
 BOOST_PYTHON_MODULE( pykd )
 {
@@ -80,7 +89,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "loadDump", &dbgLoadDump,
         "Load crash dump (only for console)");
     boost::python::def( "startProcess", &startProcess,
-        "Start process for debugging(only for console)");    
+        "Start process for debugging (only for console)"); 
     boost::python::def( "dbgCommand", &dbgCommand,
         "Execute debugger command. For example: dbgCommand( \"lmvm nt\" )" );
     boost::python::def( "isValid", &isOffsetValid,
@@ -95,8 +104,6 @@ BOOST_PYTHON_MODULE( pykd )
         "Return pointer size ( in bytes )" );
     boost::python::def( "reg", &loadRegister,
         "Return CPU's register value" );
-    boost::python::def( "typedVar", &loadTypedVar,
-        "Return instance of the typedVarClass. It's values are loaded from the target memory" );
     boost::python::def( "typedVarList", &loadTypedVarList,
         "Return list of typedVarClass instances. Each item represents one item of the linked list in the target memory" );        
     boost::python::def( "typedVarArray", &loadTypedVarArray,
@@ -104,8 +111,6 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "containingRecord", &containingRecord,
         "Return instance of the typedVarClass. It's value are loaded from the target memory."
         "The start address is calculated by the same method as standard macro CONTAINING_RECORD" );
-    boost::python::def( "getTypeClass", &getTypeClass,
-        "Return instance of the typeClass with information about type" );
     boost::python::def( "sizeof", &sizeofType,
         "Return size of type" );
     boost::python::def( "loadModule", &loadModule,
@@ -204,21 +209,56 @@ BOOST_PYTHON_MODULE( pykd )
         "Delete synthetic symbols by virtual address" );
     boost::python::def( "delSynSymbolsMask", &delSyntheticSymbolsMask, 
         "Delete synthetic symbols by mask of module and symbol name");
-
-    boost::python::class_<typeClass, boost::shared_ptr<typeClass> >( "typeClass", 
+        
+    boost::python::class_<TypeInfo>( "typeInfo",
         "Class representing non-primitive type info: structure, union, etc. attributes is a fields of non-primitive type" )
-        .def("sizeof", &typeClass::size, 
-            "Return full size of non-primitive type" )
-        .def("offset", &typeClass::getOffset, 
-            "Return offset as field of parent" )
-        .def("__str__", &typeClass::print, 
-            "Return a nice string represention: print names and offsets of fields");
-        
-    boost::python::class_<typedVarClass, boost::python::bases<typeClass>, boost::shared_ptr<typedVarClass> >( "typedVarClass", 
+        .def(boost::python::init<std::string,std::string>( boost::python::args("module", "type"), "constructor" ) )
+        .def(boost::python::init<std::string>( boost::python::args("typeName"), "constructor" ) )
+        .def(boost::python::init<std::string,ULONG>( boost::python::args("typeName", "align"), "constructor" ) )
+        .def("size", &TypeInfo::size,
+            "Return full size of non-primitive type" )    
+        .def("name", &TypeInfo::name,
+            "Return type's name" )             
+        .def("__str__", &TypeInfo::print,
+            "Return a nice string represention: print names and offsets of fields" )
+        .def("__getattr__", &TypeInfo::getField )
+        .def("__len__", &TypeInfo::getFieldCount )
+        .def("__getitem__", &TypeInfo::getFieldByIndex )
+        .def("append", &TypeInfo::appendField, appendOver( boost::python::args("type", "fieldName", "count"),
+            "add new field for typeInfo" ) )
+        .def("offset", &TypeInfo::getFieldOffset,
+            "Return offset while type is part of the more complex type" )
+        .def("load", &TypeInfo::loadVar, loadOver( boost::python::args( "offset", "count"),
+            "Create instance of the typedVar class with this typeInfo" ) );
+            
+    DEF_PY_GLOBAL( "char_t", TypeInfo("", "char") );
+    DEF_PY_GLOBAL( "uchar_t", TypeInfo("", "unsigned char") );
+    DEF_PY_GLOBAL( "short_t", TypeInfo("", "short") );
+    DEF_PY_GLOBAL( "ushort_t", TypeInfo("", "unsigned short") );
+    DEF_PY_GLOBAL( "long_t", TypeInfo("", "long") );
+    DEF_PY_GLOBAL( "ulong_t", TypeInfo("", "unsigned long") );
+    DEF_PY_GLOBAL( "int_t", TypeInfo("", "int") );
+    DEF_PY_GLOBAL( "uint_t", TypeInfo("", "unsigned int") );  
+    DEF_PY_GLOBAL( "ptr_t", TypeInfo("", "viod*") );    
+    DEF_PY_GLOBAL( "double_t", TypeInfo("", "double") );   
+    DEF_PY_GLOBAL( "longlong_t", TypeInfo("", "int64") );       
+    DEF_PY_GLOBAL( "ulonglong_t", TypeInfo("", "unsigned int64") );           
+    
+    boost::python::class_<TypedVar>( "typedVar", 
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance" )
-        .def("getAddress", &typedVarClass::getAddress, 
-            "Return virtual address" );
-        
+        .def(boost::python::init<TypeInfo,ULONG64>(boost::python::args("typeInfo", "address"),
+            "constructor" ) )
+        .def(boost::python::init<std::string,std::string,ULONG64>(boost::python::args("moduleName", "typeName", "address"), 
+            "constructor" ) )
+        .def("getAddress", &TypedVar::getAddress, 
+            "Return virtual address" )
+        .def("sizeof",  &TypedVar::getSize,            
+            "Return size of a variable in the target memory" )
+        .def("__getattr__", &TypedVar::getFieldWrap,
+            "Return field of structure as a object attribute" )
+        .def("__str__", &TypedVar::print,
+            "Return a nice string represention: print names and offsets of fields" );     
+    
     boost::python::class_<dbgModuleClass>( "dbgModuleClass",
         "Class representing module in the target memory" )
         .def("begin", &dbgModuleClass::getBegin,
@@ -251,14 +291,15 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__str__", &dbgModuleClass::print,
             "Return a nice string represention of the dbgModuleClass" );
 
-    boost::python::class_<dbgExtensionClass>( 
+    boost::python::class_<dbgExtensionClass>(
             "ext",
             "windbg extension wrapper",
-             boost::python::init<const char*>( boost::python::args("path"), "__init__  dbgExtensionClass" ) ) 
+             boost::python::init<const char*>( boost::python::args("path"), "__init__  dbgExtensionClass" ) )
         .def("call", &dbgExtensionClass::call,
             "Call extension command" )
         .def("__str__", &dbgExtensionClass::print,
             "Return a nice string represention of the dbgExtensionClass" );
+
     boost::python::class_<dbgStackFrameClass>( "dbgStackFrameClass", 
          "Class representing a frame of the call satck" )
         .def_readonly( "instructionOffset", &dbgStackFrameClass::InstructionOffset,
@@ -273,10 +314,13 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a frame's number" )
         .def( "__str__", &dbgStackFrameClass::print,
             "Return a nice string represention of the dbgStackFrameClass" );
+            
     boost::python::class_<dbgOut>( "windbgOut", "windbgOut" )
         .def( "write", &dbgOut::write );
+        
     boost::python::class_<dbgIn>( "windbgIn", "windbgIn" )
         .def( "readline", &dbgIn::readline );
+        
     boost::python::class_<dbgBreakpointClass>( "bp",
          "Class representing breakpoint",
          boost::python::init<ULONG64,boost::python::object&>( boost::python::args("offset", "callback"), 
@@ -287,7 +331,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Remove a breakpoint set before" )
         .def( "__str__", &dbgBreakpointClass::print,
             "Return a nice string represention of the breakpoint class"  );
-
+            
     boost::python::class_<moduleEventsWrap, boost::noncopyable>( "modEvents",
         "Class for processing of events: loading and unloading modules" )
         .def( "onLoad", &moduleEvents::onLoad, &moduleEventsWrap::onLoadDef,
@@ -295,64 +339,98 @@ BOOST_PYTHON_MODULE( pykd )
             "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" )
         .def( "onUnload", &moduleEvents::onUnload, &moduleEventsWrap::onUnloadDef,
             "Unload module event. Parameter is instance of dbgModuleClass. "
-            "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" );
+            "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" );            
+            
+    // исключения       
+    boost::python::class_<DbgException>  dbgExceptionClass( "BaseException",
+        "Pykd base exception class",
+        boost::python::no_init );
+         //boost::python::init<std::string>() );
+         
+    dbgExceptionClass     
+        .def( boost::python::init<std::string>( boost::python::args("desc"), "constructor" ) )
+        .def( "desc", &DbgException::getDesc,
+            "Get exception description" );                 
+         
+    boost::python::class_<TypeException, boost::python::bases<DbgException> >  typeExceptionClass( "TypeException",
+        "Type exception class",
+        boost::python::no_init );        
+
+    boost::python::class_<MemoryException, boost::python::bases<DbgException> > memoryExceptionClass( "MemoryException",
+        "Memory exception class",
+        boost::python::no_init );
+        
+    memoryExceptionClass
+        .def( boost::python::init<ULONG64>( boost::python::args("targetAddress"), "constructor" ) )
+        .def( "getAddress", &MemoryException::getAddress,
+            "Return target address" );
+        
+    baseExceptionType = dbgExceptionClass.ptr();                                                    
+    typeExceptionType = typeExceptionClass.ptr();
+    memoryExceptionType = memoryExceptionClass.ptr();
+
+    boost::python::register_exception_translator<DbgException>( &DbgException::exceptionTranslate );       
+    boost::python::register_exception_translator<TypeException>( &TypeException::exceptionTranslate );   
+    boost::python::register_exception_translator<IndexException>( &IndexException::translate); 
+    boost::python::register_exception_translator<MemoryException>( &MemoryException::translate );
+            
 
     // debug status
-    _DEF_PY_CONST(DEBUG_STATUS_NO_CHANGE);
-    _DEF_PY_CONST(DEBUG_STATUS_GO);
-    _DEF_PY_CONST(DEBUG_STATUS_GO_HANDLED);
-    _DEF_PY_CONST(DEBUG_STATUS_GO_NOT_HANDLED);
-    _DEF_PY_CONST(DEBUG_STATUS_STEP_OVER);
-    _DEF_PY_CONST(DEBUG_STATUS_STEP_INTO);
-    _DEF_PY_CONST(DEBUG_STATUS_BREAK);
-    _DEF_PY_CONST(DEBUG_STATUS_NO_DEBUGGEE);
-    _DEF_PY_CONST(DEBUG_STATUS_STEP_BRANCH);
-    _DEF_PY_CONST(DEBUG_STATUS_IGNORE_EVENT);
-    _DEF_PY_CONST(DEBUG_STATUS_RESTART_REQUESTED);
-    _DEF_PY_CONST(DEBUG_STATUS_REVERSE_GO);
-    _DEF_PY_CONST(DEBUG_STATUS_REVERSE_STEP_BRANCH);
-    _DEF_PY_CONST(DEBUG_STATUS_REVERSE_STEP_OVER);
-    _DEF_PY_CONST(DEBUG_STATUS_REVERSE_STEP_INTO);
+    DEF_PY_CONST(DEBUG_STATUS_NO_CHANGE);
+    DEF_PY_CONST(DEBUG_STATUS_GO);
+    DEF_PY_CONST(DEBUG_STATUS_GO_HANDLED);
+    DEF_PY_CONST(DEBUG_STATUS_GO_NOT_HANDLED);
+    DEF_PY_CONST(DEBUG_STATUS_STEP_OVER);
+    DEF_PY_CONST(DEBUG_STATUS_STEP_INTO);
+    DEF_PY_CONST(DEBUG_STATUS_BREAK);
+    DEF_PY_CONST(DEBUG_STATUS_NO_DEBUGGEE);
+    DEF_PY_CONST(DEBUG_STATUS_STEP_BRANCH);
+    DEF_PY_CONST(DEBUG_STATUS_IGNORE_EVENT);
+    DEF_PY_CONST(DEBUG_STATUS_RESTART_REQUESTED);
+    DEF_PY_CONST(DEBUG_STATUS_REVERSE_GO);
+    DEF_PY_CONST(DEBUG_STATUS_REVERSE_STEP_BRANCH);
+    DEF_PY_CONST(DEBUG_STATUS_REVERSE_STEP_OVER);
+    DEF_PY_CONST(DEBUG_STATUS_REVERSE_STEP_INTO);
 
     // debug status additional mask
-    _DEF_PY_CONST(DEBUG_STATUS_INSIDE_WAIT);
-    _DEF_PY_CONST(DEBUG_STATUS_WAIT_TIMEOUT);
+    DEF_PY_CONST(DEBUG_STATUS_INSIDE_WAIT);
+    DEF_PY_CONST(DEBUG_STATUS_WAIT_TIMEOUT);
 
     // break point type
-    _DEF_PY_CONST(DEBUG_BREAKPOINT_CODE);
-    _DEF_PY_CONST(DEBUG_BREAKPOINT_DATA);
-    _DEF_PY_CONST(DEBUG_BREAKPOINT_TIME);
+    DEF_PY_CONST(DEBUG_BREAKPOINT_CODE);
+    DEF_PY_CONST(DEBUG_BREAKPOINT_DATA);
+    DEF_PY_CONST(DEBUG_BREAKPOINT_TIME);
 
     // break point flag
-    _DEF_PY_CONST(DEBUG_BREAKPOINT_GO_ONLY);
-    _DEF_PY_CONST(DEBUG_BREAKPOINT_DEFERRED);
-    _DEF_PY_CONST(DEBUG_BREAKPOINT_ENABLED);
-    _DEF_PY_CONST(DEBUG_BREAKPOINT_ADDER_ONLY);
-    _DEF_PY_CONST(DEBUG_BREAKPOINT_ONE_SHOT);
+    DEF_PY_CONST(DEBUG_BREAKPOINT_GO_ONLY);
+    DEF_PY_CONST(DEBUG_BREAKPOINT_DEFERRED);
+    DEF_PY_CONST(DEBUG_BREAKPOINT_ENABLED);
+    DEF_PY_CONST(DEBUG_BREAKPOINT_ADDER_ONLY);
+    DEF_PY_CONST(DEBUG_BREAKPOINT_ONE_SHOT);
 
     // break point access type
-    _DEF_PY_CONST(DEBUG_BREAK_READ);
-    _DEF_PY_CONST(DEBUG_BREAK_WRITE);
-    _DEF_PY_CONST(DEBUG_BREAK_EXECUTE);
-    _DEF_PY_CONST(DEBUG_BREAK_IO);
+    DEF_PY_CONST(DEBUG_BREAK_READ);
+    DEF_PY_CONST(DEBUG_BREAK_WRITE);
+    DEF_PY_CONST(DEBUG_BREAK_EXECUTE);
+    DEF_PY_CONST(DEBUG_BREAK_IO);
 
     // exception flags
-    _DEF_PY_CONST(EXCEPTION_NONCONTINUABLE);
+    DEF_PY_CONST(EXCEPTION_NONCONTINUABLE);
 
     // debug events
-    _DEF_PY_CONST(DEBUG_EVENT_BREAKPOINT);
-    _DEF_PY_CONST(DEBUG_EVENT_EXCEPTION);
-    _DEF_PY_CONST(DEBUG_EVENT_CREATE_THREAD);
-    _DEF_PY_CONST(DEBUG_EVENT_EXIT_THREAD);
-    _DEF_PY_CONST(DEBUG_EVENT_CREATE_PROCESS);
-    _DEF_PY_CONST(DEBUG_EVENT_EXIT_PROCESS);
-    _DEF_PY_CONST(DEBUG_EVENT_LOAD_MODULE);
-    _DEF_PY_CONST(DEBUG_EVENT_UNLOAD_MODULE);
-    _DEF_PY_CONST(DEBUG_EVENT_SYSTEM_ERROR);
-    _DEF_PY_CONST(DEBUG_EVENT_SESSION_STATUS);
-    _DEF_PY_CONST(DEBUG_EVENT_CHANGE_DEBUGGEE_STATE);
-    _DEF_PY_CONST(DEBUG_EVENT_CHANGE_ENGINE_STATE);
-    _DEF_PY_CONST(DEBUG_EVENT_CHANGE_SYMBOL_STATE);
+    DEF_PY_CONST(DEBUG_EVENT_BREAKPOINT);
+    DEF_PY_CONST(DEBUG_EVENT_EXCEPTION);
+    DEF_PY_CONST(DEBUG_EVENT_CREATE_THREAD);
+    DEF_PY_CONST(DEBUG_EVENT_EXIT_THREAD);
+    DEF_PY_CONST(DEBUG_EVENT_CREATE_PROCESS);
+    DEF_PY_CONST(DEBUG_EVENT_EXIT_PROCESS);
+    DEF_PY_CONST(DEBUG_EVENT_LOAD_MODULE);
+    DEF_PY_CONST(DEBUG_EVENT_UNLOAD_MODULE);
+    DEF_PY_CONST(DEBUG_EVENT_SYSTEM_ERROR);
+    DEF_PY_CONST(DEBUG_EVENT_SESSION_STATUS);
+    DEF_PY_CONST(DEBUG_EVENT_CHANGE_DEBUGGEE_STATE);
+    DEF_PY_CONST(DEBUG_EVENT_CHANGE_ENGINE_STATE);
+    DEF_PY_CONST(DEBUG_EVENT_CHANGE_SYMBOL_STATE);
     
     // debugger type
     //_DEF_PY_CONST(DEBUG_CLASS_UNINITIALIZED);
@@ -424,9 +502,24 @@ private:
 
         Py_Initialize();    
     
-        boost::python::import( "pykd" );
-        
         main = boost::python::import("__main__");
+        
+        boost::python::object   main_namespace = main.attr("__dict__");
+
+
+        // делаем аналог from pykd import *        
+        boost::python::object   pykd = boost::python::import( "pykd" );
+        
+        boost::python::dict     pykd_namespace( pykd.attr("__dict__") ); 
+        
+        boost::python::list     iterkeys( pykd_namespace.iterkeys() );
+        
+        for (int i = 0; i < boost::python::len(iterkeys); i++)
+        {
+            std::string     key = boost::python::extract<std::string>(iterkeys[i]);
+                   
+            main_namespace[ key ] = pykd_namespace[ key ];
+        }            
         
         // перенаправление стандартных потоков ВВ
         boost::python::object       sys = boost::python::import( "sys");
@@ -491,6 +584,9 @@ DbgExt::DbgExt( IDebugClient4 *masterClient )
   
     client4 = NULL;
     masterClient->QueryInterface( __uuidof(IDebugClient4), (void **)&client4 );
+    
+    client5 = NULL;
+    masterClient->QueryInterface( __uuidof(IDebugClient5), (void **)&client5 );    
    
     control = NULL; 
     masterClient->QueryInterface( __uuidof(IDebugControl), (void **)&control );
@@ -747,7 +843,9 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
                 
                 if ( !stopInput )
                     try {
+                        
                         boost::python::exec( str, WindbgGlobalSession::global(), WindbgGlobalSession::global() );
+                        
                     }
                     catch( boost::python::error_already_set const & )
                     {
