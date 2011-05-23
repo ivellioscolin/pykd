@@ -3,9 +3,11 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "dbgeng.h"
+#include <memory>
+#include <dbgeng.h>
 
 #include "dbgmodule.h"
+#include "dbgcallback.h"
 #include "dbgmodevent.h"
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -40,8 +42,11 @@ ULONG moduleEvents::onLoadModule(__in ULONG64 addr)
     ULONG64 moduleBase;
     ULONG moduleSize;
     std::string moduleName;
+
+    std::auto_ptr<OutputReader> silentMode( new OutputReader(dbgExt->client) );
     queryModuleParams(addr, moduleName, moduleBase, moduleSize);
     dbgModuleClass module(moduleName, moduleBase, moduleSize);
+    silentMode.reset();
 
     modCallbacksColl::iterator itCallback = modCallbacks.begin();
     while (itCallback != modCallbacks.end())
@@ -66,8 +71,11 @@ ULONG moduleEvents::onUnloadModule(__in ULONG64 addr)
     ULONG64 moduleBase;
     ULONG moduleSize;
     std::string moduleName;
+
+    std::auto_ptr<OutputReader> silentMode( new OutputReader(dbgExt->client) );
     queryModuleParams(addr, moduleName, moduleBase, moduleSize);
     dbgModuleClass module(moduleName, moduleBase, moduleSize);
+    silentMode.reset();
 
     modCallbacksColl::iterator itCallback = modCallbacks.begin();
     while (itCallback != modCallbacks.end())
