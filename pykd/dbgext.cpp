@@ -104,6 +104,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return pointer size ( in bytes )" );
     boost::python::def( "reg", &loadRegister,
         "Return CPU's register value" );
+    boost::python::def( "rdmsr", &loadMSR,
+        "Return MSR value" );
     boost::python::def( "typedVarList", &loadTypedVarList,
         "Return list of typedVarClass instances. Each item represents one item of the linked list in the target memory" );        
     boost::python::def( "typedVarArray", &loadTypedVarArray,
