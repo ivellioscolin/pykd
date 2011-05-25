@@ -1,3 +1,16 @@
+version 0.0.18 25/05/2011
+
+[+] added : rdmsr routine ( Return MSR value ) 
+[+] added : typeException, memoryException classes and their translation into python 
+[+] added : typeInfo class
+[+] added : loadWChars routine
+[+] added : callback for load/unload modules 
+
+[~] removed : typeClass class 
+
+[!] fixed : issue 8669 ( typedVar() creates an object for a non-existent structure type )
+[!] fixed : issue 8655 ( Unnamed structure/unioin not added to fields of typedVarClass )
+
 version 0.0.17 15/04/2011
 [+] added:  isDumpAnalyzing function. Check if it is a dump analyzing or live debuggiv
 [+] added : loadChars routine. Load raw buffer. 

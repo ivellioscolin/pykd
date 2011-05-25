@@ -30,6 +30,14 @@ def printGdtEntry( addr ):
     dprint( "attr: %x ( " % attr  + "".join( [ ( attr & ( 1 << ( 11 - i ) ) ) and "1" or "0" for i in range(0,12) ] ) + " )" )
     dprint( "  base: %x" % base )        
     dprintln( "  limit: %x" % limit )
+
+
+def printGdt( gdtr ):
+    for s in ( "cs", "es", "ds", "ss", "gs", "fs", "tr" ):
+        dprintln( s + " (%x):" % reg(s) )
+        printGdtEntry( gdtr + ( reg( s ) & 0xFFF8 ) )
+        dprintln("")              
+
     
 
 def printGdtHelp():
@@ -42,23 +50,20 @@ def printGdtHelp():
 
 if __name__ == "__main__":
 
-   if not isWindbgExt():
-       print "script is launch out of windbg"
-       quit( 0 )
+    if not isWindbgExt():
+        print "script is launch out of windbg"
+        quit( 0 )
 
-   gdtr = reg("gdtr")
+    gdtr = reg("gdtr")
 
-   if len( sys.argv)==1:
-       for s in ( "cs", "es", "ds", "ss", "gs", "fs", "tr" ):
-           dprintln( s + " (%x):" % reg(s) )
-           printGdtEntry( gdtr + ( reg( s ) & 0xFFF8 ) )
-           dprintln("")              
+    if len( sys.argv)==1:
+        printGdt( gdtr )
 
-   elif sys.argv[1] == "help":
+    elif sys.argv[1] == "help":
         printGdtHelp()      
 
-   elif len( sys.argv )==2:
+    elif len( sys.argv )==2:
         printGdtEntry( gdtr + ( int( sys.argv[1], 16 ) & 0xFFF8 ) )
 
-   else:
-       printGdtEntry( int( sys.argv[1], 16 ) + ( int( sys.argv[2], 16 ) & 0xFFF8 ) )
+    else:
+        printGdtEntry( int( sys.argv[1], 16 ) + ( int( sys.argv[2], 16 ) & 0xFFF8 ) )
