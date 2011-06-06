@@ -2,17 +2,13 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pykd", "pykd\pykd_2008.vcproj", "{FE961905-666F-4908-A212-961465F46F13}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C6254E16-AB8E-41EE-887D-31458E93FC68} = {C6254E16-AB8E-41EE-887D-31458E93FC68}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "targetapp", "test\targetapp\targetapp.vcproj", "{C6254E16-AB8E-41EE-887D-31458E93FC68}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/TFS08
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = pykd\\pykd_2008.vcproj
-		SccProjectName1 = pykd
-		SccLocalPath1 = pykd
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
@@ -28,8 +24,25 @@ Global
 		{FE961905-666F-4908-A212-961465F46F13}.Release|Win32.Build.0 = Release|Win32
 		{FE961905-666F-4908-A212-961465F46F13}.Release|x64.ActiveCfg = Release|x64
 		{FE961905-666F-4908-A212-961465F46F13}.Release|x64.Build.0 = Release|x64
+		{C6254E16-AB8E-41EE-887D-31458E93FC68}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C6254E16-AB8E-41EE-887D-31458E93FC68}.Debug|Win32.Build.0 = Debug|Win32
+		{C6254E16-AB8E-41EE-887D-31458E93FC68}.Debug|x64.ActiveCfg = Debug|x64
+		{C6254E16-AB8E-41EE-887D-31458E93FC68}.Debug|x64.Build.0 = Debug|x64
+		{C6254E16-AB8E-41EE-887D-31458E93FC68}.Release|Win32.ActiveCfg = Release|Win32
+		{C6254E16-AB8E-41EE-887D-31458E93FC68}.Release|Win32.Build.0 = Release|Win32
+		{C6254E16-AB8E-41EE-887D-31458E93FC68}.Release|x64.ActiveCfg = Release|x64
+		{C6254E16-AB8E-41EE-887D-31458E93FC68}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/TFS08
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = pykd\\pykd_2008.vcproj
+		SccProjectName1 = pykd
+		SccLocalPath1 = pykd
 	EndGlobalSection
 EndGlobal
