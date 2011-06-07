@@ -216,7 +216,7 @@ public:
     getAddress() const {
         return m_targetOffset;
     }     
-    
+
     ULONG
     getSize() const {
         return m_typeInfo.fullSize();
@@ -232,6 +232,8 @@ public:
     ULONG64 getTargetOffset() const {
         return m_targetOffset;
     }      
+    
+    std::string data();
     
     std::string print();
         

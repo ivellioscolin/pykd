@@ -21,7 +21,6 @@
 #include "dbgdump.h"
 #include "dbgexcept.h"
 #include "dbgeventcb.h"
-#include "dbgcallback.h"
 #include "dbgpath.h"
 #include "dbgprocess.h"
 #include "dbgsynsym.h"
@@ -253,8 +252,10 @@ BOOST_PYTHON_MODULE( pykd )
             "constructor" ) )
         .def("getAddress", &TypedVar::getAddress, 
             "Return virtual address" )
-        .def("sizeof",  &TypedVar::getSize,            
+        .def("sizeof", &TypedVar::getSize,            
             "Return size of a variable in the target memory" )
+        .def("data", &TypedVar::data,
+            "Return raw string object with data stream" )
         .def("__getattr__", &TypedVar::getFieldWrap,
             "Return field of structure as a object attribute" )
         .def("__str__", &TypedVar::print,
@@ -827,6 +828,21 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
             char        str[100];
             ULONG       inputSize;
             bool        stopInput = false;
+            
+            boost::python::import( "pykd" ); 
+
+            boost::python::object       main =  boost::python::import("__main__");
+
+            boost::python::object       global(main.attr("__dict__"));
+            
+            // перенаправление стандартных потоков ВВ
+            boost::python::object       sys = boost::python::import("sys");
+            
+            dbgOut                      dout;
+            sys.attr("stdout") = boost::python::object( dout );
+
+            dbgIn                       din;
+            sys.attr("stdin") = boost::python::object( din );               
 
             do {
             

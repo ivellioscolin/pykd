@@ -868,6 +868,21 @@ TypedVar::getField( boost::python::object  &pyobj, const std::string  &fieldName
 /////////////////////////////////////////////////////////////////////////////////////
 
 std::string 
+TypedVar::data()
+{
+    if ( m_buffer.size() == 0 )
+    {
+        m_buffer.resize( (size_t)m_typeInfo.fullSize() );
+        
+        loadMemory( m_targetOffset, (PVOID)&m_buffer[0], (ULONG)m_buffer.size() );
+    }   
+    
+    return std::string( &m_buffer[0], m_buffer.size() );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+std::string 
 TypedVar::print() 
 {
     if ( m_buffer.size() == 0 )
