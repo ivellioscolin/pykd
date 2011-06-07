@@ -369,6 +369,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgevent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgeventcb.cpp"
 				>
 			</File>
@@ -381,11 +385,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\dbgmem.cpp"
+				RelativePath=".\dbgio.cpp"
 				>
 			</File>
-  		<File
-				RelativePath=".\dbgevent.cpp"
+			<File
+				RelativePath=".\dbgmem.cpp"
 				>
 			</File>
 			<File
@@ -394,10 +398,6 @@
 			</File>
 			<File
 				RelativePath=".\dbgpath.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgprint.cpp"
 				>
 			</File>
 			<File
@@ -475,10 +475,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\dbgcallback.h"
-				>
-			</File>
-			<File
 				RelativePath=".\dbgclient.h"
 				>
 			</File>
@@ -488,6 +484,10 @@
 			</File>
 			<File
 				RelativePath=".\dbgdump.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgevent.h"
 				>
 			</File>
 			<File
@@ -507,11 +507,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\dbgmem.h"
+				RelativePath=".\dbgio.h"
 				>
 			</File>
-  		<File
-				RelativePath=".\dbgevent.h"
+			<File
+				RelativePath=".\dbgmem.h"
 				>
 			</File>
 			<File

@@ -8,7 +8,7 @@
 #include "dbgmodule.h"
 #include "dbgexcept.h"
 #include "dbgsym.h"
-#include "dbgcallback.h"
+#include "dbgio.h"
 #include "dbgsynsym.h"
 
 /////////////////////////////////////////////////////////////////////////////////

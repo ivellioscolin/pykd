@@ -11,7 +11,6 @@
 #include <boost/python/overloads.hpp>
 
 #include "dbgext.h"
-#include "dbgprint.h"
 #include "dbgreg.h"
 #include "dbgtype.h"
 #include "dbgmodule.h"
@@ -24,12 +23,12 @@
 #include "dbgeventcb.h"
 #include "dbgcallback.h"
 #include "dbgpath.h"
-#include "dbginput.h"
 #include "dbgprocess.h"
 #include "dbgsynsym.h"
 #include "dbgclient.h"
 #include "dbgevent.h"
 #include "dbgbreak.h"
+#include "dbgio.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -41,8 +40,8 @@ dbgClient    g_dbgClient;
 
 //////////////////////////////////////////////////////////////////////////////
 
-BOOST_PYTHON_FUNCTION_OVERLOADS( dprint, DbgPrint::dprint, 1, 2 )
-BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln, DbgPrint::dprintln, 1, 2 )
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprint, dbgPrint::dprint, 1, 2 )
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln, dbgPrint::dprintln, 1, 2 )
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadCharsOv, loadChars, 2, 3 )
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadWCharsOv, loadWChars, 2, 3 )
@@ -82,9 +81,9 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if script works in windbg context" );
     boost::python::def( "symbolsPath", &dbgSymPath, 
         "Return symbol path" );
-    boost::python::def( "dprint", &DbgPrint::dprint, dprint( boost::python::args( "str", "dml" ), 
+    boost::python::def( "dprint", &dbgPrint::dprint, dprint( boost::python::args( "str", "dml" ), 
         "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )") );
-    boost::python::def( "dprintln", &DbgPrint::dprintln, dprintln( boost::python::args( "str", "dml" ), 
+    boost::python::def( "dprintln", &dbgPrint::dprintln, dprintln( boost::python::args( "str", "dml" ), 
         "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )"  ) );
     boost::python::def( "loadDump", &dbgLoadDump,
         "Load crash dump (only for console)");
@@ -523,15 +522,15 @@ private:
             main_namespace[ key ] = pykd_namespace[ key ];
         }            
         
-        // перенаправление стандартных потоков ВВ
-        boost::python::object       sys = boost::python::import( "sys");
-        
-        dbgOut                      dout;
-        sys.attr("stdout") = boost::python::object( dout );
+        //// перенаправление стандартных потоков ВВ
+        //boost::python::object       sys = boost::python::import( "sys");
+        //
+        //dbgOut                      dout;
+        //sys.attr("stdout") = boost::python::object( dout );
 
-        dbgIn                       din;
-        sys.attr("stdin") = boost::python::object( din );
-        
+        //dbgIn                       din;
+        //sys.attr("stdin") = boost::python::object( din );
+        //
         g_dbgClient.startEventsMgr();
     }
     
@@ -769,7 +768,8 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
     }
    
     catch(...)
-    {           
+    {      
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "unexpected error" );         
     }     
     
     Py_EndInterpreter( localInterpreter ); 
@@ -784,25 +784,30 @@ HRESULT
 CALLBACK
 pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 {
-    try {
+    DbgExt      ext( client );
 
-        DbgExt      ext( client );
-  
+    try {
+        
         if ( !std::string( args ).empty() )
         {
-            try
-            {
-                OutputReader        outputReader( dbgExt->client );
-            
-                boost::python::exec( args, WindbgGlobalSession::global(), WindbgGlobalSession::global() );
+            try {
+        
+                boost::python::object  retObj = boost::python::eval( args, WindbgGlobalSession::global(), WindbgGlobalSession::global() );    
+   
+                if ( retObj.ptr() != NULL )
+                {   
+                    PyObject  *s = PyObject_Str( retObj.ptr() );
+                    dbgExt->control->Output( DEBUG_OUTPUT_NORMAL, "%s\n", PyString_AS_STRING( s )  );    
+                    Py_DECREF( s );                   
+                }                    
             }
             catch( boost::python::error_already_set const & )
             {
                 // ошибка в скрипте
                 PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL;
-                
+
                 PyErr_Fetch( &errtype, &errvalue, &traceback );
-                
+
                 if(errvalue != NULL) 
                 {
                     PyObject *s = PyObject_Str(errvalue);
@@ -814,9 +819,9 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 
                 Py_XDECREF(errvalue);
                 Py_XDECREF(errtype);
-                Py_XDECREF(traceback);        
+                Py_XDECREF(traceback);    
             }  
-        }
+        }     
         else
         {
             char        str[100];
@@ -831,7 +836,7 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
                     
                 do {    
                                 
-                    OutputReader        outputReader( (IDebugClient*)client );                    
+                    OutputReader     outputReader( (IDebugClient*)client );                    
                     
                     HRESULT   hres = dbgExt->control->Input( str, sizeof(str), &inputSize );
                 
@@ -871,15 +876,15 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
                     }  
                     
             } while( !stopInput );                                
-        }
-    }
-  
-    catch(...)
-    {           
-    }     
+        }              
+    } 
     
-    return S_OK;          
-            
+    catch(...)    
+    {
+        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "unexpected error" );
+    }
+    
+    return S_OK;    
 }
 
 ///////////////////////////////////////////////////////////////////////////////// 

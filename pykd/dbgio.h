@@ -1,9 +1,21 @@
 #pragma once
 
-#include "dbgext.h"
-#include "dbgexcept.h"
+#include <string>
+#include <dbgeng.h>
 
-#include <wdbgexts.h>
+#include "dbgext.h"
+
+/////////////////////////////////////////////////////////////////////////////////
+
+class dbgPrint {
+
+public:
+
+	static void dprint( const boost::python::object& obj, bool dml = false );
+	
+	static void dprintln( const boost::python::object& obj, bool dml = false );
+
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -173,4 +185,40 @@ private:
 
 };
 
-///////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////
+
+class dbgOut {
+
+public:
+
+    void
+    write( const boost::python::object  &str ) {
+        dbgPrint::dprint( str );
+    }         
+    
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+
+class dbgIn {
+
+public:
+
+    std::string
+    readline() {
+    
+        char        str[100];
+        ULONG       inputSize;
+        
+        OutputReader        outputReader( dbgExt->client );
+    
+        dbgExt->control->Input( str, sizeof(str), &inputSize );
+    
+        return std::string( str );
+    }    
+
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+

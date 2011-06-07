@@ -1,13 +1,16 @@
 #include "stdafx.h"
 
 #include <iostream>
+#include <Fcntl.h>
 
-#include "dbgprint.h"
+#include "dbgio.h"
 #include "dbgext.h"
 
 using namespace std;
 
-void DbgPrint::dprint( const boost::python::object& obj, bool dml )
+/////////////////////////////////////////////////////////////////////////////////
+
+void dbgPrint::dprint( const boost::python::object& obj, bool dml )
 {
     std::wstring   str = boost::python::extract<std::wstring>( obj );
 
@@ -16,7 +19,9 @@ void DbgPrint::dprint( const boost::python::object& obj, bool dml )
     std::wcout << str;
 }
 
-void DbgPrint::dprintln( const boost::python::object& obj, bool dml  )
+/////////////////////////////////////////////////////////////////////////////////
+
+void dbgPrint::dprintln( const boost::python::object& obj, bool dml  )
 {
     std::wstring   str = boost::python::extract<std::wstring>( obj );
     str += L"\r\n";
@@ -26,3 +31,4 @@ void DbgPrint::dprintln( const boost::python::object& obj, bool dml  )
     std::wcout << str;    
 }
 
+/////////////////////////////////////////////////////////////////////////////////

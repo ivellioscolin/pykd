@@ -5,7 +5,7 @@
 #include "dbgext.h"
 #include "dbgcmd.h"
 #include "dbgexcept.h"
-#include "dbgcallback.h"
+#include "dbgio.h"
 #include "dbgsystem.h"
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -7,7 +7,7 @@
 #include "dbgexcept.h"
 #include "dbgmem.h"
 #include "dbgsystem.h"
-#include "dbgcallback.h"
+#include "dbgio.h"
 
 using namespace std;
 

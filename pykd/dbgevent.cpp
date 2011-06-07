@@ -7,7 +7,7 @@
 #include <dbgeng.h>
 
 #include "dbgmodule.h"
-#include "dbgcallback.h"
+#include "dbgio.h"
 #include "dbgevent.h"
 
 /////////////////////////////////////////////////////////////////////////////////
