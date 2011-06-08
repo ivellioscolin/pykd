@@ -13,9 +13,16 @@ Work with NT Object tree manager
   buildObjectName(p)
     Return string of full object name. If can not get name - empty string
 
-  def getListByHandleTable(tableHandles=None, objTypeAddr=0, containHeaders=True)
+  getListByHandleTable(tableHandles=None, objTypeAddr=0, containHeaders=True)
     Return list of objects from table of handles
-""" 
+
+  getListByDirectoryObject(p, objTypeAddr=0)
+    Return list of objects from object directory
+
+  getObjectByName(name, caseSensitive=False)
+    Return address of object by full name. If error (f.e. not exist) - None
+
+"""
 
 from pykd import *
 
@@ -222,6 +229,90 @@ def getListByHandleTable(tableHandles=None, objTypeAddr=0, containHeaders=True):
 
   dprintln("ERROR: Unknown handle table level: %u" % nTableLevel)
   return list()
+
+NUMBER_HASH_BUCKETS = 37
+
+def getListByDirectoryObject(p, objTypeAddr=0):
+  """ 
+  Build list of objects from object directory
+
+  Parameter objTypeAddr if not 0 used for getting object of specific type,
+  otherwise get object of all types
+  """
+
+  if getType(p) != ptrPtr( getOffset("nt", "ObpDirectoryObjectType") ):
+    return None
+
+  result = list()
+
+  for i in range(0, NUMBER_HASH_BUCKETS):
+    bucket = ptrPtr( p + (i * ptrSize()) )
+    while bucket:
+      bucketVar = typedVar("nt", "_OBJECT_DIRECTORY_ENTRY", bucket)
+      if objTypeAddr and (getType(bucketVar.Object) ==  objTypeAddr):
+        result.append(bucketVar.Object)
+      elif (not objTypeAddr):
+        result.append(bucketVar.Object)
+      bucket = bucketVar.ChainLink
+
+  return result
+
+def getObjectByName(name, caseSensitive=False):
+  """
+  Query address of object by full name
+  """
+
+  def cmpCase(s1, s2): return s1 == s2
+  def cmpNoCase(s1, s2): return s1.lower() == s2.lower()
+
+  if not len(name):
+    return None
+
+  if name[0] != '\\':
+    return None
+
+  object = ptrPtr( getOffset("nt", "ObpRootDirectoryObject") )
+
+  cmpFunc = cmpNoCase
+  if caseSensitive:
+    cmpFunc = cmpCase
+
+  while True:
+    name = name[1:]
+    if not len(name):
+      break
+
+    tok = name.find("\\")
+    if -1 != tok:
+      namePart = name[:tok]
+      name = name[tok:]
+    else:
+      namePart = name
+
+    if 0 == len(namePart):
+      return None
+
+    # FIXME: use name/index hash
+    lstObjects = getListByDirectoryObject(object)
+    if None == lstObjects:
+      return None
+
+    found = False
+    for p in lstObjects:
+      objName = getObjectName(p)
+      if len(objName) and cmpFunc( namePart, objName ):
+        object = p
+        found = True
+        break
+
+    if not found:
+      return None
+
+    if -1 == tok:
+      break
+
+  return object
+
 
 import sys
 
