@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="pykd"
 	ProjectGUID="{FE961905-666F-4908-A212-961465F46F13}"
 	RootNamespace="pykd"
@@ -378,6 +378,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgio.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgmem.cpp"
 				>
 			</File>
@@ -387,10 +391,6 @@
 			</File>
 			<File
 				RelativePath=".\dbgpath.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgprint.cpp"
 				>
 			</File>
 			<File
@@ -472,10 +472,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\dbgcallback.h"
-				>
-			</File>
-			<File
 				RelativePath=".\dbgclient.h"
 				>
 			</File>
@@ -504,7 +500,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\dbginput.h"
+				RelativePath=".\dbgio.h"
 				>
 			</File>
 			<File
@@ -517,10 +513,6 @@
 			</File>
 			<File
 				RelativePath=".\dbgpath.h"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgprint.h"
 				>
 			</File>
 			<File
@@ -566,6 +558,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\pykd.vcproj"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
