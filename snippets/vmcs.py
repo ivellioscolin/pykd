@@ -99,7 +99,7 @@ def vmcsPrint( addr ):
     dprintln( "RevId: %x" % revid )
 
     dprintln("======================")
-    dprintln( "<u>GUEST STATE</u>" )
+    dprintln( "<u>GUEST STATE</u>", True )
 
     dprintln( "VMCS link pointer: %x" % vmcsGetQword( vmcs, 0x20 ) )
 
@@ -126,7 +126,7 @@ def vmcsPrint( addr ):
     dprintln( "IDTR base: %x  limit: %x" % ( vmcsGetQword( vmcs, 0x320 ), vmcsGetWord( vmcs, 0x248 ) ) )
 
     dprintln("======================")
-    dprintln( "<u>READ ONLY</u>" )
+    dprintln( "<u>READ ONLY</u>", True )
 
     dprintln( "VM-instruction error: %x" % vmcsGetQword( vmcs, 0x200 ) )
     dprintln( "VM-exit reason: %d ( " % vmcsGetQword( vmcs, 0x208 )  + vmcsGetExitReason( vmcsGetQword( vmcs, 0x208 ) ) + " )" )
@@ -139,7 +139,7 @@ def vmcsPrint( addr ):
 
 
     dprintln("======================")
-    dprintln( "<u>HOST STATE</u>" )
+    dprintln( "<u>HOST STATE</u>", True )
     dprintln( "RIP: %x" % vmcsGetQword( vmcs, 0x3D8 ) )
     dprintln( "RIP: %x" % vmcsGetQword( vmcs, 0x3D0 ) )
 
@@ -161,7 +161,7 @@ def vmcsPrint( addr ):
 
 
     dprintln("======================")
-    dprintln( "<u>CONTROL STATE</u>" )
+    dprintln( "<u>CONTROL STATE</u>", True )
     dprintln( "Pin-based VM-execution controls: %x" % vmcsGetDword( vmcs, 0x40 ) )
     dprintln( "Primary processor-based VM-execution controls: %#x" % vmcsGetDword( vmcs, 0x48 ) )
     dprintln( "Exception bitmap: %x" % vmcsGetDword( vmcs, 0x50 ) )

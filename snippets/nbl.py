@@ -249,16 +249,49 @@ class Ip6Packet():
        else:
            s += "MALFORMED\n"
 
-       return ""
+       return s
 
 
 class ARPPacket():
 
    def  __init__( self, dataPos ):
-       pass
+    
+       self.parsed = False
+
+       try:
+
+           self.HWType = getNetWord( dataPos )
+           self.PType = getNetWord( dataPos )
+           self.HLen = dataPos.next()
+           self.PLen = dataPos.next()
+           self.oper = getNetWord( dataPos )
+           self.senderHWAddr = EthernetAddress( dataPos )
+           self.senderPAddr = IpAddress( dataPos )
+           self.targetHWAddr = EthernetAddress( dataPos )
+           self.targetPAddr = IpAddress( dataPos )
+
+           self.parsed = True
+
+       except StopIteration:
+           pass
 
    def __str__( self ):
-       return ""
+       s = "ARP Packet: "
+
+       if self.parsed:
+           s += "OK\n"
+           s += { 0x100: "REQUEST", 0x200: "REPLAY" }.get(self.oper, hex(self.oper) ) + "\n"
+           s += "HTYPE: " + { 0x100: "Ethernet", }.get( self.HWType, hex( self.HWType) ) + "  "
+           s += "PTYPE: " + { IPv4: "IPv4", }.get( self.PType, hex( self.PType) ) + "  "
+           s += "HLEN: %x  " % self.HLen
+           s += "PLEN: %x  " % self.PLen
+           s += "\nSender: " + str(self.senderHWAddr) + "  " + str( self.senderPAddr )
+           s += "\nTarget: " + str(self.targetHWAddr) + "  " + str( self.targetPAddr ) + "\n"
+
+       else:
+           s += "MALFORMED\n"
+
+       return s
 
 
 class EthernetType:
@@ -281,8 +314,8 @@ class EthernetType:
     def getNextLayerPacket( self, dataPos ):
         return {  
             IPv4 : lambda x : IpPacket(x),
-            ARP : lambda x : Ip6Packet(x), 
-            IPv6 : lambda x : ARPPacket(x), 
+            ARP : lambda x : ARPPacket(x), 
+            IPv6 : lambda x : Ip6Packet(x), 
         }.get( self.typeVal, lambda x : "" )( dataPos )
 
 
@@ -345,42 +378,110 @@ class NetPacket:
         return s            
 
 
+def getPacketFromNb( nb ):
+
+    pcktBytes = list()
+
+    mdl = typedVar( "ndis", "_MDL", nb.CurrentMdl )
+    dataLength = nb.DataLength
+    dataOffset = nb.CurrentMdlOffset
+
+    while dataLength > 0:
+ 
+        copyData = mdl.ByteCount - dataOffset
+        if copyData > dataLength: copyData = dataLength
+             
+        pcktBytes.extend( loadBytes( mdl.MappedSystemVa + dataOffset, copyData ) )
+
+        dataLength -= copyData
+
+        mdl = typedVar( "ndis", "_MDL", mdl.Next )
+
+    return pcktBytes	
+    
+
+
 def getPacketsFromNbl( nblAddr ):
 
     pcktList = list()
 
     nbl = typedVar( "ndis", "_NET_BUFFER_LIST", nblAddr )
 
-    while nbl:
+    while True:
     
         nb = typedVar( "ndis", "_NET_BUFFER", nbl.FirstNetBuffer )
       
-        while nb:
+        while True:
 
-            pcktBytes = list()
+            pcktList.append( getPacketFromNb( nb ) )
 
-            mdl = typedVar( "ndis", "_MDL", nb.CurrentMdl )
-            dataLength = nb.DataLength
-            dataOffset = nb.CurrentMdlOffset
-
-            while dataLength > 0:
- 
-                copyData = mdl.ByteCount - dataOffset
-                if copyData > dataLength: copyData = dataLength
-             
-                pcktBytes.extend( loadBytes( mdl.MappedSystemVa + dataOffset, copyData ) )
-
-                dataLength -= copyData
-
-                mdl = typedVar( "ndis", "_MDL", mdl.Next )
-
-            pcktList.append( pcktBytes )
+            if nb.Next == 0:
+                break
 
             nb = typedVar( "ndis", "_NET_BUFFER", nb.Next )
 
+        if nbl.Next == 0:
+            break
+
         nbl = typedVar( "ndis", "_NET_BUFFER_LIST", nbl.Next )
 
-    return pcktList  
+    return pcktList 
+
+
+def printNblStruct( nblAddr ):
+    
+
+    try:
+
+        while nblAddr:
+                     
+            dprintln( "NET_BUFFER_LIST %#x" % nblAddr )
+
+            nbl = typedVar( "ndis", "_NET_BUFFER_LIST", nblAddr )
+
+            nbAddr = nbl.FirstNetBuffer
+
+            while nbAddr:
+
+               dprint( "\tNET_BUFFER %#x" % nbAddr )
+                
+               nb = typedVar( "ndis", "_NET_BUFFER", nbAddr )
+
+               dprintln( "  data length = %d, data offset = %#x " % ( nb.DataLength, nb.DataOffset ) )
+
+               mdlAddr = nb.CurrentMdl
+
+               while mdlAddr:
+
+                   dprint( "\t\tMDL %#x" % mdlAddr )
+                   
+                   mdl = typedVar( "ndis", "_MDL", mdlAddr )
+
+                   dprintln( "  byte count = %d, byte offset = %#x, mapped addr = %#x" % ( mdl.ByteCount, mdl.ByteOffset, mdl.MappedSystemVa ) )
+
+                   mdlAddr = mdl.Next
+
+               dprintln( str( NetPacket( getPacketFromNb( nb ) ) ) )
+
+               nbAddr = nb.Next  
+
+            nblAddr = nbl.Next
+
+
+    except MemoryException:
+
+        dprintln( "\nMemory corruption, stop analyzing" )  
+
+    except TypeException:      
+
+        dprintln( "the symbols ar wrong" )
+
+
+
+
+def usage():
+    dprintln( "!py nbl addr" )
+    dprintln( "!py nbl /s addr" )
 
 
 def main():
@@ -392,17 +493,19 @@ def main():
         dprintln( "This script is for kernel debugging only" )
         return
 
+    if len(sys.argv)==2:
+        pcktList = getPacketsFromNbl( expr(sys.argv[1]) )
+        parsedPcktList = [ NetPacket(p) for p in pcktList ]
+        dprintln( "Packet's count: %s " % len(parsedPcktList) )
+        for p in parsedPcktList: print "\n", p
+        return
 
-    pcktList = getPacketsFromNbl( expr(sys.argv[1]) )
-
-    parsedPcktList = [ NetPacket(p) for p in pcktList ]
-
+    if sys.argv[1]=="/s":
+        printNblStruct(  expr(sys.argv[2]) ) 
+        return
     
-    print "Packet's count: ", len(parsedPcktList)
-
-    for p in parsedPcktList: print "\n", p
-
-
+    usage()    
+   
 
 if __name__ == "__main__":
     main()
