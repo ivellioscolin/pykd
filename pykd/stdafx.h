@@ -45,4 +45,17 @@
 #include <boost/python/object.hpp>
 #pragma warning(pop)
 
+#include <vector>
+
+template <typename TElem>
+TElem *getVectorBuffer(std::vector<TElem> &vec)
+{
+    return vec.size() ? &vec[0] : NULL;
+}
+template <typename TElem>
+const TElem *getVectorBuffer(const std::vector<TElem> &vec)
+{
+    return vec.size() ? &vec[0] : NULL;
+}
+
 // TODO: reference additional headers your program requires here

@@ -9,6 +9,18 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "targetapp", "test\targetapp\targetapp.vcproj", "{C6254E16-AB8E-41EE-887D-31458E93FC68}"
 EndProject
 Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/TFS08
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = pykd\\pykd_2008.vcproj
+		SccProjectName1 = pykd
+		SccLocalPath1 = pykd
+		SccProjectUniqueName2 = test\\targetapp\\targetapp.vcproj
+		SccProjectName2 = test/targetapp
+		SccLocalPath2 = test\\targetapp
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
@@ -35,14 +47,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/TFS08
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = pykd\\pykd_2008.vcproj
-		SccProjectName1 = pykd
-		SccLocalPath1 = pykd
 	EndGlobalSection
 EndGlobal

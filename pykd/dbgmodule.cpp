@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include <boost/format.hpp>
-#include <vector>
 
 #include "dbgext.h"
 #include "dbgmem.h"

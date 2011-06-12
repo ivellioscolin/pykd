@@ -111,10 +111,10 @@ TypeInfo::TypeInfo( const std::string &moduleName, const std::string  &typeName 
             }   
        }   
        
-    } while( FALSE );            
+    } while( FALSE );
     
     m_arraySize = m_size;
-        
+
     g_typeInfoCache.insert( std::make_pair( std::make_pair( m_moduleName, m_typeName), *this) ); 
 }
 
@@ -167,10 +167,10 @@ TypeInfo::TypeInfo( const std::string &moduleName, ULONG64 moduleBase, ULONG typ
         else
         {
             m_fields.push_back( TypeField( fieldName, TypeInfo( moduleName, fieldTypeName ), fieldSize, fieldOffset ) );                      
-        }   
-   }  
-   
-   m_arraySize = m_size;              
+        }
+   }
+
+   m_arraySize = m_size;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -206,7 +206,7 @@ TypeInfo::print() const
         sstream << "unnamed";        
         
     if ( m_arraySize > m_size )
-    {      
+    {
         sstream <<  "  size = " << dec << m_arraySize << "(0x" << hex << m_arraySize << ") " << dec << "[" <<  m_arraySize/m_size << "]";
     }
     else
@@ -234,14 +234,14 @@ TypeInfo::getField( const std::string  &fieldName ) const
         if ( it->name == fieldName )
         {
             TypeInfo    tinf = it->type;
-            
+
             tinf.m_parentOffset = m_parentOffset + it->offset;
             tinf.m_arraySize = it->size;
-            
+
             return  tinf;
-        }            
-    }  
-    
+        }
+    }
+
     throw TypeException();  
 }
 
@@ -251,11 +251,11 @@ TypeInfo
 TypeInfo::getFieldAt( size_t index ) const 
 {
     TypeInfo   tinf = m_fields[index].type;
-    
+
     tinf.m_parentOffset = m_parentOffset + m_fields[index].offset;
     tinf.m_arraySize =  m_fields[index].size;
-    
-    return  tinf;     
+
+    return  tinf;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -319,20 +319,20 @@ void
 TypeInfo::appendField( const TypeInfo &typeInfo, const std::string &fieldName, ULONG count )
 {
     if ( m_isFreezed )
-        throw TypeException();    
+        throw TypeException();
         
     if ( count == 0 )
-        throw TypeException();            
+        throw TypeException();
    
     if ( count == 1 && typeInfo.m_typeName.find("[]") != std::string::npos )
-        throw TypeException();            
+        throw TypeException();
         
     TypeFieldList::const_iterator     it = m_fields.begin();
     for(;it != m_fields.end(); ++it )
     {
         if ( it->name == fieldName )
             throw TypeException(); 
-    }                  
+    }
     
     if ( count > 1 && typeInfo.m_typeName.find("[]") == std::string::npos )
     {
@@ -340,25 +340,19 @@ TypeInfo::appendField( const TypeInfo &typeInfo, const std::string &fieldName, U
         arrayInfo.m_typeName += "[]";
         appendField( arrayInfo, fieldName, count );
         return;
-    }    
-        
-    ULONG  offset = m_size;        
-  
+    }
+
+    ULONG  offset = m_size;
+
     if ( typeInfo.isBaseType() )
     {
        offset += offset % min( typeInfo.size(), m_align );  
     }
-    
-    if ( count == 1 )
-    {
-        m_fields.push_back( TypeField( fieldName, typeInfo, typeInfo.size(), offset ) );
-        m_size = offset + typeInfo.size();
-    }    
-    else
-    { 
-        m_fields.push_back( TypeField( fieldName, typeInfo, typeInfo.size()*count, offset ) );
-        m_size = offset + typeInfo.size()*count;  
-    }            
+
+    const ULONG addSize = typeInfo.size() * count;
+    m_fields.push_back( TypeField( fieldName, typeInfo, addSize, offset ) );
+    m_size = offset + addSize;
+    m_arraySize = offset + addSize;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -489,7 +483,7 @@ valuePrinter( void* address, size_t size )
     {
         valType     v = *(valType*)address;
 
-        sstr << v;
+        sstr << v << hex << " (0x" << v << ")";
     }
     else
     {    
@@ -746,7 +740,7 @@ TypeInfo::printField( size_t index, void* buffer, size_t  bufferLength ) const
         sstr << hex << "+" << offset;
         sstr << "   " <<  field.name;
         sstr << "   " << fieldType.name();
-        sstr << "   " << valuePrinter<void*>( (char*)buffer + offset, field.size );
+        sstr << "   " << hex << valuePrinter<void*>( (char*)buffer + offset, field.size );
         sstr << endl;
         return sstr.str();
     }
@@ -812,16 +806,22 @@ TypedVar::getFieldWrap( PyObject* self, const std::string  &fieldName )
     return tv.getField( pyobj, fieldName );
 }
 
+void TypedVar::reallocBuffer()
+{
+    const size_t fullSize = m_typeInfo.fullSize();
+    if (m_buffer.size() < fullSize)
+    {
+        assert(fullSize);
+        m_buffer.resize( fullSize );
+        loadMemory( m_targetOffset, (PVOID)&m_buffer[0],  (ULONG)m_buffer.size() );
+    }
+}
+
 boost::python::object  
 TypedVar::getField( boost::python::object  &pyobj, const std::string  &fieldName )
 {
-    if ( m_buffer.size() == 0 )
-    {
-        m_buffer.resize( (size_t)m_typeInfo.fullSize() );
-        
-        loadMemory( m_targetOffset, (PVOID)&m_buffer[0],  (ULONG)m_buffer.size() );
-    }
-    
+    reallocBuffer();
+
     TypeInfo   typeInfo = m_typeInfo.getField( fieldName );
     
     // относительный оффсет
@@ -835,13 +835,16 @@ TypedVar::getField( boost::python::object  &pyobj, const std::string  &fieldName
     {
         if ( typeInfo.count() == 1 )
         {
-            pyobj.attr(fieldName.c_str()) =  
-                boost::python::object( 
-                    TypedVar( 
-                        typeInfo, 
-                        m_targetOffset + offset,
-                        &m_buffer[0] + offset,
-                        typeInfo.size() ) );
+            if (m_buffer.size())
+            {
+                pyobj.attr(fieldName.c_str()) =  
+                    boost::python::object( 
+                        TypedVar( 
+                            typeInfo, 
+                            m_targetOffset + offset,
+                            &m_buffer[0] + offset,
+                            typeInfo.size() ) );
+            }
         }
         else
         {                        
@@ -849,20 +852,23 @@ TypedVar::getField( boost::python::object  &pyobj, const std::string  &fieldName
     
             for ( unsigned int i = 0; i < typeInfo.count(); ++i )
             {
-                arr.append(    
-                    boost::python::object( 
-                        TypedVar( 
-                            typeInfo, 
-                            m_targetOffset + offset + i*typeInfo.size(),
-                            &m_buffer[0] + offset + i*typeInfo.size(),
-                            typeInfo.size() ) ) );
+                if (m_buffer.size())
+                {
+                    arr.append(    
+                        boost::python::object( 
+                            TypedVar( 
+                                typeInfo, 
+                                m_targetOffset + offset + i*typeInfo.size(),
+                                &m_buffer[0] + offset + i*typeInfo.size(),
+                                typeInfo.size() ) ) );
+                }
             }
             
             pyobj.attr(fieldName.c_str()) = arr;
         }
     }
 
-    return pyobj.attr(fieldName.c_str());              
+    return pyobj.attr(fieldName.c_str());
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -870,14 +876,8 @@ TypedVar::getField( boost::python::object  &pyobj, const std::string  &fieldName
 std::string 
 TypedVar::data()
 {
-    if ( m_buffer.size() == 0 )
-    {
-        m_buffer.resize( (size_t)m_typeInfo.fullSize() );
-        
-        loadMemory( m_targetOffset, (PVOID)&m_buffer[0], (ULONG)m_buffer.size() );
-    }   
-    
-    return std::string( &m_buffer[0], m_buffer.size() );
+    reallocBuffer();
+    return std::string( getVectorBuffer(m_buffer), m_buffer.size() );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -885,12 +885,7 @@ TypedVar::data()
 std::string 
 TypedVar::print() 
 {
-    if ( m_buffer.size() == 0 )
-    {
-        m_buffer.resize( (size_t)m_typeInfo.fullSize() );
-        
-        loadMemory( m_targetOffset, (PVOID)&m_buffer[0], (ULONG)m_buffer.size() );
-    }   
+    reallocBuffer();
 
     stringstream sstr;
     
@@ -910,7 +905,7 @@ TypedVar::print()
    
     for ( size_t  i = 0; i < m_typeInfo.getFieldCount(); ++i )
     {
-        sstr << m_typeInfo.printField( i, (PVOID)&m_buffer[0], (ULONG)m_buffer.size() );
+        sstr << m_typeInfo.printField( i, (PVOID)getVectorBuffer(m_buffer), (ULONG)m_buffer.size() );
     
         //TypeInfo   fieldType = m_typeInfo.getFieldAt( i );
     

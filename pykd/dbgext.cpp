@@ -2,7 +2,6 @@
 
 #include <wdbgexts.h>
 
-#include <vector>
 #include <string>
 
 #include <boost/python/module.hpp>

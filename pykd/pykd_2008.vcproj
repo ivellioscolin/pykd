@@ -558,10 +558,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\pykd.vcproj"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

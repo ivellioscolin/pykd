@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-#include <vector>
-
 #include "dbgext.h"
 #include "dbgdump.h"
 #include "dbgexcept.h"

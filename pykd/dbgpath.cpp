@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-#include <vector>
-
 #include "dbgpath.h"
 
 #include <boost/tokenizer.hpp>

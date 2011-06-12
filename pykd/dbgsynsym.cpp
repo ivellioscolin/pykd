@@ -3,7 +3,6 @@
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/sync/interprocess_recursive_mutex.hpp>
 #include <boost/interprocess/sync/interprocess_mutex.hpp>
-#include <vector>
 #include <list>
 
 #include "dbgext.h"

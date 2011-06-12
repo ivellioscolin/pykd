@@ -2,7 +2,6 @@
 
 #include <string>
 #include <map>
-#include <vector>
 
 #include "dbgmem.h"
 #include "dbgsystem.h"
@@ -25,7 +24,9 @@ public:
         m_arraySize( 0 ),
         m_parentOffset( 0 ), 
         m_align(  ptrSize() ),
-        m_isFreezed( false )
+        m_isFreezed( false ),
+        m_isBaseType( false ),
+        m_isPointer( false )
         {}
 
      TypeInfo( const std::string customName, ULONG align=0 ) :
@@ -34,7 +35,9 @@ public:
         m_arraySize( 0 ),
         m_parentOffset( 0 ),
         m_isFreezed( false ),
-        m_align( align == 0 ? ptrSize() : align )
+        m_align( align == 0 ? ptrSize() : align ),
+        m_isBaseType( false ),
+        m_isPointer( false )
         {}
      
      TypeInfo( const std::string &moduleName, const std::string  &typeName );
@@ -52,7 +55,7 @@ public:
      
      ULONG
      count() const {
-        assert( m_size != 0 );
+        assert( m_size != 0 && m_arraySize >= m_size );
         return m_arraySize / m_size;
      }
      
@@ -116,7 +119,7 @@ public:
      loadVar( ULONG64  targetOffset, ULONG count = 1) const;
 
 public:
-     
+
     typedef std::map< std::pair<std::string, std::string>, TypeInfo>        TypeInfoMap;
     
     template< typename TTypeInfo>
@@ -141,11 +144,9 @@ public:
     };
     
     typedef TypeFieldT<TypeInfo>        TypeField;
-    
+
     typedef std::vector<TypeField>      TypeFieldList;
-    
-    
-      
+
 private:
 
     typedef
@@ -239,15 +240,17 @@ public:
         
 private:
 
+    void reallocBuffer();
+
     TypedVar( const TypeInfo &typeInfo, ULONG64 targetOffset, char* buffer, size_t bufferLength );
   
     ULONG64                 m_targetOffset;  
 
     TypeInfo                m_typeInfo;    
-    
+
     std::vector<char>       m_buffer;
 };
-    
+
 ///////////////////////////////////////////////////////////////////////////////////    
 
 boost::python::object

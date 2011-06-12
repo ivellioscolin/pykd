@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include <boost/scoped_array.hpp>
-#include <vector>
 
 #include "dbgext.h"
 #include "dbgexcept.h"
@@ -165,9 +164,10 @@ boost::python::object
 loadChars( ULONG64 address, ULONG  number, BOOLEAN phyAddr  )
 {
     std::vector<char>   buffer(number);
-    
-    loadMemory( address, &buffer[0], (ULONG)buffer.size(), phyAddr );
-    
+
+    if (number)
+        loadMemory( address, &buffer[0], (ULONG)buffer.size(), phyAddr );
+
     return boost::python::object(std::string( buffer.begin(), buffer.end() ) );
 }
 
