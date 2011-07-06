@@ -788,112 +788,120 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 
     try {
         
-        if ( !std::string( args ).empty() )
-        {
-            try {
+        // перенаправление стандартных потоков ВВ
+        boost::python::object       sys = boost::python::import("sys");
         
-                boost::python::object  retObj = boost::python::eval( args, WindbgGlobalSession::global(), WindbgGlobalSession::global() );    
-   
-                if ( retObj.ptr() != NULL )
-                {   
-                    PyObject  *s = PyObject_Str( retObj.ptr() );
-                    dbgExt->control->Output( DEBUG_OUTPUT_NORMAL, "%s\n", PyString_AS_STRING( s )  );    
-                    Py_DECREF( s );                   
-                }                    
-            }
-            catch( boost::python::error_already_set const & )
+        dbgOut                      dout;
+        sys.attr("stdout") = boost::python::object( dout );
+
+        dbgIn                       din;
+        sys.attr("stdin") = boost::python::object( din );    
+        
+        boost::python::object   syntaxError = boost::python::import("exceptions").attr("SyntaxError");
+
+        std::string             commandBuffer;
+
+        bool                    commandCompleted = true;
+
+        do {
+
+            if ( commandCompleted )
             {
-                // ошибка в скрипте
-                PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL;
-
-                PyErr_Fetch( &errtype, &errvalue, &traceback );
-
-                if(errvalue != NULL) 
-                {
-                    PyObject *s = PyObject_Str(errvalue);
-                    
-                    dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "%s\n", PyString_AS_STRING( s )  );
-                    
-                    Py_DECREF(s);
-                }
-
-                Py_XDECREF(errvalue);
-                Py_XDECREF(errtype);
-                Py_XDECREF(traceback);    
-            }  
-        }     
-        else
-        {
-            char        str[100];
-            ULONG       inputSize;
-            bool        stopInput = false;
-            
-            boost::python::import( "pykd" ); 
-
-            boost::python::object       main =  boost::python::import("__main__");
-
-            boost::python::object       global(main.attr("__dict__"));
-            
-            // перенаправление стандартных потоков ВВ
-            boost::python::object       sys = boost::python::import("sys");
-            
-            dbgOut                      dout;
-            sys.attr("stdout") = boost::python::object( dout );
-
-            dbgIn                       din;
-            sys.attr("stdin") = boost::python::object( din );               
-
-            do {
-            
-                std::string     output;
-                
                 dbgExt->control->Output( DEBUG_OUTPUT_NORMAL, ">>>" );
-                    
-                do {    
-                                
-                    OutputReader     outputReader( (IDebugClient*)client );                    
-                    
-                    HRESULT   hres = dbgExt->control->Input( str, sizeof(str), &inputSize );
+            }
+            else
+            {
+                dbgExt->control->Output( DEBUG_OUTPUT_NORMAL, "..." );
+            }
+
+            {
+                char        str[100];
+                ULONG       inputSize;
+
+                OutputReader     outputReader( (IDebugClient*)client );
+                HRESULT   hres = dbgExt->control->Input( str, sizeof(str), &inputSize );
                 
-                    if ( FAILED( hres ) || std::string( str ) == "" )
+                if ( FAILED( hres ) ) 
+                    throw;
+
+                if ( commandCompleted )
+                {
+                    if ( std::string( str ) == "" )
+                        break;  
+
+                    commandBuffer = str;
+                }
+                else
+                {
+                    if ( std::string( str ) == "" )
+                        commandCompleted = true;
+                    else
                     {
-                       stopInput = true;
-                       break;
-                    }                       
-                    
-                } while( FALSE );                    
-                
-                if ( !stopInput )
-                    try {
-                        
-                        boost::python::exec( str, WindbgGlobalSession::global(), WindbgGlobalSession::global() );
-                        
+                       commandBuffer.append("\n"); 
+                       commandBuffer.append( str );  
                     }
-                    catch( boost::python::error_already_set const & )
+                }
+            }
+
+            if ( commandCompleted )
+            {
+                try {
+
+                    boost::python::exec( commandBuffer.c_str(), WindbgGlobalSession::global(), WindbgGlobalSession::global() );
+
+                    commandBuffer.clear();
+                        
+                }
+                catch( boost::python::error_already_set const & )
+                {
+                    PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL;
+                    
+                    PyErr_Fetch( &errtype, &errvalue, &traceback );
+
+                    if ( errtype && errvalue )
                     {
-                        // ошибка в скрипте
-                        PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL;
-                        
-                        PyErr_Fetch( &errtype, &errvalue, &traceback );
-                        
-                        if(errvalue != NULL) 
+                        boost::python::tuple   errValueObj( boost::python::handle<>( boost::python::borrowed(errvalue) ) );
+
+                        PyObject                *errvalueStr = PyObject_Str(errvalue);
+
+                        std::string             errValueStr = boost::python::extract<std::string>( errvalueStr );
+
+                        Py_XDECREF(errvalueStr);
+
+                        if ( PyErr_GivenExceptionMatches( syntaxError.ptr(), errtype ) )
                         {
-                            PyObject *s = PyObject_Str(errvalue);
-                            
-                            dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "%s/n", PyString_AS_STRING( s ) );
-                            
-                            Py_DECREF(s);
+                            if ( errValueObj[0] == "unexpected EOF while parsing" )
+                            {
+                                commandCompleted = false;       
+                            }
+                            else
+                            {
+                                dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "%s\n", errValueStr.c_str() );
+                            }
                         }
+                        else
+                        {
+                            dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "%s\n", errValueStr.c_str() );
+                        }
+
 
                         Py_XDECREF(errvalue);
                         Py_XDECREF(errtype);
-                        Py_XDECREF(traceback);        
-                    }  
-                    
-            } while( !stopInput );                                
-        }              
+                        Py_XDECREF(traceback);
+                    }
+                    else
+                    {
+                        Py_XDECREF(errvalue);
+                        Py_XDECREF(errtype);
+                        Py_XDECREF(traceback);
+
+                        throw;
+                    }
+                }
+            }
+
+        } while( true );
     } 
-    
     catch(...)    
     {
         dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "unexpected error" );
