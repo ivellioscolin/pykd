@@ -10,4 +10,6 @@ loadRegister( const std::string &registerName );
 ULONG64
 loadMSR( ULONG  msr );
 
+void setMSR( ULONG msr, ULONG64 val);
+
 /////////////////////////////////////////////////////////////////////////////////

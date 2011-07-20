@@ -11,8 +11,8 @@ using namespace std;
 boost::python::object
 loadRegister( const std::string &registerName )
 {
-    HRESULT         hres;   
-    
+    HRESULT         hres;
+
     ULONG    registerIndex = 0;
 
     hres = dbgExt->registers->GetIndexByName( registerName.c_str(), &registerIndex );
@@ -52,13 +52,24 @@ ULONG64
 loadMSR( ULONG  msr )
 {
     HRESULT     hres;
-    ULONG64     value;    
-    
+    ULONG64     value;
+
     hres = dbgExt->dataSpaces->ReadMsr( msr, &value );
     if ( FAILED( hres ) )
-         throw DbgException( "IDebugDataSpaces::ReadMsr  failed" );            
-         
-    return value;         
+         throw DbgException( "IDebugDataSpaces::ReadMsr  failed" );
+
+    return value;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void setMSR( ULONG msr, ULONG64 value)
+{
+    HRESULT     hres;
+
+    hres = dbgExt->dataSpaces->WriteMsr(msr, value);
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugDataSpaces::WriteMsr  failed" );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
