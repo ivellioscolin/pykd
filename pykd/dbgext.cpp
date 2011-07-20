@@ -113,13 +113,13 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "sizeof", &sizeofType,
         "Return size of type" );
     boost::python::def( "loadModule", &loadModule,
-        "Return instance of the dbgBreakpointClass" );
+        "Return instance of the dbgModuleClass" );
     boost::python::def( "findSymbol", &findSymbolForAddress,
         "Return symbol for specified target address if it exists" );
     boost::python::def( "getOffset", &findAddressForSymbol,
         "Return target address for specified symbol" );
     boost::python::def( "findModule", &findModule,
-        "Return instance of the dbgBreakpointClass which posseses specified address" );
+        "Return instance of the dbgModuleClass which posseses specified address" );
     boost::python::def( "addr64", &addr64,
         "Extend address to 64 bits formats ( for x86 )" );
     boost::python::def( "loadChars", loadChars, loadCharsOv( boost::python::args( "address", "number",  "phyAddr" ),
