@@ -27,6 +27,7 @@
 #include "dbgevent.h"
 #include "dbgbreak.h"
 #include "dbgio.h"
+#include "intbase.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -211,6 +212,7 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::def( "delSynSymbolsMask", &delSyntheticSymbolsMask, 
         "Delete synthetic symbols by mask of module and symbol name");
         
+        
     boost::python::class_<TypeInfo>( "typeInfo",
         "Class representing non-primitive type info: structure, union, etc. attributes is a fields of non-primitive type" )
         .def(boost::python::init<std::string,std::string>( boost::python::args("module", "type"), "constructor" ) )
@@ -258,7 +260,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def("data", &TypedVar::data,
             "Return raw string object with data stream" )
         .def("__getattr__", &TypedVar::getFieldWrap,
-            "Return field of structure as a object attribute" )
+            "Return field of structure as an object attribute" )
         .def("__str__", &TypedVar::print,
             "Return a nice string represention: print names and offsets of fields" );     
     
@@ -337,10 +339,10 @@ BOOST_PYTHON_MODULE( pykd )
             
     boost::python::class_<debugEventWrap, boost::noncopyable>( "debugEvent",
         "Base class for debug events handlers" )
-        .def( "onLoadModule", &debugEvent::onLoadModule, &debugEventWrap::onLoadModuleDef,
+        .def( "onLoadModule", &debugEventWrap::onLoadModule,
             "Load module event. Parameter is instance of dbgModuleClass. "
             "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" )
-        .def( "onUnloadModule", &debugEvent::onUnloadModule, &debugEventWrap::onUnloadModuleDef,
+        .def( "onUnloadModule", &debugEventWrap::onUnloadModule,
             "Unload module event. Parameter is instance of dbgModuleClass. "
             "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" );
 
@@ -376,7 +378,103 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::register_exception_translator<TypeException>( &TypeException::exceptionTranslate );   
     boost::python::register_exception_translator<IndexException>( &IndexException::translate); 
     boost::python::register_exception_translator<MemoryException>( &MemoryException::translate );
+    
+    boost::python::class_<intBase>( 
+        "intBase",
+        "intBase")
+            .def( boost::python::init<>() )
+            .def( boost::python::init<ULONG64>( boost::python::args("value"), "constructor" ) )
+            
+            .def( "value", &intBase::value )
+            .def( int_( boost::python::self ) )
+            //.def( boost::python::self = long() )          
+            
+            .def( boost::python::self + long() )
+            .def( long() + boost::python::self )
+            .def( boost::python::self += long() )
+            .def( boost::python::self + boost::python::self )
+            .def( boost::python::self += boost::python::self )            
+            
+            .def( boost::python::self - long() )
+            .def( long() - boost::python::self )
+            .def( boost::python::self -= long() )
+            .def( boost::python::self - boost::python::self )
+            .def( boost::python::self -= boost::python::self )
+            
+            .def( boost::python::self * long() )
+            .def( long() * boost::python::self )
+            .def( boost::python::self *= long() )
+            .def( boost::python::self * boost::python::self )
+            .def( boost::python::self *= boost::python::self )
+            
+            .def( boost::python::self / long() )
+            .def( long() / boost::python::self )
+            .def( boost::python::self /= long() )
+            .def( boost::python::self / boost::python::self )
+            .def( boost::python::self /= boost::python::self )       
+            
+            .def( boost::python::self % long() )
+            .def( long() % boost::python::self )
+            .def( boost::python::self %= long() )
+            .def( boost::python::self % boost::python::self )
+            .def( boost::python::self %= boost::python::self )                   
+            
+            .def( boost::python::self & long() )
+            .def( long() & boost::python::self )
+            .def( boost::python::self &= long() )
+            .def( boost::python::self & boost::python::self )
+            .def( boost::python::self &= boost::python::self )               
+            
+            .def( boost::python::self | long() )
+            .def( long() | boost::python::self )
+            .def( boost::python::self |= long() )
+            .def( boost::python::self | boost::python::self )
+            .def( boost::python::self |= boost::python::self )              
+            
+            .def( boost::python::self ^ long() )
+            .def( long() ^ boost::python::self )
+            .def( boost::python::self ^= long() )
+            .def( boost::python::self ^ boost::python::self )
+            .def( boost::python::self ^= boost::python::self )              
+            
+            .def( boost::python::self << long() )
+            .def( boost::python::self <<= long() )
+            
+            .def( boost::python::self >> long() )
+            .def( boost::python::self >>= long() ) 
+            
+            .def( boost::python::self < long() )           
+            .def( boost::python::self < boost::python::self )  
+            
+            .def( boost::python::self <= long() )           
+            .def( boost::python::self <= boost::python::self )              
+            
+            .def( boost::python::self == long() )           
+            .def( boost::python::self == boost::python::self )              
+            
+            .def( boost::python::self >= long() )           
+            .def( boost::python::self >= boost::python::self )              
+            
+            .def( boost::python::self > long() )           
+            .def( boost::python::self > boost::python::self )              
+            
+            .def( boost::python::self != long() )           
+            .def( boost::python::self != boost::python::self )      
+            
+            .def( ~boost::python::self )
+            .def( !boost::python::self )
 
+            .def( "__str__", &intBase::str )
+            .def( "__hex__", &intBase::hex );
+            
+    boost::python::class_<cpuReg, boost::python::bases<intBase> >(
+        "cpuReg",
+        "CPU regsiter class",
+        boost::python::no_init )
+            .def( boost::python::init<std::string>(boost::python::args("name"), "constructor" ) )
+            .def( "name", &cpuReg::name, "The name of the regsiter" )
+            .def( "beLive", &cpuReg::beLive, "Turn the object to live: its value will be following thr target register value" );
+            
 
     // debug status
     DEF_PY_CONST(DEBUG_STATUS_NO_CHANGE);
@@ -635,6 +733,9 @@ DbgExt::~DbgExt()
         
     if ( client4 )
         client4->Release();
+        
+    if ( client5 )
+        client5->Release();        
         
     if ( control )
         control->Release();

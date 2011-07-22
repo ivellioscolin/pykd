@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <dbgeng.h>
+
 //////////////////////////////////////////////////////////////////////////////
 
 // monitoring and processing debug events
@@ -11,7 +13,7 @@ public:
     DbgEventCallbacksManager( IDebugClient  *client = NULL );
     
     virtual ~DbgEventCallbacksManager();
-
+    
 private:
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -36,7 +38,7 @@ private:
         __in PDEBUG_BREAKPOINT Bp
     );
 
-    STDMETHOD(LoadModule)(
+/*    STDMETHOD(LoadModule)(
         __in ULONG64 ImageFileHandle,
         __in ULONG64 BaseOffset,
         __in ULONG ModuleSize,
@@ -50,6 +52,10 @@ private:
         __in PCSTR ImageBaseName,
         __in ULONG64 BaseOffset
     );
+    
+    STDMETHOD(SessionStatus)(
+        __in ULONG status 
+    );   */     
 
 private:
     IDebugClient       *m_debugClient;

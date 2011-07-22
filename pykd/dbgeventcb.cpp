@@ -13,26 +13,14 @@
 
 DbgEventCallbacksManager::DbgEventCallbacksManager( IDebugClient  *client )
 {
+    m_debugClient = client;
+    m_debugClient->AddRef();
+    
     HRESULT     hres;
-   
-    try {
 
-        m_debugClient = client;
-        m_debugClient->AddRef();
-            
-        hres = m_debugClient->SetEventCallbacks(this);
-        if (FAILED(hres))
-            throw DbgException( "IDebugClient::SetEventCallbacks" );           
-            
-    }    
-  	catch( std::exception&  e)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}
+     hres = m_debugClient->SetEventCallbacks(this);
+     if (FAILED(hres))
+        throw DbgException( "IDebugClient::SetEventCallbacks" );               
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -46,6 +34,7 @@ DbgEventCallbacksManager::~DbgEventCallbacksManager()
     }        
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 HRESULT DbgEventCallbacksManager::GetInterestMask(
@@ -54,9 +43,9 @@ HRESULT DbgEventCallbacksManager::GetInterestMask(
 {
     *Mask = 
         DEBUG_EVENT_CHANGE_SYMBOL_STATE |
-        DEBUG_EVENT_BREAKPOINT | 
-        DEBUG_EVENT_LOAD_MODULE | 
-        DEBUG_EVENT_UNLOAD_MODULE;
+        DEBUG_EVENT_BREAKPOINT;
+//        DEBUG_EVENT_LOAD_MODULE | 
+//        DEBUG_EVENT_UNLOAD_MODULE
     return S_OK;
 }
 
@@ -93,7 +82,7 @@ HRESULT DbgEventCallbacksManager::ChangeSymbolState(
         return S_OK;
     }
 
-    return S_OK;
+    return DEBUG_STATUS_NO_CHANGE;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -106,42 +95,59 @@ HRESULT DbgEventCallbacksManager::Breakpoint(
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-
-HRESULT DbgEventCallbacksManager::LoadModule(
-    __in ULONG64 ImageFileHandle,
-    __in ULONG64 BaseOffset,
-    __in ULONG ModuleSize,
-    __in PCSTR ModuleName,
-    __in PCSTR ImageName,
-    __in ULONG CheckSum,
-    __in ULONG TimeDateStamp
-)
-{
-    try
-    {
-        return debugEvent::moduleLoaded(BaseOffset);
-    }
-    catch (std::exception &)
-    {
-    }
-    return DEBUG_STATUS_NO_CHANGE;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-HRESULT DbgEventCallbacksManager::UnloadModule(
-    __in PCSTR ImageBaseName,
-    __in ULONG64 BaseOffset
-)
-{
-    try
-    {
-        return debugEvent::moduleUnloaded(BaseOffset);
-    }
-    catch (std::exception &)
-    {
-    }
-    return DEBUG_STATUS_NO_CHANGE;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
+//
+//HRESULT DbgEventCallbacksManager::LoadModule(
+//    __in ULONG64 ImageFileHandle,
+//    __in ULONG64 BaseOffset,
+//    __in ULONG ModuleSize,
+//    __in PCSTR ModuleName,
+//    __in PCSTR ImageName,
+//    __in ULONG CheckSum,
+//    __in ULONG TimeDateStamp
+//)
+//{
+//    try
+//    {
+//        return debugEvent::moduleLoaded(BaseOffset);
+//    }
+//    catch (std::exception &)
+//    {
+//    }
+//    return DEBUG_STATUS_NO_CHANGE;
+//}
+//
+/////////////////////////////////////////////////////////////////////////////////////
+//
+//HRESULT DbgEventCallbacksManager::UnloadModule(
+//    __in PCSTR ImageBaseName,
+//    __in ULONG64 BaseOffset
+//)
+//{
+//    try
+//    {
+//        return debugEvent::moduleUnloaded(BaseOffset);
+//    }
+//    catch (std::exception &)
+//    {
+//    }
+//    return DEBUG_STATUS_NO_CHANGE;
+//}
+//
+/////////////////////////////////////////////////////////////////////////////////////
+//
+//HRESULT DbgEventCallbacksManager::SessionStatus( 
+//    __in ULONG status 
+//)
+//{
+//    try
+//    {
+//        return debugEvent::sessionStatus( status );
+//    }
+//    catch( std::exception& )
+//    {
+//    }
+//    
+//    return DEBUG_STATUS_NO_CHANGE;
+//}
+//
+/////////////////////////////////////////////////////////////////////////////////////
