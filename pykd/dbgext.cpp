@@ -951,7 +951,7 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
                 try {
 
                     boost::python::exec( commandBuffer.c_str(), WindbgGlobalSession::global(), WindbgGlobalSession::global() );
-
+                        
                     commandBuffer.clear();
                         
                 }
@@ -963,16 +963,16 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 
                     if ( errtype && errvalue )
                     {
-                        boost::python::tuple   errValueObj( boost::python::handle<>( boost::python::borrowed(errvalue) ) );
-
                         PyObject                *errvalueStr = PyObject_Str(errvalue);
-
-                        std::string             errValueStr = boost::python::extract<std::string>( errvalueStr );
-
-                        Py_XDECREF(errvalueStr);
-
+    
+                        std::string             errValueStr = boost::python::extract<std::string>( errvalueStr );                    
+                    
                         if ( PyErr_GivenExceptionMatches( syntaxError.ptr(), errtype ) )
                         {
+                            boost::python::tuple   errValueObj( boost::python::handle<>( boost::python::borrowed(errvalue) ) );
+
+                            Py_XDECREF(errvalueStr);                        
+                        
                             if ( errValueObj[0] == "unexpected EOF while parsing" )
                             {
                                 commandCompleted = false;       
