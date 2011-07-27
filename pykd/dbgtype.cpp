@@ -389,15 +389,8 @@ valueLoader( void* address, size_t size )
     if ( size == sizeof(valType) )
     {
         valType     v = *(valType*)address;
-        //return boost::python::long_( (unsigned __int64)v );
         
         return boost::python::object( v );
-        
-        
-        //if ( loadMemory( address, &v, sizeof(v) ) )
-        //{
-        //    return boost::python::long_( (unsigned __int64)v );
-        //}            
     }
     else
     {    
@@ -407,8 +400,6 @@ valueLoader( void* address, size_t size )
         {
             valType  v = *( (valType*)address + i );
             arr.append( v );
-            
-            //arr[i] = boost::python::long_( (unsigned __int64)v );    
         }
 
         return arr;
@@ -416,6 +407,33 @@ valueLoader( void* address, size_t size )
     
     throw TypeException(); 
 }
+
+template<>
+boost::python::object
+valueLoader<char>( void* address, size_t size )
+{
+    if ( size == sizeof(char) )
+    {
+        int     v = *(char*)address;
+        
+        return boost::python::object( v );
+    }
+    else
+    {    
+        boost::python::list     arr;
+
+        for ( unsigned int i = 0; i < size / sizeof(char); ++i )
+        {
+            int  v = *( (char*)address + i );
+            arr.append( v );
+        }
+
+        return arr;
+    }
+    
+    throw TypeException(); 
+}
+
 
 template<>
 boost::python::object
