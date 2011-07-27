@@ -115,6 +115,11 @@ public:
         return m_isPointer;
      }
      
+     bool
+     isEnum() const {
+        return !m_isBaseType && !m_isPointer && m_fields.size() == 0 && m_size == 4;
+     }
+     
      boost::python::object
      loadVar( ULONG64  targetOffset, ULONG count = 1) const;
 
