@@ -7,7 +7,7 @@
 boost::python::object
 getThreadList();
 
-bool
+void
 setImplicitThread( 
     ULONG64  newThreadAddr );
     
@@ -36,7 +36,8 @@ public:
     print() const;
 };
 
-boost::python::object
+//boost::python::object
+std::string
 getProcessorMode();
 
 void

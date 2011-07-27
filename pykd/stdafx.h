@@ -28,7 +28,7 @@
 
 #include <tchar.h>
 #include <windows.h>
-
+#include <atlbase.h>
 
 
 #ifndef  __field_ecount_opt
