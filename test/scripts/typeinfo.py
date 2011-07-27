@@ -35,16 +35,12 @@ class TypeInfoTest( unittest.TestCase ):
         tv = pykd.typedVar( ti, target.module.var2 )
         self.assertEqual( tv.field1, 100 )
         
-    def testNamspace(self):
-        ti1 = pykd.typeInfo( target.moduleName, "Namespace1::Class1" )   
-        ti2 = pykd.typeInfo( target.moduleName, "Namespace1::Namespace2::Class2" )   
-        self.assertNotEqual( target.module.var3, 0 )
-        self.assertNotEqual( target.module.var4, 0 )
-        var3 = pykd.typedVar( ti1, target.module.var3 )
-        var4 = pykd.typedVar( ti1, target.module.var4 )
+    def testNamespace(self):
+        ti1 = pykd.typeInfo( target.moduleName, "Namespace1::Class1" )
+        ti2 = pykd.typeInfo( target.moduleName, "Namespace1::Namespace2::Class2" )
+        var3 = pykd.typedVar( ti1, pykd.getOffset( target.moduleName, "Namespace1::var3" ) )
+        var4 = pykd.typedVar( ti1, pykd.getOffset( target.moduleName, "Namespace1::Namespace2::var4" ) )
         self.assertEqual( var3.m_field1, 50 )
-        
-           
 
 
 
