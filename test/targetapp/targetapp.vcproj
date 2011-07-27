@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="targetapp"
 	ProjectGUID="{C6254E16-AB8E-41EE-887D-31458E93FC68}"
 	RootNamespace="targetapp"
-	SccProjectName="SAK"
-	SccAuxPath="SAK"
-	SccLocalPath="SAK"
-	SccProvider="SAK"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -365,6 +361,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\types.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\utils.cpp"
 				>
 			</File>
@@ -392,6 +392,26 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+		</Filter>
+		<Filter
+			Name="scripts"
+			>
+			<File
+				RelativePath="..\scripts\basetest.py"
+				>
+			</File>
+			<File
+				RelativePath="..\scripts\pykdtest.py"
+				>
+			</File>
+			<File
+				RelativePath="..\scripts\target.py"
+				>
+			</File>
+			<File
+				RelativePath="..\scripts\typeinfo.py"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
