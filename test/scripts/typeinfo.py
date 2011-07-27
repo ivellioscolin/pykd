@@ -21,10 +21,12 @@ class TypeInfoTest( unittest.TestCase ):
         ti = pykd.typeInfo( target.moduleName, "Type1" )
         self.assertEqual( hasattr( ti, "field1" ), True )
         self.assertEqual( hasattr( ti, "field2" ), True )
+        self.assertEqual( hasattr( ti, "field3" ), True )
         
         tv = pykd.typedVar( ti, target.module.var1 )
         self.assertEqual( tv.field1, -121 )
         self.assertEqual( tv.field2, 220 )
+#        self.assertLess( tv.field3 - 1.0095, 0.0001 )
         
     def testEnumField(self):
         ti = pykd.typeInfo( target.moduleName, "Type2" )
@@ -32,6 +34,17 @@ class TypeInfoTest( unittest.TestCase ):
         
         tv = pykd.typedVar( ti, target.module.var2 )
         self.assertEqual( tv.field1, 100 )
+        
+    def testNamspace(self):
+        ti1 = pykd.typeInfo( target.moduleName, "Namespace1::Class1" )   
+        ti2 = pykd.typeInfo( target.moduleName, "Namespace1::Namespace2::Class2" )   
+        self.assertNotEqual( target.module.var3, 0 )
+        self.assertNotEqual( target.module.var4, 0 )
+        var3 = pykd.typedVar( ti1, target.module.var3 )
+        var4 = pykd.typedVar( ti1, target.module.var4 )
+        self.assertEqual( var3.m_field1, 50 )
+        
+           
 
 
 
