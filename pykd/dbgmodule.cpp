@@ -17,31 +17,19 @@ loadModule( const std::string &moduleName )
 {
     HRESULT         hres;
    
-    try {
-        ULONG64    moduleBase;
-        hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
-        if ( FAILED( hres ) )
-             return boost::python::object();
+    ULONG64    moduleBase;
+    hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol::GetModuleByModuleName  failed" );      
         
-        DEBUG_MODULE_PARAMETERS     moduleParam = { 0 };
-        hres = dbgExt->symbols->GetModuleParameters( 1, &moduleBase, 0, &moduleParam );
-        if ( FAILED( hres ) )
-             throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );      
-       
-             
-        return boost::python::object( dbgModuleClass( moduleName, moduleBase, moduleParam.Size ) );            
-        
-    }
-	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}	 
-	
-	return boost::python::object();
+    DEBUG_MODULE_PARAMETERS     moduleParam = { 0 };
+    hres = dbgExt->symbols->GetModuleParameters( 1, &moduleBase, 0, &moduleParam );
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );      
+   
+         
+    return boost::python::object( dbgModuleClass( moduleName, moduleBase, moduleParam.Size ) );            
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -102,26 +90,13 @@ void queryModuleParams(
 boost::python::object
 findModule( ULONG64 addr )
 {
-    try {
-        ULONG64 moduleBase;
-        ULONG moduleSize;
-        std::string moduleName;
-        queryModuleParams(addr, moduleName, moduleBase, moduleSize);
-        return 
-            boost::python::object(
-                dbgModuleClass( moduleName, moduleBase, moduleSize )
-            );
-    }
-    catch( std::exception  &e )
-    {
-        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-    }
-    catch(...)
-    {
-        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-    }
-
-    return boost::python::object();    
+    ULONG64     moduleBase;
+    ULONG       moduleSize;
+    std::string moduleName;
+    
+    queryModuleParams(addr, moduleName, moduleBase, moduleSize);
+    
+    return  boost::python::object( dbgModuleClass( moduleName, moduleBase, moduleSize ) );
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -186,55 +161,44 @@ dbgModuleClass::dbgModuleClass( const std::string &name, ULONG64 base, ULONG siz
 void
 dbgModuleClass::reloadSymbols()
 {
-    HRESULT         hres;
-     
-    try {
-        static const char *szReloadParam = "/f "; //"/f /s ";
-        std::string   reloadParam = szReloadParam;
-        reloadParam += m_name;
+    HRESULT         hres;     
 
+    static const char *szReloadParam = "/f "; //"/f /s ";
+    std::string   reloadParam = szReloadParam;
+    reloadParam += m_name;
+
+    {
+        // try reload module by entered name, "silent mode"
+        OutputReader outputReader( dbgExt->client );
+        hres = dbgExt->symbols->Reload( reloadParam.c_str() );
+    }
+    if ( FAILED( hres ) )
+    {
+        // failed => try reload symbols by image file name
+        char szImageName[MAX_PATH/2];
+        HRESULT hres2 = dbgExt->symbols2->GetModuleNameString(
+            DEBUG_MODNAME_IMAGE,
+            DEBUG_ANY_ID,
+            m_base,
+            szImageName,
+            _countof(szImageName),
+            NULL);
+        if (SUCCEEDED(hres2))
         {
-            // try reload module by entered name, "silent mode"
-            OutputReader outputReader( dbgExt->client );
+            PCSTR szImageFileName = strrchr(szImageName, '\\');
+            if (!szImageFileName)
+                szImageFileName = szImageName;
+            else
+                ++szImageFileName;
+
+            reloadParam = szReloadParam;
+            reloadParam += szImageFileName;
             hres = dbgExt->symbols->Reload( reloadParam.c_str() );
         }
-        if ( FAILED( hres ) )
-        {
-            // failed => try reload symbols by image file name
-            char szImageName[MAX_PATH/2];
-            HRESULT hres2 = dbgExt->symbols2->GetModuleNameString(
-                DEBUG_MODNAME_IMAGE,
-                DEBUG_ANY_ID,
-                m_base,
-                szImageName,
-                _countof(szImageName),
-                NULL);
-            if (SUCCEEDED(hres2))
-            {
-                PCSTR szImageFileName = strrchr(szImageName, '\\');
-                if (!szImageFileName)
-                    szImageFileName = szImageName;
-                else
-                    ++szImageFileName;
-
-                reloadParam = szReloadParam;
-                reloadParam += szImageFileName;
-                hres = dbgExt->symbols->Reload( reloadParam.c_str() );
-            }
-        }
-
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugSymbol::Reload  failed" );
     }
-	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}	 
-	
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol::Reload  failed" );
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -247,8 +211,14 @@ dbgModuleClass::getOffset( const std::string  &symName )
     {
         return offset->second;
     }
+
     ModuleInfo moduleInfo(m_debugInfo);
-    return ::getSyntheticSymbol(moduleInfo, symName);
+    ULONG64  syntheticOffset = getSyntheticSymbol(moduleInfo, symName);
+
+    if ( syntheticOffset == 0 )
+        throw DbgException( "failed to find offset for symbol" );    
+
+    return syntheticOffset;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -294,106 +264,82 @@ void
 dbgModuleClass::getImagePath()
 {
     HRESULT         hres;
-         
-    try {
+ 
+    ULONG       pathSize = 0;
+    hres = dbgExt->symbols3->GetSymbolPathWide( NULL, 0, &pathSize );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol3::GetImagePathWide  failed" );
+        
+    std::vector<WCHAR> pathBuffer(pathSize);
     
-        ULONG       pathSize = 0;
-        hres = dbgExt->symbols3->GetSymbolPathWide( NULL, 0, &pathSize );
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugSymbol3::GetImagePathWide  failed" );
+    hres = dbgExt->symbols3->GetSymbolPathWide( &pathBuffer[0], pathSize, NULL );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol3::GetImagePathWide  failed" );
+        
+    std::wstring   symPath( &pathBuffer[0], pathSize );
+    
+    std::wstring   altName =  m_debugInfo.CVData;
+    altName = altName.substr( 0, altName.find_last_of(L".") );
+    
+    std::wstring   imageName = m_debugInfo.LoadedImageName;
+    altName += imageName.substr( imageName.find_last_of(L".") );        
+    
+    for ( size_t  offset = 0; offset < symPath.length(); )
+    {
+        size_t  newOffset = symPath.find( L";", offset );
+        std::wstring    subPath = symPath.substr( offset, newOffset - offset );
+        
+        std::wstringstream   sstr;
+        
+        sstr << subPath  << L"\\" << m_debugInfo.LoadedImageName << L"\\" << std::hex << 
+            m_debugInfo.TimeDateStamp << m_debugInfo.ImageSize << L"\\" << 
+            m_debugInfo.LoadedImageName;
             
-	    std::vector<WCHAR> pathBuffer(pathSize);
-        
-        hres = dbgExt->symbols3->GetSymbolPathWide( &pathBuffer[0], pathSize, NULL );
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugSymbol3::GetImagePathWide  failed" );
-            
-        std::wstring   symPath( &pathBuffer[0], pathSize );
-        
-        std::wstring   altName =  m_debugInfo.CVData;
-        altName = altName.substr( 0, altName.find_last_of(L".") );
-        
-        std::wstring   imageName = m_debugInfo.LoadedImageName;
-        altName += imageName.substr( imageName.find_last_of(L".") );        
-        
-        for ( size_t  offset = 0; offset < symPath.length(); )
+        if( (_waccess( sstr.str().c_str(), 0 )) != -1 )
         {
-            size_t  newOffset = symPath.find( L";", offset );
-            std::wstring    subPath = symPath.substr( offset, newOffset - offset );
+            m_imageFullName = sstr.str();
+            break;
+        }   
+        
+        
+        std::wstringstream   altstr;
+        
+        altstr << subPath << L"\\" << altName << L"\\" << std::hex << 
+            m_debugInfo.TimeDateStamp << m_debugInfo.ImageSize << L"\\" << 
+            altName;
             
-            std::wstringstream   sstr;
-            
-            sstr << subPath  << L"\\" << m_debugInfo.LoadedImageName << L"\\" << std::hex << 
-                m_debugInfo.TimeDateStamp << m_debugInfo.ImageSize << L"\\" << 
-                m_debugInfo.LoadedImageName;
-                
-            if( (_waccess( sstr.str().c_str(), 0 )) != -1 )
-            {
-                m_imageFullName = sstr.str();
-                break;
-            }   
-            
-            
-            std::wstringstream   altstr;
-            
-            altstr << subPath << L"\\" << altName << L"\\" << std::hex << 
-                m_debugInfo.TimeDateStamp << m_debugInfo.ImageSize << L"\\" << 
-                altName;
-                
-            if( (_waccess( altstr.str().c_str(), 0 )) != -1 )
-            {
-                m_imageFullName = altstr.str();
-                break;
-            }               
-            
-            if ( newOffset == std::wstring::npos )
-                break;
-            
-            offset = newOffset + 1;
-        }       
-          
-    }
-	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}	
+        if( (_waccess( altstr.str().c_str(), 0 )) != -1 )
+        {
+            m_imageFullName = altstr.str();
+            break;
+        }               
+        
+        if ( newOffset == std::wstring::npos )
+            break;
+        
+        offset = newOffset + 1;
+    }       
 }
 
 std::string
 dbgModuleClass::print() const 
 {
-	try
-	{
-		const char * format_string(dbgExt->control->IsPointer64Bit() == S_OK ?
-			"%1$016x %2$016x %3$20s %4$20s" : "%1$08x %2$08x %3$20s %4$20s");
-		boost::format fmt(format_string);
-		std::vector<char> v(MAX_PATH);
-		::WideCharToMultiByte(
-            CP_ACP,
-            0,
-            m_imageFullName.c_str(),
-            -1,
-            &v[0],
-            (ULONG)v.size(),
-            0,
-            0);
-		std::string fullname(&v[0]);
-		fmt % m_base % (m_end - m_base) % m_name % fullname;
-				return fmt.str();
-	}
-	catch (std::exception & e)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch (...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}
-	return "";
+	const char * format_string(dbgExt->control->IsPointer64Bit() == S_OK ?
+		"%1$016x %2$016x %3$20s %4$20s" : "%1$08x %2$08x %3$20s %4$20s");
+	boost::format fmt(format_string);
+	std::vector<char> v(MAX_PATH);
+	::WideCharToMultiByte(
+        CP_ACP,
+        0,
+        m_imageFullName.c_str(),
+        -1,
+        &v[0],
+        (ULONG)v.size(),
+        0,
+        0);
+	std::string fullname(&v[0]);
+	fmt % m_base % (m_end - m_base) % m_name % fullname;
+	return fmt.str();
 }
 
 /////////////////////////////////////////////////////////////////////////////////

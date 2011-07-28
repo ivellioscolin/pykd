@@ -62,28 +62,17 @@ ULONG64
 findAddressForSymbol( const std::string  &moduleName, const std::string  &symbolName )
 {
     HRESULT         hres;
-    
-    try {
 
-        std::string   ModuleSymName = moduleName;
-        ModuleSymName += "!";
-        ModuleSymName += symbolName;
+    std::string   ModuleSymName = moduleName;
+    ModuleSymName += "!";
+    ModuleSymName += symbolName;
 
-        ULONG64    offset = 0ULL;
-        hres = dbgExt->symbols->GetOffsetByName( ModuleSymName.c_str(), &offset );
-        if ( SUCCEEDED( hres ) )
-            return offset;
-    }
-    catch( std::exception  &e )
-    {
-        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-    }
-    catch(...)
-    {
-        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-    }
+    ULONG64    offset = 0ULL;
+    hres = dbgExt->symbols->GetOffsetByName( ModuleSymName.c_str(), &offset );
+    if ( SUCCEEDED( hres ) )
+        return offset;
 
-    return 0;
+     throw DbgException( "failed to find offset for symbol" );  
 }
 
 /////////////////////////////////////////////////////////////////////////////////
