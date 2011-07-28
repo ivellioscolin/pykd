@@ -806,6 +806,8 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
         
         // перенаправление стандартных потоков ВВ
         boost::python::object       sys = boost::python::import("sys");
+
+        boost::python::object       tracebackModule = boost::python::import("traceback");
         
         dbgOut                      dout;
         sys.attr("stdout") = boost::python::object( dout );
@@ -864,11 +866,27 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
                 
                 if(errvalue != NULL) 
                 {
-                    PyObject *s = PyObject_Str(errvalue);
-                    
-                    dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "%s/n", PyString_AS_STRING( s ) );
+                    PyObject *errvalueStr= PyObject_Str(errvalue);
 
-                    Py_DECREF(s);
+                    dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "%s\n", PyString_AS_STRING( errvalueStr ) );
+
+                    if ( traceback )
+                    {
+                        boost::python::object    traceObj( boost::python::handle<>( boost::python::borrowed( traceback ) ) );
+                        
+                        dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "\nTraceback:\n" );
+
+                        boost::python::object   pFunc( tracebackModule.attr("format_tb") );
+                        boost::python::list     traceList( pFunc( traceObj ) );
+
+                        for ( long i = 0; i < boost::python::len(traceList); ++i )
+                        {
+                            std::string     traceLine = boost::python::extract<std::string>(traceList[i]);
+                            dbgExt->control->Output( DEBUG_OUTPUT_ERROR, traceLine.c_str() );
+                        }
+                    }
+
+                    Py_DECREF(errvalueStr);
                 }
 
                 Py_XDECREF(errvalue);
@@ -913,6 +931,8 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
         sys.attr("stdin") = boost::python::object( din );    
         
         boost::python::object   syntaxError = boost::python::import("exceptions").attr("SyntaxError");
+
+        boost::python::object   tracebackModule = boost::python::import("traceback");
 
         std::string             commandBuffer;
 
@@ -969,37 +989,48 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
                 }
                 catch( boost::python::error_already_set const & )
                 {
-                    PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL;
+                    PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL, *errvalueStr = NULL;
                     
                     PyErr_Fetch( &errtype, &errvalue, &traceback );
 
                     if ( errtype && errvalue )
                     {
-                        PyObject                *errvalueStr = PyObject_Str(errvalue);
+                        errvalueStr = PyObject_Str(errvalue);
     
-                        std::string             errValueStr = boost::python::extract<std::string>( errvalueStr );                    
-                    
-                        if ( PyErr_GivenExceptionMatches( syntaxError.ptr(), errtype ) )
-                        {
-                            boost::python::tuple   errValueObj( boost::python::handle<>( boost::python::borrowed(errvalue) ) );
-
-                            Py_XDECREF(errvalueStr);                        
+                        do {
                         
-                            if ( errValueObj[0] == "unexpected EOF while parsing" )
+                            if ( PyErr_GivenExceptionMatches( syntaxError.ptr(), errtype ) )
                             {
-                                commandCompleted = false;       
+                                boost::python::tuple   errValueObj( boost::python::handle<>( boost::python::borrowed(errvalue) ) );
+                            
+                                if ( errValueObj[0] == "unexpected EOF while parsing" )
+                                {
+                                    commandCompleted = false;       
+                                    break;
+                                }
                             }
-                            else
+               
+                            dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "%s\n", PyString_AS_STRING(errvalueStr)  );
+
+                            if ( traceback )
                             {
-                                dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "%s\n", errValueStr.c_str() );
+                                boost::python::object    traceObj( boost::python::handle<>( boost::python::borrowed( traceback ) ) );
+                                
+                                dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "\nTraceback:\n" );
+
+                                boost::python::object   pFunc( tracebackModule.attr("format_tb") );
+                                boost::python::list     traceList( pFunc( traceObj ) );
+
+                                for ( long i = 0; i < boost::python::len(traceList); ++i )
+                                {
+                                    std::string     traceLine = boost::python::extract<std::string>(traceList[i]);
+                                    dbgExt->control->Output( DEBUG_OUTPUT_ERROR, traceLine.c_str() );
+                                }
                             }
-                        }
-                        else
-                        {
-                            dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "%s\n", errValueStr.c_str() );
-                        }
 
+                        } while( FALSE );
 
+                        Py_XDECREF(errvalueStr);   
                         Py_XDECREF(errvalue);
                         Py_XDECREF(errtype);
                         Py_XDECREF(traceback);
