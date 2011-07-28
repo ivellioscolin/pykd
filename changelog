@@ -1,3 +1,17 @@
+version 0.0.19 28/07/2011
+
+[+] added : typedVar::data method ( Return raw string object with data stream ) 
+[+] added : setMSR routine ( Change MSR value )
+[+] added : intBase class
+[+] added : cpuReg class ( representing "live" CPU register )
+[+] added : printing traceback for !py and !pycmd
+[+] added : class disasm 
+
+[!] fixed: issue 8657( !pycmd does not allow to define functions ) 
+[!] fixed: issue 8655 ( Unnamed structure/unioin not added to fields of typedVarClass )
+[!] fixed: issue 8927 ( typedVar does not convert enumeration type to int ) 
+[!] fixed: issue 9202 ( module object return offset = 0 for non existing symbol ) 
+
 version 0.0.18 25/05/2011
 
 [+] added : rdmsr routine ( Return MSR value ) 
