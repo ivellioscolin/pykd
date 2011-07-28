@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="pykd"
 	ProjectGUID="{FE961905-666F-4908-A212-961465F46F13}"
 	RootNamespace="pykd"
-	SccProjectName="SAK"
-	SccAuxPath="SAK"
-	SccLocalPath="SAK"
-	SccProvider="SAK"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="0"
 	>
@@ -418,6 +414,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\disasm.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pykd.cpp"
 				>
 			</File>
@@ -537,6 +537,14 @@
 			</File>
 			<File
 				RelativePath=".\dbgtype.h"
+				>
+			</File>
+			<File
+				RelativePath=".\disasm.h"
+				>
+			</File>
+			<File
+				RelativePath=".\intbase.h"
 				>
 			</File>
 			<File

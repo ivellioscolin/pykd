@@ -28,6 +28,7 @@
 #include "dbgbreak.h"
 #include "dbgio.h"
 #include "intbase.h"
+#include "disasm.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -345,6 +346,17 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "onUnloadModule", &debugEventWrap::onUnloadModule,
             "Unload module event. Parameter is instance of dbgModuleClass. "
             "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" );
+
+    boost::python::class_<disasm>("disasm", "Class disassemble a processor instructions", boost::python::no_init )
+        .def( boost::python::init<>( "constructor" ) )
+        .def( boost::python::init<ULONG64>( boost::python::args("offset"), "constructor" ) )
+        .def( "next", &disasm::next, "Disassemble next instruction" )
+        .def( "begin", &disasm::begin, "Return begin offset" )
+        .def( "current", &disasm::current, "Return current offset" )
+        .def( "length", &disasm::length, "Return current instruction length" )
+        .def( "instruction", &disasm::instruction, "Returm current disassembled instruction" )
+        .def( "ea", &disasm::ea, "Return effective address for last disassembled instruction or 0" );
+
 
     // исключения
     boost::python::class_<DbgException>  dbgExceptionClass( "BaseException",
