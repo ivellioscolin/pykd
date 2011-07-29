@@ -24,8 +24,12 @@ setExecutionStatus()
         ULONG    currentStatus;                
           
         do {
+        
+            Py_BEGIN_ALLOW_THREADS
             
             hres = dbgExt->control->WaitForEvent( 0, INFINITE );
+            
+            Py_END_ALLOW_THREADS
         
             if ( FAILED( hres ) )
                 throw  DbgException( "IDebugControl::SetExecutionStatus  failed" ); 
