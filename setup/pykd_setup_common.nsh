@@ -27,7 +27,7 @@ SetCompressor LZMA
 
 !define PRODUCT_SHORT_NAME "pykd"
 !define PRODUCT_FULL_NAME  "Python extension for WinDbg"
-!define PRODUCT_VERSION "0.0.0.18"
+!define PRODUCT_VERSION "0.0.0.19"
 !define PRODUCT_URL  "http://pykd.codeplex.com/"
 !define PRODUCT_NAME_AND_VERSION "${PRODUCT_FULL_NAME} ${PRODUCT_ARCH} ${PRODUCT_VERSION}"
 !define PRODUCT_MANUFACTURER "PyKd Team"
@@ -135,7 +135,7 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion"     "${PRODUCT_VERSION}"
 !macro _IsVcRuntimeInstalled _a _b _t _f
     !insertmacro _LOGICLIB_TEMP
     Push 'msvcr80.dll'
-    Push 'Microsoft.VC80.CRT,version="8.0.50727.4053",type="win32",processorArchitecture="${ARCH}",publicKeyToken="1fc8b3b9a1e18e3b"'
+    Push 'Microsoft.VC80.CRT,version="8.0.50727.6195",type="win32",processorArchitecture="${ARCH}",publicKeyToken="1fc8b3b9a1e18e3b"'
     ${WinSxS_HasAssembly}
     Pop $_LOGICLIB_TEMP
     !insertmacro _== $_LOGICLIB_TEMP 1 `${_t}` `${_f}`
@@ -218,23 +218,23 @@ Section "Python ${PYTHON_VERSION} ${PRODUCT_ARCH}" sec_python
 SectionEnd
 
 Section "Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime" sec_vcruntime
-    DetailPrint "Downloading Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library..."
-    inetc::get /CAPTION "${PRODUCT_SHORT_NAME}" /QUESTION "" /POPUP "" /TIMEOUT=30000 "${VCRUNTIME_URL}" "$TEMP\vcredist_${PRODUCT_ARCH}.exe" /END
-    Pop $0
-    ${If} $0 == "OK" 
-        DetailPrint "Successfully downloaded."
-        DetailPrint "Installing Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library..."
-        IfErrors ClearErrorFlag
-        ClearErrorFlag:
-        ExecWait "$TEMP\vcredist_${PRODUCT_ARCH}.exe"
-        IfErrors RuntimeInstallFailed
-        DetailPrint "Successfully installed."
-    ${Else}
-        RuntimeInstallFailed:
-        DetailPrint "Operation failed. Installation will be continued without Visual C++ runtime."
-        DetailPrint "Please download and install it manually from product download page:"
-        DetailPrint "${VCRUNTIME_URL}"
-    ${EndIf}
+    DetailPrint "Installing Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library..."
+
+    SetOutPath "$TEMP"
+    !if ${PRODUCT_ARCH} == "x64"
+        File "..\x64\Release\vcredist_${PRODUCT_ARCH}.exe"
+    !else
+        File "..\Release\vcredist_${PRODUCT_ARCH}.exe"
+    !endif
+
+    ExecWait "$TEMP\vcredist_${PRODUCT_ARCH}.exe"
+    IfErrors RuntimeInstallFailed
+    DetailPrint "Successfully installed."
+    Return
+
+    RuntimeInstallFailed:
+    DetailPrint "Operation failed. Installation will be continued without Visual C++ runtime."
+    DetailPrint "Please download and install it manually."
 SectionEnd
 
 Section -FinishSection
