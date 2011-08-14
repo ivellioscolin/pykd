@@ -6,21 +6,12 @@
 
 #include "utils.h"
 
-OSVERSIONINFOA gVerInfo = {0};
-
-void test_getOffset_typedVar()
-{
-    gVerInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFOA);
-    if (!::GetVersionExA(&gVerInfo))
-        throw std::runtime_error("Can't get OS version: " + utils::GetLastErrorStr());
-    __debugbreak();
-}
-
 int _tmain(int argc, _TCHAR* argv[])
 {
     try
     {
-	    test_getOffset_typedVar();
+        // Let test scripts to execute
+        __debugbreak();
     }
     catch(std::exception & ex)
     {
