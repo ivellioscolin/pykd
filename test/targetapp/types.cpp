@@ -83,3 +83,22 @@ namespace Namespace1 {
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+
+namespace Namespace3
+{
+
+    template<typename T>
+    class Class3
+    {
+    public:
+        Class3(T val): m_field1 (val)
+        {
+        }
+    private:
+        T m_field1;
+    };
+    
+    Class3<int> var4(4);
+
+};
+///////////////////////////////////////////////////////////////////////////////
