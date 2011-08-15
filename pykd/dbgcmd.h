@@ -2,6 +2,7 @@
 
 #include <string>
 #include <map>
+#include "pyaux.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -25,11 +26,12 @@ setExecutionStatus()
           
         do {
         
-            Py_BEGIN_ALLOW_THREADS
+            {
+                PyThread_StateRestore   state;
+                
+                hres = dbgExt->control->WaitForEvent( 0, INFINITE );
             
-            hres = dbgExt->control->WaitForEvent( 0, INFINITE );
-            
-            Py_END_ALLOW_THREADS
+            }
         
             if ( FAILED( hres ) )
                 throw  DbgException( "IDebugControl::SetExecutionStatus  failed" ); 

@@ -692,6 +692,8 @@ DebugExtensionUninitialize()
 
 DbgExt::DbgExt( IDebugClient4 *masterClient )
 {
+    m_threadState = NULL;
+
     client = NULL;
     masterClient->QueryInterface( __uuidof(IDebugClient), (void **)&client );
   

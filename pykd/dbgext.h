@@ -31,10 +31,17 @@ public:
     DbgExt( IDebugClient4 *client );          
             
     ~DbgExt();
+
+    PyThreadState**
+    getThreadState() {
+        return &m_threadState;
+    }
     
 private:    
 
     DbgExt      *m_previosExt;
+
+    PyThreadState   *m_threadState;
 };
 
 extern DbgExt    *dbgExt;

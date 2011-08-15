@@ -4,6 +4,7 @@
 
 #include "dbgbreak.h"
 #include "dbgexcept.h"
+#include "pyaux.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -13,6 +14,8 @@ dbgBreakpointClass::breakpointMap       dbgBreakpointClass::m_breakMap;
 
 HRESULT dbgBreakpointClass::onBreakpointEvnet( IDebugBreakpoint*  bp )
 {
+    PyThread_StateSave( dbgExt->getThreadState() ); 
+
     try {
 
         breakpointMap::iterator   it = m_breakMap.find( bp );
