@@ -75,6 +75,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Change debugger status to DEBUG_STATUS_STEP_INTO" );
     boost::python::def( "step", &setExecutionStatus<DEBUG_STATUS_STEP_OVER>, 
         "Change debugger status to DEBUG_STATUS_STEP_OVER" );   
+    boost::python::def( "breakin", &breakin,
+        "Break into debugger" );
     boost::python::def( "expr", &evaluate, 
         "Evaluate windbg expression" ); 
     boost::python::def( "isWindbgExt", &isWindbgExt, 

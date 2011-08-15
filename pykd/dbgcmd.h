@@ -10,53 +10,37 @@ std::string
 dbgCommand( const std::string &command );
 
 template <ULONG status>
-bool
+void
 setExecutionStatus()
 {
     HRESULT     hres;
-    
-    try {
-  
-        hres = dbgExt->control->SetExecutionStatus( status );
+
+    hres = dbgExt->control->SetExecutionStatus( status );
         
-        if ( FAILED( hres ) )
-            return false;
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::SetExecutionStatus failed" );
             
-        ULONG    currentStatus;                
+    ULONG    currentStatus;                
           
-        do {
+    do {
         
-            {
-                PyThread_StateRestore   state;
-                
-                hres = dbgExt->control->WaitForEvent( 0, INFINITE );
+        {
+            PyThread_StateRestore   state;
             
-            }
+            hres = dbgExt->control->WaitForEvent( 0, INFINITE );
         
-            if ( FAILED( hres ) )
-                throw  DbgException( "IDebugControl::SetExecutionStatus  failed" ); 
-                            
-            hres = dbgExt->control->GetExecutionStatus( &currentStatus );
-                
-            if ( FAILED( hres ) )
-                throw  DbgException( "IDebugControl::GetExecutionStatus  failed" ); 
-               
-                
-        } while( currentStatus != DEBUG_STATUS_BREAK && currentStatus != DEBUG_STATUS_NO_DEBUGGEE );
-        
-        return true;
+        }
+    
+        if ( FAILED( hres ) )
+            throw  DbgException( "IDebugControl::WaitForEvent  failed" ); 
+                        
+        hres = dbgExt->control->GetExecutionStatus( &currentStatus );
             
-    } 
-	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}	
-	
-	return false;
+        if ( FAILED( hres ) )
+            throw  DbgException( "IDebugControl::GetExecutionStatus  failed" ); 
+            
+    } while( currentStatus != DEBUG_STATUS_BREAK && currentStatus != DEBUG_STATUS_NO_DEBUGGEE );
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -91,4 +75,9 @@ private:
 ULONG64
 evaluate( const std::string  &expression );
     
+/////////////////////////////////////////////////////////////////////////////////
+
+void
+breakin();
+
 /////////////////////////////////////////////////////////////////////////////////
