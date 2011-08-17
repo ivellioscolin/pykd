@@ -486,8 +486,10 @@ BOOST_PYTHON_MODULE( pykd )
         "CPU regsiter class",
         boost::python::no_init )
             .def( boost::python::init<std::string>(boost::python::args("name"), "constructor" ) )
+            .def( boost::python::init<ULONG>(boost::python::args("index"), "constructor" ) )
             .def( "name", &cpuReg::name, "The name of the regsiter" )
-            .def( "beLive", &cpuReg::beLive, "Turn the object to live: its value will be following thr target register value" );
+            .def( "index", &cpuReg::index, "The index of thr register" )
+            .def( "beLive", &cpuReg::beLive, "Turn the object to live: its value will be following the target register value" );
             
 
     // debug status

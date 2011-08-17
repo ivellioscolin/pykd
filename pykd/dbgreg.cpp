@@ -10,8 +10,54 @@ using namespace std;
 
 cpuReg::cpuReg( std::string  regName )
 {
+    HRESULT         hres;  
+
     m_name = regName;
     m_lived = false; 
+
+    hres = dbgExt->registers->GetIndexByName( m_name.c_str(), &m_index );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugRegister::GetIndexByName  failed" );    
+    
+    reloadValue();       
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+cpuReg::cpuReg( ULONG index )
+{
+    HRESULT         hres;  
+
+    m_index = index;
+    m_lived = false; 
+
+    ULONG       nameSize = 0;
+
+    hres = 
+        dbgExt->registers->GetDescription( 
+            m_index,
+            NULL,
+            0,
+            &nameSize,
+            NULL );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugRegister::GetDescription failed" );
+
+    std::vector<char>   nameBuffer(nameSize);
+
+    hres = 
+        dbgExt->registers->GetDescription( 
+            m_index,
+            &nameBuffer[0],
+            nameSize,
+            NULL,
+            NULL );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugRegister::GetDescription failed" );
+
+    m_name = std::string( &nameBuffer[0] );
     
     reloadValue();       
 }
@@ -21,14 +67,9 @@ cpuReg::cpuReg( std::string  regName )
 void  cpuReg::reloadValue() const
 {
     HRESULT         hres;   
-    ULONG           registerIndex = 0;
-
-    hres = dbgExt->registers->GetIndexByName( m_name.c_str(), &registerIndex );
-    if ( FAILED( hres ) )
-        throw DbgException( "IDebugRegister::GetIndexByName  failed" ); 
         
     DEBUG_VALUE    debugValue;            
-    hres = dbgExt->registers->GetValue( registerIndex, &debugValue );
+    hres = dbgExt->registers->GetValue( m_index, &debugValue );
     if ( FAILED( hres ) )
         throw DbgException( "IDebugRegister::GetValue  failed" );
         

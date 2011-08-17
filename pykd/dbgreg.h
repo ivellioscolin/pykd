@@ -12,10 +12,17 @@ class cpuReg : public intBase {
 public :
 
     cpuReg( std::string  regName );
+
+    cpuReg( ULONG index );
     
     std::string
     name() const {
         return m_name;
+    }
+
+    ULONG
+    index() const {
+        return m_index;            
     }
     
     void beLive() {
@@ -35,6 +42,8 @@ private:
     void  reloadValue() const;
 
     std::string     m_name;
+
+    ULONG           m_index;
     
     bool            m_lived;
 };
