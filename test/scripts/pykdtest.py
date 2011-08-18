@@ -12,7 +12,8 @@ import pykd
 
 import target
 import basetest
-import typeinfo     
+import typeinfo 
+import regtest  
 
 
 if __name__ == "__main__":
@@ -30,6 +31,7 @@ if __name__ == "__main__":
     suite = unittest.TestSuite( [
             unittest.TestLoader().loadTestsFromTestCase( basetest.BaseTest ),
             unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
+            unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest )
         ] )
 
-    unittest.TextTestRunner().run( suite )
+    unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
