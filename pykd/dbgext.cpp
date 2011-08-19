@@ -91,6 +91,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Load crash dump (only for console)");
     boost::python::def( "startProcess", &startProcess,
         "Start process for debugging (only for console)"); 
+    boost::python::def( "attachProcess", &attachProcess,
+        "Attach debugger to the exsisting process" );
     boost::python::def( "dbgCommand", &dbgCommand,
         "Execute debugger command. For example: dbgCommand( \"lmvm nt\" )" );
     boost::python::def( "isValid", &isOffsetValid,
