@@ -88,4 +88,14 @@ attachProcess( ULONG  processId )
 
 ///////////////////////////////////////////////////////////////////////////////// 
 
-    
+void
+attachKernel( const std::wstring  param )
+{
+    HRESULT     hres;
+
+    hres = dbgExt->client5->AttachKernelWide( DEBUG_ATTACH_KERNEL_CONNECTION, param.c_str() );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugClient5::AttachKernelWide failed" );
+}
+
+/////////////////////////////////////////////////////////////////////////////////  
