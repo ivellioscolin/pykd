@@ -44,3 +44,13 @@ class TypeInfoTest( unittest.TestCase ):
         ti3 = pykd.typeInfo( target.moduleName, "Namespace3::Class3<int>" )
         var5 = pykd.typedVar( ti3, pykd.getOffset( target.moduleName, "Namespace3::var5" ) )
         self.assertEqual( var5.m_field1, 5 )
+        
+    def testNestedStruct(self):
+        ti4 = pykd.typeInfo( target.moduleName,  "Type4" )
+        self.assertTrue( hasattr( ti4, "field1" ) )
+        self.assertTrue( hasattr( ti4, "field2" ) )
+        self.assertTrue( hasattr( ti4, "field3" ) )
+        self.assertTrue( hasattr( ti4, "field4" ) )
+        self.assertTrue( hasattr( ti4, "field4" ) )
+        self.assertTrue( hasattr( ti4.field4, "field41" ) )
+

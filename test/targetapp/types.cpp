@@ -43,6 +43,7 @@ Type2       var2 = { Enum1Val1 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
+
 namespace Namespace1 {
 
 
@@ -101,4 +102,31 @@ namespace Namespace3
     Class3<int> var5(5);
 
 };
+///////////////////////////////////////////////////////////////////////////////
+
+#pragma pack( push, 4 )
+
+struct Type4 
+{
+    int     field1;
+
+    struct {
+
+        int field2;
+
+        int field3;
+    };
+
+    struct {
+
+        int field41;
+
+    } field4;
+
+};
+
+Type4    var4 = {};
+
+#pragma pack( pop )
+
 ///////////////////////////////////////////////////////////////////////////////
