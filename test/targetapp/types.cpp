@@ -130,3 +130,58 @@ Type4    var4 = {};
 #pragma pack( pop )
 
 ///////////////////////////////////////////////////////////////////////////////
+
+class Type5 {
+
+private:
+
+    int     field1;
+    int     field2;
+
+public:
+
+    Type5() : field1(10), field2(20) {}
+};
+
+class Type6 {
+
+private:
+
+    int     field1;
+    Type5   *field2;
+    Type5   *field3[2];
+
+public:
+
+    Type6()  {
+        field1 = 10;
+        field2 = new Type5;
+        field3[0] = new Type5;
+        field3[1] = new Type5;
+    }
+
+    ~Type6() {
+        delete field2;
+    }
+         
+};
+
+Type6       var6;
+
+///////////////////////////////////////////////////////////////////////////////
+
+class Type7 {
+
+private:
+
+    Type5       field1[10];
+
+    Type5       field2[2][2];
+
+    int         field3[2][2][2];
+
+};
+
+Type7       var7;
+
+///////////////////////////////////////////////////////////////////////////////

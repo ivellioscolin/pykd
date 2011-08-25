@@ -17,9 +17,9 @@ class TypeInfoTest( unittest.TestCase ):
         
     def testSimpleStruct(self):
         ti = pykd.typeInfo( target.moduleName, "Type1" )
-        self.assertEqual( hasattr( ti, "field1" ), True )
-        self.assertEqual( hasattr( ti, "field2" ), True )
-        self.assertEqual( hasattr( ti, "field3" ), True )
+        self.assertTrue( hasattr( ti, "field1" ) )
+        self.assertTrue( hasattr( ti, "field2" ) )
+        self.assertTrue( hasattr( ti, "field3" ) )
         
         tv = pykd.typedVar( ti, target.module.var1 )
         self.assertEqual( tv.field1, -121 )
@@ -53,4 +53,19 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertTrue( hasattr( ti4, "field4" ) )
         self.assertTrue( hasattr( ti4, "field4" ) )
         self.assertTrue( hasattr( ti4.field4, "field41" ) )
-
+        
+    def testPtrField(self):
+        v6 = pykd.typedVar( target.moduleName, "Type6", pykd.getOffset( target.moduleName, "var6" ) )
+        self.assertEqual( v6.field1, 10 )
+        self.assertEqual( v6.field2.field1, 10 )
+        self.assertEqual( v6.field2.field2, 20 )
+        self.assertNotEqual( v6.field2, 0 )
+        self.assertEqual( v6.field3[0].field1, 10 )
+        self.assertEqual( v6.field3[1].field2, 20 )
+        
+    def testArrayField(self):
+        v7 = pykd.typedVar( target.moduleName, "Type7", pykd.getOffset( target.moduleName, "var7" ) )
+        self.assertEqual( v7.field1[1].field1, 10 )
+        self.assertEqual( v7.field1[5].field2, 20 )
+        self.assertEqual( v7.field2[1][0].field1, 10 )
+        self.assertEqual( v7.field2[0][1].field2, 20 )
