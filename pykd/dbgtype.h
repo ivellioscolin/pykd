@@ -217,6 +217,10 @@ public:
         m_typeInfo( moduleName, typeName ),
         m_targetOffset( addr64(targetOffset) )
         {}        
+
+    TypedVar( ULONG64 targetOffset );
+
+    TypedVar( const std::string &symbolName );
         
     ULONG64
     getAddress() const {

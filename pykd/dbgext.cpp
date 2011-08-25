@@ -260,6 +260,10 @@ BOOST_PYTHON_MODULE( pykd )
             "constructor" ) )
         .def(boost::python::init<std::string,std::string,ULONG64>(boost::python::args("moduleName", "typeName", "address"), 
             "constructor" ) )
+        .def(boost::python::init<ULONG64>(boost::python::args("address"),
+            "constructor" ) )
+        .def(boost::python::init<std::string>(boost::python::args("symbolName"), 
+            "constructor" ) )
         .def("getAddress", &TypedVar::getAddress, 
             "Return virtual address" )
         .def("sizeof", &TypedVar::getSize,            

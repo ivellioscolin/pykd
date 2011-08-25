@@ -807,6 +807,49 @@ TypeInfo::printField( size_t index, void* buffer, size_t  bufferLength ) const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+TypedVar::TypedVar( ULONG64 targetOffset ) :
+    m_targetOffset( addr64(targetOffset) )
+{
+    HRESULT     hres;
+
+    ULONG typeId;
+    ULONG64 module;
+    hres = dbgExt->symbols->GetOffsetTypeId( m_targetOffset, &typeId, &module );
+    if ( FAILED( hres ) )
+        throw TypeException();
+
+    char   moduleName[0x100];
+    hres =  dbgExt->symbols2->GetModuleNameString( DEBUG_MODNAME_MODULE, DEBUG_ANY_ID, module, 
+        moduleName, sizeof( moduleName ), NULL );
+    if ( FAILED( hres ) )
+        throw TypeException();
+
+    m_typeInfo = TypeInfo( moduleName , addr64(module), typeId );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVar::TypedVar( const std::string &symbolName )
+{
+    HRESULT     hres;
+
+    ULONG typeId;
+    ULONG64 module;
+    hres = dbgExt->symbols->GetSymbolTypeId( symbolName.c_str(), &typeId, &module );
+    if ( FAILED( hres ) )
+        throw TypeException();
+
+    char   moduleName[0x100];
+    hres =  dbgExt->symbols2->GetModuleNameString( DEBUG_MODNAME_MODULE, DEBUG_ANY_ID, module, 
+        moduleName, sizeof( moduleName ), NULL );
+    if ( FAILED( hres ) )
+        throw TypeException();
+
+    m_typeInfo = TypeInfo( moduleName , addr64(module), typeId );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 TypedVar::TypedVar( const TypeInfo &typeInfo, ULONG64 targetOffset, char* buffer, size_t bufferLength ) :
     m_typeInfo( typeInfo ),
     m_targetOffset( addr64(targetOffset) )

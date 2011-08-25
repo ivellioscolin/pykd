@@ -69,3 +69,11 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( v7.field1[5].field2, 20 )
         self.assertEqual( v7.field2[1][0].field1, 10 )
         self.assertEqual( v7.field2[0][1].field2, 20 )
+
+    def testTypedVarByAddress(self):
+        var5 = pykd.typedVar( pykd.getOffset( target.moduleName, "Namespace3::var5" ) )
+        self.assertEqual( var5.m_field1, 5 )
+
+    def testTypedVarBySymbolName(self):
+        var5 = pykd.typedVar( "Namespace3::var5" )
+        self.assertEqual( var5.m_field1, 5 )
