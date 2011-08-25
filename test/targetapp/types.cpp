@@ -150,6 +150,7 @@ private:
     int     field1;
     Type5   *field2;
     Type5   *field3[2];
+    Type5   **field4;
 
 public:
 
@@ -158,6 +159,8 @@ public:
         field2 = new Type5;
         field3[0] = new Type5;
         field3[1] = new Type5;
+
+        field4 = &field2;
     }
 
     ~Type6() {
