@@ -14,7 +14,7 @@ dbgBreakpointClass::breakpointMap       dbgBreakpointClass::m_breakMap;
 
 HRESULT dbgBreakpointClass::onBreakpointEvnet( IDebugBreakpoint*  bp )
 {
-    PyThread_StateSave( dbgExt->getThreadState() ); 
+    PyThread_StateSave pyThrdState( dbgExt->getThreadState() ); 
 
     try {
 

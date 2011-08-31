@@ -15,16 +15,19 @@ class PyThread_StateSave {
 
 public:
 
-    PyThread_StateSave( PyThreadState  **state ) {
+    PyThread_StateSave( PyThreadState  **state ) 
+        : m_state(NULL)
+    {
         if ( *state != NULL )
         {
-            m_state = state;                
+            m_state = state;
             PyEval_RestoreThread( *m_state );
         }
     }
 
     ~PyThread_StateSave() {
-        *m_state =PyEval_SaveThread();
+        if (m_state)
+            *m_state =PyEval_SaveThread();
     }
 
 private:

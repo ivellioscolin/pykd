@@ -249,7 +249,7 @@ BOOST_PYTHON_MODULE( pykd )
     DEF_PY_GLOBAL( "ulong_t", TypeInfo("", "unsigned long") );
     DEF_PY_GLOBAL( "int_t", TypeInfo("", "int") );
     DEF_PY_GLOBAL( "uint_t", TypeInfo("", "unsigned int") );  
-    DEF_PY_GLOBAL( "ptr_t", TypeInfo("", "viod*") );    
+    DEF_PY_GLOBAL( "ptr_t", TypeInfo("", "void*") );    
     DEF_PY_GLOBAL( "double_t", TypeInfo("", "double") );   
     DEF_PY_GLOBAL( "longlong_t", TypeInfo("", "int64") );       
     DEF_PY_GLOBAL( "ulonglong_t", TypeInfo("", "unsigned int64") );           
@@ -702,10 +702,9 @@ DebugExtensionUninitialize()
     WindbgGlobalSession::StopWindbgSession();
 }
 
-DbgExt::DbgExt( IDebugClient4 *masterClient )
+DbgExt::DbgExt( IDebugClient4 *masterClient ) 
+    : m_threadState(NULL)
 {
-    m_threadState = NULL;
-
     client = NULL;
     masterClient->QueryInterface( __uuidof(IDebugClient), (void **)&client );
   
@@ -747,7 +746,7 @@ DbgExt::DbgExt( IDebugClient4 *masterClient )
     
     system2 = NULL;
     masterClient->QueryInterface( __uuidof(IDebugSystemObjects2), (void**)&system2 );
-    
+
     m_previosExt = dbgExt;
     dbgExt = this;
 }
@@ -761,7 +760,7 @@ DbgExt::~DbgExt()
         client4->Release();
         
     if ( client5 )
-        client5->Release();        
+        client5->Release();
         
     if ( control )
         control->Release();

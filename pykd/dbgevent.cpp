@@ -69,8 +69,8 @@ HRESULT debugEvent::LoadModule(
     dbgModuleClass module(moduleName, moduleBase, moduleSize);
     silentMode.reset(); 
 
-    PyThread_StateSave( dbgExt->getThreadState() ); 
-    
+    PyThread_StateSave pyThrdState( dbgExt->getThreadState() ); 
+
     return onLoadModule( module );
 }
 
@@ -91,8 +91,8 @@ HRESULT debugEvent::UnloadModule(
     dbgModuleClass module(moduleName, moduleBase, moduleSize);
     silentMode.reset(); 
 
-    PyThread_StateSave( dbgExt->getThreadState() ); 
-    
+    PyThread_StateSave pyThrdState( dbgExt->getThreadState() ); 
+
     return onUnloadModule( module );
 }
 
@@ -102,7 +102,7 @@ HRESULT debugEvent::SessionStatus(
         __in ULONG  Status
 )
 {
-    PyThread_StateSave( dbgExt->getThreadState() ); 
+    PyThread_StateSave pyThrdState( dbgExt->getThreadState() ); 
 
     return onChangeSessionStatus( Status );
 }
@@ -114,10 +114,10 @@ HRESULT debugEvent::ChangeDebuggeeState(
         __in ULONG64 Argument
 )
 {
-    PyThread_StateSave( dbgExt->getThreadState() ); 
+    PyThread_StateSave pyThrdState( dbgExt->getThreadState() ); 
 
     return onChangeDebugeeState();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-      
+
