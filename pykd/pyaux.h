@@ -18,7 +18,7 @@ public:
     PyThread_StateSave( PyThreadState  **state ) 
         : m_state(NULL)
     {
-        if ( *state != NULL )
+        if ( *state )
         {
             m_state = state;
             PyEval_RestoreThread( *m_state );
@@ -26,7 +26,7 @@ public:
     }
 
     ~PyThread_StateSave() {
-        if (m_state)
+        if ( m_state )
             *m_state =PyEval_SaveThread();
     }
 
@@ -49,7 +49,7 @@ public:
     }
 
     PyThread_StateRestore( PyThreadState  **state ) {
-        if ( *state != NULL )
+        if ( *state )
         {
             m_state = state;                
             *m_state =PyEval_SaveThread();
@@ -57,6 +57,7 @@ public:
     }
 
     ~PyThread_StateRestore() {
+        if (*m_state)
             PyEval_RestoreThread( *m_state );
     }
 

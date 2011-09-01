@@ -25,7 +25,7 @@ setExecutionStatus()
     do {
         
         {
-            PyThread_StateRestore   state;
+            PyThread_StateRestore   state(dbgExt->getThreadState());
             
             hres = dbgExt->control->WaitForEvent( 0, INFINITE );
         
