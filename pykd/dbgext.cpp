@@ -365,7 +365,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "onException", &debugEventWrap::onException,
             "Exception event. Parameter is dict:\n"
             "{\"Code\":int, \"Flags\":int, \"Record\":int, \"Address\":int,"
-            " \"Parameters\":list_of_int, \"FirstChance\":bool}\n"
+            " \"Parameters\":[int], \"FirstChance\":bool}\n"
             "Detailed information: http://msdn.microsoft.com/en-us/library/aa363082(VS.85).aspx \n"
             "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" )
         .def( "onLoadModule", &debugEventWrap::onLoadModule,
