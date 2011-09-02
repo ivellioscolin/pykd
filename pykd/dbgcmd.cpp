@@ -16,13 +16,16 @@ dbgCommand( const std::string &command )
     HRESULT     hres;
 
     OutputReader        outReader(  dbgExt->client );
-   
-    hres = dbgExt->control->Execute( DEBUG_OUTCTL_THIS_CLIENT, command.c_str(), 0 );
+    {
+        PyThread_StateRestore pyThreadRestore;
+
+        hres = dbgExt->control->Execute( DEBUG_OUTCTL_THIS_CLIENT, command.c_str(), 0 );
+    }
     if ( FAILED( hres ) )
         throw  DbgException( "IDebugControl::Execute  failed" ); 
-            
+
     return std::string( outReader.Line() );
-}	
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -87,7 +90,7 @@ evaluate( const std::string  &expression )
             &remainderIndex );
             
         if (  FAILED( hres ) )
-            throw  DbgException( "IDebugControl::Evaluate  failed" );             
+            throw  DbgException( "IDebugControl::Evaluate  failed" );
             
         if ( remainderIndex == expression.length() )
             value = debugValue.I64;
@@ -101,7 +104,7 @@ evaluate( const std::string  &expression )
             &remainderIndex );
             
         if (  FAILED( hres ) )
-            throw  DbgException( "IDebugControl::Evaluate  failed" );             
+            throw  DbgException( "IDebugControl::Evaluate  failed" );
             
         if ( remainderIndex == expression.length() )
             value = debugValue.I32;
@@ -118,12 +121,12 @@ breakin()
     HRESULT     hres;
 
     {
-        PyThread_StateRestore       state;
+        PyThread_StateRestore pyThreadRestore;
         hres = dbgExt->control->SetInterrupt( DEBUG_INTERRUPT_ACTIVE );
     }
 
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugControl::SetInterrupt" );            
+        throw DbgException( "IDebugControl::SetInterrupt" );
 }
 
 /////////////////////////////////////////////////////////////////////////////// 

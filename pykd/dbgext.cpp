@@ -38,6 +38,9 @@ DbgExt    *dbgExt = NULL;
 // глобальный клиент 
 dbgClient    g_dbgClient;
 
+// контескт исполнения нити питона
+__declspec( thread ) PyThreadStatePtr ptrPyThreadState = NULL;
+
 //////////////////////////////////////////////////////////////////////////////
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprint, dbgPrint::dprint, 1, 2 )
@@ -340,7 +343,9 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::class_<dbgBreakpointClass>( "bp",
          "Class representing breakpoint",
          boost::python::init<ULONG64,boost::python::object&>( boost::python::args("offset", "callback"), 
-            "dbgBreakpointClass constructor" ) )
+         "Break point: user callback" ) )
+        .def( boost::python::init< ULONG64 >( boost::python::args("offset"), 
+            "Break point constructor: always break" ) )
         .def( "set", &dbgBreakpointClass::set,
             "Set a breakpoint at the specified address" )
         .def( "remove", &dbgBreakpointClass::remove,
@@ -703,7 +708,6 @@ DebugExtensionUninitialize()
 }
 
 DbgExt::DbgExt( IDebugClient4 *masterClient ) 
-    : m_threadState(NULL)
 {
     client = NULL;
     masterClient->QueryInterface( __uuidof(IDebugClient), (void **)&client );
@@ -753,21 +757,24 @@ DbgExt::DbgExt( IDebugClient4 *masterClient )
 
 DbgExt::~DbgExt()
 {
+    BOOST_ASSERT(dbgExt == this);
+    dbgExt = m_previosExt;
+
     if ( client )
         client->Release();
-        
+
     if ( client4 )
         client4->Release();
-        
+
     if ( client5 )
         client5->Release();
-        
+
     if ( control )
         control->Release();
-        
+
     if ( control4 )
         control4->Release();
-        
+
     if ( registers )
         registers->Release();
             
@@ -776,26 +783,24 @@ DbgExt::~DbgExt()
         
     if ( symbols2 )
         symbols2->Release();
-        
+
     if ( symbols3 )
         symbols3->Release();
-        
+
     if ( dataSpaces )
         dataSpaces->Release();
-        
+
     if ( dataSpaces4 )
         dataSpaces4->Release();
-        
+
     if ( advanced2 )
         advanced2->Release();
-        
+
     if ( system )
         system->Release();
-        
+
     if ( system2 )
         system2->Release();
-        
-    dbgExt = m_previosExt;
 }
 
 /////////////////////////////////////////////////////////////////////////////////    

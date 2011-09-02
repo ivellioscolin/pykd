@@ -16,29 +16,27 @@ setExecutionStatus()
     HRESULT     hres;
 
     hres = dbgExt->control->SetExecutionStatus( status );
-        
+
     if ( FAILED( hres ) )
         throw DbgException( "IDebugControl::SetExecutionStatus failed" );
-            
-    ULONG    currentStatus;                
-          
+
+    ULONG    currentStatus;
+
     do {
         
         {
-            PyThread_StateRestore   state(dbgExt->getThreadState());
-            
+            PyThread_StateRestore pyThreadRestore;
             hres = dbgExt->control->WaitForEvent( 0, INFINITE );
-        
         }
-    
+
         if ( FAILED( hres ) )
             throw  DbgException( "IDebugControl::WaitForEvent  failed" ); 
                         
         hres = dbgExt->control->GetExecutionStatus( &currentStatus );
-            
+
         if ( FAILED( hres ) )
             throw  DbgException( "IDebugControl::GetExecutionStatus  failed" ); 
-            
+
     } while( currentStatus != DEBUG_STATUS_BREAK && currentStatus != DEBUG_STATUS_NO_DEBUGGEE );
 
 }

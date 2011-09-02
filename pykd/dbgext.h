@@ -32,16 +32,9 @@ public:
 
     ~DbgExt();
 
-    PyThreadState**
-    getThreadState() {
-        return &m_threadState;
-    }
-    
-private:    
+private:
 
     DbgExt      *m_previosExt;
-
-    PyThreadState   *m_threadState;
 };
 
 extern DbgExt    *dbgExt;

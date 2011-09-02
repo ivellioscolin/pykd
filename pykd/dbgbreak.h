@@ -10,12 +10,13 @@ class  dbgBreakpointClass {
 public:
 
     dbgBreakpointClass( ULONG64 offset, boost::python::object  &callback );
-    
+    dbgBreakpointClass( ULONG64 offset );
+
     ~dbgBreakpointClass();
-    
+
     bool
     set();
-    
+
     void
     remove();    
 

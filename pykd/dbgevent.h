@@ -4,15 +4,16 @@
 
 #include "dbgeventcb.h"
 #include "dbgmodule.h"
+#include "pyaux.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
 class debugEvent : public DebugBaseEventCallbacks
 {
 public:
-    
+
     debugEvent();
-    
+
     virtual ~debugEvent();
 
     virtual ULONG onLoadModule(const dbgModuleClass &/* module */)  = 0;
@@ -30,8 +31,8 @@ private:
 
     STDMETHOD(GetInterestMask)(
         __out PULONG Mask
-    );          
-    
+    );
+
     STDMETHOD(LoadModule)(
         __in ULONG64 ImageFileHandle,
         __in ULONG64 BaseOffset,
@@ -46,18 +47,18 @@ private:
         __in PCSTR ImageBaseName,
         __in ULONG64 BaseOffset
     );  
-    
+
     STDMETHOD(SessionStatus)(
         __in ULONG  Status
     );
-    
+
     STDMETHOD(ChangeDebuggeeState)(
         __in ULONG  Flags,
         __in ULONG64 Argument );
-    
+
 private:
 
-    IDebugClient       *m_debugClient;         
+    IDebugClient       *m_debugClient;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -65,9 +66,9 @@ private:
 class debugEventWrap : public boost::python::wrapper<debugEvent>, public debugEvent
 {
 
-public:   
- 
-    
+public:
+
+
     ULONG onLoadModule(const dbgModuleClass &module) {
         return handler<const dbgModuleClass &>("onLoadModule", module );
     }
@@ -75,33 +76,33 @@ public:
     ULONG onUnloadModule(const dbgModuleClass &module) {
         return handler<const dbgModuleClass &>("onUnloadModule", module );
     }
-    
+
     ULONG onChangeSessionStatus( ULONG status ) {
         return handler( "onChangeSessionStatus", status );
-    }  
-    
+    }
+
     ULONG onChangeDebugeeState() {
-        return handler( "onChangeDebugeeState" );    
-    }      
-    
-private:    
-    
+        return handler( "onChangeDebugeeState" );
+    }
+
+private:
+
     template<typename Arg1Type>
     ULONG handler( const char* handlerName, Arg1Type  arg1 )
     {
-        if (boost::python::override     pythonHandler = get_override( handlerName ))
+        if (boost::python::override pythonHandler = get_override( handlerName ))
             return pythonHandler(arg1);
-            
+
         return DEBUG_STATUS_NO_CHANGE;
-    }      
+    }
 
     ULONG handler( const char* handlerName )
     {
-        if (boost::python::override     pythonHandler = get_override( handlerName ))
+        if (boost::python::override pythonHandler = get_override( handlerName ))
             return pythonHandler();
-            
+
         return DEBUG_STATUS_NO_CHANGE;
-    }      
+    }
 };
 
 /////////////////////////////////////////////////////////////////////////////////
