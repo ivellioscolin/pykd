@@ -72,8 +72,8 @@ class ExceptionHandler(debugEvent):
 
     dprintln("\nFirst chance      : " + str( exceptData["FirstChance"] ))
 
-    dprintln( "\n " + dbgCommand( "r" ) )
     dbgCommand( ".reload" )
+    dprintln( "\n " + dbgCommand( "r" ) )
     dprintln( dbgCommand( "kb" ) )
 
     return DEBUG_STATUS_BREAK
