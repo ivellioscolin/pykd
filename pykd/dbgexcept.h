@@ -10,17 +10,27 @@ class DbgException : public std::exception
 public:
 
     DbgException( const std::string  &desc ) :
-	  std::exception( desc.c_str() )
-	  {}
-	  
+        std::exception( desc.c_str() )
+        {}
+
     const char* getDesc() const {
         return what();
     }
-	  
-	  
+
     static
     void
-    exceptionTranslate(const DbgException &e ); 	  
+    exceptionTranslate(const DbgException &e );
+};
+
+class WaitEventException : public DbgException
+{
+public:
+    WaitEventException()
+        : DbgException( "none of the targets could generate events" )
+    {
+    }
+
+    static void exceptionTranslate(const WaitEventException &e);
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +50,7 @@ public:
     static
     void
     exceptionTranslate(const TypeException  &e );
-    
+
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -114,6 +124,7 @@ private:
 /////////////////////////////////////////////////////////////////////////////////
 
 extern  PyObject  *baseExceptionType;
+extern  PyObject  *eventExceptionType;
 extern  PyObject  *typeExceptionType;
 extern  PyObject  *memoryExceptionType;
 

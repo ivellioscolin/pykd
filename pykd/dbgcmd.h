@@ -30,8 +30,13 @@ setExecutionStatus()
         }
 
         if ( FAILED( hres ) )
-            throw  DbgException( "IDebugControl::WaitForEvent  failed" ); 
-                        
+        {
+            if (E_UNEXPECTED == hres)
+                throw WaitEventException();
+
+            throw  DbgException( "IDebugControl::WaitForEvent  failed" );
+        }
+
         hres = dbgExt->control->GetExecutionStatus( &currentStatus );
 
         if ( FAILED( hres ) )

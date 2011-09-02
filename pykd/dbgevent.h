@@ -16,6 +16,10 @@ public:
 
     virtual ~debugEvent();
 
+    virtual ULONG onBreakpoint(boost::python::dict &/*bpParameters*/) = 0;
+
+    virtual ULONG onException(boost::python::dict &/*exceptData*/) = 0;
+
     virtual ULONG onLoadModule(const dbgModuleClass &/* module */)  = 0;
 
     virtual ULONG onUnloadModule(const dbgModuleClass &/* module */)  = 0;
@@ -31,6 +35,16 @@ private:
 
     STDMETHOD(GetInterestMask)(
         __out PULONG Mask
+    );
+
+    STDMETHOD(Breakpoint)(
+        __in PDEBUG_BREAKPOINT Bp
+    );
+
+
+    STDMETHOD(Exception)(
+        __in PEXCEPTION_RECORD64 Exception,
+        __in ULONG FirstChance
     );
 
     STDMETHOD(LoadModule)(
@@ -68,6 +82,13 @@ class debugEventWrap : public boost::python::wrapper<debugEvent>, public debugEv
 
 public:
 
+    ULONG onBreakpoint(boost::python::dict &bpParameters) {
+        return handler<boost::python::dict &>("onBreakpoint", bpParameters);
+    }
+
+    ULONG onException(boost::python::dict &exceptData) {
+        return handler<boost::python::dict &>("onException", exceptData);
+    }
 
     ULONG onLoadModule(const dbgModuleClass &module) {
         return handler<const dbgModuleClass &>("onLoadModule", module );
