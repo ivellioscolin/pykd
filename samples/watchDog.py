@@ -33,10 +33,18 @@ knownExcepCodes = {
   0xc000013a : "CONTROL_C_EXIT"
 };
 
-
 class ExceptionHandler(debugEvent):
+  def __init__(self):
+    self.stopExceptionOccurred = False
+    debugEvent.__init__(self)
 
   def onException(self, exceptData):
+
+    if exceptData["FirstChance"]:
+      return DEBUG_STATUS_NO_CHANGE
+
+    self.stopExceptionOccurred = True
+
     dprintln("\n *** shit happens")
 
     exceptCode = exceptData["Code"]
@@ -70,8 +78,6 @@ class ExceptionHandler(debugEvent):
       for param in exceptData["Parameters"]:
         dprintln("\t0x%X" % param)
 
-    dprintln("\nFirst chance      : " + str( exceptData["FirstChance"] ))
-
     dbgCommand( ".reload" )
     dprintln( "\n " + dbgCommand( "r" ) )
     dprintln( dbgCommand( "kb" ) )
@@ -89,7 +95,9 @@ if __name__ == '__main__':
   exceptionHandler = ExceptionHandler()
 
   try:
-    go()
+
+   while not exceptionHandler.stopExceptionOccurred:
+      go()
 
   except WaitEventException:
     dprintln("none of the targets could generate events")
