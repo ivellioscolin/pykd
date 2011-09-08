@@ -221,17 +221,17 @@ BOOST_PYTHON_MODULE( pykd )
         "Delete synthetic symbols by virtual address" );
     boost::python::def( "delSynSymbolsMask", &delSyntheticSymbolsMask, 
         "Delete synthetic symbols by mask of module and symbol name");
-        
-        
+
+
     boost::python::class_<TypeInfo>( "typeInfo",
         "Class representing non-primitive type info: structure, union, etc. attributes is a fields of non-primitive type" )
         .def(boost::python::init<std::string,std::string>( boost::python::args("module", "type"), "constructor" ) )
         .def(boost::python::init<std::string>( boost::python::args("typeName"), "constructor" ) )
         .def(boost::python::init<std::string,ULONG>( boost::python::args("typeName", "align"), "constructor" ) )
         .def("size", &TypeInfo::size,
-            "Return full size of non-primitive type" )    
+            "Return full size of non-primitive type" )
         .def("name", &TypeInfo::name,
-            "Return type's name" )             
+            "Return type's name" )
         .def("__str__", &TypeInfo::print,
             "Return a nice string represention: print names and offsets of fields" )
         .def("__getattr__", &TypeInfo::getField )
@@ -241,9 +241,11 @@ BOOST_PYTHON_MODULE( pykd )
             "add new field for typeInfo" ) )
         .def("offset", &TypeInfo::getFieldOffset,
             "Return offset while type is part of the more complex type" )
+        .def("setAlignReq", &TypeInfo::setAlignReq,
+            "Set alignment requirement" )
         .def("load", &TypeInfo::loadVar, loadOver( boost::python::args( "offset", "count"),
             "Create instance of the typedVar class with this typeInfo" ) );
-            
+
     DEF_PY_GLOBAL( "char_t", TypeInfo("", "char") );
     DEF_PY_GLOBAL( "uchar_t", TypeInfo("", "unsigned char") );
     DEF_PY_GLOBAL( "short_t", TypeInfo("", "short") );
@@ -251,11 +253,11 @@ BOOST_PYTHON_MODULE( pykd )
     DEF_PY_GLOBAL( "long_t", TypeInfo("", "long") );
     DEF_PY_GLOBAL( "ulong_t", TypeInfo("", "unsigned long") );
     DEF_PY_GLOBAL( "int_t", TypeInfo("", "int") );
-    DEF_PY_GLOBAL( "uint_t", TypeInfo("", "unsigned int") );  
-    DEF_PY_GLOBAL( "ptr_t", TypeInfo("", "void*") );    
-    DEF_PY_GLOBAL( "double_t", TypeInfo("", "double") );   
-    DEF_PY_GLOBAL( "longlong_t", TypeInfo("", "int64") );       
-    DEF_PY_GLOBAL( "ulonglong_t", TypeInfo("", "unsigned int64") );           
+    DEF_PY_GLOBAL( "uint_t", TypeInfo("", "unsigned int") );
+    DEF_PY_GLOBAL( "ptr_t", TypeInfo("", "void*") );
+    DEF_PY_GLOBAL( "double_t", TypeInfo("", "double") );
+    DEF_PY_GLOBAL( "longlong_t", TypeInfo("", "int64") );
+    DEF_PY_GLOBAL( "ulonglong_t", TypeInfo("", "unsigned int64") );
     
     boost::python::class_<TypedVar>( "typedVar", 
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance" )

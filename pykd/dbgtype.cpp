@@ -20,6 +20,8 @@ TypeInfo::TypeInfoMap    TypeInfo::g_typeInfoCache;
 ///////////////////////////////////////////////////////////////////////////////////
 
 TypeInfo::TypeInfo( const std::string &moduleName, const std::string  &typeName ) 
+    : m_align(0)
+    , m_alignReq(1)
 {
     HRESULT     hres;
     bool        baseType = checkBaseType(typeName); 
@@ -51,14 +53,14 @@ TypeInfo::TypeInfo( const std::string &moduleName, const std::string  &typeName 
             m_isPointer = true;
             m_size = ptrSize();
             break;
-        }       
-    
+        }
+
         if ( baseType )
         {
             m_isBaseType = true;
             m_size = getBaseTypeSize( typeName );
-            break;            
-        }         
+            break;
+        }
     
         ULONG64     moduleBase = 0;
         hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
@@ -72,7 +74,7 @@ TypeInfo::TypeInfo( const std::string &moduleName, const std::string  &typeName 
 
         hres = dbgExt->symbols->GetTypeSize( moduleBase, typeId, &m_size );
         if ( FAILED( hres ) )
-            throw TypeException();    
+            throw TypeException();
             
         for ( ULONG   i = 0; ; ++i )
         {
@@ -103,13 +105,13 @@ TypeInfo::TypeInfo( const std::string &moduleName, const std::string  &typeName 
             if ( fieldTypeNameStr == "__unnamed" 
              ||  fieldTypeNameStr.find("<unnamed-tag>") < fieldTypeNameStr.size() )
             {
-                m_fields.push_back( TypeField( fieldName, TypeInfo( moduleName, moduleBase, fieldTypeId ), fieldSize, fieldOffset ) );     
+                addField( fieldName, TypeInfo( moduleName, moduleBase, fieldTypeId ), fieldSize, fieldOffset );
             }
             else
             {
-                m_fields.push_back( TypeField( fieldName, TypeInfo( moduleName, fieldTypeName ), fieldSize, fieldOffset ) );                      
-            }   
-       }   
+                addField( fieldName, TypeInfo( moduleName, fieldTypeName ), fieldSize, fieldOffset );
+            }
+       }
        
     } while( FALSE );
     
@@ -121,6 +123,8 @@ TypeInfo::TypeInfo( const std::string &moduleName, const std::string  &typeName 
 ///////////////////////////////////////////////////////////////////////////////////
 
 TypeInfo::TypeInfo( const std::string &moduleName, ULONG64 moduleBase, ULONG typeId )
+    : m_align(0)
+    , m_alignReq(1)
 {
     HRESULT     hres;
     
@@ -162,11 +166,11 @@ TypeInfo::TypeInfo( const std::string &moduleName, ULONG64 moduleBase, ULONG typ
         if ( fieldTypeNameStr == "__unnamed" 
          ||  fieldTypeNameStr.find("<unnamed-tag>") < fieldTypeNameStr.size() )
         {
-            m_fields.push_back( TypeField( fieldName, TypeInfo( moduleName, moduleBase, fieldTypeId ), fieldSize, fieldOffset ) );     
+            addField( fieldName, TypeInfo( moduleName, moduleBase, fieldTypeId ), fieldSize, fieldOffset );
         }
         else
         {
-            m_fields.push_back( TypeField( fieldName, TypeInfo( moduleName, fieldTypeName ), fieldSize, fieldOffset ) );                      
+            addField( fieldName, TypeInfo( moduleName, fieldTypeName ), fieldSize, fieldOffset );
         }
    }
 
@@ -278,8 +282,8 @@ TypeInfo::getFieldByIndex( boost::python::object  &obj ) const
         }
            
         TypeInfo    tinf = m_fields[index].type;
-        tinf.m_parentOffset = m_fields[index].offset;        
-        return boost::python::object( tinf );             
+        tinf.m_parentOffset = m_fields[index].offset;
+        return boost::python::object( tinf );
     }
     else
     {
@@ -343,14 +347,10 @@ TypeInfo::appendField( const TypeInfo &typeInfo, const std::string &fieldName, U
     }
 
     ULONG  offset = m_size;
-
-    if ( typeInfo.isBaseType() )
-    {
-       offset += offset % min( typeInfo.size(), m_align );  
-    }
+    offset += offset % ( m_align ? m_align : typeInfo.getAlignReq() );
 
     const ULONG addSize = typeInfo.size() * count;
-    m_fields.push_back( TypeField( fieldName, typeInfo, addSize, offset ) );
+    addField( fieldName, typeInfo, addSize, offset );
     m_size = offset + addSize;
     m_arraySize = offset + addSize;
 }
@@ -856,10 +856,10 @@ TypedVar::TypedVar( const TypeInfo &typeInfo, ULONG64 targetOffset, char* buffer
 {
     if ( bufferLength < typeInfo.size() )
         throw TypeException();
-        
+
     m_buffer.insert( m_buffer.begin(), buffer, buffer + bufferLength );
 }
-  
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 boost::python::object
@@ -997,6 +997,32 @@ TypedVar::print()
     }
 
     return sstr.str();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ULONG TypeInfo::getAlignReq() const
+{
+    if (isBaseType())
+        return size();
+
+    if (isPtr())
+        return ptrSize();
+
+    return m_alignReq;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+void TypeInfo::addField(
+    const std::string &name_,
+    const TypeInfo &type_,
+    ULONG size_,
+    ULONG offset_
+)
+{
+    m_alignReq = max(m_alignReq, type_.getAlignReq());
+    m_fields.push_back( TypeField( name_, type_, size_, offset_ ) );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

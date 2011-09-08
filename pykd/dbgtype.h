@@ -23,105 +23,111 @@ public:
         m_size(0),
         m_arraySize( 0 ),
         m_parentOffset( 0 ), 
-        m_align(  ptrSize() ),
+        m_align( 0 ),
         m_isFreezed( false ),
         m_isBaseType( false ),
-        m_isPointer( false )
+        m_isPointer( false ),
+        m_alignReq(1)
         {}
 
-     TypeInfo( const std::string customName, ULONG align=0 ) :
+     TypeInfo( const std::string customName, ULONG align = 0) :
         m_typeName( customName ),
         m_size( 0 ),
         m_arraySize( 0 ),
         m_parentOffset( 0 ),
         m_isFreezed( false ),
-        m_align( align == 0 ? ptrSize() : align ),
+        m_align( align ),
         m_isBaseType( false ),
-        m_isPointer( false )
+        m_isPointer( false ),
+        m_alignReq(1)
         {}
-     
+
      TypeInfo( const std::string &moduleName, const std::string  &typeName );
-     
+
      TypeInfo( const std::string &moduleName, ULONG64 moduleBase, ULONG typeId );
-     
+
      static
      const TypeInfo&
      get( const std::string &moduleName, const std::string  &typeName );
-     
+
      ULONG
      size() const {
         return m_size;
      }
-     
+
      ULONG
      count() const {
         assert( m_size != 0 && m_arraySize >= m_size );
         return m_arraySize / m_size;
      }
-     
+
      ULONG
      fullSize() const {
         return m_arraySize;
      }
-     
+
      const std::string
      name() const {
         return m_typeName;
      }
-     
+
      const std::string
      moduleName() const {
         return m_moduleName;
      }
-     
+
      boost::python::object
      load( void* buffer, size_t  bufferLength ) const;
-     
+
      std::string
      printField( size_t index, void* buffer, size_t  bufferLength ) const;
-     
+
      std::string
      print() const;
      
      TypeInfo
      getField( const std::string  &fieldName ) const;
-     
+
      TypeInfo
-     getFieldAt( size_t  index ) const;     
-     
+     getFieldAt( size_t  index ) const;
+
      ULONG
      getFieldOffset() const {
         return  m_parentOffset;
      }  
-     
+
      boost::python::object
      getFieldByIndex( boost::python::object &index ) const;   
-     
+
      size_t
      getFieldCount() const {
         return m_fields.size();
      }
-     
+
      void
      appendField( const TypeInfo &typeInfo, const std::string &fieldName, ULONG count = 1 );
-     
+
      bool
      isBaseType() const {
         return m_isBaseType;
      }
-     
+
      bool
      isPtr() const {
         return m_isPointer;
      }
-     
+
      bool
      isEnum() const {
         return !m_isBaseType && !m_isPointer && m_fields.size() == 0 && m_size == 4;
      }
-     
+
      boost::python::object
      loadVar( ULONG64  targetOffset, ULONG count = 1) const;
+
+     void setAlignReq(ULONG alignReq) {
+         m_alignReq = alignReq;
+     }
 
 public:
 
@@ -154,46 +160,57 @@ public:
 
 private:
 
+    ULONG getAlignReq() const;
+
+    void addField(
+        const std::string &name_,
+        const TypeInfo  &type_,
+        ULONG size_,
+        ULONG offset_
+    );
+
     typedef
     boost::python::object
     (*basicTypeLoader)( void* address, size_t size );
-    
+
     typedef 
     std::string
     (*basicTypePrinter)( void* address, size_t size );
-    
+
     static TypeInfoMap          g_typeInfoCache; 
-    
+
     static const char*          basicTypeNames[];
-    
+
     static size_t               basicTypeSizes[]; 
-    
+
     static basicTypeLoader      basicTypeLoaders[];
-    
+
     static basicTypePrinter     basicTypePrinters[];
 
     ULONG                       m_size;     
-    
+
     ULONG                       m_arraySize;
-    
+
     std::string                 m_typeName;
-    
+
     std::string                 m_moduleName;
-    
+
     TypeFieldList               m_fields;
-    
+
     bool                        m_isPointer;
-    
+
     bool                        m_isBaseType;
-    
+
     bool                        m_isFreezed;
-    
+
     ULONG                       m_align;
-    
-    ULONG                       m_parentOffset;    
-    
+
+    ULONG                       m_alignReq;
+
+    ULONG                       m_parentOffset;
+
     static bool  checkBaseType( const std::string  &typeName );
-    
+
     static ULONG  getBaseTypeSize( const std::string  &typeName );
 };
 
