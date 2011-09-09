@@ -39,6 +39,9 @@ def rpcSrvIf(ifSpec):
 
     return formatGuid(synId.SyntaxGUID) + " " + formatRpcVer(synId.SyntaxVersion)
 
+  # WOW64 workaround: !!! workitem/9499 !!!!
+  dynPtr = typeInfo("", "rpcSrvIf *")
+
   # prepare structures for parsing
   commGuid = typeInfo("rpcSrvIf~_GUID")
   commGuid.append(ulong_t,  "data1")
@@ -60,24 +63,24 @@ def rpcSrvIf(ifSpec):
 
   prcDispatchTable = typeInfo("rpcSrvIf~_RPC_DISPATCH_TABLE")
   prcDispatchTable.append(uint_t, "DispatchTableCount")
-  prcDispatchTable.append(ptr_t,  "DispatchTable")
-  prcDispatchTable.append(ptr_t,  "Reserved")
+  prcDispatchTable.append(dynPtr, "DispatchTable")
+  prcDispatchTable.append(dynPtr, "Reserved")
   # print prcDispatchTable
 
   midlServerInfoHeader = typeInfo("rpcSrvIf~_MIDL_SERVER_INFO_hdr")
-  midlServerInfoHeader.append(ptr_t,  "pStubDesc")
-  midlServerInfoHeader.append(ptr_t,  "DispatchTable")
+  midlServerInfoHeader.append(dynPtr, "pStubDesc")
+  midlServerInfoHeader.append(dynPtr, "DispatchTable")
   # print midlServerInfoHeader
 
   rpcServerInterface = typeInfo("rpcSrvIf~_RPC_SERVER_INTERFACE")
   rpcServerInterface.append(uint_t,               "Length")
   rpcServerInterface.append(rpcSintaxIdentifier,  "InterfaceId")
   rpcServerInterface.append(rpcSintaxIdentifier,  "TransferSyntax")
-  rpcServerInterface.append(ptr_t,                "DispatchTable") # -> prcDispatchTable
+  rpcServerInterface.append(dynPtr,               "DispatchTable") # -> prcDispatchTable
   rpcServerInterface.append(uint_t,               "RpcProtseqEndpointCount")
-  rpcServerInterface.append(ptr_t,                "RpcProtseqEndpoint")
-  rpcServerInterface.append(ptr_t,                "DefaultManagerEpv")
-  rpcServerInterface.append(ptr_t,                "InterpreterInfo") # -> midlServerInfoHeader
+  rpcServerInterface.append(dynPtr,               "RpcProtseqEndpoint")
+  rpcServerInterface.append(dynPtr,               "DefaultManagerEpv")
+  rpcServerInterface.append(dynPtr,               "InterpreterInfo") # -> midlServerInfoHeader
   rpcServerInterface.append(uint_t,               "Flags")
   # print rpcServerInterface
 

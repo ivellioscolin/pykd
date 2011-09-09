@@ -29,11 +29,11 @@ DispFormatsLength = {
 }
 
 
-def PrintPortMesage(messageAddr, printFormat="b", use32=False, moduleName="nt"):
+def PrintPortMesage(messageAddr, printFormat="b", use32=False):
   """
   Print _PORT_MESSAGE header and dump of message dump
 
-  Usage: portmsg messageAddr, printFormat[=b], use32[=False], moduleName[=nt]
+  Usage: portmsg messageAddr, printFormat[=b], use32[=False]
   When:
     messageAddr - address of port message
     printFormat - string of display format ("d+printFormat"). 
@@ -42,37 +42,80 @@ def PrintPortMesage(messageAddr, printFormat="b", use32=False, moduleName="nt"):
     <link cmd=\".shell -x rundll32 url.dll,FileProtocolHandler http://msdn.microsoft.com/en-us/library/ff542790(VS.85).aspx\">http://msdn.microsoft.com/en-us/library/ff542790(VS.85).aspx</link>
 
     use32       - use _PORT_MESSAGE32 (instead of _PORT_MESSAGE) structure (True or False)
-    moduleName  - module name with _PORT_MESSAGE structure in symbols
   """
 
-  messageTypeName = "_PORT_MESSAGE"
-  if (use32):
-    messageTypeName = "_PORT_MESSAGE32"
+  # WOW64 workaround: !!! workitem/9499 !!!!
+  dynPtr = typeInfo("", "portmsg *")
 
-  messageHeader = typedVar(moduleName, messageTypeName, messageAddr)
+
+  def buildPortMessageType():
+    clientIdType = typeInfo("portmsg~_CLIENT_ID")
+    clientIdType.append(dynPtr, "UniqueProcess")
+    clientIdType.append(dynPtr, "UniqueThread")
+
+    print clientIdType
+
+    portMsgType = typeInfo("portmsg~_PORT_MESSAGE")
+    portMsgType.append(ushort_t,      "DataLength")
+    portMsgType.append(ushort_t,      "TotalLength")
+    portMsgType.append(ushort_t,      "Type")
+    portMsgType.append(ushort_t,      "DataInfoOffset")
+    portMsgType.append(clientIdType,  "ClientId")
+    portMsgType.append(ulong_t,       "MessageId")
+    portMsgType.append(ulong_t,       "CallbackId")
+    return portMsgType
+
+  def buildPortMessage32Type():
+
+    clientIdType = typeInfo("portmsg~_CLIENT_ID32")
+    clientIdType.append(ulong_t,  "UniqueProcess")
+    clientIdType.append(ulong_t,  "UniqueThread")
+
+    portMsgType = typeInfo("portmsg~_PORT_MESSAGE32", 4)
+    portMsgType.append(ushort_t,      "DataLength")
+    portMsgType.append(ushort_t,      "TotalLength")
+    portMsgType.append(ushort_t,      "Type")
+    portMsgType.append(ushort_t,      "DataInfoOffset")
+    portMsgType.append(clientIdType,  "ClientId")
+    portMsgType.append(ulong_t,       "MessageId")
+    portMsgType.append(ulong_t,       "CallbackId")
+    return portMsgType
+
+
+  if (use32):
+    messageTypeName = buildPortMessage32Type()
+  else:
+    messageTypeName = buildPortMessageType()
+
+  messageHeader = typedVar(messageTypeName, messageAddr)
   if (None == messageHeader):
     dprintln("ERROR: Getting (" + moduleName + "!" + messageTypeName + " *)(0x%x) failed" % messageAddr )
     return
 
-  dprintln( "Data length      : %3d (0x%02x)" % (messageHeader.u1.s1.DataLength, messageHeader.u1.s1.DataLength) )
-  dprintln( "Total length     : %3d (0x%02x)" % (messageHeader.u1.s1.TotalLength, messageHeader.u1.s1.TotalLength) )
-  calcHeaderLen = messageHeader.u1.s1.TotalLength - messageHeader.u1.s1.DataLength
-  headerLen = sizeof(moduleName, messageTypeName)
+  dprintln( "Data length      : %3d (0x%02x)" % (messageHeader.DataLength, messageHeader.DataLength) )
+  dprintln( "Total length     : %3d (0x%02x)" % (messageHeader.TotalLength, messageHeader.TotalLength) )
+  calcHeaderLen = messageHeader.TotalLength - messageHeader.DataLength
+  headerLen = messageTypeName.size()
   if (calcHeaderLen != headerLen):
     dprintln( "WARRING: calculated size (%2d (0x%02x)) of LPC-header does not match with symbols information (%2d (0x%02x))" % (calcHeaderLen, calcHeaderLen, headerLen, headerLen) )
-  if (messageHeader.u2.s2.Type in LpcMessageType):
-    dprintln( "Message type     : " + LpcMessageType[messageHeader.u2.s2.Type] )
+  if (messageHeader.Type in LpcMessageType):
+    dprintln( "Message type     : " + LpcMessageType[messageHeader.Type] )
   else:
-    dprintln( "Message type     : %3d (0x%x)" % (messageHeader.u2.s2.Type, messageHeader.u2.s2.Type) )
-  procFindStr = "<link cmd=\"!process 0x%x\">%d(0x%x)</link>" % (messageHeader.ClientId.UniqueProcess, messageHeader.ClientId.UniqueProcess, messageHeader.ClientId.UniqueProcess)
-  dprintln( "Client ID        : process= " + procFindStr + ", thread= %d(0x%x)" %  (messageHeader.ClientId.UniqueThread, messageHeader.ClientId.UniqueThread), True)
-  dprintln( "View/Callback    : %d (0x%x)" % (messageHeader.ClientViewSize, messageHeader.ClientViewSize) )
+    dprintln( "Message type     : %3d (0x%x)" % (messageHeader.Type, messageHeader.Type) )
+
+  procFindStr = ""
+  if isKernelDebugging():
+    procFindStr = "<link cmd=\"!process 0x%x\">%d(0x%x)</link>" % (messageHeader.ClientId.UniqueProcess, messageHeader.ClientId.UniqueProcess, messageHeader.ClientId.UniqueProcess)
+  else:
+    procFindStr = "%d(0x%x)" % (messageHeader.ClientId.UniqueProcess, messageHeader.ClientId.UniqueProcess)
+  dprintln( "Client ID        : process= " + procFindStr + ", thread= %d(0x%x)" %  (messageHeader.ClientId.UniqueThread, messageHeader.ClientId.UniqueThread), isKernelDebugging())
+  dprintln( "View/Callback    : %d (0x%x)" % (messageHeader.CallbackId, messageHeader.CallbackId) )
   if (printFormat not in DispFormatsLength):
     dprintln( "WARRING: Unknown (" + printFormat + ") diplay fromat. Use \"b\"" )
     printFormat = "b"
   dataAddr = messageHeader.getAddress() + headerLen
   printCommand = "d" + printFormat + " 0x%x" % dataAddr
-  dataCount = messageHeader.u1.s1.DataLength / DispFormatsLength[printFormat]
+  dataCount = messageHeader.DataLength / DispFormatsLength[printFormat]
   printCommand += " L 0x%x " % dataCount
   dprintln( "<link cmd=\"" + printCommand + "\">Dump of message data:</link>", True )
   dprintln( dbgCommand(printCommand) )
@@ -86,7 +129,5 @@ if __name__ == "__main__":
     PrintPortMesage(expr(sys.argv[1]), sys.argv[2])
   elif (4 == argc):
     PrintPortMesage(expr(sys.argv[1]), sys.argv[2], sys.argv[3] == "True")
-  elif (5 == argc):
-    PrintPortMesage(expr(sys.argv[1]), sys.argv[2], sys.argv[3] == "True", sys.argv[4])
   else:
     dprintln(PrintPortMesage.__doc__, True)
