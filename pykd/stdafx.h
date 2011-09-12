@@ -30,32 +30,32 @@
 #include <windows.h>
 #include <atlbase.h>
 
-
-#ifndef  __field_ecount_opt
-#define  __field_ecount_opt(x)  
-#endif // __field_ecount_opt
-
-
-#define BOOST_PYTHON_STATIC_LIB
-
-#pragma warning(push)
-// 'return' : conversion from 'Py_ssize_t' to 'unsigned int', possible loss of data
-#pragma warning(disable:4244)
-#include <boost/python.hpp>
-#include <boost/python/object.hpp>
-#pragma warning(pop)
-
-#include <vector>
-
-template <typename TElem>
-TElem *getVectorBuffer(std::vector<TElem> &vec)
-{
-    return vec.size() ? &vec[0] : NULL;
-}
-template <typename TElem>
-const TElem *getVectorBuffer(const std::vector<TElem> &vec)
-{
-    return vec.size() ? &vec[0] : NULL;
-}
-
-// TODO: reference additional headers your program requires here
+//
+//#ifndef  __field_ecount_opt
+//#define  __field_ecount_opt(x)  
+//#endif // __field_ecount_opt
+//
+//
+//#define BOOST_PYTHON_STATIC_LIB
+//
+//#pragma warning(push)
+//// 'return' : conversion from 'Py_ssize_t' to 'unsigned int', possible loss of data
+//#pragma warning(disable:4244)
+//#include <boost/python.hpp>
+//#include <boost/python/object.hpp>
+//#pragma warning(pop)
+//
+//#include <vector>
+//
+//template <typename TElem>
+//TElem *getVectorBuffer(std::vector<TElem> &vec)
+//{
+//    return vec.size() ? &vec[0] : NULL;
+//}
+//template <typename TElem>
+//const TElem *getVectorBuffer(const std::vector<TElem> &vec)
+//{
+//    return vec.size() ? &vec[0] : NULL;
+//}
+//
+//// TODO: reference additional headers your program requires here

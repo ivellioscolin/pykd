@@ -20,8 +20,8 @@ def getTestSuite( singleName = "" ):
     if singleName == "":
         return unittest.TestSuite(
            [   unittest.TestLoader().loadTestsFromTestCase( basetest.BaseTest ),
-               unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
-               unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest )
+#               unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
+#               unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest )
            ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )
