@@ -1,5 +1,45 @@
 #pragma once
 
+#include <exception>
+#include <string>
+
+namespace pykd {
+
+/////////////////////////////////////////////////////////////////////////////////
+
+class DbgException : public std::exception
+{
+public:
+
+    DbgException( const std::string  &desc ) :
+        std::exception( desc.c_str() )
+        {}
+
+    const char* getDesc() const {
+        return what();
+    }
+
+    static
+    void
+    exceptionTranslate(const DbgException &e );
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+
+extern  PyObject  *baseExceptionType;
+
+///////////////////////////////////////////////////////////////////////////////////
+
+}; // namespace pykd
+
+///////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
 //#include <exception>
 //#include <string>
 //

@@ -4,11 +4,12 @@
 
 import unittest
 import target
+import pykd
 
 class BaseTest( unittest.TestCase ):
-
-    def test1( self ):
-        self.assertNotEqual( target.module, None )
-   
-    
-    
+      
+    def testImport( self ):
+        self.assertNotEqual( None, pykd.module )
+        self.assertNotEqual( None, pykd.dbgClient )
+        
+#        self.assertNotEqual( None, pykd.dia )

@@ -1,7 +1,5 @@
 EXPORTS
 	DebugExtensionInitialize
 	DebugExtensionUninitialize
-
-	info
 	py
 	pycmd

@@ -1,5 +1,52 @@
 #pragma once
 
+#include <string>
+#include <dbgeng.h>
+#include <dbghelp.h>
+
+#include "dbgexcept.h"
+
+/////////////////////////////////////////////////////////////////////////////////
+
+namespace pykd {
+
+/////////////////////////////////////////////////////////////////////////////////
+
+class DebugClient {
+
+public:
+
+    DebugClient();
+
+    virtual ~DebugClient() {}
+
+    void loadDump( const std::wstring &fileName );
+
+    void startProcess( const std::wstring  &processName );
+
+    void attachProcess( ULONG  processId );
+
+    void attachKernel( const std::wstring  &param );
+
+private:
+
+    CComPtr<IDebugClient5>      m_client;     
+    CComPtr<IDebugControl4>     m_control;
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+
+};  // namespace pykd
+
+
+
+
+
+
+
+
+
+
 //#include "dbgext.h"
 //#include "dbgeventcb.h"
 //

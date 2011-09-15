@@ -2,6 +2,12 @@
 
 #include <dbgeng.h>
 
+#include "module.h"
+#include "diawrapper.h"
+#include "dbgclient.h"
+
+namespace python = boost::python;
+
 ////////////////////////////////////////////////////////////////////////////////
 
 HRESULT
@@ -44,14 +50,24 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-HRESULT 
-CALLBACK
-info( PDEBUG_CLIENT4 client, PCSTR args )
+BOOST_PYTHON_MODULE( pykd )
 {
-    return S_OK;
+    python::class_<pykd::DebugClient>("dbgClient", "Class representing a debugging session" )
+        .def( "loadDump", &pykd::DebugClient::loadDump, "Load crash dump" )
+        .def( "startProcess", &pykd::DebugClient::startProcess, "Start process for debugging" )
+        .def( "attachProcess", &pykd::DebugClient::attachProcess, "Attach debugger to a exsisting process" )
+        .def( "attachKernel", &pykd::DebugClient::attachKernel, "Attach debugger to a target's kernel" );
+
+    python::class_<pykd::Module>("module", "Class representing executable module", python::no_init )
+        .def( python::init<std::string>( "constructor" ) );
+
+   // python::class_<pykd::DiaWrapper>("dia", "class wrapper for MS DIA" );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+
+
 
 
 

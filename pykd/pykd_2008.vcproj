@@ -350,7 +350,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\dbgclient.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgexcept.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgext.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\module.cpp"
 				>
 			</File>
 			<File
@@ -399,6 +411,22 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\dbgclient.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgexcept.h"
+				>
+			</File>
+			<File
+				RelativePath=".\diawrapper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\module.h"
+				>
+			</File>
 			<File
 				RelativePath=".\resource.h"
 				>

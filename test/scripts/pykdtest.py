@@ -5,7 +5,6 @@
 import sys
 import os
 import unittest
-import fnmatch
 
 # Dynamically append current pykd.pyd path to PYTHONPATH
 sys.path.append(os.path.dirname(sys.argv[1]))
@@ -15,11 +14,15 @@ import target
 import basetest
 import typeinfo 
 import regtest
+import moduletest
+
+print dir(pykd)
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
         return unittest.TestSuite(
            [   unittest.TestLoader().loadTestsFromTestCase( basetest.BaseTest ),
+               unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
 #               unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
 #               unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest )
            ] ) 
@@ -34,10 +37,12 @@ if __name__ == "__main__":
     target.moduleName = os.path.splitext(os.path.basename(targetAppPath))[0]
     print "\nTest module: %s" % targetAppPath
     
-    pykd.startProcess( targetAppPath )
-    pykd.go()
+    dbg = pykd.dbgClient()
+    
+    dbg.startProcess( targetAppPath )
+#    pykd.go()
 
-    target.module = pykd.loadModule( target.moduleName )
+#    target.module = pykd.loadModule( target.moduleName )
     
     suite = getTestSuite()
    
