@@ -164,7 +164,8 @@ BOOST_PYTHON_MODULE( pykd )
     dbgExceptionClass
         .def( python::init<std::string>( python::args("desc"), "constructor" ) )
         .def( "desc", &DbgException::getDesc,
-            "Get exception description" );
+            "Get exception description" )
+            .def( "__str__", &DbgException::print);
     DbgException::setTypeObject( dbgExceptionClass.ptr() );
 
     // DIA exceptions

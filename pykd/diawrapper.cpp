@@ -14,13 +14,14 @@ namespace pyDia {
 ////////////////////////////////////////////////////////////////////////////////
 
 PyObject *Exception::diaExceptTypeObject =  NULL;
+const std::string Exception::descPrefix("pyDia: ");
 
 ////////////////////////////////////////////////////////////////////////////////
 
 std::string Exception::makeFullDesc(const std::string &desc, HRESULT hres)
 {
     std::strstream res;
-    res << "pyDia: " << desc << " failed" << std::endl;
+    res << descPrefix << desc << " failed" << std::endl;
     res << "Return value is 0x" << std::hex << hres;
 
     PCHAR errMessage = NULL;
@@ -153,8 +154,11 @@ python::object Symbol::getChildByName(const std::string &_name)
     if (FAILED(hres))
         throw Exception("Get count of children", hres);
 
+    if (!count)
+        throw Exception(_name + " not found as children");
+
     if (count != 1)
-        throw Exception("Query unique child", S_FALSE);
+        throw Exception(_name + " is not unique");
 
     CComPtr< IDiaSymbol > child;
     hres = symbols->Item(0, &child);
@@ -210,7 +214,7 @@ python::object Symbol::getChildByIndex(ULONG _index)
         throw Exception("Get count of children", hres);
 
     if (LONG(_index) >= count)
-        throw Exception("Check child index", S_FALSE);
+        throw Exception("Attempt to access non-existing element: index overflow");
 
     CComPtr< IDiaSymbol > child;
     hres = symbols->Item(_index, &child);

@@ -15,6 +15,12 @@ public:
     {
     }
 
+    Exception(const std::string &desc)
+        : DbgException(descPrefix + desc)
+        , m_hres(S_FALSE)
+    {
+    }
+
     HRESULT getRes() const {
         return m_hres;
     }
@@ -26,6 +32,8 @@ public:
     }
 
 private:
+
+    static const std::string descPrefix;
 
     static PyObject *diaExceptTypeObject;
 
@@ -67,7 +75,7 @@ protected:
     void throwIfNull(const char *desc)
     {
         if (!m_symbol)
-            throw Exception(desc, S_FALSE);
+            throw Exception(std::string(desc) + " failed, object not preinitialized");
     }
 
     Symbol(__inout CComPtr< IDiaSymbol > &_symbol) {

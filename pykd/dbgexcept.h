@@ -27,6 +27,10 @@ public:
         baseExceptTypeObject = p;
     }
 
+    std::string print() {
+         return what();
+    }
+
 private:
     static PyObject *baseExceptTypeObject;
 };
