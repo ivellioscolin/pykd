@@ -1,12 +1,34 @@
 #include "stdafx.h"
 
 #include <dbgeng.h>
+#include <cvconst.h>
 
 #include "module.h"
 #include "diawrapper.h"
 #include "dbgclient.h"
 
-namespace python = boost::python;
+using namespace pykd;
+
+////////////////////////////////////////////////////////////////////////////////
+
+BOOL WINAPI DllMain(
+  __in  HINSTANCE /*hinstDLL*/,
+  __in  DWORD fdwReason,
+  __in  LPVOID /*lpvReserved*/
+)
+{
+    switch (fdwReason)
+    {
+    case DLL_PROCESS_ATTACH:
+        CoInitialize(NULL);
+        break;
+
+    case DLL_PROCESS_DETACH:
+        CoUninitialize();
+        break;
+    }
+    return TRUE;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -18,7 +40,7 @@ DebugExtensionInitialize(
 {
     *Version = DEBUG_EXTENSION_VERSION( 1, 0 );
     *Flags = 0;
-    
+
     return S_OK;
 }
 
@@ -50,8 +72,14 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 
 ////////////////////////////////////////////////////////////////////////////////
 
+#define DEF_PY_CONST(x)    \
+    python::scope().attr(#x) = ##x
+
 BOOST_PYTHON_MODULE( pykd )
 {
+    python::def( "diaOpenPdb", &pyDia::GlobalScope::openPdb, 
+        "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");
+
     python::class_<pykd::DebugClient>("dbgClient", "Class representing a debugging session" )
         .def( "loadDump", &pykd::DebugClient::loadDump, "Load crash dump" )
         .def( "startProcess", &pykd::DebugClient::startProcess, "Start process for debugging" )
@@ -61,18 +89,79 @@ BOOST_PYTHON_MODULE( pykd )
     python::class_<pykd::Module>("module", "Class representing executable module", python::no_init )
         .def( python::init<std::string>( "constructor" ) );
 
-   // python::class_<pykd::DiaWrapper>("dia", "class wrapper for MS DIA" );
+    python::class_<pyDia::Symbol>("DiaSymbol", "class wrapper for MS DIA Symbol" )
+        .def( "findChildrenNoCase", &pyDia::Symbol::findChildrenNoCase, 
+            "Retrieves the children of the symbol. Case Insensitive. SymTagNull for all symbols" )
+        .def( "findChildren", &pyDia::Symbol::findChildren, 
+            "Retrieves the children of the symbol. SymTagNull for all symbols" )
+        .def( "size", &pyDia::Symbol::getSize, 
+            "Retrieves the number of bits or bytes of memory used by the object represented by this symbol" )
+        .def( "symTag", &pyDia::Symbol::getSymTag, 
+            "Retrieves the symbol type classifier: SymTagXxx" )
+        .def("__getattr__", &pyDia::Symbol::getChildByName)
+        .def("__len__", &pyDia::Symbol::getChildCount )
+        .def("__getitem__", &pyDia::Symbol::getChildByIndex);
+
+    python::class_<pyDia::GlobalScope, python::bases<pyDia::Symbol> >("DiaScope", "class wrapper for MS DIA Symbol" );
+
+    // type of symbol
+    DEF_PY_CONST(SymTagNull);
+    DEF_PY_CONST(SymTagExe);
+    DEF_PY_CONST(SymTagCompiland);
+    DEF_PY_CONST(SymTagCompilandDetails);
+    DEF_PY_CONST(SymTagCompilandEnv);
+    DEF_PY_CONST(SymTagFunction);
+    DEF_PY_CONST(SymTagBlock);
+    DEF_PY_CONST(SymTagData);
+    DEF_PY_CONST(SymTagAnnotation);
+    DEF_PY_CONST(SymTagLabel);
+    DEF_PY_CONST(SymTagPublicSymbol);
+    DEF_PY_CONST(SymTagUDT);
+    DEF_PY_CONST(SymTagEnum);
+    DEF_PY_CONST(SymTagFunctionType);
+    DEF_PY_CONST(SymTagPointerType);
+    DEF_PY_CONST(SymTagArrayType);
+    DEF_PY_CONST(SymTagBaseType);
+    DEF_PY_CONST(SymTagTypedef);
+    DEF_PY_CONST(SymTagBaseClass);
+    DEF_PY_CONST(SymTagFriend);
+    DEF_PY_CONST(SymTagFunctionArgType);
+    DEF_PY_CONST(SymTagFuncDebugStart);
+    DEF_PY_CONST(SymTagFuncDebugEnd);
+    DEF_PY_CONST(SymTagUsingNamespace);
+    DEF_PY_CONST(SymTagVTableShape);
+    DEF_PY_CONST(SymTagVTable);
+    DEF_PY_CONST(SymTagCustom);
+    DEF_PY_CONST(SymTagThunk);
+    DEF_PY_CONST(SymTagCustomType);
+    DEF_PY_CONST(SymTagManagedType);
+    DEF_PY_CONST(SymTagDimension);
+
+    // exception:
+
+    // base exception
+    python::class_<DbgException>  dbgExceptionClass( "BaseException",
+        "Pykd base exception class",
+        python::no_init );
+    dbgExceptionClass
+        .def( python::init<std::string>( python::args("desc"), "constructor" ) )
+        .def( "desc", &DbgException::getDesc,
+            "Get exception description" );
+    DbgException::setTypeObject( dbgExceptionClass.ptr() );
+
+    // DIA exceptions
+    python::class_<pyDia::Exception, python::bases<DbgException> >  diaException( 
+            "DiaException",
+            "Debug interface access exception",
+            python::no_init );
+    pyDia::Exception::setTypeObject( diaException.ptr() );
+    boost::python::register_exception_translator<pyDia::Exception>( 
+        &pyDia::Exception::exceptionTranslate );
 }
 
+#undef DEF_PY_CONST
+
 ////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
 
 
 
@@ -466,15 +555,6 @@ BOOST_PYTHON_MODULE( pykd )
 //
 //
 //    // исключения
-//    boost::python::class_<DbgException>  dbgExceptionClass( "BaseException",
-//        "Pykd base exception class",
-//        boost::python::no_init );
-//         //boost::python::init<std::string>() );
-//
-//    dbgExceptionClass     
-//        .def( boost::python::init<std::string>( boost::python::args("desc"), "constructor" ) )
-//        .def( "desc", &DbgException::getDesc,
-//            "Get exception description" );
 //
 //    boost::python::class_<WaitEventException, boost::python::bases<DbgException> >  waitExceptionClass( "WaitEventException",
 //        "Type exception class",
@@ -493,7 +573,6 @@ BOOST_PYTHON_MODULE( pykd )
 //        .def( "getAddress", &MemoryException::getAddress,
 //            "Return target address" );
 //
-//    baseExceptionType = dbgExceptionClass.ptr();
 //    eventExceptionType = waitExceptionClass.ptr();
 //    typeExceptionType = typeExceptionClass.ptr();
 //    memoryExceptionType = memoryExceptionClass.ptr();

@@ -30,6 +30,7 @@
 #include <windows.h>
 #include <atlbase.h>
 
+#include <dia2.h>
 
 //
 //#ifndef  __field_ecount_opt
@@ -46,6 +47,7 @@
 #include <boost/python/object.hpp>
 #include <boost/python/module.hpp>
 #pragma warning(pop)
+namespace python = boost::python;
 //
 //#include <vector>
 //

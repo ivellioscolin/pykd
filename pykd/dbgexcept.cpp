@@ -1,32 +1,27 @@
 #include "stdafx.h"
+#include "dbgexcept.h"
+
+using namespace pykd;
+
+////////////////////////////////////////////////////////////////////////////////
+
+PyObject *DbgException::baseExceptTypeObject = NULL;
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void DbgException::exceptionTranslate( const DbgException &e )
+{
+    boost::python::object pyExcept(e);
+
+    PyErr_SetObject( baseExceptTypeObject, pyExcept.ptr() );
+}
+
+/////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
-//#include "dbgexcept.h"
-//
-///////////////////////////////////////////////////////////////////////////////////
-//
-//// типы исключений
-//
-//PyObject    *baseExceptionType = NULL;
 //PyObject    *eventExceptionType = NULL;
 //PyObject    *typeExceptionType = NULL;
 //PyObject    *memoryExceptionType = NULL;
-//
-//
-//
-///////////////////////////////////////////////////////////////////////////////////
-//
-//void DbgException::exceptionTranslate( const DbgException &e )
-//{
-//    boost::python::object                   pyExcept(e);
-//
-//    PyErr_SetObject( baseExceptionType, pyExcept.ptr());
-//}
-//
-///////////////////////////////////////////////////////////////////////////////////
 //
 //void WaitEventException::exceptionTranslate( const WaitEventException &e )
 //{

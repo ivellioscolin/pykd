@@ -22,11 +22,14 @@ public:
     static
     void
     exceptionTranslate(const DbgException &e );
+
+    static void setTypeObject(PyObject *p) {
+        baseExceptTypeObject = p;
+    }
+
+private:
+    static PyObject *baseExceptTypeObject;
 };
-
-///////////////////////////////////////////////////////////////////////////////////
-
-extern  PyObject  *baseExceptionType;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -35,32 +38,6 @@ extern  PyObject  *baseExceptionType;
 ///////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
-
-
-//#include <exception>
-//#include <string>
-//
-///////////////////////////////////////////////////////////////////////////////////
-//
-//class DbgException : public std::exception
-//{
-//public:
-//
-//    DbgException( const std::string  &desc ) :
-//        std::exception( desc.c_str() )
-//        {}
-//
-//    const char* getDesc() const {
-//        return what();
-//    }
-//
-//    static
-//    void
-//    exceptionTranslate(const DbgException &e );
-//};
 //
 //class WaitEventException : public DbgException
 //{
