@@ -51,4 +51,7 @@ private:
     std::string     m_disasm;
 };
 
+ULONG64
+assembly( ULONG64 offset, const std::string &instr );
+
 /////////////////////////////////////////////////////////////////////////////////

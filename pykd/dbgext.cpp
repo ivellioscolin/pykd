@@ -221,7 +221,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Delete synthetic symbols by virtual address" );
     boost::python::def( "delSynSymbolsMask", &delSyntheticSymbolsMask, 
         "Delete synthetic symbols by mask of module and symbol name");
-
+    boost::python::def( "assembly", &assembly, "Assemble a single processor instruction" );
 
     boost::python::class_<TypeInfo>( "typeInfo",
         "Class representing non-primitive type info: structure, union, etc. attributes is a fields of non-primitive type" )

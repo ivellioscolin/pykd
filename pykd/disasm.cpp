@@ -47,3 +47,18 @@ void disasm::doDisasm()
 }
 
 /////////////////////////////////////////////////////////////////////////////////
+
+ULONG64
+assembly( ULONG64 offset, const std::string &instr )
+{
+    HRESULT     hres;
+
+    ULONG64     endOffset = 0;
+    hres = dbgExt->control->Assemble( offset, instr.c_str(), &endOffset );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::Assemble failed" );      
+
+    return endOffset;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
