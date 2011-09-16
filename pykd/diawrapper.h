@@ -41,29 +41,17 @@ class Symbol {
 public:
     Symbol() {}
 
+    python::list findChildrenImpl(
+        ULONG symTag,
+        const std::string &name,
+        DWORD nameCmpFlags
+    );
+
     python::list findChildren(
-        ULONG symTag,
-        const std::string &name,
-        bool fnMatch
+        const std::string &name
     )
     {
-        return 
-            findChildrenImpl(
-                symTag,
-                name,
-                fnMatch ? nsCaseSensitive : nsRegularExpression);
-    }
-    python::list findChildrenNoCase(
-        ULONG symTag,
-        const std::string &name,
-        bool fnMatch
-    )
-    {
-        return 
-            findChildrenImpl(
-                symTag,
-                name,
-                fnMatch ? nsCaseInsensitive : nsCaseInRegularExpression);
+        return findChildrenImpl(SymTagNull, name, nsfCaseSensitive);
     }
 
     ULONGLONG getSize();
@@ -82,15 +70,9 @@ protected:
             throw Exception(desc, S_FALSE);
     }
 
-    Symbol(__inout CComPtr< IDiaSymbol > _symbol) {
+    Symbol(__inout CComPtr< IDiaSymbol > &_symbol) {
         m_symbol = _symbol.Detach();
     }
-
-    python::list findChildrenImpl(
-        ULONG symTag,
-        const std::string &name,
-        DWORD nameCmpFlags
-    );
 
     CComPtr< IDiaSymbol > m_symbol;
 };

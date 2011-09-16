@@ -1,6 +1,8 @@
 #include "stdafx.h"
 
 #include <dbgeng.h>
+
+#include <dia2.h>
 #include <cvconst.h>
 
 #include "module.h"
@@ -72,14 +74,11 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#define DEF_PY_CONST(x)    \
-    python::scope().attr(#x) = ##x
+#define DEF_PY_CONST_ULONG(x)    \
+    python::scope().attr(#x) = ULONG(##x)
 
 BOOST_PYTHON_MODULE( pykd )
 {
-    python::def( "diaOpenPdb", &pyDia::GlobalScope::openPdb, 
-        "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");
-
     python::class_<pykd::DebugClient>("dbgClient", "Class representing a debugging session" )
         .def( "loadDump", &pykd::DebugClient::loadDump, "Load crash dump" )
         .def( "startProcess", &pykd::DebugClient::startProcess, "Start process for debugging" )
@@ -89,15 +88,23 @@ BOOST_PYTHON_MODULE( pykd )
     python::class_<pykd::Module>("module", "Class representing executable module", python::no_init )
         .def( python::init<std::string>( "constructor" ) );
 
+    python::def( "diaOpenPdb", &pyDia::GlobalScope::openPdb, 
+        "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");
+
     python::class_<pyDia::Symbol>("DiaSymbol", "class wrapper for MS DIA Symbol" )
-        .def( "findChildrenNoCase", &pyDia::Symbol::findChildrenNoCase, 
-            "Retrieves the children of the symbol. Case Insensitive. SymTagNull for all symbols" )
-        .def( "findChildren", &pyDia::Symbol::findChildren, 
-            "Retrieves the children of the symbol. SymTagNull for all symbols" )
+        .def( "findEx", &pyDia::Symbol::findChildrenImpl, 
+            "Retrieves the children of the symbol" )
+        .def( "find", &pyDia::Symbol::findChildren, 
+            "Retrieves the children of the symbol" )
         .def( "size", &pyDia::Symbol::getSize, 
             "Retrieves the number of bits or bytes of memory used by the object represented by this symbol" )
-        .def( "symTag", &pyDia::Symbol::getSymTag, 
+        //.def( "getName", &pyDia::Symbol::getName, 
+        //    "Retrieves the name of the symbol" )
+        //.def( "getType", &pyDia::Symbol::getType, 
+        //    "Retrieves the symbol that represents the type for this symbol" )
+        .def( "getSymTag", &pyDia::Symbol::getSymTag, 
             "Retrieves the symbol type classifier: SymTagXxx" )
+        //__str__ &pyDia::Symbol::print
         .def("__getattr__", &pyDia::Symbol::getChildByName)
         .def("__len__", &pyDia::Symbol::getChildCount )
         .def("__getitem__", &pyDia::Symbol::getChildByIndex);
@@ -105,40 +112,51 @@ BOOST_PYTHON_MODULE( pykd )
     python::class_<pyDia::GlobalScope, python::bases<pyDia::Symbol> >("DiaScope", "class wrapper for MS DIA Symbol" );
 
     // type of symbol
-    DEF_PY_CONST(SymTagNull);
-    DEF_PY_CONST(SymTagExe);
-    DEF_PY_CONST(SymTagCompiland);
-    DEF_PY_CONST(SymTagCompilandDetails);
-    DEF_PY_CONST(SymTagCompilandEnv);
-    DEF_PY_CONST(SymTagFunction);
-    DEF_PY_CONST(SymTagBlock);
-    DEF_PY_CONST(SymTagData);
-    DEF_PY_CONST(SymTagAnnotation);
-    DEF_PY_CONST(SymTagLabel);
-    DEF_PY_CONST(SymTagPublicSymbol);
-    DEF_PY_CONST(SymTagUDT);
-    DEF_PY_CONST(SymTagEnum);
-    DEF_PY_CONST(SymTagFunctionType);
-    DEF_PY_CONST(SymTagPointerType);
-    DEF_PY_CONST(SymTagArrayType);
-    DEF_PY_CONST(SymTagBaseType);
-    DEF_PY_CONST(SymTagTypedef);
-    DEF_PY_CONST(SymTagBaseClass);
-    DEF_PY_CONST(SymTagFriend);
-    DEF_PY_CONST(SymTagFunctionArgType);
-    DEF_PY_CONST(SymTagFuncDebugStart);
-    DEF_PY_CONST(SymTagFuncDebugEnd);
-    DEF_PY_CONST(SymTagUsingNamespace);
-    DEF_PY_CONST(SymTagVTableShape);
-    DEF_PY_CONST(SymTagVTable);
-    DEF_PY_CONST(SymTagCustom);
-    DEF_PY_CONST(SymTagThunk);
-    DEF_PY_CONST(SymTagCustomType);
-    DEF_PY_CONST(SymTagManagedType);
-    DEF_PY_CONST(SymTagDimension);
+    DEF_PY_CONST_ULONG(SymTagNull);
+    DEF_PY_CONST_ULONG(SymTagExe);
+    DEF_PY_CONST_ULONG(SymTagCompiland);
+    DEF_PY_CONST_ULONG(SymTagCompilandDetails);
+    DEF_PY_CONST_ULONG(SymTagCompilandEnv);
+    DEF_PY_CONST_ULONG(SymTagFunction);
+    DEF_PY_CONST_ULONG(SymTagBlock);
+    DEF_PY_CONST_ULONG(SymTagData);
+    DEF_PY_CONST_ULONG(SymTagAnnotation);
+    DEF_PY_CONST_ULONG(SymTagLabel);
+    DEF_PY_CONST_ULONG(SymTagPublicSymbol);
+    DEF_PY_CONST_ULONG(SymTagUDT);
+    DEF_PY_CONST_ULONG(SymTagEnum);
+    DEF_PY_CONST_ULONG(SymTagFunctionType);
+    DEF_PY_CONST_ULONG(SymTagPointerType);
+    DEF_PY_CONST_ULONG(SymTagArrayType);
+    DEF_PY_CONST_ULONG(SymTagBaseType);
+    DEF_PY_CONST_ULONG(SymTagTypedef);
+    DEF_PY_CONST_ULONG(SymTagBaseClass);
+    DEF_PY_CONST_ULONG(SymTagFriend);
+    DEF_PY_CONST_ULONG(SymTagFunctionArgType);
+    DEF_PY_CONST_ULONG(SymTagFuncDebugStart);
+    DEF_PY_CONST_ULONG(SymTagFuncDebugEnd);
+    DEF_PY_CONST_ULONG(SymTagUsingNamespace);
+    DEF_PY_CONST_ULONG(SymTagVTableShape);
+    DEF_PY_CONST_ULONG(SymTagVTable);
+    DEF_PY_CONST_ULONG(SymTagCustom);
+    DEF_PY_CONST_ULONG(SymTagThunk);
+    DEF_PY_CONST_ULONG(SymTagCustomType);
+    DEF_PY_CONST_ULONG(SymTagManagedType);
+    DEF_PY_CONST_ULONG(SymTagDimension);
+
+    // search options for symbol and file names
+    DEF_PY_CONST_ULONG(nsfCaseSensitive);
+    DEF_PY_CONST_ULONG(nsfCaseInsensitive);
+    DEF_PY_CONST_ULONG(nsfFNameExt);
+    DEF_PY_CONST_ULONG(nsfRegularExpression);
+    DEF_PY_CONST_ULONG(nsfUndecoratedName);
+    DEF_PY_CONST_ULONG(nsCaseSensitive);
+    DEF_PY_CONST_ULONG(nsCaseInsensitive);
+    DEF_PY_CONST_ULONG(nsFNameExt);
+    DEF_PY_CONST_ULONG(nsRegularExpression);
+    DEF_PY_CONST_ULONG(nsCaseInRegularExpression);
 
     // exception:
-
     // base exception
     python::class_<DbgException>  dbgExceptionClass( "BaseException",
         "Pykd base exception class",
@@ -159,7 +177,7 @@ BOOST_PYTHON_MODULE( pykd )
         &pyDia::Exception::exceptionTranslate );
 }
 
-#undef DEF_PY_CONST
+#undef DEF_PY_CONST_ULONG
 
 ////////////////////////////////////////////////////////////////////////////////
 
