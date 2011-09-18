@@ -3,7 +3,6 @@
 #include <dbgeng.h>
 
 #include <dia2.h>
-#include <cvconst.h>
 
 #include "module.h"
 #include "diawrapper.h"
@@ -98,13 +97,19 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrieves the children of the symbol" )
         .def( "size", &pyDia::Symbol::getSize, 
             "Retrieves the number of bits or bytes of memory used by the object represented by this symbol" )
-        //.def( "getName", &pyDia::Symbol::getName, 
-        //    "Retrieves the name of the symbol" )
-        //.def( "getType", &pyDia::Symbol::getType, 
-        //    "Retrieves the symbol that represents the type for this symbol" )
-        .def( "getSymTag", &pyDia::Symbol::getSymTag, 
+        .def( "name", &pyDia::Symbol::getName, 
+            "Retrieves the name of the symbol" )
+        .def( "type", &pyDia::Symbol::getType, 
+            "Retrieves the symbol that represents the type for this symbol" )
+        .def( "rva", &pyDia::Symbol::getRva,
+            "Retrieves the relative virtual address (RVA) of the location")
+        .def( "symTag", &pyDia::Symbol::getSymTag, 
             "Retrieves the symbol type classifier: SymTagXxx" )
-        //__str__ &pyDia::Symbol::print
+        .def( "locType", &pyDia::Symbol::getLocType, 
+            "Retrieves the location type of a data symbol: LocIsXxx" )
+        .def( "value", &pyDia::Symbol::getValue,
+            "Retrieves the value of a constant")
+        .def( "__str__", &pyDia::Symbol::print)
         .def("__getattr__", &pyDia::Symbol::getChildByName)
         .def("__len__", &pyDia::Symbol::getChildCount )
         .def("__getitem__", &pyDia::Symbol::getChildByIndex);
@@ -155,6 +160,19 @@ BOOST_PYTHON_MODULE( pykd )
     DEF_PY_CONST_ULONG(nsFNameExt);
     DEF_PY_CONST_ULONG(nsRegularExpression);
     DEF_PY_CONST_ULONG(nsCaseInRegularExpression);
+
+    // location type
+    DEF_PY_CONST_ULONG(LocIsNull);
+    DEF_PY_CONST_ULONG(LocIsStatic);
+    DEF_PY_CONST_ULONG(LocIsTLS);
+    DEF_PY_CONST_ULONG(LocIsRegRel);
+    DEF_PY_CONST_ULONG(LocIsThisRel);
+    DEF_PY_CONST_ULONG(LocIsEnregistered);
+    DEF_PY_CONST_ULONG(LocIsBitField);
+    DEF_PY_CONST_ULONG(LocIsSlot);
+    DEF_PY_CONST_ULONG(LocIsIlRel);
+    DEF_PY_CONST_ULONG(LocInMetaData);
+    DEF_PY_CONST_ULONG(LocIsConstant);
 
     // exception:
     // base exception

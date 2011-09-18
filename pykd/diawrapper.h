@@ -1,8 +1,15 @@
 
 #pragma once
+
+#include <cvconst.h>
 #include "dbgexcept.h"
 
 namespace pyDia {
+
+typedef CComPtr< IDiaSymbol > DiaSymbolPtr;
+typedef CComPtr< IDiaEnumSymbols > DiaEnumSymbolsPtr;
+typedef CComPtr< IDiaDataSource > DiaDataSourcePtr;
+typedef CComPtr< IDiaSession > DiaSessionPtr;
 
 ////////////////////////////////////////////////////////////////////////////////
 // DIA Exceptions
@@ -63,13 +70,18 @@ public:
     }
 
     ULONGLONG getSize();
-
+    std::string getName();
+    python::object getType();
     ULONG getSymTag();
+    ULONG getRva();
+    ULONG getLocType();
+    python::object getValue();
 
     python::object getChildByName(const std::string &_name);
     ULONG getChildCount();
     python::object getChildByIndex(ULONG _index);
 
+    std::string print();
 protected:
 
     void throwIfNull(const char *desc)
@@ -78,11 +90,14 @@ protected:
             throw Exception(std::string(desc) + " failed, object not preinitialized");
     }
 
-    Symbol(__inout CComPtr< IDiaSymbol > &_symbol) {
+    Symbol(__inout DiaSymbolPtr &_symbol) {
         m_symbol = _symbol.Detach();
     }
 
-    CComPtr< IDiaSymbol > m_symbol;
+    static const char *symTagName[SymTagMax];
+    static const char *locTypeName[LocTypeMax];
+
+    DiaSymbolPtr m_symbol;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -98,13 +113,13 @@ public:
 private:
 
     GlobalScope(
-        __inout CComPtr< IDiaDataSource > &_scope,
-        __inout CComPtr< IDiaSession > &_session,
-        __inout CComPtr< IDiaSymbol > &_globalScope
+        __inout DiaDataSourcePtr &_scope,
+        __inout DiaSessionPtr &_session,
+        __inout DiaSymbolPtr &_globalScope
     );
 
-    CComPtr< IDiaDataSource > m_source;
-    CComPtr< IDiaSession > m_session;
+    DiaDataSourcePtr m_source;
+    DiaSessionPtr m_session;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
