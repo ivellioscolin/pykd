@@ -16,8 +16,6 @@ import typeinfo
 import regtest
 import moduletest
 
-print dir(pykd)
-
 def getTestSuite( singleName = "" ):
     if singleName == "":
         return unittest.TestSuite(
@@ -38,11 +36,11 @@ if __name__ == "__main__":
     print "\nTest module: %s" % targetAppPath
     
     dbg = pykd.dbgClient()
-    
+   
     dbg.startProcess( targetAppPath )
 #    pykd.go()
 
-#    target.module = pykd.loadModule( target.moduleName )
+    target.module = dbg.loadModule( target.moduleName )
     
     suite = getTestSuite()
    

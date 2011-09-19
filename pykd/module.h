@@ -1,20 +1,55 @@
 #pragma once
 
+#include <string>
+
+#include "dbgobj.h"
+
 namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class Module {
+class Module : private DbgObject {
 
 public:
+    
+    Module( IDebugClient5 *client, const std::string& moduleName );
 
-    Module( const std::string  &moduleName )
-    {}
+    std::string  getName() {
+        return m_name;
+    }
+
+    ULONG64  getBase() {
+        return m_base;
+    }
+
+    ULONG64 getEnd() {
+        return m_base + m_size;
+    }
+
+    ULONG  getSize() {
+        return m_size;
+    }
+
+private:
+
+    std::string     m_name;
+    ULONG64         m_base;
+    ULONG           m_size;
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 };
+
+
+
+
+
+
+
+
+
 
 
 //#include <string>

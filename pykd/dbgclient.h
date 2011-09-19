@@ -5,6 +5,7 @@
 #include <dbghelp.h>
 
 #include "dbgexcept.h"
+#include "module.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -28,10 +29,16 @@ public:
 
     void attachKernel( const std::wstring  &param );
 
+    Module loadModule( const std::string  &moduleName ) {
+        return Module( m_client, moduleName );
+    }
+
+
 private:
 
     CComPtr<IDebugClient5>      m_client;     
     CComPtr<IDebugControl4>     m_control;
+    CComPtr<IDebugSymbols3>     m_symbols;
 };
 
 /////////////////////////////////////////////////////////////////////////////////

@@ -82,10 +82,19 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "loadDump", &pykd::DebugClient::loadDump, "Load crash dump" )
         .def( "startProcess", &pykd::DebugClient::startProcess, "Start process for debugging" )
         .def( "attachProcess", &pykd::DebugClient::attachProcess, "Attach debugger to a exsisting process" )
-        .def( "attachKernel", &pykd::DebugClient::attachKernel, "Attach debugger to a target's kernel" );
+        .def( "attachKernel", &pykd::DebugClient::attachKernel, "Attach debugger to a target's kernel" )
+        .def( "loadModule", &pykd::DebugClient::loadModule, "Create instance of Module class" );
 
     python::class_<pykd::Module>("module", "Class representing executable module", python::no_init )
-        .def( python::init<std::string>( "constructor" ) );
+         .def("begin", &pykd::Module::getBase,
+             "Return start address of the module" )
+         .def("end", &pykd::Module::getEnd,
+             "Return end address of the module" )
+         .def("size", &pykd::Module::getSize,
+              "Return size of the module" )
+         .def("name", &pykd::Module::getName,
+             "Return name of the module" );
+        
 
     python::def( "diaOpenPdb", &pyDia::GlobalScope::openPdb, 
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");

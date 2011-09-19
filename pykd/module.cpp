@@ -1,5 +1,39 @@
 #include "stdafx.h"
 
+#include "module.h"
+
+using namespace pykd;
+
+///////////////////////////////////////////////////////////////////////////////////
+
+Module::Module( IDebugClient5 *client, const std::string& moduleName ) : DbgObject( client )
+{
+    HRESULT    hres;
+
+    m_name = moduleName;
+
+    hres = m_symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &m_base );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol::GetModuleByModuleName  failed" ); 
+
+    DEBUG_MODULE_PARAMETERS     moduleParam = { 0 };
+    hres = m_symbols->GetModuleParameters( 1, &m_base, 0, &moduleParam );
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );    
+
+    m_size = moduleParam.Size;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
 //#include <boost/format.hpp>
 //
 //#include "dbgext.h"

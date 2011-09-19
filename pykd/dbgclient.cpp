@@ -16,7 +16,11 @@ DebugClient::DebugClient()
 
     hres = m_client->QueryInterface( __uuidof(IDebugControl4), (void**)&m_control );
     if ( FAILED( hres ) )
-        throw DbgException("QueryInterface IDebugControl4  failed");     
+        throw DbgException("QueryInterface IDebugControl4  failed");    
+
+    hres = m_client->QueryInterface( __uuidof(IDebugSymbols3), (void**)&m_symbols );
+    if ( FAILED( hres ) )
+        throw DbgException("QueryInterface IDebugSymbols3  failed");    
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
