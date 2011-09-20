@@ -232,14 +232,15 @@ BOOST_PYTHON_MODULE( pykd )
         .def( python::init<std::string>( python::args("desc"), "constructor" ) )
         .def( "desc", &DbgException::getDesc,
             "Get exception description" )
-            .def( "__str__", &DbgException::print);
+        .def( "__str__", &DbgException::print);
     DbgException::setTypeObject( dbgExceptionClass.ptr() );
 
     // DIA exceptions
-    python::class_<pyDia::Exception, python::bases<DbgException> >  diaException( 
-            "DiaException",
-            "Debug interface access exception",
-            python::no_init );
+    python::class_<pyDia::Exception, python::bases<DbgException> > diaException( 
+        "DiaException", "Debug interface access exception",
+        python::no_init );
+    diaException
+        .def( "hres", &pyDia::Exception::getRes );
     pyDia::Exception::setTypeObject( diaException.ptr() );
     boost::python::register_exception_translator<pyDia::Exception>( 
         &pyDia::Exception::exceptionTranslate );
