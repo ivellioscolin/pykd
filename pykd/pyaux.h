@@ -1,9 +1,41 @@
 #pragma once
 
+#include <windows.h>
+
 ///////////////////////////////////////////////////////////////////////////////
 
-typedef PyThreadState *PyThreadStatePtr;
-extern __declspec( thread ) PyThreadStatePtr ptrPyThreadState;
+class PyThreadStateSaver {
+
+public:
+
+    PyThreadStateSaver() {
+        m_index = TlsAlloc();
+    }
+
+    ~PyThreadStateSaver() {
+        TlsFree( m_index );
+    }
+
+    void saveState() {
+        TlsSetValue( m_index, PyEval_SaveThread() );
+    }
+
+    void restoreState() {
+        PyThreadState*      state = (PyThreadState*)TlsGetValue( m_index );
+        if ( state )
+            PyEval_RestoreThread( state );
+    }
+
+private:
+
+    DWORD   m_index;
+};
+
+extern PyThreadStateSaver       g_pyThreadState;
+
+
+//typedef PyThreadState *PyThreadStatePtr;
+//extern __declspec( thread ) PyThreadStatePtr ptrPyThreadState;
 
 //  --> call back 
 //  { PyThread_StateSave  state( winext->getThreadState() );
@@ -19,22 +51,13 @@ class PyThread_StateSave {
 public:
 
     PyThread_StateSave() 
-        : m_bRestored(false)
     {
-        if (ptrPyThreadState)
-        {
-            PyEval_RestoreThread( ptrPyThreadState );
-            m_bRestored = true;
-        }
+        g_pyThreadState.restoreState();
     }
 
     ~PyThread_StateSave() {
-        if ( m_bRestored )
-            ptrPyThreadState = PyEval_SaveThread();
+        g_pyThreadState.saveState();
     }
-
-private:
-    bool m_bRestored;
 };
 
 // { PyThread_StateRestore   state;
@@ -46,11 +69,11 @@ class PyThread_StateRestore
 public:
 
     PyThread_StateRestore() {
-        ptrPyThreadState = PyEval_SaveThread();
+        g_pyThreadState.saveState();
     }
 
     ~PyThread_StateRestore() {
-        PyEval_RestoreThread( ptrPyThreadState );
+        g_pyThreadState.restoreState();
     }
 };
 

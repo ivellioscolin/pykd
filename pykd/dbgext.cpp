@@ -39,7 +39,7 @@ DbgExt    *dbgExt = NULL;
 dbgClient    g_dbgClient;
 
 // контескт исполнения нити питона
-__declspec( thread ) PyThreadStatePtr ptrPyThreadState = NULL;
+PyThreadStateSaver       g_pyThreadState;
 
 //////////////////////////////////////////////////////////////////////////////
 
