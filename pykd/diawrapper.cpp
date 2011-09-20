@@ -101,7 +101,7 @@ do {                                                        \
     throwIfNull(__FUNCTION__);                              \
     retType retValue;                                       \
     HRESULT hres = m_symbol->##method(&retValue);           \
-    if (FAILED(hres))                                       \
+    if (S_OK != hres)                                       \
         throw Exception("Call IDiaSymbol::" #method, hres); \
     return retValue;                                        \
 } while(false)
