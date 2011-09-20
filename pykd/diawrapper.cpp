@@ -17,53 +17,117 @@ const std::string Exception::descPrefix("pyDia: ");
 
 ////////////////////////////////////////////////////////////////////////////////
 
-const char *Symbol::symTagName[SymTagMax] = {
-    "Null",
-    "Exe",
-    "Compiland",
-    "CompilandDetails",
-    "CompilandEnv",
-    "Function",
-    "Block",
-    "Data",
-    "Annotation",
-    "Label",
-    "PublicSymbol",
-    "UDT",
-    "Enum",
-    "FunctionType",
-    "PointerType",
-    "ArrayType",
-    "BaseType",
-    "Typedef",
-    "BaseClass",
-    "Friend",
-    "FunctionArgType",
-    "FuncDebugStart",
-    "FuncDebugEnd",
-    "UsingNamespace",
-    "VTableShape",
-    "VTable",
-    "Custom",
-    "Thunk",
-    "CustomType",
-    "ManagedType",
-    "Dimension"
+#define _DEF_SYM_TAG_VAL(x) Symbol::ValueNameEntry(SymTag##x, #x)
+const Symbol::ValueNameEntry Symbol::symTagName[SymTagMax] = {
+    _DEF_SYM_TAG_VAL(Null),
+    _DEF_SYM_TAG_VAL(Exe),
+    _DEF_SYM_TAG_VAL(Compiland),
+    _DEF_SYM_TAG_VAL(CompilandDetails),
+    _DEF_SYM_TAG_VAL(CompilandEnv),
+    _DEF_SYM_TAG_VAL(Function),
+    _DEF_SYM_TAG_VAL(Block),
+    _DEF_SYM_TAG_VAL(Data),
+    _DEF_SYM_TAG_VAL(Annotation),
+    _DEF_SYM_TAG_VAL(Label),
+    _DEF_SYM_TAG_VAL(PublicSymbol),
+    _DEF_SYM_TAG_VAL(UDT),
+    _DEF_SYM_TAG_VAL(Enum),
+    _DEF_SYM_TAG_VAL(FunctionType),
+    _DEF_SYM_TAG_VAL(PointerType),
+    _DEF_SYM_TAG_VAL(ArrayType),
+    _DEF_SYM_TAG_VAL(BaseType),
+    _DEF_SYM_TAG_VAL(Typedef),
+    _DEF_SYM_TAG_VAL(BaseClass),
+    _DEF_SYM_TAG_VAL(Friend),
+    _DEF_SYM_TAG_VAL(FunctionArgType),
+    _DEF_SYM_TAG_VAL(FuncDebugStart),
+    _DEF_SYM_TAG_VAL(FuncDebugEnd),
+    _DEF_SYM_TAG_VAL(UsingNamespace),
+    _DEF_SYM_TAG_VAL(VTableShape),
+    _DEF_SYM_TAG_VAL(VTable),
+    _DEF_SYM_TAG_VAL(Custom),
+    _DEF_SYM_TAG_VAL(Thunk),
+    _DEF_SYM_TAG_VAL(CustomType),
+    _DEF_SYM_TAG_VAL(ManagedType),
+    _DEF_SYM_TAG_VAL(Dimension)
 };
+#undef _DEF_SYM_TAG_VAL
 
-const char *Symbol::locTypeName[LocTypeMax] = {
-    "Null",
-    "Static",
-    "TLS",
-    "RegRel",
-    "ThisRel",
-    "Enregistered",
-    "BitField",
-    "Slot",
-    "IlRel",
-    "InMetaData",
-    "Constant"
+#define _DEF_LOC_TYPE(x)    Symbol::ValueNameEntry(LocIs##x, #x)
+const Symbol::ValueNameEntry Symbol::locTypeName[LocTypeMax] = {
+    _DEF_LOC_TYPE(Null),
+    _DEF_LOC_TYPE(Static),
+    _DEF_LOC_TYPE(TLS),
+    _DEF_LOC_TYPE(RegRel),
+    _DEF_LOC_TYPE(ThisRel),
+    _DEF_LOC_TYPE(Enregistered),
+    _DEF_LOC_TYPE(BitField),
+    _DEF_LOC_TYPE(Slot),
+    _DEF_LOC_TYPE(IlRel),
+    Symbol::ValueNameEntry(LocInMetaData, "InMetaData"),
+    _DEF_LOC_TYPE(Constant)
 };
+#undef _DEF_LOC_TYPE
+
+#define _DEF_BASIC_TYPE(x)  Symbol::ValueNameEntry(bt##x, #x)
+const Symbol::ValueNameEntry Symbol::basicTypeName[] = {
+    _DEF_BASIC_TYPE(NoType),
+    _DEF_BASIC_TYPE(Void),
+    _DEF_BASIC_TYPE(Char),
+    _DEF_BASIC_TYPE(WChar),
+    _DEF_BASIC_TYPE(Int),
+    _DEF_BASIC_TYPE(UInt),
+    _DEF_BASIC_TYPE(Float),
+    _DEF_BASIC_TYPE(BCD),
+    _DEF_BASIC_TYPE(Bool),
+    _DEF_BASIC_TYPE(Long),
+    _DEF_BASIC_TYPE(ULong),
+    _DEF_BASIC_TYPE(Currency),
+    _DEF_BASIC_TYPE(Date),
+    _DEF_BASIC_TYPE(Variant),
+    _DEF_BASIC_TYPE(Complex),
+    _DEF_BASIC_TYPE(Bit),
+    _DEF_BASIC_TYPE(BSTR),
+    _DEF_BASIC_TYPE(Hresult)
+};
+#undef _DEF_BASIC_TYPE
+
+const size_t Symbol::cntBasicTypeName = _countof(Symbol::basicTypeName);
+
+////////////////////////////////////////////////////////////////////////////////
+
+#define callSymbol(retType, method)                         \
+do {                                                        \
+    throwIfNull(__FUNCTION__);                              \
+    retType retValue;                                       \
+    HRESULT hres = m_symbol->##method(&retValue);           \
+    if (FAILED(hres))                                       \
+        throw Exception("Call IDiaSymbol::" #method, hres); \
+    return retValue;                                        \
+} while(false)
+
+#define callSymbolDword(method) callSymbol(DWORD, method)
+#define callSymbolUlonglong(method) callSymbol(ULONGLONG, method)
+
+#define callSymbolObjectFromSymbol(method)                  \
+do {                                                        \
+    throwIfNull(__FUNCTION__);                              \
+    DiaSymbolPtr retSymbol;                                 \
+    HRESULT hres = m_symbol->##method(&retSymbol);          \
+    if (S_OK != hres)                                       \
+        throw Exception("Call IDiaSymbol::" #method, hres); \
+    return python::object( Symbol(retSymbol) );             \
+} while(false)
+
+#define callSymbolStr(method)                               \
+do {                                                        \
+    throwIfNull(__FUNCTION__);                              \
+    autoBstr bstrName;                                      \
+    HRESULT hres = m_symbol->##method(&bstrName);           \
+    if (S_OK != hres)                                       \
+        throw Exception("Call IDiaSymbol" #method, hres);   \
+    return bstrName.asStr();                                \
+} while(false)
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -139,84 +203,49 @@ python::list Symbol::findChildrenImpl(
 
 ULONGLONG Symbol::getSize()
 {
-    throwIfNull(__FUNCTION__);
-
-    ULONGLONG retValue;
-    HRESULT hres = m_symbol->get_length(&retValue);
-    if (S_OK != hres)
-        throw Exception("Call IDiaSymbol::get_length", hres);
-
-    return retValue;
+    callSymbolUlonglong(get_length);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 std::string Symbol::getName()
 {
-    throwIfNull(__FUNCTION__);
-
-    autoBstr bstrName;
-    HRESULT hres = m_symbol->get_name(&bstrName);
-    if (S_OK != hres)
-        throw Exception("Call IDiaSymbol::get_name", hres);
-
-    return bstrName.asStr();
+    callSymbolStr(get_name);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 python::object Symbol::getType()
 {
-    throwIfNull(__FUNCTION__);
+    callSymbolObjectFromSymbol(get_type);
+}
 
-    DiaSymbolPtr _type;
-    HRESULT hres = m_symbol->get_type(&_type);
-    if (S_OK != hres)
-        throw Exception("Call IDiaSymbol::get_type", hres);
+////////////////////////////////////////////////////////////////////////////////
 
-    return python::object( Symbol(_type) );
+python::object Symbol::getIndexType()
+{
+    callSymbolObjectFromSymbol(get_arrayIndexType);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ULONG Symbol::getSymTag()
 {
-    throwIfNull(__FUNCTION__);
-
-    DWORD retValue;
-    HRESULT hres = m_symbol->get_symTag(&retValue);
-    if (S_OK != hres)
-        throw Exception("Call IDiaSymbol::get_symTag", hres);
-
-    return retValue;
+    callSymbolDword(get_symTag);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ULONG Symbol::getRva()
 {
-    throwIfNull(__FUNCTION__);
-
-    DWORD retValue;
-    HRESULT hres = m_symbol->get_relativeVirtualAddress(&retValue);
-    if (S_OK != hres)
-        throw Exception("Call IDiaSymbol::get_relativeVirtualAddress", hres);
-
-    return retValue;
+    callSymbolDword(get_relativeVirtualAddress);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ULONG Symbol::getLocType()
 {
-    throwIfNull(__FUNCTION__);
-
-    DWORD retValue;
-    HRESULT hres = m_symbol->get_locationType(&retValue);
-    if (S_OK != hres)
-        throw Exception("Call IDiaSymbol::get_locationType", hres);
-
-    return retValue;
+    callSymbolDword(get_locationType);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -266,6 +295,32 @@ python::object Symbol::getValue()
 
     }
     throw Exception("Unknown value type");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+bool Symbol::isBasicType()
+{
+    throwIfNull(__FUNCTION__);
+
+    DWORD baseType = btNoType;
+    return 
+        SUCCEEDED( m_symbol->get_baseType(&baseType) ) && 
+        (btNoType != baseType);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONG Symbol::getBaseType()
+{
+    callSymbolDword(get_baseType);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONG Symbol::getBitPosition()
+{
+    callSymbolDword(get_bitPosition);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -373,7 +428,7 @@ std::string Symbol::print()
         sstream << "symTag: ";
         HRESULT hres = m_symbol->get_symTag(&dwValue);
         if ((S_OK == hres) && dwValue < _countof(symTagName))
-            sstream << symTagName[dwValue];
+            sstream << symTagName[dwValue].second;
         else
             sstream << "<unknown>";
         sstream << ", ";
@@ -389,7 +444,7 @@ std::string Symbol::print()
         if ((S_OK == hres) && dwValue < _countof(locTypeName))
         {
             sstream << std::endl;
-            sstream << "Location: " << locTypeName[dwValue];
+            sstream << "Location: " << locTypeName[dwValue].second;
             if (dwValue == LocIsStatic)
             {
                 hres = m_symbol->get_relativeVirtualAddress(&dwValue);
@@ -450,6 +505,20 @@ std::string Symbol::print()
                 sstream << std::endl << "Value is ";
                 sstream << "\"" << autoBstr::asStr(vtValue.bstrVal).c_str() << "\"";
                 break;
+            }
+        }
+
+        hres = m_symbol->get_baseType(&dwValue);
+        if (SUCCEEDED(hres) && btNoType != dwValue)
+        {
+            for (ULONG i = 0; i < cntBasicTypeName; ++i)
+            {
+                if (basicTypeName[i].first == dwValue)
+                {
+                    sstream << std::endl;
+                    sstream << "Basic type is " << basicTypeName[i].second;
+                    break;
+                }
             }
         }
     }

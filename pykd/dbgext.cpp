@@ -73,6 +73,16 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 
 ////////////////////////////////////////////////////////////////////////////////
 
+static python::dict genDict(const pyDia::Symbol::ValueNameEntry srcValues[], size_t cntValues)
+{
+    python::dict resDict;
+    for (size_t i = 0; i < cntValues; ++i)
+        resDict[srcValues[i].first] = srcValues[i].second;
+    return resDict;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 #define DEF_PY_CONST_ULONG(x)    \
     python::scope().attr(#x) = ULONG(##x)
 
@@ -94,7 +104,6 @@ BOOST_PYTHON_MODULE( pykd )
               "Return size of the module" )
          .def("name", &pykd::Module::getName,
              "Return name of the module" );
-        
 
     python::def( "diaOpenPdb", &pyDia::GlobalScope::openPdb, 
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");
@@ -110,6 +119,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrieves the name of the symbol" )
         .def( "type", &pyDia::Symbol::getType, 
             "Retrieves the symbol that represents the type for this symbol" )
+        .def( "indexType", &pyDia::Symbol::getIndexType, 
+            "Retrieves the symbol interface of the array index type of the symbol" )
         .def( "rva", &pyDia::Symbol::getRva,
             "Retrieves the relative virtual address (RVA) of the location")
         .def( "symTag", &pyDia::Symbol::getSymTag, 
@@ -118,8 +129,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrieves the location type of a data symbol: LocIsXxx" )
         .def( "value", &pyDia::Symbol::getValue,
             "Retrieves the value of a constant")
+        .def( "isBasic", &pyDia::Symbol::isBasicType,
+            "Retrieves a flag of basic type for symbol")
+        .def( "baseType", &pyDia::Symbol::getBaseType,
+            "Retrieves the base type for this symbol")
         .def( "__str__", &pyDia::Symbol::print)
-        .def("__getattr__", &pyDia::Symbol::getChildByName)
+//        .def("__getattr__", &pyDia::Symbol::getChildByName)
         .def("__len__", &pyDia::Symbol::getChildCount )
         .def("__getitem__", &pyDia::Symbol::getChildByIndex);
 
@@ -157,6 +172,8 @@ BOOST_PYTHON_MODULE( pykd )
     DEF_PY_CONST_ULONG(SymTagCustomType);
     DEF_PY_CONST_ULONG(SymTagManagedType);
     DEF_PY_CONST_ULONG(SymTagDimension);
+    python::scope().attr("diaSymTagName") = 
+        genDict(pyDia::Symbol::symTagName, _countof(pyDia::Symbol::symTagName));
 
     // search options for symbol and file names
     DEF_PY_CONST_ULONG(nsfCaseSensitive);
@@ -182,6 +199,29 @@ BOOST_PYTHON_MODULE( pykd )
     DEF_PY_CONST_ULONG(LocIsIlRel);
     DEF_PY_CONST_ULONG(LocInMetaData);
     DEF_PY_CONST_ULONG(LocIsConstant);
+    python::scope().attr("diaLocTypeName") = 
+        genDict(pyDia::Symbol::symTagName, _countof(pyDia::Symbol::locTypeName));
+
+    DEF_PY_CONST_ULONG(btNoType);
+    DEF_PY_CONST_ULONG(btVoid);
+    DEF_PY_CONST_ULONG(btChar);
+    DEF_PY_CONST_ULONG(btWChar);
+    DEF_PY_CONST_ULONG(btInt);
+    DEF_PY_CONST_ULONG(btUInt);
+    DEF_PY_CONST_ULONG(btFloat);
+    DEF_PY_CONST_ULONG(btBCD);
+    DEF_PY_CONST_ULONG(btBool);
+    DEF_PY_CONST_ULONG(btLong);
+    DEF_PY_CONST_ULONG(btULong);
+    DEF_PY_CONST_ULONG(btCurrency);
+    DEF_PY_CONST_ULONG(btDate);
+    DEF_PY_CONST_ULONG(btVariant);
+    DEF_PY_CONST_ULONG(btComplex);
+    DEF_PY_CONST_ULONG(btBit);
+    DEF_PY_CONST_ULONG(btBSTR);
+    DEF_PY_CONST_ULONG(btHresult);
+    python::scope().attr("diaBasicType") = 
+        genDict(pyDia::Symbol::basicTypeName, pyDia::Symbol::cntBasicTypeName);
 
     // exception:
     // base exception

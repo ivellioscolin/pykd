@@ -70,32 +70,52 @@ public:
     }
 
     ULONGLONG getSize();
+
     std::string getName();
+
     python::object getType();
+
+    python::object getIndexType();
+
     ULONG getSymTag();
+
     ULONG getRva();
+
     ULONG getLocType();
+
     python::object getValue();
+
+    bool isBasicType();
+
+    ULONG getBaseType();
+
+    ULONG getBitPosition();
 
     python::object getChildByName(const std::string &_name);
     ULONG getChildCount();
     python::object getChildByIndex(ULONG _index);
 
     std::string print();
+
+public:
+    typedef std::pair<ULONG, const char *> ValueNameEntry;
+
+    static const ValueNameEntry symTagName[SymTagMax];
+    static const ValueNameEntry locTypeName[LocTypeMax];
+    static const ValueNameEntry basicTypeName[];
+    static const size_t cntBasicTypeName;
+
 protected:
 
     void throwIfNull(const char *desc)
     {
         if (!m_symbol)
-            throw Exception(std::string(desc) + " failed, object not preinitialized");
+            throw Exception(std::string(desc) + " failed, DIA object is not initialized");
     }
 
     Symbol(__inout DiaSymbolPtr &_symbol) {
         m_symbol = _symbol.Detach();
     }
-
-    static const char *symTagName[SymTagMax];
-    static const char *locTypeName[LocTypeMax];
 
     DiaSymbolPtr m_symbol;
 };
