@@ -1,9 +1,6 @@
 
 #include "stdafx.h"
 
-#include <vector>
-#include <memory>
-
 #include "diawrapper.h"
 #include "utils.h"
 
@@ -96,38 +93,8 @@ const size_t Symbol::cntBasicTypeName = _countof(Symbol::basicTypeName);
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#define callSymbol(retType, method)                         \
-do {                                                        \
-    throwIfNull(__FUNCTION__);                              \
-    retType retValue;                                       \
-    HRESULT hres = m_symbol->##method(&retValue);           \
-    if (S_OK != hres)                                       \
-        throw Exception("Call IDiaSymbol::" #method, hres); \
-    return retValue;                                        \
-} while(false)
-
-#define callSymbolDword(method) callSymbol(DWORD, method)
-#define callSymbolUlonglong(method) callSymbol(ULONGLONG, method)
-
-#define callSymbolObjectFromSymbol(method)                  \
-do {                                                        \
-    throwIfNull(__FUNCTION__);                              \
-    DiaSymbolPtr retSymbol;                                 \
-    HRESULT hres = m_symbol->##method(&retSymbol);          \
-    if (S_OK != hres)                                       \
-        throw Exception("Call IDiaSymbol::" #method, hres); \
-    return python::object( Symbol(retSymbol) );             \
-} while(false)
-
-#define callSymbolStr(method)                               \
-do {                                                        \
-    throwIfNull(__FUNCTION__);                              \
-    autoBstr bstrName;                                      \
-    HRESULT hres = m_symbol->##method(&bstrName);           \
-    if (S_OK != hres)                                       \
-        throw Exception("Call IDiaSymbol" #method, hres);   \
-    return bstrName.asStr();                                \
-} while(false)
+#define callSymbol(method) \
+    callSymbolT( &IDiaSymbol::##method, __FUNCTION__, #method)
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -171,7 +138,7 @@ void Exception::exceptionTranslate( const Exception &e )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-python::list Symbol::findChildrenImpl(
+std::list< Symbol > Symbol::findChildrenImpl(
     ULONG symTag,
     const std::string &name,
     DWORD nameCmpFlags
@@ -189,12 +156,12 @@ python::list Symbol::findChildrenImpl(
     if (S_OK != hres)
         throw Exception("Call IDiaSymbol::findChildren", hres);
 
-    python::list childList;
+    std::list< Symbol > childList;
 
     DiaSymbolPtr child;
     ULONG celt;
     while ( SUCCEEDED(symbols->Next(1, &child, &celt)) && (celt == 1) )
-        childList.append( Symbol(child) );
+        childList.push_back( Symbol(child) );
 
     return childList;
 }
@@ -203,49 +170,50 @@ python::list Symbol::findChildrenImpl(
 
 ULONGLONG Symbol::getSize()
 {
-    callSymbolUlonglong(get_length);
+    return callSymbol(get_length);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 std::string Symbol::getName()
 {
-    callSymbolStr(get_name);
+    autoBstr retValue( callSymbol(get_name) );
+    return retValue.asStr();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-python::object Symbol::getType()
+Symbol Symbol::getType()
 {
-    callSymbolObjectFromSymbol(get_type);
+    return Symbol( callSymbol(get_type) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-python::object Symbol::getIndexType()
+Symbol Symbol::getIndexType()
 {
-    callSymbolObjectFromSymbol(get_arrayIndexType);
+    return Symbol( callSymbol(get_arrayIndexType) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ULONG Symbol::getSymTag()
 {
-    callSymbolDword(get_symTag);
+    return callSymbol(get_symTag);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ULONG Symbol::getRva()
 {
-    callSymbolDword(get_relativeVirtualAddress);
+    return callSymbol(get_relativeVirtualAddress);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ULONG Symbol::getLocType()
 {
-    callSymbolDword(get_locationType);
+    return callSymbol(get_locationType);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -313,14 +281,14 @@ bool Symbol::isBasicType()
 
 ULONG Symbol::getBaseType()
 {
-    callSymbolDword(get_baseType);
+    return callSymbol(get_baseType);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ULONG Symbol::getBitPosition()
 {
-    callSymbolDword(get_bitPosition);
+    return callSymbol(get_bitPosition);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

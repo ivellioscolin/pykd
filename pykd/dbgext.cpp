@@ -109,7 +109,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");
 
     python::class_<pyDia::Symbol>("DiaSymbol", "class wrapper for MS DIA Symbol" )
-        .def( "findEx", &pyDia::Symbol::findChildrenImpl, 
+        .def( "findEx", &pyDia::Symbol::findChildrenEx, 
             "Retrieves the children of the symbol" )
         .def( "find", &pyDia::Symbol::findChildren, 
             "Retrieves the children of the symbol" )

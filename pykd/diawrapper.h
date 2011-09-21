@@ -2,6 +2,8 @@
 #pragma once
 
 #include <cvconst.h>
+
+#include "utils.h"
 #include "dbgexcept.h"
 
 namespace pyDia {
@@ -56,26 +58,35 @@ class Symbol {
 public:
     Symbol() {}
 
-    python::list findChildrenImpl(
+    std::list< Symbol > findChildrenImpl(
         ULONG symTag,
         const std::string &name,
         DWORD nameCmpFlags
     );
 
+    python::list findChildrenEx(
+        ULONG symTag,
+        const std::string &name,
+        DWORD nameCmpFlags
+    )
+    {
+        return toPyList( findChildrenImpl(symTag, name, nameCmpFlags) );
+    }
+
     python::list findChildren(
         const std::string &name
     )
     {
-        return findChildrenImpl(SymTagNull, name, nsfCaseSensitive);
+        return toPyList( findChildrenImpl(SymTagNull, name, nsfCaseSensitive) );
     }
 
     ULONGLONG getSize();
 
     std::string getName();
 
-    python::object getType();
+    Symbol getType();
 
-    python::object getIndexType();
+    Symbol getIndexType();
 
     ULONG getSymTag();
 
@@ -107,6 +118,23 @@ public:
 
 protected:
 
+    template <typename TRet>
+    TRet callSymbolT(
+        HRESULT(STDMETHODCALLTYPE IDiaSymbol::*method)(TRet *),
+        const char *funcName,
+        const char *methodName
+    )
+    {
+        throwIfNull(funcName);
+
+        TRet retValue;
+        HRESULT hres = (m_symbol->*method)(&retValue);
+        if (S_OK != hres)
+            throw Exception(std::string("Call IDiaSymbol::") + methodName);
+
+        return retValue;
+    }
+
     void throwIfNull(const char *desc)
     {
         if (!m_symbol)
@@ -115,6 +143,10 @@ protected:
 
     Symbol(__inout DiaSymbolPtr &_symbol) {
         m_symbol = _symbol.Detach();
+    }
+
+    Symbol(__in IDiaSymbol *_symbol) {
+        m_symbol = _symbol;
     }
 
     DiaSymbolPtr m_symbol;
