@@ -15,12 +15,14 @@ import basetest
 import typeinfo 
 import regtest
 import moduletest
+import diatest
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
         return unittest.TestSuite(
            [   unittest.TestLoader().loadTestsFromTestCase( basetest.BaseTest ),
                unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
+               unittest.TestLoader().loadTestsFromTestCase( diatest.DiaTest ),
 #               unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
 #               unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest )
            ] ) 

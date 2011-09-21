@@ -6,12 +6,22 @@
 
 #include "utils.h"
 
+void FuncWithName0()
+{
+}
+
+void FuncWithName1()
+{
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
     try
     {
         // Let test scripts to execute
         __debugbreak();
+        FuncWithName0();
+        FuncWithName1();
     }
     catch(std::exception & ex)
     {
