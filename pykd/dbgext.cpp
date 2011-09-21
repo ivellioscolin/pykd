@@ -89,11 +89,31 @@ static python::dict genDict(const pyDia::Symbol::ValueNameEntry srcValues[], siz
 BOOST_PYTHON_MODULE( pykd )
 {
     python::class_<pykd::DebugClient>("dbgClient", "Class representing a debugging session" )
-        .def( "loadDump", &pykd::DebugClient::loadDump, "Load crash dump" )
-        .def( "startProcess", &pykd::DebugClient::startProcess, "Start process for debugging" )
-        .def( "attachProcess", &pykd::DebugClient::attachProcess, "Attach debugger to a exsisting process" )
-        .def( "attachKernel", &pykd::DebugClient::attachKernel, "Attach debugger to a target's kernel" )
-        .def( "loadModule", &pykd::DebugClient::loadModule, "Create instance of Module class" );
+        .def( "loadDump", &pykd::DebugClient::loadDump,
+            "Load crash dump" )
+        .def( "startProcess", &pykd::DebugClient::startProcess, 
+            "Start process for debugging" )
+        .def( "attachProcess", &pykd::DebugClient::attachProcess,
+            "Attach debugger to a exsisting process" )
+        .def( "attachKernel", &pykd::DebugClient::attachKernel, 
+            "Attach debugger to a target's kernel" )
+        .def( "loadModule", &pykd::DebugClient::loadModule, 
+            "Return instance of Module class" )
+        .def( "findModule", &pykd::DebugClient::findModule, 
+            "Return instance of the Module class which posseses specified address" );
+
+    boost::python::def( "loadDump", &loadDump,
+        "Load crash dump (only for console)");
+    boost::python::def( "startProcess", &startProcess,
+        "Start process for debugging (only for console)"); 
+    boost::python::def( "attachProcess", &attachProcess,
+        "Attach debugger to a exsisting process" );
+    boost::python::def( "attachKernel", &attachKernel,
+        "Attach debugger to a kernel target" );
+    boost::python::def( "loadModule", &loadModule,
+        "Return instance of Module class"  );
+    boost::python::def( "findModule", &findModule,
+        "Return instance of the Module class which posseses specified address" );
 
     python::class_<pykd::Module>("module", "Class representing executable module", python::no_init )
          .def("begin", &pykd::Module::getBase,
@@ -103,7 +123,11 @@ BOOST_PYTHON_MODULE( pykd )
          .def("size", &pykd::Module::getSize,
               "Return size of the module" )
          .def("name", &pykd::Module::getName,
-             "Return name of the module" );
+             "Return name of the module" )       
+         .def("pdb", &pykd::Module::getPdbName,
+             "Return the full path to the module's pdb file ( symbol information )" )
+         .def("reload", &pykd::Module::reloadSymbols,
+            "(Re)load symbols for the module" );
 
     python::def( "diaOpenPdb", &pyDia::GlobalScope::openPdb, 
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");
@@ -224,16 +248,19 @@ BOOST_PYTHON_MODULE( pykd )
         genDict(pyDia::Symbol::basicTypeName, pyDia::Symbol::cntBasicTypeName);
 
     // exception:
+
     // base exception
-    python::class_<DbgException>  dbgExceptionClass( "BaseException",
+    python::class_<pykd::DbgException>  dbgExceptionClass( "BaseException",
         "Pykd base exception class",
         python::no_init );
     dbgExceptionClass
         .def( python::init<std::string>( python::args("desc"), "constructor" ) )
-        .def( "desc", &DbgException::getDesc,
+        .def( "desc", &pykd::DbgException::getDesc,
             "Get exception description" )
-        .def( "__str__", &DbgException::print);
-    DbgException::setTypeObject( dbgExceptionClass.ptr() );
+        .def( "__str__", &pykd::DbgException::print);
+    pykd::DbgException::setTypeObject( dbgExceptionClass.ptr() );
+    boost::python::register_exception_translator<pykd::DbgException>( 
+        &pykd::DbgException::exceptionTranslate );
 
     // DIA exceptions
     python::class_<pyDia::Exception, python::bases<DbgException> > diaException( 

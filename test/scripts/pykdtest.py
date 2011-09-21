@@ -34,13 +34,11 @@ if __name__ == "__main__":
    
     target.moduleName = os.path.splitext(os.path.basename(targetAppPath))[0]
     print "\nTest module: %s" % targetAppPath
-    
-    dbg = pykd.dbgClient()
-   
-    dbg.startProcess( targetAppPath )
-#    pykd.go()
+  
+    pykd.startProcess( targetAppPath )
 
-    target.module = dbg.loadModule( target.moduleName )
+    target.module = pykd.loadModule( target.moduleName )
+    target.module.reload();
     
     suite = getTestSuite()
    

@@ -14,6 +14,8 @@ public:
     
     Module( IDebugClient5 *client, const std::string& moduleName );
 
+    Module( IDebugClient5 *client, ULONG64 offset );
+
     std::string  getName() {
         return m_name;
     }
@@ -30,6 +32,12 @@ public:
         return m_size;
     }
 
+    std::wstring
+    getPdbName();
+
+    void
+    reloadSymbols();
+
 private:
 
     std::string     m_name;
@@ -41,11 +49,6 @@ private:
 ///////////////////////////////////////////////////////////////////////////////////
 
 };
-
-
-
-
-
 
 
 

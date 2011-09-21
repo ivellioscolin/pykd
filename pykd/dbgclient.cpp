@@ -3,7 +3,29 @@
 #include "dbgclient.h"
 #include <vector>
 
-using namespace pykd;
+
+namespace pykd {
+
+///////////////////////////////////////////////////////////////////////////////////
+
+DebugClient     primaryClient;
+DebugClient     *g_dbgClient = &primaryClient;
+
+void loadDump( const std::wstring &fileName ) {
+    g_dbgClient->loadDump( fileName );    
+}
+
+void startProcess( const std::wstring  &processName ) {
+    g_dbgClient->startProcess( processName );    
+}
+
+void attachProcess( ULONG  processId ) {
+    g_dbgClient->attachProcess( processId );
+}
+
+void attachKernel( const std::wstring  &param ) {
+    g_dbgClient->attachKernel( param );
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -90,3 +112,5 @@ void DebugClient::attachKernel( const std::wstring  &param )
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+}; // end of namespace pykd

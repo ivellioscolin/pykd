@@ -1,8 +1,22 @@
 #include "stdafx.h"
 
 #include "module.h"
+#include "dbgclient.h"
+#include "dbgmem.h"
 
-using namespace pykd;
+namespace pykd {
+
+///////////////////////////////////////////////////////////////////////////////////
+
+Module loadModule( const std::string  &moduleName ) {
+    return g_dbgClient->loadModule( moduleName );  
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+
+Module findModule( ULONG64  offset ) {
+    return g_dbgClient->findModule( offset );
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -25,6 +39,100 @@ Module::Module( IDebugClient5 *client, const std::string& moduleName ) : DbgObje
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+Module::Module( IDebugClient5 *client, ULONG64 offset ) : DbgObject( client )
+{
+    HRESULT     hres;
+
+    offset = addr64( offset );
+
+    ULONG       moduleIndex;
+    hres = m_symbols->GetModuleByOffset( offset, 0, &moduleIndex, &m_base );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol::GetModuleByOffset failed" );
+
+    char  moduleName[0x100];
+
+    hres = m_symbols->GetModuleNameString( 
+        DEBUG_MODNAME_MODULE,
+        moduleIndex,
+        0,
+        moduleName,
+        sizeof( moduleName ),
+        NULL );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol::GetModuleNameString failed" );
+
+    m_name = std::string( moduleName );
+
+    DEBUG_MODULE_PARAMETERS     moduleParam = { 0 };
+    hres = m_symbols->GetModuleParameters( 1, &m_base, 0, &moduleParam );
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );    
+
+    m_size = moduleParam.Size;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::wstring
+Module::getPdbName()
+{
+    HRESULT         hres;
+
+    IMAGEHLP_MODULEW64      moduleInfo = {};
+
+    hres = m_advanced->GetSymbolInformation(
+        DEBUG_SYMINFO_IMAGEHLP_MODULEW64,
+        m_base,
+        0,
+        &moduleInfo,
+        sizeof(moduleInfo),
+        NULL,
+        NULL,
+        0,
+        NULL );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugAdvanced2::GetSymbolInformation failed" );
+
+    return std::wstring( moduleInfo.LoadedPdbName );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void
+Module::reloadSymbols()
+{
+    HRESULT     hres;
+
+    hres = m_symbols->Reload( "/f" );
+    if ( FAILED( hres ) )
+        throw DbgException("IDebugSymbols::Reload failed" );           
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+}; // end of namespace pykd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        // try reload module by entered name, "silent mode"
+//        OutputReader outputReader( dbgExt->client );
+//        hres = dbgExt->symbols->Reload( reloadParam.c_str() );
 
 
 

@@ -1,5 +1,54 @@
 #include "stdafx.h"
 
+#include "dbgclient.h"
+#include "dbgexcept.h"
+
+namespace pykd {
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ULONG64
+DebugClient::addr64( ULONG64  addr)
+{
+    HRESULT     hres;
+
+    ULONG   processorMode;
+    hres = m_control->GetActualProcessorType( &processorMode );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetEffectiveProcessorType  failed" );
+
+    switch( processorMode )
+    {
+    case IMAGE_FILE_MACHINE_I386:
+        if ( *( (ULONG*)&addr + 1 ) == 0 )
+            return (ULONG64)(LONG)addr;
+
+    case IMAGE_FILE_MACHINE_AMD64:
+        break;
+
+    default:
+        throw DbgException( "Unknown processor type" );
+        break;
+    }
+
+    return addr;
+}
+
+ULONG64
+addr64( ULONG64  addr)
+{
+    return g_dbgClient->addr64( addr );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+}; // end of pykd
+
+
+
+
+
+
 //#include <boost/scoped_array.hpp>
 //
 //#include "dbgext.h"

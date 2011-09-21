@@ -362,6 +362,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgmem.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\diawrapper.cpp"
 				>
 			</File>
@@ -421,6 +425,10 @@
 			</File>
 			<File
 				RelativePath=".\dbgexcept.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgmem.h"
 				>
 			</File>
 			<File

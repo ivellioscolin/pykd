@@ -25,6 +25,10 @@ protected:
         hres = client->QueryInterface( __uuidof(IDebugSymbols3), (void**)&m_symbols );
         if ( FAILED( hres ) )
             throw DbgException("QueryInterface IDebugSymbols3  failed");  
+
+        hres = client->QueryInterface( __uuidof(IDebugAdvanced2), (void**)&m_advanced );
+        if ( FAILED( hres ) )
+            throw DbgException("QueryInterface IDebugAdvanced2  failed");  
     }
     
     virtual ~DbgObject() {};
@@ -32,6 +36,7 @@ protected:
     CComPtr<IDebugClient5>      m_client;     
     CComPtr<IDebugControl4>     m_control;
     CComPtr<IDebugSymbols3>     m_symbols;
+    CComPtr<IDebugAdvanced2>    m_advanced;
 };
 
 
