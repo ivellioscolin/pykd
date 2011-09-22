@@ -59,4 +59,18 @@ class DiaTest( unittest.TestCase ):
     self.assertEqual(pykd.btBool, globalScope["g_constBoolValue"].type().baseType())
     self.assertEqual(pykd.btULong, globalScope["g_ulongValue"].type().baseType())
 
-
+  def testBits(self):
+    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    structWithBits = globalScope["structWithBits"]
+    bitField = structWithBits["m_bit0_4"]
+    self.assertEqual(pykd.LocIsBitField, bitField.locType())
+    self.assertEqual(0, bitField.bitPos())
+    self.assertEqual(5, bitField.size())
+    bitField = structWithBits["m_bit5"]
+    self.assertEqual(pykd.LocIsBitField, bitField.locType())
+    self.assertEqual(5, bitField.bitPos())
+    self.assertEqual(1, bitField.size())
+    bitField = structWithBits["m_bit6_7"]
+    self.assertEqual(pykd.LocIsBitField, bitField.locType())
+    self.assertEqual(6, bitField.bitPos())
+    self.assertEqual(2, bitField.size())

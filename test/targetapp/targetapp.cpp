@@ -17,6 +17,13 @@ ULONGLONG g_ulonglongValue = 8;
 
 std::string g_string;
 
+struct structWithBits {
+    ULONG m_bit0_4  : 5;
+    ULONG m_bit5    : 1;
+    ULONG m_bit6_7  : 2;
+};
+structWithBits g_structWithBits = {0};
+
 void FuncWithName0()
 {
 }

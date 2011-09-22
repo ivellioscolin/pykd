@@ -157,6 +157,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrieves a flag of basic type for symbol")
         .def( "baseType", &pyDia::Symbol::getBaseType,
             "Retrieves the base type for this symbol")
+        .def( "bitPos", &pyDia::Symbol::getBitPosition,
+            "Retrieves the base type for this symbol")
         .def( "__str__", &pyDia::Symbol::print)
         .def("__getitem__", &pyDia::Symbol::getChildByName)
         .def("__len__", &pyDia::Symbol::getChildCount )
