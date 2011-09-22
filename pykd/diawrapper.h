@@ -94,6 +94,7 @@ public:
 
     ULONG getLocType();
 
+    void getValueImpl(VARIANT &vtValue);
     python::object getValue();
 
     bool isBasicType();
@@ -102,9 +103,9 @@ public:
 
     ULONG getBitPosition();
 
-    python::object getChildByName(const std::string &_name);
+    Symbol getChildByName(const std::string &_name);
     ULONG getChildCount();
-    python::object getChildByIndex(ULONG _index);
+    Symbol getChildByIndex(ULONG _index);
 
     std::string print();
 
@@ -160,7 +161,7 @@ public:
     GlobalScope() {}
 
     // create GlobalScope instance
-    static python::object openPdb(const std::string &filePath);
+    static GlobalScope openPdb(const std::string &filePath);
 
 private:
 

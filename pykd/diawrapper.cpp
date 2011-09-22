@@ -217,28 +217,33 @@ ULONG Symbol::getLocType()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-python::object Symbol::getValue()
+void Symbol::getValueImpl(VARIANT &vtValue)
 {
     throwIfNull(__FUNCTION__);
 
-    VARIANT variant = { VT_EMPTY };
-    HRESULT hres = m_symbol->get_value(&variant);
+    HRESULT hres = m_symbol->get_value(&vtValue);
     if (S_OK != hres)
         throw Exception("Call IDiaSymbol::get_value", hres);
+}
 
-    switch (variant.vt)
+////////////////////////////////////////////////////////////////////////////////
+
+python::object Symbol::getValue()
+{
+    VARIANT vtValue = { VT_EMPTY };
+    getValueImpl(vtValue);
+    switch (vtValue.vt)
     {
     case VT_I1:
     case VT_UI1:
-        return python::object( static_cast<ULONG>(variant.bVal) );
+        return python::object( static_cast<ULONG>(vtValue.bVal) );
 
     case VT_BOOL:
-        return python::object( static_cast<bool>(!!variant.iVal) );
+        return python::object( static_cast<bool>(!!vtValue.iVal) );
 
     case VT_I2:
     case VT_UI2:
-        return python::object( static_cast<ULONG>(variant.iVal) );
+        return python::object( static_cast<ULONG>(vtValue.iVal) );
 
     case VT_I4:
     case VT_UI4:
@@ -246,20 +251,20 @@ python::object Symbol::getValue()
     case VT_UINT:
     case VT_ERROR:
     case VT_HRESULT:
-        return python::object( variant.lVal );
+        return python::object( vtValue.lVal );
 
     case VT_I8:
     case VT_UI8:
-        return python::object( variant.llVal );
+        return python::object( vtValue.llVal );
 
     case VT_R4:
-        return python::object( variant.fltVal );
+        return python::object( vtValue.fltVal );
 
     case VT_R8:
-        return python::object( variant.dblVal );
+        return python::object( vtValue.dblVal );
 
     case VT_BSTR:
-        return python::object( autoBstr::asStr(variant.bstrVal).c_str() );
+        return python::object( autoBstr::asStr(vtValue.bstrVal).c_str() );
 
     }
     throw Exception("Unknown value type");
@@ -293,7 +298,7 @@ ULONG Symbol::getBitPosition()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-python::object Symbol::getChildByName(const std::string &_name)
+Symbol Symbol::getChildByName(const std::string &_name)
 {
     throwIfNull(__FUNCTION__);
 
@@ -323,7 +328,7 @@ python::object Symbol::getChildByName(const std::string &_name)
     if (S_OK != hres)
         throw Exception("Call IDiaEnumSymbols::Item", hres);
 
-    return python::object( Symbol(child) );
+    return Symbol(child);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -352,7 +357,7 @@ ULONG Symbol::getChildCount()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-python::object Symbol::getChildByIndex(ULONG _index)
+Symbol Symbol::getChildByIndex(ULONG _index)
 {
     throwIfNull(__FUNCTION__);
 
@@ -379,7 +384,7 @@ python::object Symbol::getChildByIndex(ULONG _index)
     if (S_OK != hres)
         throw Exception("Call IDiaEnumSymbols::Item", hres);
 
-    return python::object( Symbol(child) );
+    return Symbol(child);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -392,6 +397,7 @@ std::string Symbol::print()
         DWORD dwValue;
         autoBstr bstrValue;
         VARIANT vtValue = { VT_EMPTY };
+        bool bValue;
 
         sstream << "symTag: ";
         HRESULT hres = m_symbol->get_symTag(&dwValue);
@@ -421,8 +427,17 @@ std::string Symbol::print()
             }
         }
 
-        hres = m_symbol->get_value(&vtValue);
-        if (S_OK == hres)
+        bValue = false;
+        try
+        {
+            getValueImpl(vtValue);
+            bValue = true;
+        }
+        catch (const Exception &except)
+        {
+            DBG_UNREFERENCED_PARAMETER(except);
+        }
+        if (bValue)
         {
             switch (vtValue.vt)
             {
@@ -507,7 +522,7 @@ GlobalScope::GlobalScope(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-python::object GlobalScope::openPdb(const std::string &filePath)
+GlobalScope GlobalScope::openPdb(const std::string &filePath)
 {
     DiaDataSourcePtr _scope;
 
@@ -530,7 +545,7 @@ python::object GlobalScope::openPdb(const std::string &filePath)
     if ( S_OK != hres )
         throw Exception("Call IDiaSymbol::get_globalScope", hres);
 
-    return python::object(GlobalScope(_scope, _session, _globalScope));
+    return GlobalScope(_scope, _session, _globalScope);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
