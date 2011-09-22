@@ -94,9 +94,9 @@ public:
 
     ULONG getLocType();
 
-    ULONG getOffset();
+    LONG getOffset();
 
-    void getValueImpl(VARIANT &vtValue);
+    static void getValueImpl(IDiaSymbol *_symbol, VARIANT &vtValue);
     python::object getValue();
 
     bool isBasicType();
@@ -129,6 +129,8 @@ public:
     static const size_t cntUdtKindName;
 
 protected:
+
+    static std::string printImpl(IDiaSymbol *_symbol, ULONG indent = 0);
 
     template <typename TRet>
     TRet callSymbolT(

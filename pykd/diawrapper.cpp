@@ -227,17 +227,18 @@ ULONG Symbol::getLocType()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ULONG Symbol::getOffset()
+LONG Symbol::getOffset()
 {
     return callSymbol(get_offset);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Symbol::getValueImpl(VARIANT &vtValue)
+void Symbol::getValueImpl(IDiaSymbol *_symbol, VARIANT &vtValue)
 {
-    throwIfNull(__FUNCTION__);
+    if (!_symbol)
+        throw Exception(std::string(__FUNCTION__) + " failed, DIA object is not initialized");
 
-    HRESULT hres = m_symbol->get_value(&vtValue);
+    HRESULT hres = _symbol->get_value(&vtValue);
     if (S_OK != hres)
         throw Exception("Call IDiaSymbol::get_value", hres);
 }
@@ -247,7 +248,7 @@ void Symbol::getValueImpl(VARIANT &vtValue)
 python::object Symbol::getValue()
 {
     VARIANT vtValue = { VT_EMPTY };
-    getValueImpl(vtValue);
+    getValueImpl(m_symbol, vtValue);
     switch (vtValue.vt)
     {
     case VT_I1:
@@ -407,7 +408,10 @@ Symbol Symbol::getChildByIndex(ULONG _index)
         throw Exception("Call IDiaEnumSymbols::get_Count", hres);
 
     if (LONG(_index) >= count)
-        throw Exception("Attempt to access non-existing element by index");
+    {
+        PyErr_SetString(PyExc_IndexError, "Index out of range");
+        boost::python::throw_error_already_set();
+    }
 
     DiaSymbolPtr child;
     hres = symbols->Item(_index, &child);
@@ -421,46 +425,86 @@ Symbol Symbol::getChildByIndex(ULONG _index)
 
 std::string Symbol::print()
 {
+    return printImpl(m_symbol);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+std::string Symbol::printImpl(IDiaSymbol *_symbol, ULONG indent)
+{
     std::stringstream sstream;
-    if (m_symbol)
+    for (ULONG i =0; i < indent; ++i)
+        sstream << " ";
+
+    if (indent >= 3)
+    {
+        sstream << "<...>";
+        return sstream.str();
+    }
+
+    if (_symbol)
     {
         DWORD dwValue;
         autoBstr bstrValue;
         VARIANT vtValue = { VT_EMPTY };
         bool bValue;
+        LONG lValue;
+        ULONGLONG ullValue;
+        HRESULT hres;
 
-        sstream << "symTag: ";
-        HRESULT hres = m_symbol->get_symTag(&dwValue);
+        hres = _symbol->get_offset(&lValue);
+        if (S_OK == hres)
+            sstream << ".[" << std::dec << lValue << + "] ";
+
+        hres = _symbol->get_symTag(&dwValue);
         if ((S_OK == hres) && dwValue < _countof(symTagName))
+        {
             sstream << symTagName[dwValue].second;
+            if (SymTagUDT == symTagName[dwValue].first)
+            {
+                hres = _symbol->get_udtKind(&dwValue);
+                if ((S_OK == hres) && (dwValue < cntUdtKindName))
+                    sstream << ":" << udtKindName[dwValue].second;
+            }
+        }
         else
-            sstream << "<unknown>";
+        {
+            sstream << "!unknown!";
+        }
         sstream << ", ";
 
-        hres = m_symbol->get_name(&bstrValue);
+        hres = _symbol->get_name(&bstrValue);
         if (S_OK == hres)
             sstream << "\"" << bstrValue.asStr().c_str() << "\"";
         else
             sstream << "<no-name>";
         bstrValue.free();
 
-        hres = m_symbol->get_locationType(&dwValue);
+        hres = _symbol->get_length(&ullValue);
+        if (S_OK == hres)
+            sstream << ", Length: 0x" << std::hex << ullValue;
+
+        hres = _symbol->get_locationType(&dwValue);
         if ((S_OK == hres) && dwValue < _countof(locTypeName))
         {
-            sstream << std::endl;
-            sstream << "Location: " << locTypeName[dwValue].second;
-            if (dwValue == LocIsStatic)
+            sstream << ", Location: " << locTypeName[dwValue].second;
+
+            if (LocIsBitField == locTypeName[dwValue].first)
             {
-                hres = m_symbol->get_relativeVirtualAddress(&dwValue);
+                hres = _symbol->get_bitPosition(&dwValue);
                 if (S_OK == hres)
-                    sstream << ", RVA: 0x" << std::hex << dwValue;
+                    sstream << ", Bit position: " << dwValue;
             }
+
+            hres = _symbol->get_relativeVirtualAddress(&dwValue);
+            if (S_OK == hres)
+                sstream << ", RVA: 0x" << std::hex << dwValue;
         }
 
         bValue = false;
         try
         {
-            getValueImpl(vtValue);
+            getValueImpl(_symbol, vtValue);
             bValue = true;
         }
         catch (const Exception &except)
@@ -473,19 +517,19 @@ std::string Symbol::print()
             {
             case VT_I1:
             case VT_UI1:
-                sstream << std::endl << "Value is ";
-                sstream << std::hex << "0x" << vtValue.bVal;
+                sstream << ", Value: ";
+                sstream << "0x" << std::hex << vtValue.bVal;
                 break;
 
             case VT_BOOL:
-                sstream << std::endl << "Value is ";
+                sstream << ", Value: ";
                 sstream << vtValue.iVal ? "True" : "False";
                 break;
 
             case VT_I2:
             case VT_UI2:
-                sstream << std::endl << "Value is ";
-                sstream << std::hex << "0x" << vtValue.iVal;
+                sstream << ", Value: ";
+                sstream << "0x" << std::hex << vtValue.iVal;
                 break;
 
             case VT_I4:
@@ -494,46 +538,86 @@ std::string Symbol::print()
             case VT_UINT:
             case VT_ERROR:
             case VT_HRESULT:
-                sstream << std::endl << "Value is ";
-                sstream << std::hex << "0x" << vtValue.lVal;
+                sstream << ", Value: ";
+                sstream << "0x" << std::hex << vtValue.lVal;
                 break;
 
             case VT_I8:
             case VT_UI8:
-                sstream << std::endl << "Value is ";
-                sstream << std::hex << "0x" << vtValue.llVal;
+                sstream << ", Value: ";
+                sstream << "0x" << std::hex << vtValue.llVal;
                 break;
 
             case VT_R4:
-                sstream << std::endl << "Value is ";
+                sstream << ", Value: ";
                 sstream << vtValue.fltVal;
                 break;
 
             case VT_R8:
-                sstream << std::endl << "Value is ";
+                sstream << ", Value: ";
                 sstream << vtValue.dblVal;
                 break;
 
             case VT_BSTR:
-                sstream << std::endl << "Value is ";
+                sstream << ", Value: ";
                 sstream << "\"" << autoBstr::asStr(vtValue.bstrVal).c_str() << "\"";
                 break;
             }
         }
 
-        hres = m_symbol->get_baseType(&dwValue);
+        hres = _symbol->get_baseType(&dwValue);
         if (SUCCEEDED(hres) && btNoType != dwValue)
         {
             for (ULONG i = 0; i < cntBasicTypeName; ++i)
             {
                 if (basicTypeName[i].first == dwValue)
                 {
-                    sstream << std::endl;
-                    sstream << "Basic type is " << basicTypeName[i].second;
+                    sstream << ", Basic type: " << basicTypeName[i].second;
                     break;
                 }
             }
         }
+
+        DWORD dwThisSymbol = 0;
+        hres = _symbol->get_symIndexId(&dwThisSymbol);
+        assert(S_OK == hres);
+        if (S_OK == hres)
+        {
+            DiaSymbolPtr pType;
+            hres = _symbol->get_type(&pType);
+            if (S_OK == hres)
+            {
+                DWORD dwTypeSymbol;
+                hres = pType->get_symIndexId(&dwTypeSymbol);
+                if ((S_OK == hres) && (dwTypeSymbol != dwThisSymbol))
+                {
+                    sstream << std::endl;
+                    for (ULONG i =0; i < indent; ++i)
+                        sstream << " ";
+                    sstream << "Type: " << std::endl;
+                    sstream << printImpl(pType, indent + 1).c_str();
+                }
+            }
+        }
+
+        DiaEnumSymbolsPtr symbols;
+        hres = 
+            _symbol->findChildren(
+                SymTagNull,
+                NULL,
+                nsCaseSensitive,
+                &symbols);
+        if (S_OK == hres)
+        {
+            DiaSymbolPtr child;
+            ULONG celt;
+            while ( SUCCEEDED(symbols->Next(1, &child, &celt)) && (celt == 1) )
+            {
+                sstream << std::endl << printImpl(child, indent + 1).c_str();
+                child.Release();
+            }
+        }
+
     }
     return sstream.str();
 }

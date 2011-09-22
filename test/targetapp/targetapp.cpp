@@ -53,6 +53,12 @@ public:
     virtual void virtFunc2() {}
 };
 
+struct struct2 {
+    structTest m_struct;
+    unionTest m_union;
+    int m_field;
+};
+
 void FuncWithName0()
 {
     classChild _classChild;
@@ -67,6 +73,8 @@ void FuncWithName1()
     _unionTest.m_value = 0;
     structTest _structTest;
     _structTest.m_field1 = 1;
+    struct2 _struct2;
+    RtlZeroMemory(&_struct2, sizeof(_struct2));
 }
 
 int _tmain(int argc, _TCHAR* argv[])
