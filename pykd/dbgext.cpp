@@ -158,7 +158,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "baseType", &pyDia::Symbol::getBaseType,
             "Retrieves the base type for this symbol")
         .def( "__str__", &pyDia::Symbol::print)
-//        .def("__getattr__", &pyDia::Symbol::getChildByName)
+        .def("__getitem__", &pyDia::Symbol::getChildByName)
         .def("__len__", &pyDia::Symbol::getChildCount )
         .def("__getitem__", &pyDia::Symbol::getChildByIndex);
 

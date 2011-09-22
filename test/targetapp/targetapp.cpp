@@ -3,8 +3,19 @@
 #include <intrin.h>
 
 #include <iostream>
+#include <string>
 
 #include "utils.h"
+
+const ULONG g_constNumValue = 0x5555;
+const bool g_constBoolValue = true;
+
+UCHAR g_ucharValue = 1;
+USHORT g_ushortValue = 2;
+ULONG g_ulongValue = 4;
+ULONGLONG g_ulonglongValue = 8;
+
+std::string g_string;
 
 void FuncWithName0()
 {

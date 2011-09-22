@@ -131,7 +131,7 @@ protected:
         TRet retValue;
         HRESULT hres = (m_symbol->*method)(&retValue);
         if (S_OK != hres)
-            throw Exception(std::string("Call IDiaSymbol::") + methodName);
+            throw Exception(std::string("Call IDiaSymbol::") + methodName, hres);
 
         return retValue;
     }

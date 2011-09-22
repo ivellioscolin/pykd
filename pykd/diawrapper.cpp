@@ -255,10 +255,10 @@ python::object Symbol::getValue()
 
     case VT_I8:
     case VT_UI8:
-        return python::object( vtValue.llVal );
+        return python::object( float(vtValue.llVal) );
 
     case VT_R4:
-        return python::object( vtValue.fltVal );
+        return python::object( double(vtValue.fltVal) );
 
     case VT_R8:
         return python::object( vtValue.dblVal );

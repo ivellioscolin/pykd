@@ -63,7 +63,7 @@ public:
             return "";
 
         std::string ret;
-        ret.resize(chars + 1, '\0');
+        ret.resize(chars);
         ::WideCharToMultiByte(
             CP_ACP,
             0,
