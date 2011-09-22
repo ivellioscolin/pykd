@@ -165,12 +165,21 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrieves the unique symbol identifier")
         .def( "udtKind", &pyDia::Symbol::getUdtKind,
             "Retrieves the variety of a user-defined type")
+        .def("registerId", &pyDia::Symbol::getRegisterId,
+            "Retrieves the register designator of the location:\n"
+            "CV_REG_XXX (for IMAGE_FILE_MACHINE_I386) or CV_AMD64_XXX (for IMAGE_FILE_MACHINE_AMD64)")
         .def( "__str__", &pyDia::Symbol::print)
         .def("__getitem__", &pyDia::Symbol::getChildByName)
         .def("__len__", &pyDia::Symbol::getChildCount )
         .def("__getitem__", &pyDia::Symbol::getChildByIndex);
 
-    python::class_<pyDia::GlobalScope, python::bases<pyDia::Symbol> >("DiaScope", "class wrapper for MS DIA Symbol" );
+    python::class_<pyDia::GlobalScope, python::bases<pyDia::Symbol> >("DiaScope", "class wrapper for MS DIA Symbol" )
+        .def("machineType", &pyDia::GlobalScope::getMachineType, "Retrieves the type of the target CPU: IMAGE_FILE_MACHINE_XXX");
+
+    // CPU type:
+    DEF_PY_CONST_ULONG(IMAGE_FILE_MACHINE_I386);
+    DEF_PY_CONST_ULONG(IMAGE_FILE_MACHINE_IA64);
+    DEF_PY_CONST_ULONG(IMAGE_FILE_MACHINE_AMD64);
 
     // type of symbol
     DEF_PY_CONST_ULONG(SymTagNull);
@@ -260,6 +269,13 @@ BOOST_PYTHON_MODULE( pykd )
     DEF_PY_CONST_ULONG(UdtUnion);
     python::scope().attr("diaUdtKind") = 
         genDict(pyDia::Symbol::udtKindName, pyDia::Symbol::cntUdtKindName);
+
+    // i386/amd64 cpu registers
+#include "diaregs.h"
+    python::scope().attr("diaI386Regs") = 
+        genDict(pyDia::Symbol::i386RegName, pyDia::Symbol::cntI386RegName);
+    python::scope().attr("diaAmd64Regs") = 
+        genDict(pyDia::Symbol::amd64RegName, pyDia::Symbol::cntAmd64RegName);
 
     // exception:
 

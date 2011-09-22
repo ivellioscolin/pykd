@@ -14,94 +14,6 @@ const std::string Exception::descPrefix("pyDia: ");
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#define _DEF_SYM_TAG_VAL(x) Symbol::ValueNameEntry(SymTag##x, #x)
-const Symbol::ValueNameEntry Symbol::symTagName[SymTagMax] = {
-    _DEF_SYM_TAG_VAL(Null),
-    _DEF_SYM_TAG_VAL(Exe),
-    _DEF_SYM_TAG_VAL(Compiland),
-    _DEF_SYM_TAG_VAL(CompilandDetails),
-    _DEF_SYM_TAG_VAL(CompilandEnv),
-    _DEF_SYM_TAG_VAL(Function),
-    _DEF_SYM_TAG_VAL(Block),
-    _DEF_SYM_TAG_VAL(Data),
-    _DEF_SYM_TAG_VAL(Annotation),
-    _DEF_SYM_TAG_VAL(Label),
-    _DEF_SYM_TAG_VAL(PublicSymbol),
-    _DEF_SYM_TAG_VAL(UDT),
-    _DEF_SYM_TAG_VAL(Enum),
-    _DEF_SYM_TAG_VAL(FunctionType),
-    _DEF_SYM_TAG_VAL(PointerType),
-    _DEF_SYM_TAG_VAL(ArrayType),
-    _DEF_SYM_TAG_VAL(BaseType),
-    _DEF_SYM_TAG_VAL(Typedef),
-    _DEF_SYM_TAG_VAL(BaseClass),
-    _DEF_SYM_TAG_VAL(Friend),
-    _DEF_SYM_TAG_VAL(FunctionArgType),
-    _DEF_SYM_TAG_VAL(FuncDebugStart),
-    _DEF_SYM_TAG_VAL(FuncDebugEnd),
-    _DEF_SYM_TAG_VAL(UsingNamespace),
-    _DEF_SYM_TAG_VAL(VTableShape),
-    _DEF_SYM_TAG_VAL(VTable),
-    _DEF_SYM_TAG_VAL(Custom),
-    _DEF_SYM_TAG_VAL(Thunk),
-    _DEF_SYM_TAG_VAL(CustomType),
-    _DEF_SYM_TAG_VAL(ManagedType),
-    _DEF_SYM_TAG_VAL(Dimension)
-};
-#undef _DEF_SYM_TAG_VAL
-
-#define _DEF_LOC_TYPE(x)    Symbol::ValueNameEntry(LocIs##x, #x)
-const Symbol::ValueNameEntry Symbol::locTypeName[LocTypeMax] = {
-    _DEF_LOC_TYPE(Null),
-    _DEF_LOC_TYPE(Static),
-    _DEF_LOC_TYPE(TLS),
-    _DEF_LOC_TYPE(RegRel),
-    _DEF_LOC_TYPE(ThisRel),
-    _DEF_LOC_TYPE(Enregistered),
-    _DEF_LOC_TYPE(BitField),
-    _DEF_LOC_TYPE(Slot),
-    _DEF_LOC_TYPE(IlRel),
-    Symbol::ValueNameEntry(LocInMetaData, "InMetaData"),
-    _DEF_LOC_TYPE(Constant)
-};
-#undef _DEF_LOC_TYPE
-
-#define _DEF_BASIC_TYPE(x)  Symbol::ValueNameEntry(bt##x, #x)
-const Symbol::ValueNameEntry Symbol::basicTypeName[] = {
-    _DEF_BASIC_TYPE(NoType),
-    _DEF_BASIC_TYPE(Void),
-    _DEF_BASIC_TYPE(Char),
-    _DEF_BASIC_TYPE(WChar),
-    _DEF_BASIC_TYPE(Int),
-    _DEF_BASIC_TYPE(UInt),
-    _DEF_BASIC_TYPE(Float),
-    _DEF_BASIC_TYPE(BCD),
-    _DEF_BASIC_TYPE(Bool),
-    _DEF_BASIC_TYPE(Long),
-    _DEF_BASIC_TYPE(ULong),
-    _DEF_BASIC_TYPE(Currency),
-    _DEF_BASIC_TYPE(Date),
-    _DEF_BASIC_TYPE(Variant),
-    _DEF_BASIC_TYPE(Complex),
-    _DEF_BASIC_TYPE(Bit),
-    _DEF_BASIC_TYPE(BSTR),
-    _DEF_BASIC_TYPE(Hresult)
-};
-#undef _DEF_BASIC_TYPE
-
-const size_t Symbol::cntBasicTypeName = _countof(Symbol::basicTypeName);
-
-#define _DEF_UDT_KIND(x)    Symbol::ValueNameEntry(Udt##x, #x)
-const Symbol::ValueNameEntry Symbol::udtKindName[] = {
-    _DEF_UDT_KIND(Struct),
-    _DEF_UDT_KIND(Class),
-    _DEF_UDT_KIND(Union)
-};
-#undef  _DEF_UDT_KIND
-const size_t Symbol::cntUdtKindName = _countof(udtKindName);
-
-////////////////////////////////////////////////////////////////////////////////
-
 #define callSymbol(method) \
     callSymbolT( &IDiaSymbol::##method, __FUNCTION__, #method)
 
@@ -170,7 +82,7 @@ std::list< Symbol > Symbol::findChildrenImpl(
     DiaSymbolPtr child;
     ULONG celt;
     while ( SUCCEEDED(symbols->Next(1, &child, &celt)) && (celt == 1) )
-        childList.push_back( Symbol(child) );
+        childList.push_back( Symbol(child, m_machineType) );
 
     return childList;
 }
@@ -194,14 +106,14 @@ std::string Symbol::getName()
 
 Symbol Symbol::getType()
 {
-    return Symbol( callSymbol(get_type) );
+    return Symbol( callSymbol(get_type), m_machineType );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 Symbol Symbol::getIndexType()
 {
-    return Symbol( callSymbol(get_arrayIndexType) );
+    return Symbol( callSymbol(get_arrayIndexType), m_machineType );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -329,6 +241,13 @@ ULONG Symbol::getUdtKind()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+ULONG Symbol::getRegisterId()
+{
+    return callSymbol(get_registerId);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 Symbol Symbol::getChildByName(const std::string &_name)
 {
     throwIfNull(__FUNCTION__);
@@ -359,7 +278,7 @@ Symbol Symbol::getChildByName(const std::string &_name)
     if (S_OK != hres)
         throw Exception("Call IDiaEnumSymbols::Item", hres);
 
-    return Symbol(child);
+    return Symbol(child, m_machineType);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -418,30 +337,23 @@ Symbol Symbol::getChildByIndex(ULONG _index)
     if (S_OK != hres)
         throw Exception("Call IDiaEnumSymbols::Item", hres);
 
-    return Symbol(child);
+    return Symbol(child, m_machineType);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 std::string Symbol::print()
 {
-    return printImpl(m_symbol);
+    return printImpl(m_symbol, m_machineType);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-std::string Symbol::printImpl(IDiaSymbol *_symbol, ULONG indent)
+std::string Symbol::printImpl(IDiaSymbol *_symbol, DWORD machineType, ULONG indent /*= 0*/)
 {
     std::stringstream sstream;
     for (ULONG i =0; i < indent; ++i)
         sstream << " ";
-
-    if (indent >= 3)
-    {
-        sstream << "<...>";
-        return sstream.str();
-    }
-
     if (_symbol)
     {
         DWORD dwValue;
@@ -452,24 +364,113 @@ std::string Symbol::printImpl(IDiaSymbol *_symbol, ULONG indent)
         ULONGLONG ullValue;
         HRESULT hres;
 
-        hres = _symbol->get_offset(&lValue);
-        if (S_OK == hres)
-            sstream << ".[" << std::dec << lValue << + "] ";
+        DWORD locType = LocIsNull;
+        hres = _symbol->get_locationType(&locType);
+        bool bLocation = (S_OK == hres);
+        if (bLocation)
+        {
+            hres = _symbol->get_offset(&lValue);
+
+            const bool bNegOffset = lValue < 0;
+            lValue = bNegOffset ? -1 * lValue : lValue;
+
+            switch (locType)
+            {
+            case LocIsBitField:
+            case LocIsThisRel:
+                assert(S_OK == hres);
+                sstream << (bNegOffset ? "-" : "+") << "0x" << std::hex << lValue;
+                if (LocIsBitField == locType)
+                {
+                    hres = _symbol->get_bitPosition(&dwValue);
+                    if (S_OK == hres)
+                        sstream << ", Bit position: " << dwValue;
+                }
+                break;
+
+            case LocIsEnregistered:
+            case LocIsRegRel:
+                hres = _symbol->get_registerId(&dwValue);
+                if (S_OK == hres)
+                {
+                    const char *regName = NULL;
+                    if (IMAGE_FILE_MACHINE_I386 == machineType)
+                    {
+                        for (ULONG i = 0; i < cntI386RegName; ++i)
+                        {
+                            if (dwValue == i386RegName[i].first)
+                            {
+                                regName = i386RegName[i].second;
+                                break;
+                            }
+                        }
+                    }
+                    else if (IMAGE_FILE_MACHINE_AMD64 == machineType)
+                    {
+                        for (ULONG i = 0; i < cntI386RegName; ++i)
+                        {
+                            if (dwValue == i386RegName[i].first)
+                            {
+                                regName = i386RegName[i].second;
+                                break;
+                            }
+                        }
+                    }
+                    if (!regName)
+                    {
+                        sstream << locTypeName[locType].second;
+                    }
+                    else
+                    {
+                        if (LocIsEnregistered == locType)
+                        {
+                            sstream << regName;
+                        }
+                        else
+                        {
+                            sstream << "[" << regName;
+                            sstream << (bNegOffset ? "-" : "+") << "0x" << std::hex << lValue;
+                            sstream << "]";
+                        }
+                    }
+                }
+                else
+                {
+                    sstream << locTypeName[locType].second;
+                }
+                break;
+
+            default:
+                if (S_OK == _symbol->get_relativeVirtualAddress(&dwValue))
+                    sstream << "RVA:0x" << std::hex << dwValue;
+                else if (locType < _countof(locTypeName))
+                    sstream << "Location: " << locTypeName[locType].second;
+                if (S_OK == hres)
+                {
+                    sstream << ", Offset: ";
+                    sstream << (bNegOffset ? "-" : "+") << "0x" << std::hex << lValue;
+                }
+                break;
+            }
+        }
 
         hres = _symbol->get_symTag(&dwValue);
         if ((S_OK == hres) && dwValue < _countof(symTagName))
         {
+            if (bLocation)
+                sstream << ", ";
+
             sstream << symTagName[dwValue].second;
             if (SymTagUDT == symTagName[dwValue].first)
             {
                 hres = _symbol->get_udtKind(&dwValue);
                 if ((S_OK == hres) && (dwValue < cntUdtKindName))
-                    sstream << ":" << udtKindName[dwValue].second;
+                    sstream << ": " << udtKindName[dwValue].second;
             }
         }
         else
         {
-            sstream << "!unknown!";
+            sstream << "!invalid symTag!";
         }
         sstream << ", ";
 
@@ -483,23 +484,6 @@ std::string Symbol::printImpl(IDiaSymbol *_symbol, ULONG indent)
         hres = _symbol->get_length(&ullValue);
         if (S_OK == hres)
             sstream << ", Length: 0x" << std::hex << ullValue;
-
-        hres = _symbol->get_locationType(&dwValue);
-        if ((S_OK == hres) && dwValue < _countof(locTypeName))
-        {
-            sstream << ", Location: " << locTypeName[dwValue].second;
-
-            if (LocIsBitField == locTypeName[dwValue].first)
-            {
-                hres = _symbol->get_bitPosition(&dwValue);
-                if (S_OK == hres)
-                    sstream << ", Bit position: " << dwValue;
-            }
-
-            hres = _symbol->get_relativeVirtualAddress(&dwValue);
-            if (S_OK == hres)
-                sstream << ", RVA: 0x" << std::hex << dwValue;
-        }
 
         bValue = false;
         try
@@ -595,7 +579,7 @@ std::string Symbol::printImpl(IDiaSymbol *_symbol, ULONG indent)
                     for (ULONG i =0; i < indent; ++i)
                         sstream << " ";
                     sstream << "Type: " << std::endl;
-                    sstream << printImpl(pType, indent + 1).c_str();
+                    sstream << printImpl(pType, machineType, indent + 1).c_str();
                 }
             }
         }
@@ -609,12 +593,27 @@ std::string Symbol::printImpl(IDiaSymbol *_symbol, ULONG indent)
                 &symbols);
         if (S_OK == hres)
         {
-            DiaSymbolPtr child;
-            ULONG celt;
-            while ( SUCCEEDED(symbols->Next(1, &child, &celt)) && (celt == 1) )
+            if (indent <= 2)
             {
-                sstream << std::endl << printImpl(child, indent + 1).c_str();
-                child.Release();
+                DiaSymbolPtr child;
+                ULONG celt;
+                while ( SUCCEEDED(symbols->Next(1, &child, &celt)) && (celt == 1) )
+                {
+                    sstream << std::endl << printImpl(child, machineType, indent + 1).c_str();
+                    child.Release();
+                }
+            }
+            else
+            {
+                lValue = 0;
+                symbols->get_Count(&lValue);
+                if (lValue)
+                {
+                    sstream << std::endl;
+                    for (ULONG i =0; i < indent+1; ++i)
+                        sstream << " ";
+                    sstream << "<...>";
+                }
             }
         }
 
@@ -628,10 +627,11 @@ GlobalScope::GlobalScope(
     __inout DiaDataSourcePtr &_scope,
     __inout DiaSessionPtr &_session,
     __inout DiaSymbolPtr &_globalScope
-)   : Symbol(_globalScope)
+)   : Symbol(_globalScope, CV_CFL_80386)
     , m_source( _scope.Detach() )
     , m_session( _session.Detach() )
 {
+    m_symbol->get_machineType(&m_machineType);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

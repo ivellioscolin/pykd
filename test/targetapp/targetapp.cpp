@@ -67,12 +67,12 @@ void FuncWithName0()
     reinterpret_cast<classChild *>(&_classChild)->virtFunc2();
 }
 
-void FuncWithName1()
+void FuncWithName1(int a)
 {
     unionTest _unionTest;
     _unionTest.m_value = 0;
     structTest _structTest;
-    _structTest.m_field1 = 1;
+    _structTest.m_field1 = a;
     struct2 _struct2;
     RtlZeroMemory(&_struct2, sizeof(_struct2));
 }
@@ -84,7 +84,7 @@ int _tmain(int argc, _TCHAR* argv[])
         // Let test scripts to execute
         __debugbreak();
         FuncWithName0();
-        FuncWithName1();
+        FuncWithName1(2);
     }
     catch(std::exception & ex)
     {

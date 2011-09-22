@@ -109,6 +109,8 @@ public:
 
     ULONG getUdtKind();
 
+    ULONG getRegisterId();
+
     Symbol getChildByName(const std::string &_name);
     ULONG getChildCount();
     Symbol getChildByIndex(ULONG _index);
@@ -128,9 +130,15 @@ public:
     static const ValueNameEntry udtKindName[];
     static const size_t cntUdtKindName;
 
+    static const ValueNameEntry i386RegName[];
+    static const size_t cntI386RegName;
+
+    static const ValueNameEntry amd64RegName[];
+    static const size_t cntAmd64RegName;
+
 protected:
 
-    static std::string printImpl(IDiaSymbol *_symbol, ULONG indent = 0);
+    static std::string printImpl(IDiaSymbol *_symbol, DWORD machineType, ULONG indent = 0);
 
     template <typename TRet>
     TRet callSymbolT(
@@ -155,15 +163,20 @@ protected:
             throw Exception(std::string(desc) + " failed, DIA object is not initialized");
     }
 
-    Symbol(__inout DiaSymbolPtr &_symbol) {
+    Symbol(__inout DiaSymbolPtr &_symbol, DWORD machineType) 
+        : m_machineType(machineType)
+    {
         m_symbol = _symbol.Detach();
     }
 
-    Symbol(__in IDiaSymbol *_symbol) {
+    Symbol(__in IDiaSymbol *_symbol, DWORD machineType) 
+        : m_machineType(machineType)
+    {
         m_symbol = _symbol;
     }
 
     DiaSymbolPtr m_symbol;
+    DWORD m_machineType;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -175,6 +188,10 @@ public:
 
     // create GlobalScope instance
     static GlobalScope openPdb(const std::string &filePath);
+
+    ULONG getMachineType() const {
+        return m_machineType;
+    }
 
 private:
 

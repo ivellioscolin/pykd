@@ -8,60 +8,60 @@ import pykd
 
 class DiaTest( unittest.TestCase ):
   def testFind(self):
-    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
-    self.assertNotEqual(0, len(globalScope))
-    symFunction = globalScope.find("FuncWithName0")
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    self.assertNotEqual(0, len(gScope))
+    symFunction = gScope.find("FuncWithName0")
     self.assertTrue(1 == len( symFunction ))
-    symFunction = globalScope.findEx(pykd.SymTagNull,
-                                     "FuNc*Name?",
-                                     pykd.nsCaseInRegularExpression)
+    symFunction = gScope.findEx(pykd.SymTagNull,
+                                "FuNc*Name?",
+                                pykd.nsCaseInRegularExpression)
     self.assertTrue(len(symFunction) > 1)
 
   def testSize(self):
-    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
-    self.assertEqual(1, globalScope["g_ucharValue"].type().size())
-    self.assertEqual(2, globalScope["g_ushortValue"].type().size())
-    self.assertEqual(4, globalScope["g_ulongValue"].type().size())
-    self.assertEqual(8, globalScope["g_ulonglongValue"].type().size())
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    self.assertEqual(1, gScope["g_ucharValue"].type().size())
+    self.assertEqual(2, gScope["g_ushortValue"].type().size())
+    self.assertEqual(4, gScope["g_ulongValue"].type().size())
+    self.assertEqual(8, gScope["g_ulonglongValue"].type().size())
 
   def testValue(self):
-    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
-    self.assertEqual(0x5555, globalScope["g_constNumValue"].value())
-    self.assertEqual(True, globalScope["g_constBoolValue"].value())
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    self.assertEqual(0x5555, gScope["g_constNumValue"].value())
+    self.assertEqual(True, gScope["g_constBoolValue"].value())
 
   def testName(self):
-    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
-    self.assertEqual("g_constNumValue", globalScope["g_constNumValue"].name())
-    self.assertEqual("FuncWithName0", globalScope["FuncWithName0"].name())
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    self.assertEqual("g_constNumValue", gScope["g_constNumValue"].name())
+    self.assertEqual("FuncWithName0", gScope["FuncWithName0"].name())
 
   def testRva(self):
-    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
-    _rva = globalScope["FuncWithName0"].rva()
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    _rva = gScope["FuncWithName0"].rva()
     self.assertNotEqual(0, _rva)
     self.assertTrue( _rva < (target.module.end() - target.module.begin()) )
-    _rva = globalScope["g_string"].rva()
+    _rva = gScope["g_string"].rva()
     self.assertNotEqual(0, _rva)
     self.assertTrue( _rva < (target.module.end() - target.module.begin()) )
 
   def testSymTag(self):
-    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
-    self.assertEqual(pykd.SymTagFunction, globalScope["FuncWithName0"].symTag())
-    self.assertEqual(pykd.SymTagData, globalScope["g_string"].symTag())
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    self.assertEqual(pykd.SymTagFunction, gScope["FuncWithName0"].symTag())
+    self.assertEqual(pykd.SymTagData, gScope["g_string"].symTag())
 
   def testLocType(self):
-    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
-    self.assertEqual(pykd.LocIsConstant, globalScope["g_constNumValue"].locType())
-    self.assertEqual(pykd.LocIsStatic, globalScope["FuncWithName1"].locType())
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    self.assertEqual(pykd.LocIsConstant, gScope["g_constNumValue"].locType())
+    self.assertEqual(pykd.LocIsStatic, gScope["FuncWithName1"].locType())
 
   def testBasicType(self):
-    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
-    self.assertFalse(globalScope["g_string"].type().isBasic())
-    self.assertEqual(pykd.btBool, globalScope["g_constBoolValue"].type().baseType())
-    self.assertEqual(pykd.btULong, globalScope["g_ulongValue"].type().baseType())
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    self.assertFalse(gScope["g_string"].type().isBasic())
+    self.assertEqual(pykd.btBool, gScope["g_constBoolValue"].type().baseType())
+    self.assertEqual(pykd.btULong, gScope["g_ulongValue"].type().baseType())
 
   def testBits(self):
-    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
-    structWithBits = globalScope["structWithBits"]
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    structWithBits = gScope["structWithBits"]
     bitField = structWithBits["m_bit0_4"]
     self.assertEqual(pykd.LocIsBitField, bitField.locType())
     self.assertEqual(0, bitField.bitPos())
@@ -76,21 +76,21 @@ class DiaTest( unittest.TestCase ):
     self.assertEqual(2, bitField.size())
 
   def testIndexId(self):
-    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
-    self.assertNotEqual( globalScope["classChild"].indexId(), 
-                         globalScope["classBase"].indexId() )
-    self.assertNotEqual( globalScope["FuncWithName0"].indexId(), 
-                         globalScope["FuncWithName1"].indexId() )
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    self.assertNotEqual( gScope["classChild"].indexId(), 
+                         gScope["classBase"].indexId() )
+    self.assertNotEqual( gScope["FuncWithName0"].indexId(), 
+                         gScope["FuncWithName1"].indexId() )
 
   def testUdtKind(self):
-    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
-    self.assertEqual(pykd.UdtStruct, globalScope["structWithBits"].udtKind())
-    self.assertEqual(pykd.UdtUnion, globalScope["unionTest"].udtKind())
-    self.assertEqual(pykd.UdtClass, globalScope["classBase"].udtKind())
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    self.assertEqual(pykd.UdtStruct, gScope["structWithBits"].udtKind())
+    self.assertEqual(pykd.UdtUnion, gScope["unionTest"].udtKind())
+    self.assertEqual(pykd.UdtClass, gScope["classBase"].udtKind())
 
   def testOffset(self):
-    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
-    structTest = globalScope["structTest"]
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    structTest = gScope["structTest"]
     self.assertEqual( 0, structTest["m_field0"].offset() )
     self.assertTrue( structTest["m_field0"].offset() < 
                      structTest["m_field1"].offset() )
@@ -99,3 +99,8 @@ class DiaTest( unittest.TestCase ):
     self.assertTrue( structTest["m_field2"].offset() < 
                      structTest["m_field3"].offset() )
     self.assertTrue(structTest["m_field3"].offset() < structTest.size())
+
+  def testMachine(self):
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    self.assertTrue( (gScope.machineType() == pykd.IMAGE_FILE_MACHINE_I386) or
+                     (gScope.machineType() == pykd.IMAGE_FILE_MACHINE_AMD64) )
