@@ -24,12 +24,49 @@ struct structWithBits {
 };
 structWithBits g_structWithBits = {0};
 
+union unionTest {
+    ULONG m_value;
+    structWithBits m_bits;
+};
+
+class classBase {
+public:
+    int m_baseField;
+    void baseMethod() const {}
+    virtual void virtFunc() =  0;
+    virtual void virtFunc2() =  0;
+};
+
+struct structTest {
+    ULONG m_field0;
+    ULONGLONG m_field1;
+    bool m_field2;
+    USHORT m_field3;
+};
+
+class classChild : public classBase {
+public:
+    int m_childField;
+    int m_childField2;
+    void childMethod() const {}
+    virtual void virtFunc() {}
+    virtual void virtFunc2() {}
+};
+
 void FuncWithName0()
 {
+    classChild _classChild;
+    _classChild.baseMethod();
+
+    reinterpret_cast<classChild *>(&_classChild)->virtFunc2();
 }
 
 void FuncWithName1()
 {
+    unionTest _unionTest;
+    _unionTest.m_value = 0;
+    structTest _structTest;
+    _structTest.m_field1 = 1;
 }
 
 int _tmain(int argc, _TCHAR* argv[])

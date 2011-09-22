@@ -144,13 +144,15 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "type", &pyDia::Symbol::getType, 
             "Retrieves the symbol that represents the type for this symbol" )
         .def( "indexType", &pyDia::Symbol::getIndexType, 
-            "Retrieves the symbol interface of the array index type of the symbol" )
+            "Retrieves a reference to the class parent of the symbol" )
         .def( "rva", &pyDia::Symbol::getRva,
             "Retrieves the relative virtual address (RVA) of the location")
         .def( "symTag", &pyDia::Symbol::getSymTag, 
             "Retrieves the symbol type classifier: SymTagXxx" )
         .def( "locType", &pyDia::Symbol::getLocType, 
             "Retrieves the location type of a data symbol: LocIsXxx" )
+        .def( "offset", &pyDia::Symbol::getOffset, 
+            "Retrieves the offset of the symbol location" )
         .def( "value", &pyDia::Symbol::getValue,
             "Retrieves the value of a constant")
         .def( "isBasic", &pyDia::Symbol::isBasicType,
@@ -159,6 +161,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrieves the base type for this symbol")
         .def( "bitPos", &pyDia::Symbol::getBitPosition,
             "Retrieves the base type for this symbol")
+        .def( "indexId", &pyDia::Symbol::getIndexId,
+            "Retrieves the unique symbol identifier")
+        .def( "udtKind", &pyDia::Symbol::getUdtKind,
+            "Retrieves the variety of a user-defined type")
         .def( "__str__", &pyDia::Symbol::print)
         .def("__getitem__", &pyDia::Symbol::getChildByName)
         .def("__len__", &pyDia::Symbol::getChildCount )
@@ -248,6 +254,12 @@ BOOST_PYTHON_MODULE( pykd )
     DEF_PY_CONST_ULONG(btHresult);
     python::scope().attr("diaBasicType") = 
         genDict(pyDia::Symbol::basicTypeName, pyDia::Symbol::cntBasicTypeName);
+
+    DEF_PY_CONST_ULONG(UdtStruct);
+    DEF_PY_CONST_ULONG(UdtClass);
+    DEF_PY_CONST_ULONG(UdtUnion);
+    python::scope().attr("diaUdtKind") = 
+        genDict(pyDia::Symbol::udtKindName, pyDia::Symbol::cntUdtKindName);
 
     // exception:
 

@@ -91,6 +91,15 @@ const Symbol::ValueNameEntry Symbol::basicTypeName[] = {
 
 const size_t Symbol::cntBasicTypeName = _countof(Symbol::basicTypeName);
 
+#define _DEF_UDT_KIND(x)    Symbol::ValueNameEntry(Udt##x, #x)
+const Symbol::ValueNameEntry Symbol::udtKindName[] = {
+    _DEF_UDT_KIND(Struct),
+    _DEF_UDT_KIND(Class),
+    _DEF_UDT_KIND(Union)
+};
+#undef  _DEF_UDT_KIND
+const size_t Symbol::cntUdtKindName = _countof(udtKindName);
+
 ////////////////////////////////////////////////////////////////////////////////
 
 #define callSymbol(method) \
@@ -217,6 +226,13 @@ ULONG Symbol::getLocType()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+ULONG Symbol::getOffset()
+{
+    return callSymbol(get_offset);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Symbol::getValueImpl(VARIANT &vtValue)
 {
     throwIfNull(__FUNCTION__);
@@ -294,6 +310,20 @@ ULONG Symbol::getBaseType()
 ULONG Symbol::getBitPosition()
 {
     return callSymbol(get_bitPosition);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONG Symbol::getIndexId()
+{
+    return callSymbol(get_symIndexId);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONG Symbol::getUdtKind()
+{
+    return callSymbol(get_udtKind);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

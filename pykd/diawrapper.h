@@ -94,6 +94,8 @@ public:
 
     ULONG getLocType();
 
+    ULONG getOffset();
+
     void getValueImpl(VARIANT &vtValue);
     python::object getValue();
 
@@ -102,6 +104,10 @@ public:
     ULONG getBaseType();
 
     ULONG getBitPosition();
+
+    ULONG getIndexId();
+
+    ULONG getUdtKind();
 
     Symbol getChildByName(const std::string &_name);
     ULONG getChildCount();
@@ -113,9 +119,14 @@ public:
     typedef std::pair<ULONG, const char *> ValueNameEntry;
 
     static const ValueNameEntry symTagName[SymTagMax];
+
     static const ValueNameEntry locTypeName[LocTypeMax];
+
     static const ValueNameEntry basicTypeName[];
     static const size_t cntBasicTypeName;
+
+    static const ValueNameEntry udtKindName[];
+    static const size_t cntUdtKindName;
 
 protected:
 

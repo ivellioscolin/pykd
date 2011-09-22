@@ -74,3 +74,28 @@ class DiaTest( unittest.TestCase ):
     self.assertEqual(pykd.LocIsBitField, bitField.locType())
     self.assertEqual(6, bitField.bitPos())
     self.assertEqual(2, bitField.size())
+
+  def testIndexId(self):
+    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    self.assertNotEqual( globalScope["classChild"].indexId(), 
+                         globalScope["classBase"].indexId() )
+    self.assertNotEqual( globalScope["FuncWithName0"].indexId(), 
+                         globalScope["FuncWithName1"].indexId() )
+
+  def testUdtKind(self):
+    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    self.assertEqual(pykd.UdtStruct, globalScope["structWithBits"].udtKind())
+    self.assertEqual(pykd.UdtUnion, globalScope["unionTest"].udtKind())
+    self.assertEqual(pykd.UdtClass, globalScope["classBase"].udtKind())
+
+  def testOffset(self):
+    globalScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    structTest = globalScope["structTest"]
+    self.assertEqual( 0, structTest["m_field0"].offset() )
+    self.assertTrue( structTest["m_field0"].offset() < 
+                     structTest["m_field1"].offset() )
+    self.assertTrue( structTest["m_field1"].offset() < 
+                     structTest["m_field2"].offset() )
+    self.assertTrue( structTest["m_field2"].offset() < 
+                     structTest["m_field3"].offset() )
+    self.assertTrue(structTest["m_field3"].offset() < structTest.size())
