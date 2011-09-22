@@ -2,7 +2,26 @@
 #include "dbgext.h"
 #include "disasm.h"
 #include "dbgexcept.h"
-#include "dbgmem.h"
+
+/////////////////////////////////////////////////////////////////////////////////
+
+disasm::disasm( ULONG64 offset )
+{
+    HRESULT     hres;
+
+    m_beginOffset = addr64(offset);
+
+    if ( m_beginOffset == 0 )
+    {
+        hres = dbgExt->registers->GetInstructionOffset( &m_beginOffset );
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugRegisters::GetInstructionOffset failed" );
+    }
+
+    m_currentOffset = m_beginOffset;
+
+    doDisasm();
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -11,23 +30,11 @@ void disasm::doDisasm()
     HRESULT     hres;
     char        buffer[0x100];
     ULONG       disasmSize = 0;
-    ULONG64     offset = addr64(m_currentOffset);
     ULONG64     endOffset = 0;
-
-    if ( m_beginOffset == 0 )
-    {
-        ULONG64     currentOffset = 0;
-
-        hres = dbgExt->registers->GetInstructionOffset( &currentOffset );
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugRegisters::GetInstructionOffset failed" );
-
-        offset += currentOffset;
-    }
-
+    
     hres = 
         dbgExt->control->Disassemble(
-            offset,
+            m_currentOffset,
             DEBUG_DISASM_EFFECTIVE_ADDRESS,
             buffer,
             sizeof(buffer),
@@ -41,24 +48,29 @@ void disasm::doDisasm()
     if ( FAILED( hres ) )
         m_ea = 0;
 
-    m_length = (ULONG)(endOffset - offset);
+    m_length = (ULONG)(endOffset - m_currentOffset);
 
     m_disasm = std::string( buffer, disasmSize - 2);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
-ULONG64
-assembly( ULONG64 offset, const std::string &instr )
+std::string
+disasm::assembly( const std::string &instr )
 {
     HRESULT     hres;
 
     ULONG64     endOffset = 0;
-    hres = dbgExt->control->Assemble( offset, instr.c_str(), &endOffset );
+    hres = dbgExt->control->Assemble( m_currentOffset, instr.c_str(), &endOffset );
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugControl::Assemble failed" );      
+        throw DbgException( "IDebugControl::Assemble failed" );
 
-    return endOffset;
+    m_currentOffset = endOffset;
+
+    doDisasm();
+
+    return m_disasm;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
+

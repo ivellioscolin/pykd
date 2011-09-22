@@ -221,7 +221,6 @@ BOOST_PYTHON_MODULE( pykd )
         "Delete synthetic symbols by virtual address" );
     boost::python::def( "delSynSymbolsMask", &delSyntheticSymbolsMask, 
         "Delete synthetic symbols by mask of module and symbol name");
-    boost::python::def( "assembly", &assembly, "Assemble a single processor instruction" );
 
     boost::python::class_<TypeInfo>( "typeInfo",
         "Class representing non-primitive type info: structure, union, etc. attributes is a fields of non-primitive type" )
@@ -380,12 +379,14 @@ BOOST_PYTHON_MODULE( pykd )
     boost::python::class_<disasm>("disasm", "Class disassemble a processor instructions", boost::python::no_init )
         .def( boost::python::init<>( "constructor" ) )
         .def( boost::python::init<ULONG64>( boost::python::args("offset"), "constructor" ) )
-        .def( "next", &disasm::next, "Disassemble next instruction" )
+        .def( "disasm", &disasm::disassemble, "Disassemble next instruction" )
+        .def( "sasm", &disasm::assembly, "Insert assemblied instuction to current offset" )
         .def( "begin", &disasm::begin, "Return begin offset" )
         .def( "current", &disasm::current, "Return current offset" )
         .def( "length", &disasm::length, "Return current instruction length" )
         .def( "instruction", &disasm::instruction, "Returm current disassembled instruction" )
-        .def( "ea", &disasm::ea, "Return effective address for last disassembled instruction or 0" );
+        .def( "ea", &disasm::ea, "Return effective address for last disassembled instruction or 0" )
+        .def( "reset", &disasm::reset, "Reset current offset to begin" );
 
 
     // исключения

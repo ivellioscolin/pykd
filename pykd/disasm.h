@@ -1,23 +1,31 @@
 #pragma once
 
+#include "dbgmem.h"
+
 /////////////////////////////////////////////////////////////////////////////////
 
 class disasm {
 
 public:
 
-    disasm( ULONG64 offset = 0) :
-      m_beginOffset( offset ),
-      m_currentOffset( offset ) {
-          doDisasm();
-      }
+    disasm( ULONG64 offset = 0);
 
-      std::string    next() {
+    std::string  disassemble() {
+        std::string  s = m_disasm;
         m_currentOffset += m_length;
         doDisasm();
-        return m_disasm;
-      }
+        return s;
+    }
 
+    std::string  reset() {
+
+        m_currentOffset = m_beginOffset;
+        doDisasm();
+        return m_disasm;
+    }
+
+    std::string
+    assembly( const std::string &instr );
 
     std::string    instruction() const {
         return m_disasm;
@@ -50,8 +58,5 @@ private:
 
     std::string     m_disasm;
 };
-
-ULONG64
-assembly( ULONG64 offset, const std::string &instr );
 
 /////////////////////////////////////////////////////////////////////////////////
