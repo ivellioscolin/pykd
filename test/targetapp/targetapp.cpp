@@ -65,16 +65,28 @@ void FuncWithName0()
     _classChild.baseMethod();
 
     reinterpret_cast<classChild *>(&_classChild)->virtFunc2();
+    std::cout << _classChild.m_childField2;
+    std::cout << g_constNumValue;
+    std::cout << g_constBoolValue;
+    std::cout << g_ucharValue;
+    std::cout << g_ushortValue;
+    std::cout << g_ulongValue;
+    std::cout << g_ulonglongValue;
 }
 
 void FuncWithName1(int a)
 {
-    unionTest _unionTest[2];
+    unionTest _unionTest[2] = {0};
     _unionTest[1].m_value = 0;
     structTest _structTest;
     _structTest.m_field1 = a;
     struct2 _struct2;
     RtlZeroMemory(&_struct2, sizeof(_struct2));
+
+    std::cout << _unionTest[0].m_value;
+    std::cout << _structTest.m_field1;
+    std::cout << _struct2.m_struct.m_field1;
+    std::cout << g_string;
 }
 
 int _tmain(int argc, _TCHAR* argv[])

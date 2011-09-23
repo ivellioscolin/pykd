@@ -186,7 +186,6 @@ protected:
     template <typename TRet>
     TRet callSymbolT(
         HRESULT(STDMETHODCALLTYPE IDiaSymbol::*method)(TRet *),
-        const char *funcName,
         const char *methodName
     )
     {

@@ -12,7 +12,13 @@ public:
     toWStr(const std::string &sz)
     {
         m_buf.resize( sz.size() + 1, L'\0' );
-        ::MultiByteToWideChar( CP_ACP, 0, sz.c_str(), sz.size(), &m_buf[0], m_buf.size() );
+        ::MultiByteToWideChar(
+            CP_ACP,
+            0,
+            sz.c_str(),
+            static_cast<int>( sz.size() ),
+            &m_buf[0],
+            static_cast<int>( m_buf.size() ) );
     }
 
     operator const WCHAR *() const {
@@ -70,7 +76,7 @@ public:
             bstr,
             chars,
             &ret[0],
-            ret.size(),
+            static_cast<int>(ret.size()),
             NULL,
             NULL);
         return ret;
