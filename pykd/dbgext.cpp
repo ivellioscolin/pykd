@@ -129,7 +129,7 @@ BOOST_PYTHON_MODULE( pykd )
          .def("reload", &pykd::Module::reloadSymbols,
             "(Re)load symbols for the module" );
 
-    python::def( "diaOpenPdb", &pyDia::GlobalScope::openPdb, 
+    python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");
 
     python::class_<pyDia::Symbol>("DiaSymbol", "class wrapper for MS DIA Symbol" )
@@ -177,7 +177,9 @@ BOOST_PYTHON_MODULE( pykd )
         .def("machineType", &pyDia::GlobalScope::getMachineType, 
             "Retrieves the type of the target CPU: IMAGE_FILE_MACHINE_XXX")
         .def("findByRva", &pyDia::GlobalScope::findByRva, 
-            "Find symbol by RVA. Return tuple: (DiaSymbol, offset)");
+            "Find symbol by RVA. Return tuple: (DiaSymbol, offset)")
+        .def("symbolById", &pyDia::GlobalScope::getSymbolById, 
+            "Retrieves a symbol by its unique identifier: DiaSymbol::indexId()");
 
     // CPU type:
     DEF_PY_CONST_ULONG(IMAGE_FILE_MACHINE_I386);

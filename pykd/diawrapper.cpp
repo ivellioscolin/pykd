@@ -349,7 +349,7 @@ GlobalScope::GlobalScope(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-GlobalScope GlobalScope::openPdb(const std::string &filePath)
+GlobalScope GlobalScope::loadPdb(const std::string &filePath)
 {
     DiaDataSourcePtr _scope;
 
@@ -396,6 +396,20 @@ Symbol GlobalScope::findByRvaImpl(
         throw Exception("Call IDiaSession::findSymbolByRVAEx", E_UNEXPECTED);
 
     return Symbol( child, m_machineType );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Symbol GlobalScope::getSymbolById(ULONG symId)
+{
+    DiaSymbolPtr _symbol;
+    HRESULT hres = m_session->symbolById(symId, &_symbol);
+    if (S_OK != hres)
+        throw Exception("Call IDiaSession::findSymbolByRVAEx", hres);
+    if (!_symbol)
+        throw Exception("Call IDiaSession::findSymbolByRVAEx", E_UNEXPECTED);
+
+    return Symbol( _symbol, m_machineType );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

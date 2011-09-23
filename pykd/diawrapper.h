@@ -217,7 +217,7 @@ public:
     GlobalScope() {}
 
     // GlobalScope factory
-    static GlobalScope openPdb(const std::string &filePath);
+    static GlobalScope loadPdb(const std::string &filePath);
 
     ULONG getMachineType() const {
         return m_machineType;
@@ -239,6 +239,8 @@ public:
         __out LONG &displacement
     );
 
+    // get symbol by unique index
+    Symbol getSymbolById(ULONG symId);
 
 private:
 
