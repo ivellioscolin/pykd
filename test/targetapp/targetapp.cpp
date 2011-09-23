@@ -69,8 +69,8 @@ void FuncWithName0()
 
 void FuncWithName1(int a)
 {
-    unionTest _unionTest;
-    _unionTest.m_value = 0;
+    unionTest _unionTest[2];
+    _unionTest[1].m_value = 0;
     structTest _structTest;
     _structTest.m_field1 = a;
     struct2 _struct2;

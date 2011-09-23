@@ -143,6 +143,13 @@ LONG Symbol::getOffset()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+ULONG Symbol::getCount()
+{
+    return callSymbol(get_count);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Symbol::getValueImpl(IDiaSymbol *_symbol, VARIANT &vtValue)
 {
     HRESULT hres = _symbol->get_value(&vtValue);

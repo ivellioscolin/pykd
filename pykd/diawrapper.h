@@ -99,6 +99,8 @@ public:
 
     LONG getOffset();
 
+    ULONG getCount();
+
     static void getValueImpl(IDiaSymbol *_symbol, VARIANT &vtValue);
     python::object getValue();
 

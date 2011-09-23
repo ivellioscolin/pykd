@@ -153,6 +153,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrieves the location type of a data symbol: LocIsXxx" )
         .def( "offset", &pyDia::Symbol::getOffset, 
             "Retrieves the offset of the symbol location" )
+        .def( "count", &pyDia::Symbol::getCount, 
+            "Retrieves the number of items in a list or array" )
         .def( "value", &pyDia::Symbol::getValue,
             "Retrieves the value of a constant")
         .def( "isBasic", &pyDia::Symbol::isBasicType,
