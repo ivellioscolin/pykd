@@ -104,3 +104,16 @@ class DiaTest( unittest.TestCase ):
     gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
     self.assertTrue( (gScope.machineType() == pykd.IMAGE_FILE_MACHINE_I386) or
                      (gScope.machineType() == pykd.IMAGE_FILE_MACHINE_AMD64) )
+
+  def testFindByRva(self):
+    gScope = pykd.diaOpenPdb( str(target.module.pdb()) )
+    func = gScope["FuncWithName0"]
+
+    tplSymOffset = gScope.findByRva(func.rva(), pykd.SymTagFunction)
+    self.assertEqual(tplSymOffset[0].indexId(), func.indexId())
+    self.assertEqual(tplSymOffset[1], 0)
+
+    tplSymOffset = gScope.findByRva(func.rva() + 2, pykd.SymTagFunction)
+    self.assertEqual(tplSymOffset[0].indexId(), func.indexId())
+    self.assertEqual(tplSymOffset[1], 2)
+

@@ -56,7 +56,10 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 class Symbol {
 public:
-    Symbol() {}
+    Symbol()
+    {
+        throw Exception("DiaSymbol must be created over factory from DiaScope::...");
+    }
 
     std::list< Symbol > findChildrenImpl(
         ULONG symTag,
@@ -138,7 +141,42 @@ public:
 
 protected:
 
-    static std::string printImpl(IDiaSymbol *_symbol, DWORD machineType, ULONG indent = 0);
+    // Check symbols loop
+    class checkSymLoop
+    {
+    public:
+        checkSymLoop(checkSymLoop *prev, IDiaSymbol *_symbol) 
+            : m_prev(prev)
+            , m_symIndexId(0)
+        {
+            _symbol->get_symIndexId(&m_symIndexId);
+        }
+
+        bool check() const
+        {
+            const checkSymLoop *prev = m_prev;
+            while (prev)
+            {
+                if (prev->m_symIndexId == m_symIndexId)
+                    return true;
+                prev = prev->m_prev;
+            }
+
+            return false;
+        }
+
+    private:
+        const checkSymLoop *m_prev;
+        DWORD m_symIndexId;
+    };
+
+    static std::string printImpl(
+        IDiaSymbol *_symbol,
+        DWORD machineType,
+        ULONG indent = 0,
+        checkSymLoop *checkLoopPrev = NULL,
+        const char *prefix = NULL
+    );
 
     template <typename TRet>
     TRet callSymbolT(
@@ -147,20 +185,12 @@ protected:
         const char *methodName
     )
     {
-        throwIfNull(funcName);
-
         TRet retValue;
         HRESULT hres = (m_symbol->*method)(&retValue);
         if (S_OK != hres)
             throw Exception(std::string("Call IDiaSymbol::") + methodName, hres);
 
         return retValue;
-    }
-
-    void throwIfNull(const char *desc)
-    {
-        if (!m_symbol)
-            throw Exception(std::string(desc) + " failed, DIA object is not initialized");
     }
 
     Symbol(__inout DiaSymbolPtr &_symbol, DWORD machineType) 
@@ -186,12 +216,29 @@ class GlobalScope : public Symbol {
 public:
     GlobalScope() {}
 
-    // create GlobalScope instance
+    // GlobalScope factory
     static GlobalScope openPdb(const std::string &filePath);
 
     ULONG getMachineType() const {
         return m_machineType;
     }
+
+    // RVA -> Symbol
+    python::tuple findByRva(
+        ULONG rva,
+        ULONG symTag
+    )
+    {
+        LONG displacement;
+        Symbol child = findByRvaImpl(rva, symTag, displacement);
+        return python::make_tuple(child, displacement);
+    }
+    Symbol findByRvaImpl(
+        __in ULONG rva,
+        __in ULONG symTag,
+        __out LONG &displacement
+    );
+
 
 private:
 

@@ -174,7 +174,10 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__getitem__", &pyDia::Symbol::getChildByIndex);
 
     python::class_<pyDia::GlobalScope, python::bases<pyDia::Symbol> >("DiaScope", "class wrapper for MS DIA Symbol" )
-        .def("machineType", &pyDia::GlobalScope::getMachineType, "Retrieves the type of the target CPU: IMAGE_FILE_MACHINE_XXX");
+        .def("machineType", &pyDia::GlobalScope::getMachineType, 
+            "Retrieves the type of the target CPU: IMAGE_FILE_MACHINE_XXX")
+        .def("findByRva", &pyDia::GlobalScope::findByRva, 
+            "Find symbol by RVA. Return tuple: (DiaSymbol, offset)");
 
     // CPU type:
     DEF_PY_CONST_ULONG(IMAGE_FILE_MACHINE_I386);

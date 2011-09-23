@@ -370,6 +370,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\diaprint.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\diawrapper.cpp"
 				>
 			</File>
