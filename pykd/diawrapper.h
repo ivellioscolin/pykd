@@ -114,12 +114,15 @@ public:
 
     ULONG getRegisterId();
 
+    ULONG getMachineType() const {
+        return m_machineType;
+    }
+
     Symbol getChildByName(const std::string &_name);
     ULONG getChildCount();
     Symbol getChildByIndex(ULONG _index);
 
     std::string print();
-
 public:
     typedef std::pair<ULONG, const char *> ValueNameEntry;
 
@@ -218,10 +221,6 @@ public:
 
     // GlobalScope factory
     static GlobalScope loadPdb(const std::string &filePath);
-
-    ULONG getMachineType() const {
-        return m_machineType;
-    }
 
     // RVA -> Symbol
     python::tuple findByRva(

@@ -168,14 +168,14 @@ BOOST_PYTHON_MODULE( pykd )
         .def("registerId", &pyDia::Symbol::getRegisterId,
             "Retrieves the register designator of the location:\n"
             "CV_REG_XXX (for IMAGE_FILE_MACHINE_I386) or CV_AMD64_XXX (for IMAGE_FILE_MACHINE_AMD64)")
+        .def("machineType", &pyDia::Symbol::getMachineType, 
+            "Retrieves the type of the target CPU: IMAGE_FILE_MACHINE_XXX")
         .def( "__str__", &pyDia::Symbol::print)
         .def("__getitem__", &pyDia::Symbol::getChildByName)
         .def("__len__", &pyDia::Symbol::getChildCount )
         .def("__getitem__", &pyDia::Symbol::getChildByIndex);
 
     python::class_<pyDia::GlobalScope, python::bases<pyDia::Symbol> >("DiaScope", "class wrapper for MS DIA Symbol" )
-        .def("machineType", &pyDia::GlobalScope::getMachineType, 
-            "Retrieves the type of the target CPU: IMAGE_FILE_MACHINE_XXX")
         .def("findByRva", &pyDia::GlobalScope::findByRva, 
             "Find symbol by RVA. Return tuple: (DiaSymbol, offset)")
         .def("symbolById", &pyDia::GlobalScope::getSymbolById, 
