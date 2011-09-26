@@ -36,6 +36,21 @@ Module::Module( IDebugClient5 *client, const std::string& moduleName ) : DbgObje
          throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );    
 
     m_size = moduleParam.Size;
+
+    char imageName[0x100];
+
+    hres = m_symbols->GetModuleNameString( 
+        DEBUG_MODNAME_IMAGE,
+        DEBUG_ANY_ID,
+        m_base,
+        imageName,
+        sizeof( imageName ),
+        NULL );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol::GetModuleNameString failed" );
+
+    m_imageName = std::string( imageName );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -66,6 +81,21 @@ Module::Module( IDebugClient5 *client, ULONG64 offset ) : DbgObject( client )
 
     m_name = std::string( moduleName );
 
+    char imageName[0x100];
+
+    hres = m_symbols->GetModuleNameString( 
+        DEBUG_MODNAME_IMAGE,
+        DEBUG_ANY_ID,
+        m_base,
+        imageName,
+        sizeof( imageName ),
+        NULL );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol::GetModuleNameString failed" );
+
+    m_imageName = std::string( imageName );
+
     DEBUG_MODULE_PARAMETERS     moduleParam = { 0 };
     hres = m_symbols->GetModuleParameters( 1, &m_base, 0, &moduleParam );
     if ( FAILED( hres ) )
@@ -76,7 +106,7 @@ Module::Module( IDebugClient5 *client, ULONG64 offset ) : DbgObject( client )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-std::wstring
+std::string
 Module::getPdbName()
 {
     HRESULT         hres;
@@ -97,7 +127,10 @@ Module::getPdbName()
     if ( FAILED( hres ) )
         throw DbgException( "IDebugAdvanced2::GetSymbolInformation failed" );
 
-    return std::wstring( moduleInfo.LoadedPdbName );
+    char  pdbName[ 256 ];                
+    WideCharToMultiByte( CP_ACP, 0, moduleInfo.LoadedPdbName, 256, pdbName, 256, NULL, NULL );
+
+    return std::string( pdbName );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -107,10 +140,14 @@ Module::reloadSymbols()
 {
     HRESULT     hres;
 
-    hres = m_symbols->Reload( "/f" );
-    if ( FAILED( hres ) )
-        throw DbgException("IDebugSymbols::Reload failed" );           
+    std::string  param = "/f ";
+    param += m_imageName;
 
+    hres = m_symbols->Reload( param.c_str() );
+    if ( FAILED( hres ) )
+        throw DbgException("IDebugSymbols::Reload failed" );
+
+    m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

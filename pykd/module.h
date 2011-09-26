@@ -3,6 +3,7 @@
 #include <string>
 
 #include "dbgobj.h"
+#include "diawrapper.h"
 
 namespace pykd {
 
@@ -20,6 +21,10 @@ public:
         return m_name;
     }
 
+    std::string getImageName() {
+        return m_imageName;
+    }
+
     ULONG64  getBase() {
         return m_base;
     }
@@ -32,17 +37,28 @@ public:
         return m_size;
     }
 
-    std::wstring
+    std::string
     getPdbName();
 
     void
     reloadSymbols();
 
+    python::list
+    getSymbols() {
+        if ( !m_dia )
+            m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
+
+        return m_dia->findChildrenEx( SymTagNull, "*", nsRegularExpression );
+    }
+
 private:
 
-    std::string     m_name;
-    ULONG64         m_base;
-    ULONG           m_size;
+    std::string             m_name;
+    std::string             m_imageName;
+    ULONG64                 m_base;
+    ULONG                   m_size;
+    pyDia::GlobalScopePtr   m_dia;
+
 
 };
 

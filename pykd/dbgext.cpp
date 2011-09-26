@@ -116,19 +116,24 @@ BOOST_PYTHON_MODULE( pykd )
         "Return instance of the Module class which posseses specified address" );
 
     python::class_<pykd::Module>("module", "Class representing executable module", python::no_init )
-         .def("begin", &pykd::Module::getBase,
+        .def("begin", &pykd::Module::getBase,
              "Return start address of the module" )
-         .def("end", &pykd::Module::getEnd,
+        .def("end", &pykd::Module::getEnd,
              "Return end address of the module" )
-         .def("size", &pykd::Module::getSize,
+        .def("size", &pykd::Module::getSize,
               "Return size of the module" )
-         .def("name", &pykd::Module::getName,
-             "Return name of the module" )       
-         .def("pdb", &pykd::Module::getPdbName,
+        .def("name", &pykd::Module::getName,
+             "Return name of the module" )      
+        .def("image", &pykd::Module::getImageName,
+             "Return name of the image of the module" )
+        .def("pdb", &pykd::Module::getPdbName,
              "Return the full path to the module's pdb file ( symbol information )" )
-         .def("reload", &pykd::Module::reloadSymbols,
-            "(Re)load symbols for the module" );
+        .def("reload", &pykd::Module::reloadSymbols,
+            "(Re)load symbols for the module" )
+        .def("symbols", &pykd::Module::getSymbols,
+            "Return list of all symbols of the module" );
 
+        
     python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");
 

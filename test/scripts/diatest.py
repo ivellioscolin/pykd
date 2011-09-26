@@ -7,6 +7,12 @@ import target
 import pykd
 
 class DiaTest( unittest.TestCase ):
+
+    def testCtor(self):
+        """ DiaSymbol can not be created direct """
+        try: pykd.DiaSymbol()
+        except RuntimeError: pass
+
     def testFind(self):
         try:
             gScope = pykd.diaLoadPdb( str(target.module.pdb()) )
