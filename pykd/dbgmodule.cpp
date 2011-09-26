@@ -68,6 +68,9 @@ void queryModuleParams(
         NULL,
         0,
         NULL );
+
+    std::vector<char>    nameBuf(moduleNameChars);
+
     name.resize(moduleNameChars + 1);
     hres = dbgExt->symbols->GetModuleNames(
         moduleIndex,
@@ -75,14 +78,16 @@ void queryModuleParams(
         NULL,
         0,
         NULL,
-        &name[0],
-        (ULONG)name.size(),
+        &nameBuf[0],
+        nameBuf.size(),
         NULL,
         NULL,
         0,
         NULL );
     if ( FAILED( hres ) )
         throw DbgException( "IDebugSymbol::GetModuleNames  failed" );
+
+    name = std::string( &nameBuf[0] );
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +111,7 @@ dbgModuleClass::dbgModuleClass( const std::string &name, ULONG64 base, ULONG siz
     m_base( addr64(base) ),
     m_end( addr64(base) + size )
 {
-    reloadSymbols();
+    //reloadSymbols();
 
     std::string         pattern = name + "!*";
     ULONG64             enumHandle = 0;

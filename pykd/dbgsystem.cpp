@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-#include <exception>
 #include "dbgext.h"
 #include "dbgexcept.h"
 #include "dbgsystem.h"
@@ -13,23 +12,11 @@ is64bitSystem()
 {
     HRESULT     hres;
     
-    try {
-    
-        hres = dbgExt->control->IsPointer64Bit();
+    hres = dbgExt->control->IsPointer64Bit();
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::IsPointer64Bit failed" );
         
-        return hres == S_OK;    
-        
-    }    
-	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}	 
-	
-	return false;
+    return hres == S_OK;    
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -48,29 +35,16 @@ dbgSymPath()
     HRESULT         hres;
     std::string     pathStr;
     
-    try {
-    
-        ULONG    size;
-        dbgExt->symbols->GetSymbolPath( NULL, 0, &size );
+    ULONG    size;
+    dbgExt->symbols->GetSymbolPath( NULL, 0, &size );
+
         
 	std::vector<char> path(size);
-        hres = dbgExt->symbols->GetSymbolPath( &path[0], size, NULL );
-        if ( FAILED( hres ) )
-             throw DbgException( "IDebugSymbols::GetSymbolPath  failed" ); 
+    hres = dbgExt->symbols->GetSymbolPath( &path[0], size, NULL );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbols::GetSymbolPath  failed" ); 
         
-        pathStr = &path[0];        
-        
-    }    
-	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}	 
-	
-    return pathStr;
+    return std::string(&path[0]);
 }
 
 
@@ -81,39 +55,29 @@ getPdbFile( ULONG64  moduleBase )
 {
     HRESULT             hres;
 
-    try {
-    
 
-        IMAGEHLP_MODULEW64      imageHelpInfo = { 0 };
 
-        hres = 
-            dbgExt->advanced2->GetSymbolInformation(
-                DEBUG_SYMINFO_IMAGEHLP_MODULEW64,
-                moduleBase,
-                0,
-                &imageHelpInfo,
-                sizeof( imageHelpInfo ),
-                NULL,
-                NULL,
-                0,
-                NULL );
-                
-        char  fileName[ 256 ];                
-        WideCharToMultiByte( CP_ACP, 0, imageHelpInfo.LoadedPdbName, 256, fileName, 256, NULL, NULL );
-         
-        return std::string( fileName );
+    IMAGEHLP_MODULEW64      imageHelpInfo = { 0 };
+
+    hres = 
+        dbgExt->advanced2->GetSymbolInformation(
+            DEBUG_SYMINFO_IMAGEHLP_MODULEW64,
+            moduleBase,
+            0,
+            &imageHelpInfo,
+            sizeof( imageHelpInfo ),
+            NULL,
+            NULL,
+            0,
+            NULL );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugAdvanced2::GetSymbolInformation  failed" );
+
+    char  fileName[ 256 ];                
+    WideCharToMultiByte( CP_ACP, 0, imageHelpInfo.LoadedPdbName, 256, fileName, 256, NULL, NULL );
         
-    }    
-	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}	 
-        
-    return  std::string();
+    return std::string( fileName );      
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -121,26 +85,10 @@ getPdbFile( ULONG64  moduleBase )
 void
 reloadModule( const char * moduleName  )
 {
-    HRESULT         hres;
-     
-    try {
-    
-        // подавить вывод сообщений об отсутствии символов
-        OutputReader        outputReader( dbgExt->client );
+    // подавить вывод сообщений об отсутствии символов
+    OutputReader        outputReader( dbgExt->client );
  
-        hres = dbgExt->symbols->Reload( moduleName );
-        
-        //if ( FAILED( hres ) )
-        //    throw DbgException( "IDebugSymbol::Reload  failed" );
-    }
-	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}	
+    dbgExt->symbols->Reload( moduleName );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -148,31 +96,15 @@ reloadModule( const char * moduleName  )
 bool
 isKernelDebugging()
 {
-    HRESULT         hres;
-    bool            result = false;
-     
-    try {
+    HRESULT     hres;
+    ULONG       debugClass, debugQualifier;
     
-        ULONG       debugClass, debugQualifier;
+    hres = dbgExt->control->GetDebuggeeType( &debugClass, &debugQualifier );
     
-        hres = dbgExt->control->GetDebuggeeType( &debugClass, &debugQualifier );
-    
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
          
-        result = debugClass == DEBUG_CLASS_KERNEL;
-                       
-    }
-	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}	
-	
-	return result;
+    return debugClass == DEBUG_CLASS_KERNEL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -181,30 +113,14 @@ bool
 isDumpAnalyzing()
 {
     HRESULT         hres;
-    bool            result = false;
-     
-    try {
+    ULONG           debugClass, debugQualifier;
     
-        ULONG       debugClass, debugQualifier;
+    hres = dbgExt->control->GetDebuggeeType( &debugClass, &debugQualifier );
     
-        hres = dbgExt->control->GetDebuggeeType( &debugClass, &debugQualifier );
-    
-        if ( FAILED( hres ) )
-            throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
          
-        result = debugQualifier >= DEBUG_DUMP_SMALL;
-                       
-    }
-	catch( std::exception  &e )
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd error: %s\n", e.what() );
-	}
-	catch(...)
-	{
-		dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "pykd unexpected error\n" );
-	}	
-	
-	return result;
+    return debugQualifier >= DEBUG_DUMP_SMALL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
