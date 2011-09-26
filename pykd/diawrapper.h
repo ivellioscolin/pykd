@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <boost\smart_ptr\scoped_ptr.hpp>
+
 #include <cvconst.h>
 
 #include "utils.h"
@@ -51,6 +53,9 @@ private:
     HRESULT m_hres;
 };
 
+class Symbol;
+typedef boost::shared_ptr< Symbol > SymbolPtr;
+
 ////////////////////////////////////////////////////////////////////////////////
 // Symbol
 ////////////////////////////////////////////////////////////////////////////////
@@ -60,8 +65,19 @@ public:
     {
         throw Exception("DiaSymbol must be created over factory from DiaScope::...");
     }
+    Symbol(__inout DiaSymbolPtr &_symbol, DWORD machineType) 
+        : m_machineType(machineType)
+    {
+        m_symbol = _symbol.Detach();
+    }
+    Symbol(__in IDiaSymbol *_symbol, DWORD machineType) 
+        : m_machineType(machineType)
+    {
+        m_symbol = _symbol;
+    }
 
-    std::list< Symbol > findChildrenImpl(
+
+    std::list< SymbolPtr > findChildrenImpl(
         ULONG symTag,
         const std::string &name,
         DWORD nameCmpFlags
@@ -87,9 +103,9 @@ public:
 
     std::string getName();
 
-    Symbol getType();
+    SymbolPtr getType();
 
-    Symbol getIndexType();
+    SymbolPtr getIndexType();
 
     ULONG getSymTag();
 
@@ -120,9 +136,9 @@ public:
         return m_machineType;
     }
 
-    Symbol getChildByName(const std::string &_name);
+    SymbolPtr getChildByName(const std::string &_name);
     ULONG getChildCount();
-    Symbol getChildByIndex(ULONG _index);
+    SymbolPtr getChildByIndex(ULONG _index);
 
     std::string print();
 public:
@@ -197,21 +213,12 @@ protected:
         return retValue;
     }
 
-    Symbol(__inout DiaSymbolPtr &_symbol, DWORD machineType) 
-        : m_machineType(machineType)
-    {
-        m_symbol = _symbol.Detach();
-    }
-
-    Symbol(__in IDiaSymbol *_symbol, DWORD machineType) 
-        : m_machineType(machineType)
-    {
-        m_symbol = _symbol;
-    }
-
     DiaSymbolPtr m_symbol;
     DWORD m_machineType;
 };
+
+class GlobalScope;
+typedef boost::shared_ptr< GlobalScope > GlobalScopePtr;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Global scope: source + sessions
@@ -221,7 +228,7 @@ public:
     GlobalScope() {}
 
     // GlobalScope factory
-    static GlobalScope loadPdb(const std::string &filePath);
+    static GlobalScopePtr loadPdb(const std::string &filePath);
 
     // RVA -> Symbol
     python::tuple findByRva(
@@ -230,17 +237,17 @@ public:
     )
     {
         LONG displacement;
-        Symbol child = findByRvaImpl(rva, symTag, displacement);
+        SymbolPtr child = findByRvaImpl(rva, symTag, displacement);
         return python::make_tuple(child, displacement);
     }
-    Symbol findByRvaImpl(
+    SymbolPtr findByRvaImpl(
         __in ULONG rva,
         __in ULONG symTag,
         __out LONG &displacement
     );
 
     // get symbol by unique index
-    Symbol getSymbolById(ULONG symId);
+    SymbolPtr getSymbolById(ULONG symId);
 
 private:
 

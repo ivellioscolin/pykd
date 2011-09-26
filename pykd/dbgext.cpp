@@ -132,7 +132,8 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");
 
-    python::class_<pyDia::Symbol>("DiaSymbol", "class wrapper for MS DIA Symbol" )
+    python::class_<pyDia::Symbol, pyDia::SymbolPtr>(
+        "DiaSymbol", "class wrapper for MS DIA Symbol", python::no_init )
         .def( "findEx", &pyDia::Symbol::findChildrenEx, 
             "Retrieves the children of the symbol" )
         .def( "find", &pyDia::Symbol::findChildren, 
@@ -177,7 +178,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__len__", &pyDia::Symbol::getChildCount )
         .def("__getitem__", &pyDia::Symbol::getChildByIndex);
 
-    python::class_<pyDia::GlobalScope, python::bases<pyDia::Symbol> >("DiaScope", "class wrapper for MS DIA Symbol" )
+    python::class_<pyDia::GlobalScope, pyDia::GlobalScopePtr, python::bases<pyDia::Symbol> >(
+        "DiaScope", "class wrapper for MS DIA Symbol", python::no_init )
         .def("findByRva", &pyDia::GlobalScope::findByRva, 
             "Find symbol by RVA. Return tuple: (DiaSymbol, offset)")
         .def("symbolById", &pyDia::GlobalScope::getSymbolById, 

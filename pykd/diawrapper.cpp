@@ -59,7 +59,7 @@ void Exception::exceptionTranslate( const Exception &e )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-std::list< Symbol > Symbol::findChildrenImpl(
+std::list< SymbolPtr > Symbol::findChildrenImpl(
     ULONG symTag,
     const std::string &name,
     DWORD nameCmpFlags
@@ -75,12 +75,12 @@ std::list< Symbol > Symbol::findChildrenImpl(
     if (S_OK != hres)
         throw Exception("Call IDiaSymbol::findChildren", hres);
 
-    std::list< Symbol > childList;
+    std::list< SymbolPtr > childList;
 
     DiaSymbolPtr child;
     ULONG celt;
     while ( SUCCEEDED(symbols->Next(1, &child, &celt)) && (celt == 1) )
-        childList.push_back( Symbol(child, m_machineType) );
+        childList.push_back( SymbolPtr( new Symbol(child, m_machineType) ) );
 
     return childList;
 }
@@ -102,16 +102,16 @@ std::string Symbol::getName()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Symbol Symbol::getType()
+SymbolPtr Symbol::getType()
 {
-    return Symbol( callSymbol(get_type), m_machineType );
+    return SymbolPtr( new Symbol(callSymbol(get_type), m_machineType) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Symbol Symbol::getIndexType()
+SymbolPtr Symbol::getIndexType()
 {
-    return Symbol( callSymbol(get_arrayIndexType), m_machineType );
+    return SymbolPtr( new Symbol(callSymbol(get_arrayIndexType), m_machineType) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,7 +248,7 @@ ULONG Symbol::getRegisterId()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Symbol Symbol::getChildByName(const std::string &_name)
+SymbolPtr Symbol::getChildByName(const std::string &_name)
 {
     DiaEnumSymbolsPtr symbols;
     HRESULT hres = 
@@ -276,7 +276,7 @@ Symbol Symbol::getChildByName(const std::string &_name)
     if (S_OK != hres)
         throw Exception("Call IDiaEnumSymbols::Item", hres);
 
-    return Symbol(child, m_machineType);
+    return SymbolPtr( new Symbol(child, m_machineType) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -303,7 +303,7 @@ ULONG Symbol::getChildCount()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Symbol Symbol::getChildByIndex(ULONG _index)
+SymbolPtr Symbol::getChildByIndex(ULONG _index)
 {
     DiaEnumSymbolsPtr symbols;
     HRESULT hres = 
@@ -331,7 +331,7 @@ Symbol Symbol::getChildByIndex(ULONG _index)
     if (S_OK != hres)
         throw Exception("Call IDiaEnumSymbols::Item", hres);
 
-    return Symbol(child, m_machineType);
+    return SymbolPtr( new Symbol(child, m_machineType) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -356,7 +356,7 @@ GlobalScope::GlobalScope(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-GlobalScope GlobalScope::loadPdb(const std::string &filePath)
+GlobalScopePtr GlobalScope::loadPdb(const std::string &filePath)
 {
     DiaDataSourcePtr _scope;
 
@@ -379,12 +379,12 @@ GlobalScope GlobalScope::loadPdb(const std::string &filePath)
     if ( S_OK != hres )
         throw Exception("Call IDiaSymbol::get_globalScope", hres);
 
-    return GlobalScope(_scope, _session, _globalScope);
+    return GlobalScopePtr( new GlobalScope(_scope, _session, _globalScope) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Symbol GlobalScope::findByRvaImpl(
+SymbolPtr GlobalScope::findByRvaImpl(
     __in ULONG rva,
     __in ULONG symTag,
     __out LONG &displacement
@@ -402,12 +402,12 @@ Symbol GlobalScope::findByRvaImpl(
     if (!child)
         throw Exception("Call IDiaSession::findSymbolByRVAEx", E_UNEXPECTED);
 
-    return Symbol( child, m_machineType );
+    return SymbolPtr( new Symbol(child, m_machineType) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Symbol GlobalScope::getSymbolById(ULONG symId)
+SymbolPtr GlobalScope::getSymbolById(ULONG symId)
 {
     DiaSymbolPtr _symbol;
     HRESULT hres = m_session->symbolById(symId, &_symbol);
@@ -416,7 +416,7 @@ Symbol GlobalScope::getSymbolById(ULONG symId)
     if (!_symbol)
         throw Exception("Call IDiaSession::findSymbolByRVAEx", E_UNEXPECTED);
 
-    return Symbol( _symbol, m_machineType );
+    return SymbolPtr( new Symbol(_symbol, m_machineType) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
