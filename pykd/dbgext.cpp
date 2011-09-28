@@ -221,6 +221,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Delete synthetic symbols by virtual address" );
     boost::python::def( "delSynSymbolsMask", &delSyntheticSymbolsMask, 
         "Delete synthetic symbols by mask of module and symbol name");
+    boost::python::def( "debuggerPath", &getDebuggerImage,
+        "Return full path to the process image that uses pykd" );
 
     boost::python::class_<TypeInfo>( "typeInfo",
         "Class representing non-primitive type info: structure, union, etc. attributes is a fields of non-primitive type" )
@@ -253,7 +255,7 @@ BOOST_PYTHON_MODULE( pykd )
     DEF_PY_GLOBAL( "ulong_t", TypeInfo("", "unsigned long") );
     DEF_PY_GLOBAL( "int_t", TypeInfo("", "int") );
     DEF_PY_GLOBAL( "uint_t", TypeInfo("", "unsigned int") );
-    DEF_PY_GLOBAL( "ptr_t", TypeInfo("", "void*") );
+    //DEF_PY_GLOBAL( "ptr_t", TypeInfo("", "void*") );
     DEF_PY_GLOBAL( "double_t", TypeInfo("", "double") );
     DEF_PY_GLOBAL( "longlong_t", TypeInfo("", "int64") );
     DEF_PY_GLOBAL( "ulonglong_t", TypeInfo("", "unsigned int64") );

@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <psapi.h>
+
 #include "dbgext.h"
 #include "dbgexcept.h"
 #include "dbgsystem.h"
@@ -121,6 +123,16 @@ isDumpAnalyzing()
         throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
          
     return debugQualifier >= DEBUG_DUMP_SMALL;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string
+getDebuggerImage()
+{
+    std::vector<char>   buffer(MAX_PATH);
+    GetModuleFileNameExA( GetCurrentProcess(), NULL, &buffer[0], buffer.size() );
+    return std::string( &buffer[0] );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
