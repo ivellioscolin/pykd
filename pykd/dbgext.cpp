@@ -688,8 +688,8 @@ private:
     }
     
     ~WindbgGlobalSession() {
-        Py_Finalize();
         g_dbgClient.removeEventsMgr();
+        Py_Finalize();
     }
    
     boost::python::object           main;
