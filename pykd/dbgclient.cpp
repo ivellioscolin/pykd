@@ -8,8 +8,8 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-DebugClient     primaryClient;
-DebugClient     *g_dbgClient = &primaryClient;
+DebugClientPtr  g_dbgClient( new DebugClient );
+
 
 void loadDump( const std::wstring &fileName ) {
     g_dbgClient->loadDump( fileName );    

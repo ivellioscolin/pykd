@@ -42,14 +42,29 @@ public:
 
     void
     reloadSymbols();
+   
+    ULONG64
+    getSymbol( const std::string &symbolname ) {
 
-    python::list
-    getSymbols() {
         if ( !m_dia )
             m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
 
-        return m_dia->findChildrenEx( SymTagNull, "*", nsRegularExpression );
+        pyDia::SymbolPtr   sym = m_dia->getChildByName( symbolname );          
+
+        return m_base + sym->getRva();
     }
+
+    ULONG
+    getSymbolRva( const std::string &symbolname ) {
+
+        if ( !m_dia )
+            m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
+
+        pyDia::SymbolPtr   sym = m_dia->getChildByName( symbolname );          
+
+        return sym->getRva();
+    }
+
 
 private:
 

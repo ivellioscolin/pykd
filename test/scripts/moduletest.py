@@ -46,6 +46,6 @@ class ModuleTest( unittest.TestCase ):
         try: pykd.findModule( target.module.end() + 0x10)
         except pykd.BaseException: pass
 
-    def testSymbols( self ):
-        syms = target.module.symbols()
-        self.assertNotEqual( 0, len( syms ) )
+    def testSymbol( self ):
+        self.assertEqual( target.module.rva("FuncWithName0"), target.module.offset("FuncWithName0") - target.module.begin() )
+        self.assertEqual( target.module.rva("FuncWithName0"), target.module.FuncWithName0 - target.module.begin() )

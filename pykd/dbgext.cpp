@@ -88,7 +88,7 @@ static python::dict genDict(const pyDia::Symbol::ValueNameEntry srcValues[], siz
 
 BOOST_PYTHON_MODULE( pykd )
 {
-    python::class_<pykd::DebugClient>("dbgClient", "Class representing a debugging session" )
+    python::class_<pykd::DebugClient, pykd::DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
         .def( "loadDump", &pykd::DebugClient::loadDump,
             "Load crash dump" )
         .def( "startProcess", &pykd::DebugClient::startProcess, 
@@ -102,6 +102,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "findModule", &pykd::DebugClient::findModule, 
             "Return instance of the Module class which posseses specified address" );
 
+    boost::python::def( "createDbgClient", pykd::DebugClient::createDbgClient, 
+        "create a new instance of the dbgClient class" );
     boost::python::def( "loadDump", &loadDump,
         "Load crash dump (only for console)");
     boost::python::def( "startProcess", &startProcess,
@@ -130,8 +132,15 @@ BOOST_PYTHON_MODULE( pykd )
              "Return the full path to the module's pdb file ( symbol information )" )
         .def("reload", &pykd::Module::reloadSymbols,
             "(Re)load symbols for the module" )
-        .def("symbols", &pykd::Module::getSymbols,
-            "Return list of all symbols of the module" );
+        .def("offset", &pykd::Module::getSymbol,
+            "Return offset of the symbol" )
+        .def("rva", &pykd::Module::getSymbolRva,
+            "Return rva of the symbol" )
+        .def("__getattr__", &pykd::Module::getSymbol,
+            "Return address of the symbol" );
+
+        //.def("symbols", &pykd::Module::getSymbols,
+        //    "Return list of all symbols of the module" );
 
         
     python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
@@ -255,7 +264,7 @@ BOOST_PYTHON_MODULE( pykd )
     DEF_PY_CONST_ULONG(LocInMetaData);
     DEF_PY_CONST_ULONG(LocIsConstant);
     python::scope().attr("diaLocTypeName") = 
-        genDict(pyDia::Symbol::symTagName, _countof(pyDia::Symbol::locTypeName));
+        genDict(pyDia::Symbol::locTypeName, _countof(pyDia::Symbol::locTypeName));
 
     DEF_PY_CONST_ULONG(btNoType);
     DEF_PY_CONST_ULONG(btVoid);

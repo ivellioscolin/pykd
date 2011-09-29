@@ -4,12 +4,19 @@
 #include <dbgeng.h>
 #include <dbghelp.h>
 
+#include <boost\smart_ptr\scoped_ptr.hpp>
+
 #include "dbgexcept.h"
 #include "module.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
 namespace pykd {
+
+/////////////////////////////////////////////////////////////////////////////////
+
+class DebugClient;
+typedef boost::shared_ptr<DebugClient>  DebugClientPtr;
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -20,6 +27,11 @@ public:
     DebugClient();
 
     virtual ~DebugClient() {}
+
+    static
+    DebugClientPtr createDbgClient() {
+        return DebugClientPtr( new DebugClient() );
+    }
 
     void loadDump( const std::wstring &fileName );
 
@@ -46,9 +58,11 @@ private:
     CComPtr<IDebugSymbols3>     m_symbols;
 };
 
+
+
 /////////////////////////////////////////////////////////////////////////////////
 
-extern DebugClient     *g_dbgClient;
+extern DebugClientPtr     g_dbgClient;
 
 void loadDump( const std::wstring &fileName );
 
