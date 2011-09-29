@@ -1,3 +1,18 @@
+version 0.0.20 29/09/2011
+
+[+] added : routine breakin ( Break into debugger ) 
+[+] added : cpuReg constructor with index parameter 
+[+] added : attachProcess routine ( attach debugger to the exsisting process ) 
+[+] added : attachKernel routine ( attach debugger to a kernel target ) 
+[+] added : TypedVar instantiation by symbol name
+[+] added : Exception debug event
+[+] added : assembly method for disasm class
+[+] added : debuggerPath routine ( Return full path to the process image that uses pykd )
+
+[!] fixed: issue 9219 ( the call of the go() routine results in a deadlock for multithreading app ) 
+[!] fixed: issue 9518 ( Problem with dbgCommand('!analyze -v') )
+[!] fixed: issue 9555 ( dbgModuleClass.name() corrupts output )
+
 version 0.0.19 28/07/2011
 
 [+] added : typedVar::data method ( Return raw string object with data stream ) 
