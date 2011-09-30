@@ -654,8 +654,10 @@ private:
                  
         PyImport_AppendInittab("pykd", initpykd ); 
 
+        PyEval_InitThreads();
+
         Py_Initialize();    
-    
+
         main = boost::python::import("__main__");
         
         boost::python::object   main_namespace = main.attr("__dict__");
@@ -688,7 +690,9 @@ private:
     }
     
     ~WindbgGlobalSession() {
+
         g_dbgClient.removeEventsMgr();
+    
         Py_Finalize();
     }
    
@@ -697,6 +701,8 @@ private:
     static volatile LONG            sessionCount;      
     
     static WindbgGlobalSession      *windbgGlobalSession;     
+
+    PyThreadState                   *initThreadState;
 };   
 
 volatile LONG            WindbgGlobalSession::sessionCount = 0;
