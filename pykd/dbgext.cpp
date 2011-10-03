@@ -677,23 +677,12 @@ private:
             main_namespace[ key ] = pykd_namespace[ key ];
         }            
         
-        //// перенаправление стандартных потоков ВВ
-        //boost::python::object       sys = boost::python::import( "sys");
-        //
-        //dbgOut                      dout;
-        //sys.attr("stdout") = boost::python::object( dout );
-
-        //dbgIn                       din;
-        //sys.attr("stdin") = boost::python::object( din );
-        //
         g_dbgClient.startEventsMgr();
-    }
+     }
     
     ~WindbgGlobalSession() {
 
-        g_dbgClient.removeEventsMgr();
-    
-        Py_Finalize();
+         g_dbgClient.removeEventsMgr();
     }
    
     boost::python::object           main;
@@ -702,7 +691,6 @@ private:
     
     static WindbgGlobalSession      *windbgGlobalSession;     
 
-    PyThreadState                   *initThreadState;
 };   
 
 volatile LONG            WindbgGlobalSession::sessionCount = 0;
