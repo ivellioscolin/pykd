@@ -23,7 +23,7 @@ def getTestSuite( singleName = "" ):
            [   unittest.TestLoader().loadTestsFromTestCase( basetest.BaseTest ),
                unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
                unittest.TestLoader().loadTestsFromTestCase( diatest.DiaTest ),
-#               unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
+               unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
 #               unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest )
            ] ) 
     else:

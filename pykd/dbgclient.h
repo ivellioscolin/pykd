@@ -24,8 +24,6 @@ class DebugClient {
 
 public:
 
-    DebugClient();
-
     virtual ~DebugClient() {}
 
     static
@@ -33,6 +31,14 @@ public:
         return DebugClientPtr( new DebugClient() );
     }
 
+    static
+    DebugClientPtr createDbgClient( IDebugClient4 *client ) {
+        return DebugClientPtr( new DebugClient(client) );
+    }
+
+    static
+    DebugClientPtr  setDbgClientCurrent( DebugClientPtr  newDbgClient );
+ 
     void loadDump( const std::wstring &fileName );
 
     void startProcess( const std::wstring  &processName );
@@ -53,12 +59,14 @@ public:
 
 private:
 
+    DebugClient();
+
+    DebugClient( IDebugClient4 *client );
+
     CComPtr<IDebugClient5>      m_client;     
     CComPtr<IDebugControl4>     m_control;
     CComPtr<IDebugSymbols3>     m_symbols;
 };
-
-
 
 /////////////////////////////////////////////////////////////////////////////////
 

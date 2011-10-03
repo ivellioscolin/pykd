@@ -468,6 +468,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\typeinfo.h"
+				>
+			</File>
+			<File
 				RelativePath=".\utils.h"
 				>
 			</File>

@@ -8,8 +8,7 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-DebugClientPtr  g_dbgClient( new DebugClient );
-
+DebugClientPtr  g_dbgClient( DebugClient::createDbgClient() );
 
 void loadDump( const std::wstring &fileName ) {
     g_dbgClient->loadDump( fileName );    
@@ -27,12 +26,21 @@ void attachKernel( const std::wstring  &param ) {
     g_dbgClient->attachKernel( param );
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////
+
+DebugClientPtr  DebugClient::setDbgClientCurrent( DebugClientPtr  newDbgClient ) {
+    DebugClientPtr  oldClient = g_dbgClient;
+    g_dbgClient = newDbgClient;
+    return oldClient;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 DebugClient::DebugClient()
 {
     HRESULT    hres;
-    hres = DebugCreate( __uuidof(IDebugClient4), (void **)&m_client );
+    hres = DebugCreate( __uuidof(IDebugClient5), (void **)&m_client );
     if ( FAILED( hres ) )
         throw DbgException("DebugCreate failed");
 
@@ -43,6 +51,25 @@ DebugClient::DebugClient()
     hres = m_client->QueryInterface( __uuidof(IDebugSymbols3), (void**)&m_symbols );
     if ( FAILED( hres ) )
         throw DbgException("QueryInterface IDebugSymbols3  failed");    
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+DebugClient::DebugClient( IDebugClient4 *client )
+{
+    HRESULT    hres;
+
+    hres = client->QueryInterface( __uuidof(IDebugClient5), (void**)&m_client );
+    if ( FAILED( hres ) )
+        throw DbgException("QueryInterface IDebugControl4  failed");    
+
+    hres = client->QueryInterface( __uuidof(IDebugControl4), (void**)&m_control );
+    if ( FAILED( hres ) )
+        throw DbgException("QueryInterface IDebugControl4  failed");    
+
+    hres = client->QueryInterface( __uuidof(IDebugSymbols3), (void**)&m_symbols );
+    if ( FAILED( hres ) )
+        throw DbgException("QueryInterface IDebugSymbols3  failed");          
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

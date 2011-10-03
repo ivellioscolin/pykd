@@ -152,6 +152,16 @@ Module::reloadSymbols()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+TypeInfo
+Module::getTypeByName( const std::string typeName )
+{
+    pyDia::SymbolPtr  typeSym = m_dia->getChildByName( typeName );
+
+    return TypeInfo( typeSym );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }; // end of namespace pykd
 
 
