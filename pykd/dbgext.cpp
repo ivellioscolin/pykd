@@ -4,9 +4,11 @@
 
 #include <dia2.h>
 
+#include "windbg.h"
 #include "module.h"
 #include "diawrapper.h"
 #include "dbgclient.h"
+#include "dbgio.h"
 
 using namespace pykd;
 
@@ -60,22 +62,32 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "loadModule", &pykd::DebugClient::loadModule, 
             "Return instance of Module class" )
         .def( "findModule", &pykd::DebugClient::findModule, 
-            "Return instance of the Module class which posseses specified address" );
+            "Return instance of the Module class which posseses specified address" )
+        .def( "dprint", &pykd::DebugClient::dprint,
+            "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" )
+        .def( "dprintln", &pykd::DebugClient::dprintln,
+            "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" );
+
 
 //    python::def( "createDbgClient", pykd::DebugClient::createDbgClient, 
 //        "create a new instance of the dbgClient class" );
-    python::def( "loadDump", &loadDump,
+    python::def( "loadDump", &pykd::loadDump,
         "Load crash dump (only for console)");
-    python::def( "startProcess", &startProcess,
+    python::def( "startProcess", &pykd::startProcess,
         "Start process for debugging (only for console)"); 
-    python::def( "attachProcess", &attachProcess,
+    python::def( "attachProcess", &pykd::attachProcess,
         "Attach debugger to a exsisting process" );
-    python::def( "attachKernel", &attachKernel,
+    python::def( "attachKernel", &pykd::attachKernel,
         "Attach debugger to a kernel target" );
-    python::def( "loadModule", &loadModule,
+    python::def( "loadModule", &pykd::loadModule,
         "Return instance of Module class"  );
-    python::def( "findModule", &findModule,
+    python::def( "findModule", &pykd::findModule,
         "Return instance of the Module class which posseses specified address" );
+    python::def( "dprint", &pykd::dprint,
+            "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" );
+    python::def( "dprintln", &pykd::dprintln,
+            "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" );
+
 
 
     python::class_<pykd::TypeInfo>("typeInfo", "Class representing typeInfo", python::no_init );
@@ -297,80 +309,33 @@ BOOST_PYTHON_MODULE( pykd )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class WindbgGlobalSession 
-{
-public:
-
-    static
-    boost::python::object
-    global() {
-        return windbgGlobalSession->main.attr("__dict__");
-    }
-    
-    static 
-    VOID
-    StartWindbgSession() {
-        if ( 1 == InterlockedIncrement( &sessionCount ) )
-        {
-            windbgGlobalSession = new WindbgGlobalSession();
-        }
-    }
-    
-    static
-    VOID
-    StopWindbgSession() {
-        if ( 0 == InterlockedDecrement( &sessionCount ) )
-        {
-            delete windbgGlobalSession;
-            windbgGlobalSession = NULL;
-        }            
-    }
-    
-    static
-    bool isInit() {
-        return windbgGlobalSession != NULL;
-    }
-    
-
-private:
-
-    WindbgGlobalSession() {
+WindbgGlobalSession::WindbgGlobalSession() {
                  
-        PyImport_AppendInittab("pykd", initpykd ); 
+    PyImport_AppendInittab("pykd", initpykd ); 
 
-        PyEval_InitThreads();
+    PyEval_InitThreads();
 
-        Py_Initialize();    
+    Py_Initialize();    
 
-        main = boost::python::import("__main__");
-        
-        python::object   main_namespace = main.attr("__dict__");
-
-        // делаем аналог from pykd import *        
-        python::object   pykd = boost::python::import( "pykd" );
-        
-        python::dict     pykd_namespace( pykd.attr("__dict__") ); 
-        
-        python::list     iterkeys( pykd_namespace.iterkeys() );
-        
-        for (int i = 0; i < boost::python::len(iterkeys); i++)
-        {
-            std::string     key = boost::python::extract<std::string>(iterkeys[i]);
-                   
-            main_namespace[ key ] = pykd_namespace[ key ];
-        }            
-     }
+    main = boost::python::import("__main__");
     
-    ~WindbgGlobalSession() {
-    }
-   
-    python::object                  main;
+    python::object   main_namespace = main.attr("__dict__");
 
-    static volatile LONG            sessionCount;      
+    // делаем аналог from pykd import *        
+    python::object   pykd = boost::python::import( "pykd" );
     
-    static WindbgGlobalSession      *windbgGlobalSession;     
+    python::dict     pykd_namespace( pykd.attr("__dict__") ); 
+    
+    python::list     iterkeys( pykd_namespace.iterkeys() );
+    
+    for (int i = 0; i < boost::python::len(iterkeys); i++)
+    {
+        std::string     key = boost::python::extract<std::string>(iterkeys[i]);
+               
+        main_namespace[ key ] = pykd_namespace[ key ];
+    }            
+}
 
-};   
 
 volatile LONG            WindbgGlobalSession::sessionCount = 0;
 
@@ -419,7 +384,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
     }
     catch(...)
     {      
-    //    dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "unexpected error" );         
+        dbgClient->eprintln( "unexpected error" );
     }    
 
     Py_EndInterpreter( localInterpreter ); 
@@ -436,6 +401,22 @@ HRESULT
 CALLBACK
 pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 {
+    DebugClientPtr      dbgClient = DebugClient::createDbgClient( client );
+    DebugClientPtr      oldClient = DebugClient::setDbgClientCurrent( dbgClient );
+
+    try {
+
+    
+    }
+    catch(...)
+    {      
+        dbgClient->eprintln( "unexpected error" );
+    }    
+
+    DebugClient::setDbgClientCurrent( oldClient );
+
+    return S_OK;
+
     return S_OK;
 }
 

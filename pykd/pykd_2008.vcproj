@@ -362,6 +362,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgio.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgmem.cpp"
 				>
 			</File>
@@ -436,6 +440,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgio.h"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgmem.h"
 				>
 			</File>
@@ -473,6 +481,10 @@
 			</File>
 			<File
 				RelativePath=".\utils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\windbg.h"
 				>
 			</File>
 		</Filter>

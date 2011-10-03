@@ -57,6 +57,14 @@ public:
 
     ULONG64  addr64( ULONG64 addr );
 
+    void dprint( const std::string &str, bool dml = false );
+
+    void dprintln( const std::string &str, bool dml = false );
+
+    void eprint( const std::string &str );
+
+    void eprintln( const std::string &str );
+
 private:
 
     DebugClient();
