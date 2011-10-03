@@ -119,17 +119,10 @@ getCurrentStack()
 }
 
 /////////////////////////////////////////////////////////////////////////////////
-
-std::string
-getProcessorMode()
+// Processor type to string
+/////////////////////////////////////////////////////////////////////////////////
+static std::string processorToStr(ULONG processorMode)
 {
-    HRESULT                 hres;  
-
-    ULONG   processorMode;
-    hres = dbgExt->control->GetEffectiveProcessorType( &processorMode );
-    if ( FAILED( hres ) )
-        throw DbgException( "IDebugControl::GetEffectiveProcessorType  failed" );       
-    
     switch( processorMode )
     {
     case IMAGE_FILE_MACHINE_I386:
@@ -146,7 +139,36 @@ getProcessorMode()
     }
 
     throw DbgException( "Unknown CPU type" );
+}
 
+/////////////////////////////////////////////////////////////////////////////////
+
+std::string
+getProcessorMode()
+{
+    HRESULT                 hres;
+
+    ULONG   processorMode;
+    hres = dbgExt->control->GetEffectiveProcessorType( &processorMode );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetEffectiveProcessorType  failed" );
+
+    return processorToStr(processorMode);
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+std::string 
+getProcessorType()
+{
+    HRESULT hres;
+
+    ULONG processorMode;
+    hres = dbgExt->control->GetActualProcessorType( &processorMode );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetEffectiveProcessorType  failed" );
+
+    return processorToStr(processorMode);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -167,13 +189,13 @@ setProcessorMode(
     else if ( mode == "X64" )
         processorMode = IMAGE_FILE_MACHINE_AMD64;
     else
-        throw DbgException( "Unknown processor type" );                           
+        throw DbgException( "Unknown processor type" );
 
     hres = dbgExt->control->SetEffectiveProcessorType( processorMode );
     if ( FAILED( hres ) )
         throw DbgException( "IDebugControl::SetEffectiveProcessorType  failed" );
 
-}    
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 

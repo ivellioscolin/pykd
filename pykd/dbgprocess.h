@@ -40,11 +40,14 @@ public:
 std::string
 getProcessorMode();
 
+std::string 
+getProcessorType();
+
 void
 setProcessorMode(
     const std::string &mode );
-    
-ULONG64    
+
+ULONG64
 getCurrentProcess();
 
 VOID
