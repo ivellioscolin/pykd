@@ -53,8 +53,6 @@ def PrintPortMesage(messageAddr, printFormat="b", use32=False):
     clientIdType.append(dynPtr, "UniqueProcess")
     clientIdType.append(dynPtr, "UniqueThread")
 
-    print clientIdType
-
     portMsgType = typeInfo("portmsg~_PORT_MESSAGE")
     portMsgType.append(ushort_t,      "DataLength")
     portMsgType.append(ushort_t,      "TotalLength")
@@ -62,7 +60,7 @@ def PrintPortMesage(messageAddr, printFormat="b", use32=False):
     portMsgType.append(ushort_t,      "DataInfoOffset")
     portMsgType.append(clientIdType,  "ClientId")
     portMsgType.append(ulong_t,       "MessageId")
-    portMsgType.append(ulong_t,       "CallbackId")
+    portMsgType.append(ulonglong_t,   "ClientViewSize")
     return portMsgType
 
   def buildPortMessage32Type():
@@ -78,7 +76,7 @@ def PrintPortMesage(messageAddr, printFormat="b", use32=False):
     portMsgType.append(ushort_t,      "DataInfoOffset")
     portMsgType.append(clientIdType,  "ClientId")
     portMsgType.append(ulong_t,       "MessageId")
-    portMsgType.append(ulong_t,       "CallbackId")
+    portMsgType.append(ulong_t,       "ClientViewSize")
     return portMsgType
 
 
@@ -109,7 +107,7 @@ def PrintPortMesage(messageAddr, printFormat="b", use32=False):
   else:
     procFindStr = "%d(0x%x)" % (messageHeader.ClientId.UniqueProcess, messageHeader.ClientId.UniqueProcess)
   dprintln( "Client ID        : process= " + procFindStr + ", thread= %d(0x%x)" %  (messageHeader.ClientId.UniqueThread, messageHeader.ClientId.UniqueThread), isKernelDebugging())
-  dprintln( "View/Callback    : %d (0x%x)" % (messageHeader.CallbackId, messageHeader.CallbackId) )
+  dprintln( "View/Callback    : %d (0x%x)" % (messageHeader.ClientViewSize, messageHeader.ClientViewSize) )
   if (printFormat not in DispFormatsLength):
     dprintln( "WARRING: Unknown (" + printFormat + ") diplay fromat. Use \"b\"" )
     printFormat = "b"

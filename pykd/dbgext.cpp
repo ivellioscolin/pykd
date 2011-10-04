@@ -213,6 +213,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return current processor mode as string: X86, ARM, IA64 or X64" );
     boost::python::def( "setProcessorMode", &setProcessorMode, 
         "Set current processor mode by string (X86, ARM, IA64 or X64)" );
+    boost::python::def( "getProcessorType", &getProcessorType,
+        "Return type of physical processor: X86, ARM, IA64 or X64" );
     boost::python::def( "addSynSymbol", &addSyntheticSymbol,
         "Add new synthetic symbol for virtual address" );
     boost::python::def( "delAllSynSymbols", &delAllSyntheticSymbols, 
