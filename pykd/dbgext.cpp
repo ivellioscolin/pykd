@@ -213,8 +213,6 @@ BOOST_PYTHON_MODULE( pykd )
         "Return current processor mode as string: X86, ARM, IA64 or X64" );
     boost::python::def( "setProcessorMode", &setProcessorMode, 
         "Set current processor mode by string (X86, ARM, IA64 or X64)" );
-    boost::python::def( "getProcessorType", &getProcessorType,
-        "Returns physical processor type as string: X86, ARM, IA64 or X64");
     boost::python::def( "addSynSymbol", &addSyntheticSymbol,
         "Add new synthetic symbol for virtual address" );
     boost::python::def( "delAllSynSymbols", &delAllSyntheticSymbols, 
@@ -615,85 +613,43 @@ BOOST_PYTHON_MODULE( pykd )
 
 /////////////////////////////////////////////////////////////////////////////////
 
-class WindbgGlobalSession 
-{
-public:
-    
-    static
-    boost::python::object
-    global() {
-        return windbgGlobalSession->main.attr("__dict__");
-    }
-    
-    static 
-    VOID
-    StartWindbgSession() {
-        if ( 1 == InterlockedIncrement( &sessionCount ) )
-        {
-            windbgGlobalSession = new WindbgGlobalSession();
-        }
-    }
-    
-    static
-    VOID
-    StopWindbgSession() {
-        if ( 0 == InterlockedDecrement( &sessionCount ) )
-        {
-            delete windbgGlobalSession;
-            windbgGlobalSession = NULL;
-        }            
-    }
-    
-    static
-    bool isInit() {
-        return windbgGlobalSession != NULL;
-    }
-    
-
-private:
-
-    WindbgGlobalSession() {
+WindbgGlobalSession::WindbgGlobalSession() {
                  
-        PyImport_AppendInittab("pykd", initpykd ); 
+    PyImport_AppendInittab("pykd", initpykd ); 
 
-        PyEval_InitThreads();
+    PyEval_InitThreads();
 
-        Py_Initialize();    
+    Py_Initialize();    
 
-        main = boost::python::import("__main__");
-        
-        boost::python::object   main_namespace = main.attr("__dict__");
-
-
-        // делаем аналог from pykd import *        
-        boost::python::object   pykd = boost::python::import( "pykd" );
-        
-        boost::python::dict     pykd_namespace( pykd.attr("__dict__") ); 
-        
-        boost::python::list     iterkeys( pykd_namespace.iterkeys() );
-        
-        for (int i = 0; i < boost::python::len(iterkeys); i++)
-        {
-            std::string     key = boost::python::extract<std::string>(iterkeys[i]);
-                   
-            main_namespace[ key ] = pykd_namespace[ key ];
-        }            
-        
-        g_dbgClient.startEventsMgr();
-     }
+    main = boost::python::import("__main__");
     
-    ~WindbgGlobalSession() {
+    boost::python::object   main_namespace = main.attr("__dict__");
 
-         g_dbgClient.removeEventsMgr();
-    }
-   
-    boost::python::object           main;
 
-    static volatile LONG            sessionCount;      
+    // делаем аналог from pykd import *        
+    boost::python::object   pykd = boost::python::import( "pykd" );
     
-    static WindbgGlobalSession      *windbgGlobalSession;     
+    boost::python::dict     pykd_namespace( pykd.attr("__dict__") ); 
+    
+    boost::python::list     iterkeys( pykd_namespace.iterkeys() );
+    
+    for (int i = 0; i < boost::python::len(iterkeys); i++)
+    {
+        std::string     key = boost::python::extract<std::string>(iterkeys[i]);
+               
+        main_namespace[ key ] = pykd_namespace[ key ];
+    }            
+    
+    g_dbgClient.startEventsMgr();
 
-};   
+    pyState = PyEval_SaveThread();
+ }
+
+
+WindbgGlobalSession::~WindbgGlobalSession() {
+
+     g_dbgClient.removeEventsMgr();
+}
 
 volatile LONG            WindbgGlobalSession::sessionCount = 0;
 
@@ -831,7 +787,10 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
 {
     DbgExt      ext( client );
 
+    WindbgGlobalSession::RestorePyState();
+
     PyThreadState   *globalInterpreter = PyThreadState_Swap( NULL );
+   
     PyThreadState   *localInterpreter = Py_NewInterpreter();
 
     try {
@@ -944,7 +903,10 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
     }     
     
     Py_EndInterpreter( localInterpreter ); 
+
     PyThreadState_Swap( globalInterpreter );
+
+    WindbgGlobalSession::SavePyState();
     
     return S_OK;  
 }
@@ -956,6 +918,8 @@ CALLBACK
 pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 {
     DbgExt      ext( client );
+
+    WindbgGlobalSession::RestorePyState();
 
     try {
         
@@ -1090,6 +1054,8 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
     {
         dbgExt->control->Output( DEBUG_OUTPUT_ERROR, "unexpected error" );
     }
+
+    WindbgGlobalSession::SavePyState();
     
     return S_OK;    
 }

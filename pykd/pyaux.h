@@ -17,13 +17,23 @@ public:
     }
 
     void saveState() {
-        TlsSetValue( m_index, PyEval_SaveThread() );
+        if ( !isWindbgExt() )
+            TlsSetValue( m_index, PyEval_SaveThread() );
+        else
+            WindbgGlobalSession::SavePyState();                
     }
 
     void restoreState() {
-        PyThreadState*      state = (PyThreadState*)TlsGetValue( m_index );
-        if ( state )
-            PyEval_RestoreThread( state );
+        if ( !isWindbgExt() )
+        {
+            PyThreadState*      state = (PyThreadState*)TlsGetValue( m_index );
+            if ( state )
+                PyEval_RestoreThread( state );
+        }
+        else
+        {
+            WindbgGlobalSession::RestorePyState();
+        }
     }
 
 private:
