@@ -87,10 +87,11 @@ BOOST_PYTHON_MODULE( pykd )
             "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" );
     python::def( "dprintln", &pykd::dprintln,
             "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" );
-
-
-
-    python::class_<pykd::TypeInfo>("typeInfo", "Class representing typeInfo", python::no_init );
+    
+    python::class_<pykd::TypeInfo>("typeInfo", "Class representing typeInfo", python::no_init )
+        .def( "name", &pykd::TypeInfo::getName )
+        .def( "offset", &pykd::TypeInfo::getOffset )
+        .def( "__getattr__", &pykd::TypeInfo::getField );
 
     python::class_<pykd::Module>("module", "Class representing executable module", python::no_init )
         .def("begin", &pykd::Module::getBase,
@@ -115,12 +116,6 @@ BOOST_PYTHON_MODULE( pykd )
             "Return typeInfo class by type name" )
         .def("__getattr__", &pykd::Module::getSymbol,
             "Return address of the symbol" );
-
-
-
-        //.def("symbols", &pykd::Module::getSymbols,
-        //    "Return list of all symbols of the module" );
-
         
     python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");

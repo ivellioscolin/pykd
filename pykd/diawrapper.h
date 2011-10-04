@@ -160,6 +160,8 @@ public:
     static const ValueNameEntry amd64RegName[];
     static const size_t cntAmd64RegName;
 
+    static std::string getBasicTypeName( ULONG basicType );
+
 protected:
 
     // Check symbols loop

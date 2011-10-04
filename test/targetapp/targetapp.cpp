@@ -7,6 +7,8 @@
 
 #include "utils.h"
 
+#pragma pack( push, 4 )
+
 const ULONG g_constNumValue = 0x5555;
 const bool g_constBoolValue = true;
 
@@ -48,6 +50,7 @@ class classChild : public classBase {
 public:
     int m_childField;
     int m_childField2;
+    structTest m_childField3;
     void childMethod() const {}
     virtual void virtFunc() {}
     virtual void virtFunc2() {}
@@ -88,6 +91,8 @@ void FuncWithName1(int a)
     std::cout << _struct2.m_struct.m_field1;
     std::cout << g_string;
 }
+
+#pragma pack( pop )
 
 int _tmain(int argc, _TCHAR* argv[])
 {

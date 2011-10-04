@@ -100,6 +100,9 @@ std::string Symbol::getName()
     return retValue.asStr();
 }
 
+std::string getBasicName();
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
 SymbolPtr Symbol::getType()

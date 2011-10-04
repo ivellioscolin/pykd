@@ -88,6 +88,21 @@ const Symbol::ValueNameEntry Symbol::basicTypeName[] = {
 
 const size_t Symbol::cntBasicTypeName = _countof(Symbol::basicTypeName);
 
+std::string Symbol::getBasicTypeName( ULONG basicType )
+{
+    for ( size_t i = 0; i < Symbol::cntBasicTypeName; ++i )
+    {
+        if ( basicType == Symbol::basicTypeName[i].first )
+            return std::string( Symbol::basicTypeName[i].second );
+    }
+
+    std::stringstream   sstr;
+
+    sstr << "faild to find basic type with index %d" << basicType;
+
+    throw Exception( sstr.str() );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 #define _DEF_UDT_KIND(x)    Symbol::ValueNameEntry(Udt##x, #x)

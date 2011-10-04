@@ -93,7 +93,7 @@ class DiaTest( unittest.TestCase ):
         except pykd.DiaException as diaExcept:
             print diaExcept
             self.assertTrue(False)
-
+            
     def testBasicType(self):
         try:
             gScope = pykd.diaLoadPdb( str(target.module.pdb()) )
@@ -102,9 +102,30 @@ class DiaTest( unittest.TestCase ):
                               gScope["g_constBoolValue"].type().baseType() )
             self.assertEqual( pykd.btULong,
                               gScope["g_ulongValue"].type().baseType() )
+
         except pykd.DiaException as diaExcept:
             print diaExcept
             self.assertTrue(False)
+            
+    def testBasicName(self):
+            self.assertEqual( "NoType", pykd.diaBasicType[ pykd.btNoType ] )
+            self.assertEqual( "Void", pykd.diaBasicType[ pykd.btVoid ] )
+            self.assertEqual( "Char", pykd.diaBasicType[ pykd.btChar ] )
+            self.assertEqual( "WChar", pykd.diaBasicType[ pykd.btWChar ] )
+            self.assertEqual( "Int", pykd.diaBasicType[ pykd.btInt ] )
+            self.assertEqual( "UInt", pykd.diaBasicType[ pykd.btUInt ] )
+            self.assertEqual( "Float", pykd.diaBasicType[ pykd.btFloat ] )
+            self.assertEqual( "BCD", pykd.diaBasicType[ pykd.btBCD ] )
+            self.assertEqual( "Bool", pykd.diaBasicType[ pykd.btBool ] )
+            self.assertEqual( "Long", pykd.diaBasicType[ pykd.btLong ] )
+            self.assertEqual( "ULong", pykd.diaBasicType[ pykd.btULong ] )
+            self.assertEqual( "Currency", pykd.diaBasicType[ pykd.btCurrency ] )
+            self.assertEqual( "Date", pykd.diaBasicType[ pykd.btDate ] )
+            self.assertEqual( "Variant", pykd.diaBasicType[ pykd.btVariant ] )
+            self.assertEqual( "Complex", pykd.diaBasicType[ pykd.btComplex ] )
+            self.assertEqual( "Bit", pykd.diaBasicType[ pykd.btBit ] )
+            self.assertEqual( "BSTR", pykd.diaBasicType[ pykd.btBSTR ] )
+            self.assertEqual( "Hresult", pykd.diaBasicType[ pykd.btHresult ] )
 
     def testBits(self):
         try:
