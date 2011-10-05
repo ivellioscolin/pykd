@@ -11,7 +11,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 std::string
-dbgCommand( const std::string &command )
+dbgCommand( const std::wstring &command )
 {
     HRESULT     hres;
 
@@ -19,7 +19,7 @@ dbgCommand( const std::string &command )
     {
         PyThread_StateRestore pyThreadRestore;
 
-        hres = dbgExt->control->Execute( DEBUG_OUTCTL_THIS_CLIENT, command.c_str(), 0 );
+        hres = dbgExt->control4->ExecuteWide( DEBUG_OUTCTL_THIS_CLIENT, command.c_str(), 0 );
     }
     if ( FAILED( hres ) )
         throw  DbgException( "IDebugControl::Execute  failed" ); 

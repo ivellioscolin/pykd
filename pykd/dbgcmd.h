@@ -7,7 +7,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 std::string
-dbgCommand( const std::string &command );
+dbgCommand( const std::wstring &command );
 
 template <ULONG status>
 void
