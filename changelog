@@ -1,5 +1,6 @@
-version 0.0.20 29/09/2011
+version 0.0.20 05/10/2011
 
+[+] added : routine getProcessorType ( return type of physical processor  )
 [+] added : routine breakin ( Break into debugger ) 
 [+] added : cpuReg constructor with index parameter 
 [+] added : attachProcess routine ( attach debugger to the exsisting process ) 
