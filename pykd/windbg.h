@@ -39,6 +39,18 @@ public:
     bool isInit() {
         return windbgGlobalSession != NULL;
     }
+
+    static
+    VOID
+    RestorePyState() {
+        PyEval_RestoreThread( windbgGlobalSession->pyState );
+    }    
+
+    static
+    VOID
+    SavePyState() {
+        windbgGlobalSession->pyState = PyEval_SaveThread();
+    }    
     
 
 private:
@@ -49,6 +61,8 @@ private:
     }
    
     python::object                  main;
+
+    PyThreadState                   *pyState;
 
     static volatile LONG            sessionCount;      
     

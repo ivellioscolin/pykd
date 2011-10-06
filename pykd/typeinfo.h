@@ -35,12 +35,17 @@ public:
     getOffset() {
         return m_offset;
     }
-   
+
+    ULONG64
+    getSize() {
+        return m_dia->getSize();
+    }   
+  
 private:
 
     pyDia::SymbolPtr    m_dia;
 
-    ULONG               m_offset;   
+    ULONG               m_offset;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

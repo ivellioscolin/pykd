@@ -49,3 +49,7 @@ class ModuleTest( unittest.TestCase ):
     def testSymbol( self ):
         self.assertEqual( target.module.rva("FuncWithName0"), target.module.offset("FuncWithName0") - target.module.begin() )
         self.assertEqual( target.module.rva("FuncWithName0"), target.module.FuncWithName0 - target.module.begin() )
+        
+    def testType( self ):
+        self.assertEqual( "structTest", target.module.type("structTest").name() );
+        self.assertEqual( "structTest", target.module.type("g_structTest").name() );

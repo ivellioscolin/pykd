@@ -68,7 +68,6 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "dprintln", &pykd::DebugClient::dprintln,
             "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" );
 
-
 //    python::def( "createDbgClient", pykd::DebugClient::createDbgClient, 
 //        "create a new instance of the dbgClient class" );
     python::def( "loadDump", &pykd::loadDump,
@@ -90,7 +89,9 @@ BOOST_PYTHON_MODULE( pykd )
     
     python::class_<pykd::TypeInfo>("typeInfo", "Class representing typeInfo", python::no_init )
         .def( "name", &pykd::TypeInfo::getName )
+        .def( "size", &pykd::TypeInfo::getSize )
         .def( "offset", &pykd::TypeInfo::getOffset )
+        .def( "field", &pykd::TypeInfo::getField )
         .def( "__getattr__", &pykd::TypeInfo::getField );
 
     python::class_<pykd::Module>("module", "Class representing executable module", python::no_init )
@@ -328,7 +329,9 @@ WindbgGlobalSession::WindbgGlobalSession() {
         std::string     key = boost::python::extract<std::string>(iterkeys[i]);
                
         main_namespace[ key ] = pykd_namespace[ key ];
-    }            
+    }   
+
+    pyState = PyEval_SaveThread();
 }
 
 
@@ -370,6 +373,8 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
     DebugClientPtr      dbgClient = DebugClient::createDbgClient( client );
     DebugClientPtr      oldClient = DebugClient::setDbgClientCurrent( dbgClient );
 
+    WindbgGlobalSession::RestorePyState();
+
     PyThreadState   *globalInterpreter = PyThreadState_Swap( NULL );
     PyThreadState   *localInterpreter = Py_NewInterpreter();
 
@@ -385,6 +390,8 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
     Py_EndInterpreter( localInterpreter ); 
     PyThreadState_Swap( globalInterpreter );
 
+    WindbgGlobalSession::SavePyState();
+
     DebugClient::setDbgClientCurrent( oldClient );
 
     return S_OK;
@@ -399,6 +406,8 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
     DebugClientPtr      dbgClient = DebugClient::createDbgClient( client );
     DebugClientPtr      oldClient = DebugClient::setDbgClientCurrent( dbgClient );
 
+    WindbgGlobalSession::RestorePyState();
+
     try {
 
     
@@ -408,9 +417,9 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
         dbgClient->eprintln( "unexpected error" );
     }    
 
-    DebugClient::setDbgClientCurrent( oldClient );
+    WindbgGlobalSession::SavePyState();
 
-    return S_OK;
+    DebugClient::setDbgClientCurrent( oldClient );
 
     return S_OK;
 }

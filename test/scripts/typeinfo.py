@@ -21,8 +21,8 @@ class TypeInfoTest( unittest.TestCase ):
     def testGetField( self ):
         """ get field of the complex type """
         ti1 = target.module.type( "structTest" )
-        self.assertNotEqual( None, ti1.m_field0 )  # exsisting field
-        try: ti1.m_field4                          # non-exsisting field
+        self.assertTrue( hasattr( ti1, "m_field0" ) )
+        try: hasattr(ti1, "m_field4" )                        # non-exsisting field
         except pykd.DiaException: pass   
         
     def testName( self ):
@@ -36,5 +36,9 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( 0, ti1.m_field0.offset() )
         self.assertEqual( 4, ti1.m_field1.offset() )
         self.assertEqual( 12, ti1.m_field2.offset() )        
-        self.assertEqual( 14, ti1.m_field3.offset() )              
+        self.assertEqual( 14, ti1.m_field3.offset() )     
+        
+    def testSize( self ):
+        ti1 = target.module.type( "structTest" )
+        self.assertEqual( 16, ti1.size() )                 
        

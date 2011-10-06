@@ -46,6 +46,8 @@ struct structTest {
     USHORT m_field3;
 };
 
+structTest      g_structTest = {  0, 500, true, 1 };
+
 class classChild : public classBase {
 public:
     int m_childField;
@@ -75,6 +77,8 @@ void FuncWithName0()
     std::cout << g_ushortValue;
     std::cout << g_ulongValue;
     std::cout << g_ulonglongValue;
+
+    std::cout << g_structTest.m_field0;
 }
 
 void FuncWithName1(int a)
