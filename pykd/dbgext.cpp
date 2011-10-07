@@ -1,14 +1,16 @@
 #include "stdafx.h"
 
 #include <dbgeng.h>
-
 #include <dia2.h>
+
+#include <boost/tokenizer.hpp>
 
 #include "windbg.h"
 #include "module.h"
 #include "diawrapper.h"
 #include "dbgclient.h"
 #include "dbgio.h"
+#include "dbgpath.h"
 
 using namespace pykd;
 
@@ -44,6 +46,9 @@ static python::dict genDict(const pyDia::Symbol::ValueNameEntry srcValues[], siz
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, dprint, 1, 2 )
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, dprintln, 1, 2 )
 
 #define DEF_PY_CONST_ULONG(x)    \
     python::scope().attr(#x) = ULONG(##x)
@@ -82,10 +87,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Return instance of Module class"  );
     python::def( "findModule", &pykd::findModule,
         "Return instance of the Module class which posseses specified address" );
-    python::def( "dprint", &pykd::dprint,
-            "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" );
-    python::def( "dprintln", &pykd::dprintln,
-            "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" );
+    python::def( "dprint", &pykd::dprint, dprint_( boost::python::args( "str", "dml" ), 
+            "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
+    python::def( "dprintln", &pykd::dprintln, dprintln_( boost::python::args( "str", "dml" ), 
+            "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
     
     python::class_<pykd::TypeInfo>("typeInfo", "Class representing typeInfo", python::no_init )
         .def( "name", &pykd::TypeInfo::getName )
@@ -117,6 +122,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Return typeInfo class by type name" )
         .def("__getattr__", &pykd::Module::getSymbol,
             "Return address of the symbol" );
+
+    boost::python::class_<DbgOut>( "dout", "dout", python::no_init )
+        .def( "write", &DbgOut::write );
+        
+    boost::python::class_<DbgIn>( "din", "din", python::no_init )
+        .def( "readline", &DbgIn::readline );    
         
     python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");
@@ -380,11 +391,104 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
 
     try {
 
+        // получаем достпу к глобальному мапу ( нужен для вызова exec_file )
+        boost::python::object       main =  python::import("__main__");
+
+        boost::python::object       global(main.attr("__dict__"));
+
+        boost::python::import( "pykd" ); 
+     
+        // настраиваем ввод/вывод ( чтобы в скрипте можно было писать print )
+
+        boost::python::object       sys = boost::python::import("sys");
+       
+        sys.attr("stdout") = python::object( dbgClient->dout() );
+        sys.attr("stdin") = python::object( dbgClient->din() );
+
+        // импортируем модуль обработки исключений ( нужен для вывода traceback а )
+        boost::python::object       tracebackModule = python::import("traceback");
+        
+        // разбор параметров
+        typedef  boost::escaped_list_separator<char>    char_separator_t;
+        typedef  boost::tokenizer< char_separator_t >   char_tokenizer_t;  
+        
+        std::string                 argsStr( args );
+        
+        char_tokenizer_t            token( argsStr , char_separator_t( "", " \t", "\"" ) );
+        std::vector<std::string>    argsList;
+        
+        for ( char_tokenizer_t::iterator   it = token.begin(); it != token.end(); ++it )
+        {
+            if ( *it != "" )
+                argsList.push_back( *it );
+        }            
+            
+        if ( argsList.size() == 0 )
+            return S_OK;      
+            
+        char    **pythonArgs = new char* [ argsList.size() ];
+     
+        for ( size_t  i = 0; i < argsList.size(); ++i )
+            pythonArgs[i] = const_cast<char*>( argsList[i].c_str() );
+            
+        PySys_SetArgv( (int)argsList.size(), pythonArgs );
+
+        delete[]  pythonArgs;       
+
+       // найти путь к файлу
+        std::string     scriptName;
+        std::string     filePath;
+        DbgPythonPath   dbgPythonPath;        
+        
+        if ( !dbgPythonPath.findPath( argsList[0], scriptName, filePath ) )
+        {
+            dbgClient->eprintln( L"script file not found" );            
+        }
+        else
+        try {             
+      
+            python::object       result;
     
+            result =  python::exec_file( scriptName.c_str(), global, global );
+        }                
+        catch( boost::python::error_already_set const & )
+        {
+            // ошибка в скрипте
+            PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL;
+            
+            PyErr_Fetch( &errtype, &errvalue, &traceback );
+            
+            if(errvalue != NULL) 
+            {
+                PyObject *errvalueStr= PyUnicode_FromObject(errvalue);         
+
+                dbgClient->eprintln( PyUnicode_AS_UNICODE( errvalueStr ) );
+
+                if ( traceback )
+                {
+                    python::object    traceObj( python::handle<>( python::borrowed( traceback ) ) );
+                    
+                    dbgClient->eprintln( L"\nTraceback:" );
+
+                    python::object   pFunc( tracebackModule.attr("format_tb") );
+                    python::list     traceList( pFunc( traceObj ) );
+
+                    for ( long i = 0; i < python::len(traceList); ++i )
+                        dbgClient->eprintln( python::extract<std::wstring>(traceList[i]) );
+                }
+
+                Py_DECREF(errvalueStr);
+            }
+
+            Py_XDECREF(errvalue);
+            Py_XDECREF(errtype);
+            Py_XDECREF(traceback);        
+        }  
+
     }
     catch(...)
     {      
-        dbgClient->eprintln( "unexpected error" );
+        dbgClient->eprintln( L"unexpected error" );
     }    
 
     Py_EndInterpreter( localInterpreter ); 
@@ -414,7 +518,7 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
     }
     catch(...)
     {      
-        dbgClient->eprintln( "unexpected error" );
+        dbgClient->eprintln( L"unexpected error" );
     }    
 
     WindbgGlobalSession::SavePyState();

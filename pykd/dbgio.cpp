@@ -10,7 +10,7 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void DebugClient::dprint( const std::string &str, bool dml )
+void DebugClient::dprint( const std::wstring &str, bool dml )
 {
     if ( WindbgGlobalSession::isInit() )
     {
@@ -18,18 +18,18 @@ void DebugClient::dprint( const std::string &str, bool dml )
         {
            m_control->ControlledOutputWide(  
                 dml ? DEBUG_OUTCTL_AMBIENT_DML : DEBUG_OUTCTL_AMBIENT_TEXT, DEBUG_OUTPUT_NORMAL, 
-                L"%s",
+                L"%ws",
                 str.substr( i*100, min( str.size() - i*100, 100 ) ).c_str() 
                 );
         }
     }
     else
     {
-        std::cout << str;
+        std::wcout << str;
     }
 }
 
-void dprint( const std::string &str, bool dml )
+void dprint( const std::wstring &str, bool dml )
 {
     g_dbgClient->dprint( str, dml );
 }
@@ -37,19 +37,19 @@ void dprint( const std::string &str, bool dml )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void DebugClient::dprintln( const std::string &str, bool dml )
+void DebugClient::dprintln( const std::wstring &str, bool dml )
 {
-    this->dprint( str + "\r\n", dml );        
+    this->dprint( str + L"\r\n", dml );        
 }
 
-void dprintln( const std::string &str, bool dml )
+void dprintln( const std::wstring &str, bool dml )
 {
     g_dbgClient->dprintln( str, dml );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void DebugClient::eprint( const std::string &str )
+void DebugClient::eprint( const std::wstring &str )
 {
     if ( WindbgGlobalSession::isInit() )
     {
@@ -57,102 +57,64 @@ void DebugClient::eprint( const std::string &str )
         {
            m_control->OutputWide(  
                 DEBUG_OUTPUT_ERROR, 
-                L"%s",
+                L"%ws",
                 str.substr( i*100, min( str.size() - i*100, 100 ) ).c_str() 
                 );
         }
     }
     else
     {
-        std::cerr << str;
+        std::wcerr << str;
     }    
 }
 
-void eprint( const std::string &str )
+void eprint( const std::wstring &str )
 {
     g_dbgClient->eprint( str );   
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void DebugClient::eprintln( const std::string &str )
+void DebugClient::eprintln( const std::wstring &str )
 {
-    this->eprint( str + "\r\n");
+    this->eprint( str + L"\r\n");
 }
 
-void eprintln( const std::string &str )
+void eprintln( const std::wstring &str )
 {
     g_dbgClient->eprintln( str );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+void
+DbgOut::write( const std::wstring  &str )
+{
+    if ( WindbgGlobalSession::isInit() )
+    {
+        for ( size_t   i = 0; i < str.size() / 100 + 1; ++i )
+        {
+           m_control->OutputWide(  
+                DEBUG_OUTPUT_ERROR, 
+                L"%ws",
+                str.substr( i*100, min( str.size() - i*100, 100 ) ).c_str() 
+                );
+        }
+    }
+    else
+    {
+        std::wcerr << str;
+    }  
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string
+DbgIn::readline()
+{
+    return "";
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }; // namesapce pykd
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//void dbgPrint::dprint( const boost::python::object& obj, bool dml )
-//{
-//    std::wstring   str = boost::python::extract<std::wstring>( obj );
-//
-//    if ( isWindbgExt() )
-//    {
-//
-//        for ( size_t   i = 0; i < str.size() / 100 + 1; ++i )
-//        {
-//            dbgExt->control4->ControlledOutputWide(  
-//                dml ? DEBUG_OUTCTL_AMBIENT_DML : DEBUG_OUTCTL_AMBIENT_TEXT, DEBUG_OUTPUT_NORMAL, 
-//                L"%ws",
-//                str.substr( i*100, min( str.size() - i*100, 100 ) ).c_str() 
-//                );
-//        }
-//    }
-//    else
-//    {
-//        std::wcout << str;
-//    }
-//}
-//
-///////////////////////////////////////////////////////////////////////////////////
-//
-//void dbgPrint::dprintln( const boost::python::object& obj, bool dml  )
-//{
-//    std::wstring   str = boost::python::extract<std::wstring>( obj );
-//    str += L"\r\n";
-//
-//    if ( isWindbgExt() )
-//    {
-//        for ( size_t   i = 0; i < str.size() / 100 + 1; ++i )
-//        {
-//            dbgExt->control4->ControlledOutputWide(  
-//                dml ? DEBUG_OUTCTL_AMBIENT_DML : DEBUG_OUTCTL_AMBIENT_TEXT, DEBUG_OUTPUT_NORMAL, 
-//                L"%ws",
-//                str.substr( i*100, min( str.size() - i*100, 100 ) ).c_str() 
-//                );
-//        }
-//    }
-//    else
-//    {
-//        std::wcout << str;
-//    }
-//}
-//
-///////////////////////////////////////////////////////////////////////////////////

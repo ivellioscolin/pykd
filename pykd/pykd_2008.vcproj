@@ -370,6 +370,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgpath.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\diadata.cpp"
 				>
 			</File>
@@ -449,6 +453,10 @@
 			</File>
 			<File
 				RelativePath=".\dbgobj.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgpath.h"
 				>
 			</File>
 			<File

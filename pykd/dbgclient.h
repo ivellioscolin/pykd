@@ -8,6 +8,7 @@
 
 #include "dbgexcept.h"
 #include "module.h"
+#include "dbgio.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -57,13 +58,21 @@ public:
 
     ULONG64  addr64( ULONG64 addr );
 
-    void dprint( const std::string &str, bool dml = false );
+    void dprint( const std::wstring &str, bool dml = false );
 
-    void dprintln( const std::string &str, bool dml = false );
+    void dprintln( const std::wstring &str, bool dml = false );
 
-    void eprint( const std::string &str );
+    void eprint( const std::wstring &str );
 
-    void eprintln( const std::string &str );
+    void eprintln( const std::wstring &str );
+
+    DbgOut  dout() {
+        return DbgOut( m_client );
+    }
+
+    DbgIn din() {
+        return DbgIn( m_client );
+    }
 
 private:
 
