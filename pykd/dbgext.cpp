@@ -516,10 +516,10 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
         python::object       sys = python::import("sys");
        
         sys.attr("stdout") = python::object( DbgOut( client ) );
+        sys.attr("stderr") = python::object( DbgOut( client ) );
         sys.attr("stdin") = python::object( DbgIn( client ) );
 
         client->SetOutputMask( DEBUG_OUTPUT_NORMAL );
-            //client->SetInputCallbacks( NULL );
 
         PyRun_String(
             "__import__('code').InteractiveConsole(__import__('__main__').__dict__).interact()", 
