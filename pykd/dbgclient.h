@@ -10,6 +10,7 @@
 #include "dbgexcept.h"
 #include "module.h"
 #include "dbgio.h"
+#include "dbgcmd.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -67,6 +68,10 @@ public:
 
     Module findModule( ULONG64  offset ) {
         return Module( m_client, offset ); 
+    }
+
+    DbgExtensionPtr loadExtension( const std::wstring &extPath ) {
+        return DbgExtensionPtr( new DbgExtension( m_client, extPath ) );
     }
 
     ULONG64  addr64( ULONG64 addr );

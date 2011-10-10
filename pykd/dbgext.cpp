@@ -65,6 +65,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Attach debugger to a exsisting process" )
         .def( "attachKernel", &pykd::DebugClient::attachKernel, 
             "Attach debugger to a target's kernel" )
+        .def ( "loadExt", &pykd::DebugClient::loadExtension,
+            "Load a debuger extension" )
         .def( "loadModule", &pykd::DebugClient::loadModule, 
             "Return instance of Module class" )
         .def( "findModule", &pykd::DebugClient::findModule, 
@@ -86,6 +88,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Attach debugger to a exsisting process" );
     python::def( "attachKernel", &pykd::attachKernel,
         "Attach debugger to a kernel target" );
+    python::def( "loadExt", &pykd::loadExtension,
+        "Load a debuger extension" );
     python::def( "loadModule", &pykd::loadModule,
         "Return instance of Module class"  );
     python::def( "findModule", &pykd::findModule,
@@ -128,11 +132,15 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__getattr__", &pykd::Module::getSymbol,
             "Return address of the symbol" );
 
-    boost::python::class_<DbgOut>( "dout", "dout", python::no_init )
-        .def( "write", &DbgOut::write );
+    python::class_<DbgOut>( "dout", "dout", python::no_init )
+        .def( "write", &pykd::DbgOut::write );
         
-    boost::python::class_<DbgIn>( "din", "din", python::no_init )
-        .def( "readline", &DbgIn::readline );    
+    python::class_<DbgIn>( "din", "din", python::no_init )
+        .def( "readline", &pykd::DbgIn::readline );
+
+    python::class_<DbgExtension, pykd::DbgExtensionPtr>("ext", python::no_init )
+        .def( "call", &pykd::DbgExtension::call,
+            "Call debug extension command end return it's result as a string" );
         
     python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");

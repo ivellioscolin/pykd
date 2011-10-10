@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+
+#include "dbgobj.h"
 
 namespace pykd {
 
@@ -7,6 +10,30 @@ namespace pykd {
 
 std::string
 dbgCommand( const std::wstring  &command );
+
+///////////////////////////////////////////////////////////////////////////////////
+
+class DbgExtension : private DbgObject { 
+
+public:
+
+    DbgExtension( IDebugClient4 *client, const std::wstring &extPath );
+
+    virtual ~DbgExtension();
+
+    std::string
+    call( const std::wstring &command, const std::wstring  &param );
+
+private:
+
+    ULONG64         m_handle;  
+
+};
+
+typedef boost::shared_ptr<DbgExtension>  DbgExtensionPtr;
+
+DbgExtensionPtr
+loadExtension( const std::wstring &extPath );
 
 ///////////////////////////////////////////////////////////////////////////////////
 

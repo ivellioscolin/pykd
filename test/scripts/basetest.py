@@ -111,6 +111,7 @@ class BaseTest( unittest.TestCase ):
         """ Branch test: new API 0.1.x what must be available """
         self.assertTrue( hasattr(pykd, 'createDbgClient') )
         self.assertTrue( hasattr(pykd, 'diaLoadPdb') )
+        self.assertTrue( hasattr(pykd, 'loadExt') )
         
         self.assertTrue( hasattr(pykd, 'DiaException') )
         self.assertTrue( hasattr(pykd, 'DiaScope') )

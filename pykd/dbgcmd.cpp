@@ -32,6 +32,53 @@ std::string dbgCommand( const std::wstring  &command )
 
 /////////////////////////////////////////////////////////////////////////////////
 
+DbgExtension::DbgExtension( IDebugClient4 *client, const std::wstring &extPath ) :
+    DbgObject( client )
+{
+    HRESULT     hres;
+
+    hres = m_control->AddExtensionWide( extPath.c_str(), 0, &m_handle );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::AddExtension failed" );    
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+    
+DbgExtension::~DbgExtension()
+{
+    m_control->RemoveExtension( m_handle );
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+std::string DbgExtension::call( const std::wstring &command, const std::wstring  &params )
+{
+    HRESULT     hres;
+
+    OutputReader        outReader(  m_client );
+
+    PyThreadState   *pystate = PyEval_SaveThread();
+
+    hres = m_control->CallExtensionWide( m_handle, command.c_str(), NULL );
+
+    PyEval_RestoreThread( pystate );
+
+    if ( FAILED( hres ) )
+        throw  DbgException( "IDebugControl::CallExtension  failed" ); 
+        
+    return std::string( outReader.Line() );    
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+DbgExtensionPtr
+loadExtension( const std::wstring &extPath )
+{
+    return g_dbgClient->loadExtension( extPath );            
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
 } // end namespace pykd
 
 
