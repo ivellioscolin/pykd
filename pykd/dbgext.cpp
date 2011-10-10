@@ -65,6 +65,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Attach debugger to a exsisting process" )
         .def( "attachKernel", &pykd::DebugClient::attachKernel, 
             "Attach debugger to a target's kernel" )
+        .def( "expr", &pykd::DebugClient::evaluate,
+            "Evaluate windbg expression" )
         .def ( "loadExt", &pykd::DebugClient::loadExtension,
             "Load a debuger extension" )
         .def( "loadModule", &pykd::DebugClient::loadModule, 
@@ -88,6 +90,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Attach debugger to a exsisting process" );
     python::def( "attachKernel", &pykd::attachKernel,
         "Attach debugger to a kernel target" );
+    python::def( "expr", &pykd::evaluate,
+        "Evaluate windbg expression" );
     python::def( "loadExt", &pykd::loadExtension,
         "Load a debuger extension" );
     python::def( "loadModule", &pykd::loadModule,

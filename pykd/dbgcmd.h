@@ -11,6 +11,9 @@ namespace pykd {
 std::string
 dbgCommand( const std::wstring  &command );
 
+ULONG64
+evaluate( const std::wstring  &expression );
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 class DbgExtension : private DbgObject { 

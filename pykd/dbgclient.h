@@ -62,6 +62,8 @@ public:
 
     void attachKernel( const std::wstring  &param );
 
+    ULONG64 evaluate( const std::wstring  &expression );
+
     Module loadModule( const std::string  &moduleName ) {
         return Module( m_client, moduleName );
     }
