@@ -401,6 +401,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
         python::object       sys = python::import("sys");
        
         sys.attr("stdout") = python::object( dbgClient->dout() );
+        sys.attr("stderr") = python::object( dbgClient->dout() );
         sys.attr("stdin") = python::object( dbgClient->din() );
 
         // импортируем модуль обработки исключений ( нужен для вывода traceback а )
@@ -510,6 +511,10 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 
     WindbgGlobalSession::RestorePyState();
 
+    
+    ULONG    mask = 0;
+    client->GetOutputMask( &mask );
+
     try {
 
         // перенаправление стандартных потоков ВВ
@@ -532,6 +537,8 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
     {      
         dbgClient->eprintln( L"unexpected error" );
     }    
+
+    client->SetOutputMask( mask );
 
     WindbgGlobalSession::SavePyState();
 
