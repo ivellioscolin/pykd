@@ -20,7 +20,7 @@ Module findModule( ULONG64  offset ) {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-Module::Module( IDebugClient5 *client, const std::string& moduleName ) : DbgObject( client )
+Module::Module( IDebugClient4 *client, const std::string& moduleName ) : DbgObject( client )
 {
     HRESULT    hres;
 
@@ -55,7 +55,7 @@ Module::Module( IDebugClient5 *client, const std::string& moduleName ) : DbgObje
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-Module::Module( IDebugClient5 *client, ULONG64 offset ) : DbgObject( client )
+Module::Module( IDebugClient4 *client, ULONG64 offset ) : DbgObject( client )
 {
     HRESULT     hres;
 

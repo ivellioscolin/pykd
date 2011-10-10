@@ -94,8 +94,9 @@ DbgOut::write( const std::wstring  &str )
     {
         for ( size_t   i = 0; i < str.size() / 100 + 1; ++i )
         {
-           m_control->OutputWide(  
-                DEBUG_OUTPUT_ERROR, 
+           m_control->ControlledOutputWide(  
+                DEBUG_OUTCTL_AMBIENT_TEXT,
+                DEBUG_OUTPUT_NORMAL, 
                 L"%ws",
                 str.substr( i*100, min( str.size() - i*100, 100 ) ).c_str() 
                 );
@@ -112,7 +113,12 @@ DbgOut::write( const std::wstring  &str )
 std::string
 DbgIn::readline()
 {
-    return "";
+    char    str[0x100];
+    ULONG   inputSize = 0;
+
+    m_control->Input( str, sizeof(str), &inputSize );
+
+    return std::string( str ) + "\n";
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

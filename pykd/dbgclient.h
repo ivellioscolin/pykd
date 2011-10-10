@@ -6,6 +6,7 @@
 
 #include <boost\smart_ptr\scoped_ptr.hpp>
 
+#include "dbgobj.h"
 #include "dbgexcept.h"
 #include "module.h"
 #include "dbgio.h"
@@ -21,7 +22,7 @@ typedef boost::shared_ptr<DebugClient>  DebugClientPtr;
 
 /////////////////////////////////////////////////////////////////////////////////
 
-class DebugClient {
+class DebugClient : private DbgObject {
 
 public:
 
@@ -29,7 +30,15 @@ public:
 
     static
     DebugClientPtr createDbgClient() {
-        return DebugClientPtr( new DebugClient() );
+
+        HRESULT                  hres;
+        CComPtr<IDebugClient4>   client = NULL;
+
+        hres = DebugCreate( __uuidof(IDebugClient4), (void **)&client );
+        if ( FAILED( hres ) )
+            throw DbgException("DebugCreate failed");
+
+        return  createDbgClient( client );
     }
 
     static
@@ -74,15 +83,26 @@ public:
         return DbgIn( m_client );
     }
 
+public:
+
+    CComPtr<IDebugClient4>&
+    client() {
+        return m_client;    
+    }
+
+    CComPtr<IDebugClient5>&
+    client5() {
+        return m_client5;    
+    }
+
+    CComPtr<IDebugControl4>&
+    control() {
+        return m_control;    
+    }
+
 private:
 
-    DebugClient();
-
-    DebugClient( IDebugClient4 *client );
-
-    CComPtr<IDebugClient5>      m_client;     
-    CComPtr<IDebugControl4>     m_control;
-    CComPtr<IDebugSymbols3>     m_symbols;
+    DebugClient( IDebugClient4 *client ) : DbgObject( client ) {}
 };
 
 /////////////////////////////////////////////////////////////////////////////////

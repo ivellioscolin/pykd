@@ -73,8 +73,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "dprintln", &pykd::DebugClient::dprintln,
             "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" );
 
-//    python::def( "createDbgClient", pykd::DebugClient::createDbgClient, 
-//        "create a new instance of the dbgClient class" );
+    python::def( "createDbgClient", (DebugClientPtr(*)())&pykd::DebugClient::createDbgClient, 
+        "create a new instance of the dbgClient class" );
     python::def( "loadDump", &pykd::loadDump,
         "Load crash dump (only for console)");
     python::def( "startProcess", &pykd::startProcess,
@@ -392,15 +392,13 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
     try {
 
         // получаем достпу к глобальному мапу ( нужен для вызова exec_file )
-        boost::python::object       main =  python::import("__main__");
+        python::object       main =  python::import("__main__");
 
-        boost::python::object       global(main.attr("__dict__"));
+        python::object       global(main.attr("__dict__"));
 
-        boost::python::import( "pykd" ); 
-     
         // настраиваем ввод/вывод ( чтобы в скрипте можно было писать print )
 
-        boost::python::object       sys = boost::python::import("sys");
+        python::object       sys = python::import("sys");
        
         sys.attr("stdout") = python::object( dbgClient->dout() );
         sys.attr("stdin") = python::object( dbgClient->din() );
@@ -514,7 +512,21 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 
     try {
 
-    
+        // перенаправление стандартных потоков ВВ
+        python::object       sys = python::import("sys");
+       
+        sys.attr("stdout") = python::object( DbgOut( client ) );
+        sys.attr("stdin") = python::object( DbgIn( client ) );
+
+        client->SetOutputMask( DEBUG_OUTPUT_NORMAL );
+            //client->SetInputCallbacks( NULL );
+
+        PyRun_String(
+            "__import__('code').InteractiveConsole(__import__('__main__').__dict__).interact()", 
+            Py_file_input,
+            WindbgGlobalSession::global().ptr(),
+            WindbgGlobalSession::global().ptr()
+            );
     }
     catch(...)
     {      

@@ -11,12 +11,14 @@ class DbgObject {
 
 protected:
 
-    DbgObject( IDebugClient5 *client ) {
+    DbgObject( IDebugClient4 *client ) {
+
+        m_client = client;
 
         HRESULT    hres;
-        hres = client->QueryInterface( __uuidof(IDebugClient5), (void **)&m_client );
+        hres = client->QueryInterface( __uuidof(IDebugClient5), (void **)&m_client5 );
         if ( FAILED( hres ) )
-            throw DbgException("DebugCreate failed");
+            throw DbgException("QueryInterface IDebugClient5 failed");
 
         hres = client->QueryInterface( __uuidof(IDebugControl4), (void**)&m_control );
         if ( FAILED( hres ) )
@@ -33,7 +35,8 @@ protected:
     
     virtual ~DbgObject() {};
 
-    CComPtr<IDebugClient5>      m_client;     
+    CComPtr<IDebugClient5>      m_client5;     
+    CComPtr<IDebugClient4>      m_client;    
     CComPtr<IDebugControl4>     m_control;
     CComPtr<IDebugSymbols3>     m_symbols;
     CComPtr<IDebugAdvanced2>    m_advanced;

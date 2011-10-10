@@ -14,9 +14,9 @@ class Module : private DbgObject {
 
 public:
     
-    Module( IDebugClient5 *client, const std::string& moduleName );
+    Module( IDebugClient4 *client, const std::string& moduleName );
 
-    Module( IDebugClient5 *client, ULONG64 offset );
+    Module( IDebugClient4 *client, ULONG64 offset );
 
     std::string  getName() {
         return m_name;

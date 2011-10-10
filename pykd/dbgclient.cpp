@@ -8,7 +8,7 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-DebugClientPtr  g_dbgClient( DebugClient::createDbgClient() );
+DebugClientPtr  g_dbgClient; //( DebugClient::createDbgClient() );
 
 void loadDump( const std::wstring &fileName ) {
     g_dbgClient->loadDump( fileName );    
@@ -33,43 +33,6 @@ DebugClientPtr  DebugClient::setDbgClientCurrent( DebugClientPtr  newDbgClient )
     DebugClientPtr  oldClient = g_dbgClient;
     g_dbgClient = newDbgClient;
     return oldClient;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-DebugClient::DebugClient()
-{
-    HRESULT    hres;
-    hres = DebugCreate( __uuidof(IDebugClient5), (void **)&m_client );
-    if ( FAILED( hres ) )
-        throw DbgException("DebugCreate failed");
-
-    hres = m_client->QueryInterface( __uuidof(IDebugControl4), (void**)&m_control );
-    if ( FAILED( hres ) )
-        throw DbgException("QueryInterface IDebugControl4  failed");    
-
-    hres = m_client->QueryInterface( __uuidof(IDebugSymbols3), (void**)&m_symbols );
-    if ( FAILED( hres ) )
-        throw DbgException("QueryInterface IDebugSymbols3  failed");    
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-DebugClient::DebugClient( IDebugClient4 *client )
-{
-    HRESULT    hres;
-
-    hres = client->QueryInterface( __uuidof(IDebugClient5), (void**)&m_client );
-    if ( FAILED( hres ) )
-        throw DbgException("QueryInterface IDebugControl4  failed");    
-
-    hres = client->QueryInterface( __uuidof(IDebugControl4), (void**)&m_control );
-    if ( FAILED( hres ) )
-        throw DbgException("QueryInterface IDebugControl4  failed");    
-
-    hres = client->QueryInterface( __uuidof(IDebugSymbols3), (void**)&m_symbols );
-    if ( FAILED( hres ) )
-        throw DbgException("QueryInterface IDebugSymbols3  failed");          
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -133,7 +96,7 @@ void DebugClient::attachKernel( const std::wstring  &param )
 {
     HRESULT     hres;
 
-    hres = m_client->AttachKernelWide( DEBUG_ATTACH_KERNEL_CONNECTION, param.c_str() );
+    hres = m_client5->AttachKernelWide( DEBUG_ATTACH_KERNEL_CONNECTION, param.c_str() );
     if ( FAILED( hres ) )
         throw DbgException( "IDebugClient5::AttachKernelWide failed" );
 }
