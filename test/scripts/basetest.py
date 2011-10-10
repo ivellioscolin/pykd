@@ -18,7 +18,6 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'breakin') )
         self.assertTrue( hasattr(pykd, 'compareMemory') )
         self.assertTrue( hasattr(pykd, 'containingRecord') )
-        self.assertTrue( hasattr(pykd, 'createSession') )
         self.assertTrue( hasattr(pykd, 'dbgCommand') )
         self.assertTrue( hasattr(pykd, 'dprint') )
         self.assertTrue( hasattr(pykd, 'dprintln') )
@@ -101,12 +100,12 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'intBase') )
         self.assertTrue( hasattr(pykd, 'typeInfo') )
         self.assertTrue( hasattr(pykd, 'typedVar') )
-        self.assertTrue( hasattr(pykd, 'windbgIn') )
-        self.assertTrue( hasattr(pykd, 'windbgOut') )
         
     def testOldRemovedApi( self ):
         """ Branch test: old API 0.0.x what should be removed """
         self.assertFalse( hasattr(pykd, 'dbgModuleClass') )
+        self.assertFalse( hasattr(pykd, 'windbgIn') )
+        self.assertFalse( hasattr(pykd, 'windbgOut') )        
         
     def testNewAddededApi( self ):
         """ Branch test: new API 0.1.x what must be available """

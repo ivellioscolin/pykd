@@ -65,8 +65,7 @@ public:
 
 	~OutputReader() 
 	{
-        if ( m_previousCallback )
-	        m_client->SetOutputCallbacks( m_previousCallback );
+	    m_client->SetOutputCallbacks( m_previousCallback );
 	}
 
 	const std::string&

@@ -11,6 +11,7 @@
 #include "dbgclient.h"
 #include "dbgio.h"
 #include "dbgpath.h"
+#include "dbgcmd.h"
 
 using namespace pykd;
 
@@ -68,6 +69,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return instance of Module class" )
         .def( "findModule", &pykd::DebugClient::findModule, 
             "Return instance of the Module class which posseses specified address" )
+        .def( "dbgCommand", &pykd::DebugClient::dbgCommand,
+             "Run a debugger's command and return it's result as a string" )
         .def( "dprint", &pykd::DebugClient::dprint,
             "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" )
         .def( "dprintln", &pykd::DebugClient::dprintln,
@@ -87,10 +90,12 @@ BOOST_PYTHON_MODULE( pykd )
         "Return instance of Module class"  );
     python::def( "findModule", &pykd::findModule,
         "Return instance of the Module class which posseses specified address" );
+    python::def( "dbgCommand", &pykd::dbgCommand,    
+        "Run a debugger's command and return it's result as a string" ),
     python::def( "dprint", &pykd::dprint, dprint_( boost::python::args( "str", "dml" ), 
-            "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
+        "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
     python::def( "dprintln", &pykd::dprintln, dprintln_( boost::python::args( "str", "dml" ), 
-            "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
+        "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
     
     python::class_<pykd::TypeInfo>("typeInfo", "Class representing typeInfo", python::no_init )
         .def( "name", &pykd::TypeInfo::getName )

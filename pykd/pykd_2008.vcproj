@@ -354,6 +354,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgcmd.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgexcept.cpp"
 				>
 			</File>
@@ -437,6 +441,10 @@
 			>
 			<File
 				RelativePath=".\dbgclient.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgcmd.h"
 				>
 			</File>
 			<File

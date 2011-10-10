@@ -48,6 +48,10 @@ public:
 
     static
     DebugClientPtr  setDbgClientCurrent( DebugClientPtr  newDbgClient );
+
+public:
+
+    std::string dbgCommand( const std::wstring  &command );
  
     void loadDump( const std::wstring &fileName );
 
