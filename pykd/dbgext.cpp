@@ -67,6 +67,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Attach debugger to a target's kernel" )
         .def( "expr", &pykd::DebugClient::evaluate,
             "Evaluate windbg expression" )
+        .def( "getDebuggeeType", &pykd::DebugClient::getDebuggeeType,
+            "Return type of the debuggee" )
+        .def( "isDumpAnalyzing", &pykd::DebugClient::isDumpAnalyzing,
+            "Check if it is a dump analyzing ( not living debuggee )" )
+        .def( "isKernelDebugging", &pykd::DebugClient::isKernelDebugging,
+            "Check if kernel dubugging is running" )
         .def ( "loadExt", &pykd::DebugClient::loadExtension,
             "Load a debuger extension" )
         .def( "loadModule", &pykd::DebugClient::loadModule, 
@@ -92,6 +98,12 @@ BOOST_PYTHON_MODULE( pykd )
         "Attach debugger to a kernel target" );
     python::def( "expr", &pykd::evaluate,
         "Evaluate windbg expression" );
+    python::def( "getDebuggeeType", &pykd::getDebuggeeType,
+        "Return type of the debuggee" );
+    python::def( "isDumpAnalyzing", &pykd::isDumpAnalyzing,
+        "Check if it is a dump analyzing ( not living debuggee )" );
+    python::def( "isKernelDebugging", &pykd::isKernelDebugging,
+        "Check if kernel dubugging is running" );
     python::def( "loadExt", &pykd::loadExtension,
         "Load a debuger extension" );
     python::def( "loadModule", &pykd::loadModule,
@@ -327,6 +339,22 @@ BOOST_PYTHON_MODULE( pykd )
     pyDia::Exception::setTypeObject( diaException.ptr() );
     boost::python::register_exception_translator<pyDia::Exception>( 
         &pyDia::Exception::exceptionTranslate );
+
+    DEF_PY_CONST_ULONG( DEBUG_CLASS_UNINITIALIZED );
+    DEF_PY_CONST_ULONG( DEBUG_CLASS_KERNEL );
+    DEF_PY_CONST_ULONG( DEBUG_CLASS_USER_WINDOWS );
+
+    DEF_PY_CONST_ULONG( DEBUG_KERNEL_CONNECTION );
+    DEF_PY_CONST_ULONG( DEBUG_KERNEL_LOCAL );
+    DEF_PY_CONST_ULONG( DEBUG_KERNEL_EXDI_DRIVER );
+    DEF_PY_CONST_ULONG( DEBUG_KERNEL_SMALL_DUMP );
+    DEF_PY_CONST_ULONG( DEBUG_KERNEL_DUMP );
+    DEF_PY_CONST_ULONG( DEBUG_KERNEL_FULL_DUMP );
+
+    DEF_PY_CONST_ULONG( DEBUG_USER_WINDOWS_PROCESS );
+    DEF_PY_CONST_ULONG( DEBUG_USER_WINDOWS_PROCESS_SERVER );
+    DEF_PY_CONST_ULONG( DEBUG_USER_WINDOWS_SMALL_DUMP );
+    DEF_PY_CONST_ULONG( DEBUG_USER_WINDOWS_DUMP );
 }
 
 #undef DEF_PY_CONST_ULONG

@@ -17,6 +17,7 @@ import regtest
 import moduletest
 import diatest
 import dbgcmd
+import clienttest
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
@@ -25,7 +26,8 @@ def getTestSuite( singleName = "" ):
                unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
                unittest.TestLoader().loadTestsFromTestCase( diatest.DiaTest ),
                unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
-               unittest.TestLoader().loadTestsFromTestCase( dbgcmd.DbgcmdTest )
+               unittest.TestLoader().loadTestsFromTestCase( dbgcmd.DbgcmdTest ),
+               unittest.TestLoader().loadTestsFromTestCase( clienttest.DbgClientTest )
            ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )

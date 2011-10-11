@@ -10,25 +10,6 @@ namespace pykd {
 
 DebugClientPtr  g_dbgClient( DebugClient::createDbgClient() );
 
-void loadDump( const std::wstring &fileName ) {
-    g_dbgClient->loadDump( fileName );    
-}
-
-void startProcess( const std::wstring  &processName ) {
-    g_dbgClient->startProcess( processName );    
-}
-
-void attachProcess( ULONG  processId ) {
-    g_dbgClient->attachProcess( processId );
-}
-
-void attachKernel( const std::wstring  &param ) {
-    g_dbgClient->attachKernel( param );
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////
-
 DebugClientPtr  DebugClient::setDbgClientCurrent( DebugClientPtr  newDbgClient ) {
     DebugClientPtr  oldClient = g_dbgClient;
     g_dbgClient = newDbgClient;
@@ -36,6 +17,66 @@ DebugClientPtr  DebugClient::setDbgClientCurrent( DebugClientPtr  newDbgClient )
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+python::tuple DebugClient::getDebuggeeType()
+{
+    HRESULT         hres;
+    ULONG           debugClass, debugQualifier;
+    
+    hres = m_control->GetDebuggeeType( &debugClass, &debugQualifier );
+    
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
+
+    return python::make_tuple( debugClass, debugQualifier );
+}
+
+python::tuple getDebuggeeType()
+{
+    return g_dbgClient->getDebuggeeType();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+bool DebugClient::isDumpAnalyzing()
+{
+    HRESULT         hres;
+    ULONG           debugClass, debugQualifier;
+    
+    hres = m_control->GetDebuggeeType( &debugClass, &debugQualifier );
+    
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
+         
+    return debugQualifier >= DEBUG_DUMP_SMALL;
+}
+
+bool isDumpAnalyzing() 
+{
+    return g_dbgClient->isDumpAnalyzing();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+bool DebugClient::isKernelDebugging()
+{
+    HRESULT     hres;
+    ULONG       debugClass, debugQualifier;
+    
+    hres = m_control->GetDebuggeeType( &debugClass, &debugQualifier );
+    
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
+         
+    return debugClass == DEBUG_CLASS_KERNEL;
+}
+
+bool isKernelDebugging() 
+{
+    return g_dbgClient->isKernelDebugging();
+}
+
+//////////////////////////////////////////////////////////////////////////////////
 
 void DebugClient::loadDump( const std::wstring &fileName )
 {
@@ -49,6 +90,10 @@ void DebugClient::loadDump( const std::wstring &fileName )
     if ( FAILED( hres ) )
         throw DbgException( "IDebugControl::WaitForEvent failed" );
  
+}
+
+void loadDump( const std::wstring &fileName ) {
+    g_dbgClient->loadDump( fileName );    
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -79,6 +124,10 @@ void DebugClient::startProcess( const std::wstring  &processName )
         throw DbgException( "IDebugControl::WaitForEvent failed" );
 }
 
+void startProcess( const std::wstring  &processName ) {
+    g_dbgClient->startProcess( processName );    
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 void DebugClient::attachProcess( ULONG  processId )
@@ -88,6 +137,10 @@ void DebugClient::attachProcess( ULONG  processId )
     hres = m_client->AttachProcess( 0, processId, 0 );
     if ( FAILED( hres ) )
         throw DbgException( "IDebugClient::AttachProcess failed" );
+}
+
+void attachProcess( ULONG  processId ) {
+    g_dbgClient->attachProcess( processId );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +153,11 @@ void DebugClient::attachKernel( const std::wstring  &param )
     if ( FAILED( hres ) )
         throw DbgException( "IDebugClient5::AttachKernelWide failed" );
 }
+
+void attachKernel( const std::wstring  &param ) {
+    g_dbgClient->attachKernel( param );
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 

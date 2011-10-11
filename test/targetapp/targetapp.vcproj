@@ -405,6 +405,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\scripts\clienttest.py"
+				>
+			</File>
+			<File
 				RelativePath="..\scripts\dbgcmd.py"
 				>
 			</File>

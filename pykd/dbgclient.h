@@ -64,6 +64,12 @@ public:
 
     ULONG64 evaluate( const std::wstring  &expression );
 
+    python::tuple getDebuggeeType();
+
+    bool isKernelDebugging();
+
+    bool isDumpAnalyzing();
+
     Module loadModule( const std::string  &moduleName ) {
         return Module( m_client, moduleName );
     }
@@ -128,9 +134,11 @@ void attachProcess( ULONG  processId );
 
 void attachKernel( const std::wstring  &param );
 
-Module loadModule( const std::string  &moduleName );
+python::tuple getDebuggeeType();
 
-Module findModule( ULONG64  offset );
+bool isKernelDebugging();
+
+bool isDumpAnalyzing();
 
 /////////////////////////////////////////////////////////////////////////////////
 
