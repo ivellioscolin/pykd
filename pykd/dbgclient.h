@@ -30,22 +30,10 @@ public:
     virtual ~DebugClient() {}
 
     static
-    DebugClientPtr createDbgClient() {
-
-        HRESULT                  hres;
-        CComPtr<IDebugClient4>   client = NULL;
-
-        hres = DebugCreate( __uuidof(IDebugClient4), (void **)&client );
-        if ( FAILED( hres ) )
-            throw DbgException("DebugCreate failed");
-
-        return  createDbgClient( client );
-    }
+    DebugClientPtr createDbgClient() ;
 
     static
-    DebugClientPtr createDbgClient( IDebugClient4 *client ) {
-        return DebugClientPtr( new DebugClient(client) );
-    }
+    DebugClientPtr createDbgClient( IDebugClient4 *client );
 
     static
     DebugClientPtr  setDbgClientCurrent( DebugClientPtr  newDbgClient );
@@ -61,6 +49,8 @@ public:
     void attachProcess( ULONG  processId );
 
     void attachKernel( const std::wstring  &param );
+
+    //createEventHandler();
 
     ULONG64 evaluate( const std::wstring  &expression );
 

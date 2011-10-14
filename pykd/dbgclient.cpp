@@ -10,6 +10,38 @@ namespace pykd {
 
 DebugClientPtr  g_dbgClient( DebugClient::createDbgClient() );
 
+///////////////////////////////////////////////////////////////////////////////////
+
+DebugClientPtr DebugClient::createDbgClient() {
+
+    HRESULT                  hres;
+    CComPtr<IDebugClient4>   client = NULL;
+
+    hres = DebugCreate( __uuidof(IDebugClient4), (void **)&client );
+    if ( FAILED( hres ) )
+        throw DbgException("DebugCreate failed");
+
+    return  createDbgClient( client );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+DebugClientPtr DebugClient::createDbgClient( IDebugClient4 *client ) {
+
+    HRESULT                 hres;
+    CComPtr<IDebugClient>   newClient = NULL;
+
+    hres = client->CreateClient( &newClient );
+    if ( FAILED( hres ) )
+        throw DbgException("DebugCreate failed");
+
+    CComQIPtr<IDebugClient4>  client4=  newClient;
+
+    return DebugClientPtr( new DebugClient(client4) );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 DebugClientPtr  DebugClient::setDbgClientCurrent( DebugClientPtr  newDbgClient ) {
     DebugClientPtr  oldClient = g_dbgClient;
     g_dbgClient = newDbgClient;

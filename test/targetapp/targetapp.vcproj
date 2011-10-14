@@ -417,6 +417,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\scripts\eventtest.py"
+				>
+			</File>
+			<File
 				RelativePath="..\scripts\moduletest.py"
 				>
 			</File>

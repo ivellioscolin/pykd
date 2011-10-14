@@ -358,6 +358,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgevent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgexcept.cpp"
 				>
 			</File>
@@ -445,6 +449,10 @@
 			</File>
 			<File
 				RelativePath=".\dbgcmd.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgevent.h"
 				>
 			</File>
 			<File

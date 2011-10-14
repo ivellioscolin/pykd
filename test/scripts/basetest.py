@@ -94,7 +94,6 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'bp') )
         self.assertTrue( hasattr(pykd, 'cpuReg') )
         self.assertTrue( hasattr(pykd, 'dbgStackFrameClass') )
-        self.assertTrue( hasattr(pykd, 'debugEvent') )
         self.assertTrue( hasattr(pykd, 'disasm') )
         self.assertTrue( hasattr(pykd, 'ext') )
         self.assertTrue( hasattr(pykd, 'intBase') )
@@ -104,6 +103,7 @@ class BaseTest( unittest.TestCase ):
     def testOldRemovedApi( self ):
         """ Branch test: old API 0.0.x what should be removed """
         self.assertFalse( hasattr(pykd, 'dbgModuleClass') )
+        self.assertFalse( hasattr(pykd, 'debugEvent') )        
         self.assertFalse( hasattr(pykd, 'windbgIn') )
         self.assertFalse( hasattr(pykd, 'windbgOut') )        
         
@@ -121,3 +121,4 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'din') )
         self.assertTrue( hasattr(pykd, 'dout') )
         self.assertTrue( hasattr(pykd, 'module') )
+        self.assertTrue( hasattr(pykd, 'eventHandler' ) )

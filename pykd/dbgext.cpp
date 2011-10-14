@@ -12,6 +12,7 @@
 #include "dbgio.h"
 #include "dbgpath.h"
 #include "dbgcmd.h"
+#include "dbgevent.h"
 
 using namespace pykd;
 
@@ -157,6 +158,31 @@ BOOST_PYTHON_MODULE( pykd )
     python::class_<DbgExtension, pykd::DbgExtensionPtr>("ext", python::no_init )
         .def( "call", &pykd::DbgExtension::call,
             "Call debug extension command end return it's result as a string" );
+
+    python::class_<EventHandlerWrap, boost::noncopyable>(
+        "eventHandler", "Base class for overriding and handling debug notifications" )
+        .def( python::init<>() )
+        .def( python::init<DebugClient&>() )
+        .def( "onBreakpoint", &pykd::EventHandlerWrap::onBreakpoint,
+            "Triggered breakpoint event. Parameter is dict:\n"
+            "{\"Id\":int, \"BreakType\":int, \"ProcType\":int, \"Flags\":int, \"Offset\":int,"
+            " \"Size\":int, \"AccessType\":int, \"PassCount\":int, \"CurrentPassCount\":int,"
+            " \"MatchThreadId\":int, \"Command\":str, \"OffsetExpression\":str}\n"
+            "Detailed information: http://msdn.microsoft.com/en-us/library/ff539284(VS.85).aspx \n"
+            "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" )
+        .def( "onException", &pykd::EventHandlerWrap::onException,
+            "Exception event. Parameter is dict:\n"
+            "{\"Code\":int, \"Flags\":int, \"Record\":int, \"Address\":int,"
+            " \"Parameters\":[int], \"FirstChance\":bool}\n"
+            "Detailed information: http://msdn.microsoft.com/en-us/library/aa363082(VS.85).aspx \n"
+            "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" )
+        .def( "onLoadModule", &pykd::EventHandlerWrap::onLoadModule,
+            "Load module event. Parameter is instance of dbgModuleClass.\n"
+            "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" )
+        .def( "onUnloadModule", &pykd::EventHandlerWrap::onUnloadModule,
+            "Unload module event. Parameter is instance of dbgModuleClass.\n"
+            "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" );
+
         
     python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");

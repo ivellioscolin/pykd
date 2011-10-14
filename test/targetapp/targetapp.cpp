@@ -104,6 +104,9 @@ int _tmain(int argc, _TCHAR* argv[])
     {
         // Let test scripts to execute
         __debugbreak();
+        __debugbreak();
+        __debugbreak();
+        __debugbreak();
         FuncWithName0();
         FuncWithName1(2);
     }
