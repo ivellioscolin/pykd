@@ -13,6 +13,8 @@
 #include "dbgpath.h"
 #include "dbgcmd.h"
 #include "dbgevent.h"
+#include "typeinfo.h"
+#include "typedvar.h"
 
 using namespace pykd;
 
@@ -125,6 +127,19 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "field", &pykd::TypeInfo::getField )
         .def( "__getattr__", &pykd::TypeInfo::getField );
 
+    python::class_<pykd::TypedVar>("typedVar", 
+        "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance",
+        python::no_init )
+        .def("getAddress", &pykd::TypedVar::getAddress, 
+            "Return virtual address" )
+        .def("sizeof", &pykd::TypedVar::getSize,
+            "Return size of a variable in the target memory" );
+        //.def("data", &pykd::TypedVar::data,
+        //    "Return raw string object with data stream" );
+        //.def("__getattr__", &pykd::TypedVar::getFieldWrap,
+        //    "Return field of structure as an object attribute" );
+
+
     python::class_<pykd::Module>("module", "Class representing executable module", python::no_init )
         .def("begin", &pykd::Module::getBase,
              "Return start address of the module" )
@@ -146,6 +161,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Return rva of the symbol" )
         .def("type", &pykd::Module::getTypeByName,
             "Return typeInfo class by type name" )
+        .def("typedVar", &pykd::Module::getTypedVarByAddr,
+            "Return a typedVar class instance" )
+        .def("typedVar",&pykd::Module::getTypedVarByName,
+            "Return a typedVar class instance" )
         .def("__getattr__", &pykd::Module::getSymbol,
             "Return address of the symbol" );
 

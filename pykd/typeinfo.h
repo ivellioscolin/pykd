@@ -1,6 +1,7 @@
 #pragma once
 
-#include "dbgobj.h"
+#include <string>
+
 #include "diawrapper.h"
 
 namespace pykd {
@@ -11,10 +12,12 @@ class TypeInfo {
 
 public:
 
-    TypeInfo( pyDia::SymbolPtr  dia ) :
-      m_dia( dia ),
-      m_offset( 0 )
-      {}
+    TypeInfo( pyDia::GlobalScopePtr &diaScope, const std::string &symName );
+
+    TypeInfo( pyDia::SymbolPtr  &diaType ) :
+        m_offset( 0 ),
+        m_dia( diaType )
+        {}
 
     TypeInfo
     getField( const std::string &fieldName ) {
@@ -25,20 +28,16 @@ public:
     }
 
     std::string 
-    getName() {
-        return m_dia->isBasicType() ? 
-            m_dia->getBasicTypeName( m_dia->getBaseType() ) :
-            m_dia->getName();
-    }
+    getName();
 
     ULONG
     getOffset() {
         return m_offset;
     }
 
-    ULONG64
+    ULONG
     getSize() {
-        return m_dia->getSize();
+        return (ULONG)m_dia->getSize();
     }   
   
 private:

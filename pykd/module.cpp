@@ -153,14 +153,27 @@ Module::reloadSymbols()
 ///////////////////////////////////////////////////////////////////////////////////
 
 TypeInfo
-Module::getTypeByName( const std::string typeName )
+Module::getTypeByName( const std::string  &typeName )
 {
-    pyDia::SymbolPtr  typeSym = m_dia->getChildByName( typeName );
+    return TypeInfo( m_dia, typeName );
+}
 
-    if ( typeSym->getSymTag() == SymTagData )
-        return TypeInfo( typeSym->getType() );
-    else
-        return TypeInfo( typeSym );
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVar 
+Module::getTypedVarByAddr( const std::string &typeName, ULONG64 addr )
+{
+   return TypedVar( TypeInfo( m_dia, typeName ), addr );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVar 
+Module::getTypedVarByName( const std::string &symName )
+{
+    pyDia::SymbolPtr  typeSym = m_dia->getChildByName( symName );
+
+    return TypedVar( TypeInfo( typeSym->getType() ), typeSym->getRva() + m_base );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

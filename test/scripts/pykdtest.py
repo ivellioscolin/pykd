@@ -19,6 +19,7 @@ import diatest
 import dbgcmd
 import clienttest
 import eventtest
+import typedvar
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
@@ -27,6 +28,7 @@ def getTestSuite( singleName = "" ):
                unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
                unittest.TestLoader().loadTestsFromTestCase( diatest.DiaTest ),
                unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
+               unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
                unittest.TestLoader().loadTestsFromTestCase( dbgcmd.DbgcmdTest ),
                unittest.TestLoader().loadTestsFromTestCase( clienttest.DbgClientTest ),
                unittest.TestLoader().loadTestsFromTestCase( eventtest.EventTest )
@@ -48,5 +50,6 @@ if __name__ == "__main__":
     target.module.reload();
     
     suite = getTestSuite()
+    #suite = getTestSuite( "typedvar.TypedVarTest.testCtor" )
    
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )

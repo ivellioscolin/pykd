@@ -437,6 +437,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\scripts\typedvar.py"
+				>
+			</File>
+			<File
 				RelativePath="..\scripts\typeinfo.py"
 				>
 			</File>

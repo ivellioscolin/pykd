@@ -5,6 +5,7 @@
 #include "dbgobj.h"
 #include "diawrapper.h"
 #include "typeinfo.h"
+#include "typedvar.h"
 
 namespace pykd {
 
@@ -66,7 +67,11 @@ public:
         return sym->getRva();
     }
 
-    TypeInfo getTypeByName( const std::string typeName );
+    TypeInfo getTypeByName( const std::string &typeName );
+
+    TypedVar getTypedVarByAddr( const std::string &typeName, ULONG64 addr );
+
+    TypedVar getTypedVarByName( const std::string &symName );
 
 private:
 

@@ -437,6 +437,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\typeinfo.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -497,6 +501,10 @@
 			</File>
 			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\typedvar.h"
 				>
 			</File>
 			<File
