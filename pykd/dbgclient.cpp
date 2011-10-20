@@ -1,7 +1,7 @@
 #include "stdafx.h"
+#include <vector>
 
 #include "dbgclient.h"
-#include <vector>
 
 
 namespace pykd {
@@ -66,6 +66,26 @@ python::tuple DebugClient::getDebuggeeType()
 python::tuple getDebuggeeType()
 {
     return g_dbgClient->getDebuggeeType();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ULONG DebugClient::getExecutionStatus()
+{
+    ULONG       currentStatus;
+    HRESULT     hres;
+
+    hres = m_control->GetExecutionStatus( &currentStatus );
+
+    if ( FAILED( hres ) )
+        throw  DbgException( "IDebugControl::GetExecutionStatus  failed" ); 
+
+    return currentStatus;
+}
+
+ULONG getExecutionStatus()
+{
+    return  g_dbgClient->getExecutionStatus();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -190,6 +210,44 @@ void attachKernel( const std::wstring  &param ) {
     g_dbgClient->attachKernel( param );
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+
+void DebugClient::setExecutionStatus( ULONG status )
+{
+    HRESULT     hres;
+
+    hres = m_control->SetExecutionStatus( status );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::SetExecutionStatus failed" );
+
+}
+
+void setExecutionStatus( ULONG status )
+{
+    g_dbgClient->setExecutionStatus( status );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void DebugClient::waitForEvent()
+{
+    HRESULT     hres;
+
+    do {
+        PyThread_StateRestore pyThreadRestore( m_pyThreadState );
+        hres = m_control->WaitForEvent( 0, INFINITE );
+
+    } while( false );
+
+    if ( FAILED( hres ) )
+        throw  DbgException( "IDebugControl::WaitForEvent  failed" );
+}
+
+void waitForEvent()
+{
+    g_dbgClient->waitForEvent();
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 

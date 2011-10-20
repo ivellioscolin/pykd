@@ -72,6 +72,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Evaluate windbg expression" )
         .def( "getDebuggeeType", &pykd::DebugClient::getDebuggeeType,
             "Return type of the debuggee" )
+        .def( "getExecutionStatus", &pykd::DebugClient::getExecutionStatus,
+            "Return information about the execution status of the debugger" )
+        .def( "go", &pykd::DebugClient::changeDebuggerStatus<DEBUG_STATUS_GO>,
+            "Change debugger status to DEBUG_STATUS_GO"  )
         .def( "isDumpAnalyzing", &pykd::DebugClient::isDumpAnalyzing,
             "Check if it is a dump analyzing ( not living debuggee )" )
         .def( "isKernelDebugging", &pykd::DebugClient::isKernelDebugging,
@@ -87,7 +91,15 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "dprint", &pykd::DebugClient::dprint,
             "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" )
         .def( "dprintln", &pykd::DebugClient::dprintln,
-            "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" );
+            "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" )
+        .def( "setExecutionStatus",  &pykd::DebugClient::setExecutionStatus,
+            "Requests that the debugger engine enter an executable state" )
+        .def( "step", &pykd::DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
+            "Change debugger status to DEBUG_STATUS_STEP_OVER" )
+        .def( "trace", &pykd::DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
+            "Change debugger status to DEBUG_STATUS_STEP_INTO" )
+        .def( "waitForEvent", &pykd::DebugClient::waitForEvent,
+            "Wait for events that breaks into the debugger" );
 
     python::def( "createDbgClient", (DebugClientPtr(*)())&pykd::DebugClient::createDbgClient, 
         "create a new instance of the dbgClient class" );
@@ -103,6 +115,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Evaluate windbg expression" );
     python::def( "getDebuggeeType", &pykd::getDebuggeeType,
         "Return type of the debuggee" );
+    python::def( "getExecutionStatus", &pykd::getExecutionStatus,
+        "Return information about the execution status of the debugger" );
+    python::def( "go", &pykd::changeDebuggerStatus<DEBUG_STATUS_GO>,
+        "Change debugger status to DEBUG_STATUS_GO"  );
     python::def( "isDumpAnalyzing", &pykd::isDumpAnalyzing,
         "Check if it is a dump analyzing ( not living debuggee )" );
     python::def( "isKernelDebugging", &pykd::isKernelDebugging,
@@ -119,6 +135,14 @@ BOOST_PYTHON_MODULE( pykd )
         "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
     python::def( "dprintln", &pykd::dprintln, dprintln_( boost::python::args( "str", "dml" ), 
         "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
+    python::def( "setExecutionStatus",  &pykd::setExecutionStatus,
+        "Requests that the debugger engine enter an executable state" );
+    python::def( "step", &pykd::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
+        "Change debugger status to DEBUG_STATUS_STEP_OVER" );
+    python::def( "trace", &pykd::changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
+        "Change debugger status to DEBUG_STATUS_STEP_INTO" );
+    python::def( "waitForEvent", &pykd::waitForEvent,
+        "Wait for events that breaks into the debugger" );
     
     python::class_<pykd::TypeInfo>("typeInfo", "Class representing typeInfo", python::no_init )
         .def( "name", &pykd::TypeInfo::getName )
@@ -400,6 +424,22 @@ BOOST_PYTHON_MODULE( pykd )
     DEF_PY_CONST_ULONG( DEBUG_USER_WINDOWS_PROCESS_SERVER );
     DEF_PY_CONST_ULONG( DEBUG_USER_WINDOWS_SMALL_DUMP );
     DEF_PY_CONST_ULONG( DEBUG_USER_WINDOWS_DUMP );
+
+    // debug status
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_NO_CHANGE);
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_GO);
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_GO_HANDLED);
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_GO_NOT_HANDLED);
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_STEP_OVER);
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_STEP_INTO);
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_BREAK);
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_NO_DEBUGGEE);
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_STEP_BRANCH);
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_RESTART_REQUESTED);
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_REVERSE_GO);
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_REVERSE_STEP_BRANCH);
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_REVERSE_STEP_OVER);
+    DEF_PY_CONST_ULONG(DEBUG_STATUS_REVERSE_STEP_INTO);
 }
 
 #undef DEF_PY_CONST_ULONG
@@ -600,7 +640,6 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
     DebugClientPtr      oldClient = DebugClient::setDbgClientCurrent( dbgClient );
 
     WindbgGlobalSession::RestorePyState();
-
     
     ULONG    mask = 0;
     client->GetOutputMask( &mask );

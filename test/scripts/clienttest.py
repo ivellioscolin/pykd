@@ -15,4 +15,15 @@ class DbgClientTest( unittest.TestCase ):
         
     def testIsDumpAnalyzing( self ):
         self.assertFalse( pykd.isDumpAnalyzing() )
+        
+    def testExecutionStatus( self ):
+        self.assertEqual( pykd.DEBUG_STATUS_BREAK, pykd.getExecutionStatus() )
+        pykd.setExecutionStatus( pykd.DEBUG_STATUS_GO )
+        pykd.waitForEvent()
+        self.assertEqual( pykd.DEBUG_STATUS_BREAK, pykd.getExecutionStatus() )
+       
+        
+               
+            
+        
 

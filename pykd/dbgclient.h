@@ -11,6 +11,7 @@
 #include "module.h"
 #include "dbgio.h"
 #include "dbgcmd.h"
+#include "pyaux.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -50,11 +51,14 @@ public:
 
     void attachKernel( const std::wstring  &param );
 
-    //createEventHandler();
-
     ULONG64 evaluate( const std::wstring  &expression );
 
     python::tuple getDebuggeeType();
+
+    ULONG getExecutionStatus();
+
+    template<ULONG status>
+    void changeDebuggerStatus();
 
     bool isKernelDebugging();
 
@@ -74,6 +78,14 @@ public:
 
     ULONG64  addr64( ULONG64 addr );
 
+    DbgOut  dout() {
+        return DbgOut( m_client );
+    }
+
+    DbgIn din() {
+        return DbgIn( m_client );
+    }
+
     void dprint( const std::wstring &str, bool dml = false );
 
     void dprintln( const std::wstring &str, bool dml = false );
@@ -82,13 +94,9 @@ public:
 
     void eprintln( const std::wstring &str );
 
-    DbgOut  dout() {
-        return DbgOut( m_client );
-    }
-
-    DbgIn din() {
-        return DbgIn( m_client );
-    }
+    void setExecutionStatus( ULONG status );
+    
+    void waitForEvent();
 
 public:
 
@@ -110,6 +118,8 @@ public:
 private:
 
     DebugClient( IDebugClient4 *client ) : DbgObject( client ) {}
+
+    PyThreadStateSaver      m_pyThreadState;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -126,11 +136,50 @@ void attachKernel( const std::wstring  &param );
 
 python::tuple getDebuggeeType();
 
+ULONG getExecutionStatus();
+
 bool isKernelDebugging();
 
 bool isDumpAnalyzing();
 
+void setExecutionStatus( ULONG status );
+
+void waitForEvent();
+
 /////////////////////////////////////////////////////////////////////////////////
+
+template<ULONG status>
+void DebugClient::changeDebuggerStatus()
+{
+    HRESULT     hres;
+
+    hres = m_control->SetExecutionStatus( status );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::SetExecutionStatus failed" );
+
+    ULONG    currentStatus;
+
+    do {
+
+        waitForEvent();
+
+        hres = m_control->GetExecutionStatus( &currentStatus );
+
+        if ( FAILED( hres ) )
+            throw  DbgException( "IDebugControl::GetExecutionStatus  failed" ); 
+
+    } while( currentStatus != DEBUG_STATUS_BREAK && currentStatus != DEBUG_STATUS_NO_DEBUGGEE );
+}
+
+template<ULONG status>
+void changeDebuggerStatus()
+{
+    g_dbgClient->changeDebuggerStatus<status>();
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
 
 };  // namespace pykd
 

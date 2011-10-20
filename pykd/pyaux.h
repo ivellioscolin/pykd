@@ -2,6 +2,10 @@
 
 #include <windows.h>
 
+#include "windbg.h"
+
+namespace pykd {
+
 ///////////////////////////////////////////////////////////////////////////////
 
 class PyThreadStateSaver {
@@ -17,14 +21,14 @@ public:
     }
 
     void saveState() {
-        if ( !isWindbgExt() )
+        if ( !WindbgGlobalSession::isInit() )
             TlsSetValue( m_index, PyEval_SaveThread() );
         else
             WindbgGlobalSession::SavePyState();                
     }
 
     void restoreState() {
-        if ( !isWindbgExt() )
+        if ( !WindbgGlobalSession::isInit() )
         {
             PyThreadState*      state = (PyThreadState*)TlsGetValue( m_index );
             if ( state )
@@ -41,33 +45,33 @@ private:
     DWORD   m_index;
 };
 
-extern PyThreadStateSaver       g_pyThreadState;
-
-
-//typedef PyThreadState *PyThreadStatePtr;
-//extern __declspec( thread ) PyThreadStatePtr ptrPyThreadState;
 
 //  --> call back 
 //  { PyThread_StateSave  state( winext->getThreadState() );
 //    do_callback();
 //  }
 //
-//  ≈сли колбек был вызван и при этом у текщего потока сохранен контекст ( был вызов setExecutionStatus )
-//  то перед выполнением питоновского кода нужно восстановить контекст, а после возврата управлени€,
-//  снова сохранить его
+//  ≈сли  был вызван колбек то перед выполнением питоновского кода нужно восстановить контекст,
+//  а после возврата управлени€,  снова сохранить его
 
 class PyThread_StateSave {
 
 public:
 
-    PyThread_StateSave() 
+    PyThread_StateSave( PyThreadStateSaver  &threadState) :
+        m_threadState( threadState )
     {
-        g_pyThreadState.restoreState();
+        m_threadState.restoreState();
     }
 
     ~PyThread_StateSave() {
-        g_pyThreadState.saveState();
+        m_threadState.saveState();
     }
+
+private:
+
+    PyThreadStateSaver      &m_threadState;
+
 };
 
 // { PyThread_StateRestore   state;
@@ -78,13 +82,20 @@ class PyThread_StateRestore
 {
 public:
 
-    PyThread_StateRestore() {
-        g_pyThreadState.saveState();
+    PyThread_StateRestore(PyThreadStateSaver  &threadState) :
+        m_threadState( threadState )
+    {
+        m_threadState.saveState();
     }
 
     ~PyThread_StateRestore() {
-        g_pyThreadState.restoreState();
+        m_threadState.restoreState();
     }
+private:
+
+    PyThreadStateSaver      &m_threadState;
 };
 
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+}; //end namespace pykd

@@ -112,7 +112,10 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'createDbgClient') )
         self.assertTrue( hasattr(pykd, 'diaLoadPdb') )
         self.assertTrue( hasattr(pykd, 'getDebuggeeType' ) )
+        self.assertTrue( hasattr(pykd, 'getExecutionStatus' ) )
         self.assertTrue( hasattr(pykd, 'loadExt') )
+        self.assertTrue( hasattr(pykd, 'setExecutionStatus') )
+        self.assertTrue( hasattr(pykd, 'waitForEvent') )
         
         self.assertTrue( hasattr(pykd, 'DiaException') )
         self.assertTrue( hasattr(pykd, 'DiaScope') )
