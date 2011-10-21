@@ -20,6 +20,7 @@ import dbgcmd
 import clienttest
 import eventtest
 import typedvar
+import memtest
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
@@ -31,7 +32,8 @@ def getTestSuite( singleName = "" ):
                unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
                unittest.TestLoader().loadTestsFromTestCase( dbgcmd.DbgcmdTest ),
                unittest.TestLoader().loadTestsFromTestCase( clienttest.DbgClientTest ),
-               unittest.TestLoader().loadTestsFromTestCase( eventtest.EventTest )
+               unittest.TestLoader().loadTestsFromTestCase( eventtest.EventTest ),
+               unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest )
            ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )

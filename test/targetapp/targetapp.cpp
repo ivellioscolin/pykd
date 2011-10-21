@@ -53,6 +53,9 @@ structTest      g_testArray[2] = { { 0, 500, true, 1 }, { 2, 1500, false, 1 } };
 structTest      *g_structTestPtr = &g_structTest;
 structTest      **g_structTestPtrPtr = &g_structTestPtr;
 
+char            helloStr[] = "Hello";
+wchar_t         helloWStr[] = L"Hello";
+
 class classChild : public classBase {
 public:
     int m_childField;
@@ -87,6 +90,9 @@ void FuncWithName0()
     std::cout << g_testArray[1].m_field3;
     std::cout << g_structTestPtr->m_field3;
     std::cout << (*g_structTestPtrPtr)->m_field3;
+
+    std::cout << helloStr;
+    std::wcout << helloWStr;
 }
 
 void FuncWithName1(int a)

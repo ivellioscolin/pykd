@@ -41,9 +41,17 @@ public:
 
 public:
 
+    ULONG64  addr64( ULONG64 addr );
+
+    DbgOut  dout() {
+        return DbgOut( m_client );
+    }
+
+    DbgIn din() {
+        return DbgIn( m_client );
+    }
+
     std::string dbgCommand( const std::wstring  &command );
- 
-    void loadDump( const std::wstring &fileName );
 
     void startProcess( const std::wstring  &processName );
 
@@ -64,6 +72,8 @@ public:
 
     bool isDumpAnalyzing();
 
+    void loadDump( const std::wstring &fileName );
+
     Module loadModule( const std::string  &moduleName ) {
         return Module( m_client, moduleName );
     }
@@ -76,15 +86,9 @@ public:
         return DbgExtensionPtr( new DbgExtension( m_client, extPath ) );
     }
 
-    ULONG64  addr64( ULONG64 addr );
+    std::string loadChars( ULONG64 address, ULONG  number, bool phyAddr = FALSE );
 
-    DbgOut  dout() {
-        return DbgOut( m_client );
-    }
-
-    DbgIn din() {
-        return DbgIn( m_client );
-    }
+    std::wstring loadWChars( ULONG64 address, ULONG  number, bool phyAddr = FALSE );
 
     void dprint( const std::wstring &str, bool dml = false );
 
@@ -94,9 +98,13 @@ public:
 
     void eprintln( const std::wstring &str );
 
+    void readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr = FALSE );
+
     void setExecutionStatus( ULONG status );
     
     void waitForEvent();
+
+    void writeMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr = FALSE );
 
 public:
 
@@ -113,6 +121,12 @@ public:
     CComPtr<IDebugControl4>&
     control() {
         return m_control;    
+    }
+
+
+    PyThreadStateSaver&
+    getThreadState() {
+        return m_pyThreadState;
     }
 
 private:

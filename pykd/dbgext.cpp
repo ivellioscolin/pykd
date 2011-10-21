@@ -15,6 +15,7 @@
 #include "dbgevent.h"
 #include "typeinfo.h"
 #include "typedvar.h"
+#include "dbgmem.h"
 
 using namespace pykd;
 
@@ -51,8 +52,15 @@ static python::dict genDict(const pyDia::Symbol::ValueNameEntry srcValues[], siz
 
 ////////////////////////////////////////////////////////////////////////////////
 
-BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, dprint, 1, 2 )
-BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, dprintln, 1, 2 )
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, dprint, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, dprintln, 1, 2 );
+
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadChars_, loadChars, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadWChars_, loadWChars, 2, 3 );
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadChars, DebugClient::loadChars, 2, 3 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadWChars, DebugClient::loadWChars, 2, 3 );
+
 
 #define DEF_PY_CONST_ULONG(x)    \
     python::scope().attr(#x) = ULONG(##x)
@@ -80,6 +88,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Check if it is a dump analyzing ( not living debuggee )" )
         .def( "isKernelDebugging", &pykd::DebugClient::isKernelDebugging,
             "Check if kernel dubugging is running" )
+        .def( "loadChars", &pykd::DebugClient::loadChars, DebugClient_loadChars( python::args( "address", "count", "phyAddr" ),
+            "Load string from target memory" ) )
+        .def( "loadWChars", &pykd::DebugClient::loadWChars, DebugClient_loadWChars( python::args( "address", "count", "phyAddr" ),
+            "Load string from target memory" ) )
         .def ( "loadExt", &pykd::DebugClient::loadExtension,
             "Load a debuger extension" )
         .def( "loadModule", &pykd::DebugClient::loadModule, 
@@ -123,6 +135,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if it is a dump analyzing ( not living debuggee )" );
     python::def( "isKernelDebugging", &pykd::isKernelDebugging,
         "Check if kernel dubugging is running" );
+    python::def( "loadChars", &loadChars, loadChars_( python::args( "address", "count", "phyAddr" ),
+        "Load string from target memory" ) );
+    python::def( "loadWChars", &loadWChars, loadWChars_( python::args( "address", "count", "phyAddr" ),
+        "Load string from target memory" ) );
     python::def( "loadExt", &pykd::loadExtension,
         "Load a debuger extension" );
     python::def( "loadModule", &pykd::loadModule,
@@ -205,7 +221,7 @@ BOOST_PYTHON_MODULE( pykd )
     python::class_<EventHandlerWrap, boost::noncopyable>(
         "eventHandler", "Base class for overriding and handling debug notifications" )
         .def( python::init<>() )
-        .def( python::init<DebugClient&>() )
+        .def( python::init<DebugClientPtr&>() )
         .def( "onBreakpoint", &pykd::EventHandlerWrap::onBreakpoint,
             "Triggered breakpoint event. Parameter is dict:\n"
             "{\"Id\":int, \"BreakType\":int, \"ProcType\":int, \"Flags\":int, \"Offset\":int,"
@@ -396,7 +412,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Get exception description" )
         .def( "__str__", &pykd::DbgException::print);
     pykd::DbgException::setTypeObject( dbgExceptionClass.ptr() );
-    boost::python::register_exception_translator<pykd::DbgException>( 
+    python::register_exception_translator<pykd::DbgException>( 
         &pykd::DbgException::exceptionTranslate );
 
     // DIA exceptions
@@ -406,8 +422,17 @@ BOOST_PYTHON_MODULE( pykd )
     diaException
         .def( "hres", &pyDia::Exception::getRes );
     pyDia::Exception::setTypeObject( diaException.ptr() );
-    boost::python::register_exception_translator<pyDia::Exception>( 
+    python::register_exception_translator<pyDia::Exception>( 
         &pyDia::Exception::exceptionTranslate );
+
+    // Memory exception
+    python::class_<pykd::MemoryException, python::bases<DbgException> > memException(
+        "MemoryException", "Target memory access exception class",
+        python::no_init );
+    memException.def( "getAddress", &pykd::MemoryException::getAddress, "Return a target address where the exception occurs" );
+    pykd::MemoryException::setTypeObject( memException.ptr() );
+    python::register_exception_translator<pykd::MemoryException>(
+        &pykd::MemoryException::exceptionTranslate );
 
     DEF_PY_CONST_ULONG( DEBUG_CLASS_UNINITIALIZED );
     DEF_PY_CONST_ULONG( DEBUG_CLASS_KERNEL );

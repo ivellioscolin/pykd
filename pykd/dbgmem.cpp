@@ -42,7 +42,91 @@ addr64( ULONG64  addr)
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+void DebugClient::readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr )
+{
+    HRESULT     hres;
+
+    if ( phyAddr == false )
+    {
+        hres = m_dataSpaces->ReadVirtual( address, buffer, length, NULL );
+    }        
+    else
+    {
+        hres = m_dataSpaces->ReadPhysical( address, buffer, length, NULL );
+    }               
+    
+    if ( FAILED( hres ) )
+        throw MemoryException( address, phyAddr );
+}
+
+void readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr )
+{
+    return g_dbgClient->readMemory( address, buffer, length, phyAddr );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+std::string DebugClient::loadChars( ULONG64 address, ULONG  number, bool phyAddr )
+{
+    std::vector<char>   buffer(number);
+
+    ULONG  bufferSize = sizeof(std::vector<char>::value_type)*buffer.size();
+    
+    if (number)
+        readMemory( address, &buffer[0], bufferSize, phyAddr );
+
+    return std::string( buffer.begin(), buffer.end() );
+}
+
+std::string loadChars( ULONG64 address, ULONG  number, bool phyAddr )
+{
+    return g_dbgClient->loadChars( address, number, phyAddr );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+std::wstring DebugClient::loadWChars( ULONG64 address, ULONG  number, bool phyAddr )
+{
+    std::vector<wchar_t>   buffer(number);
+
+    ULONG  bufferSize = sizeof(std::vector<wchar_t>::value_type)*buffer.size();
+    
+    if (number)
+        readMemory( address, &buffer[0], bufferSize, phyAddr );
+
+    return std::wstring( buffer.begin(), buffer.end() );
+}
+
+std::wstring loadWChars( ULONG64 address, ULONG  number, bool phyAddr )
+{
+    return g_dbgClient->loadWChars( address, number, phyAddr );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 }; // end of pykd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

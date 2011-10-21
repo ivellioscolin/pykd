@@ -37,6 +37,59 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+class MemoryException : public DbgException
+{
+public:
+
+    MemoryException( ULONG64 targetAddr, bool phyAddr = false ) :
+        m_targetAddress( targetAddr ),
+        DbgException( MemoryException::DescMaker( targetAddr, phyAddr ).desc() )
+        {}    
+       
+    static
+    void
+    exceptionTranslate( const MemoryException &e );
+
+    static void setTypeObject(PyObject *p) {
+        memoryExceptionTypeObject = p;
+    }
+    
+    ULONG64
+    getAddress() const {
+        return m_targetAddress;
+    }
+    
+private:    
+        
+    ULONG64             m_targetAddress;
+
+    static PyObject     *memoryExceptionTypeObject;
+    
+    class DescMaker {
+    public:
+        DescMaker( ULONG64 addr, bool phyAddr )
+        {
+            std::stringstream   sstr;
+            if ( phyAddr )
+                sstr << "Memory exception at 0x" << std::hex << addr << " target physical address";
+            else
+                sstr << "Memory exception at 0x" << std::hex << addr << " target virtual address";                            
+            m_desc = sstr.str();
+        }   
+        
+        const std::string&
+        desc() const {
+            return m_desc;
+        }
+        
+    private:
+        std::string     m_desc;
+    };
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }; // namespace pykd
 
 ///////////////////////////////////////////////////////////////////////////////////

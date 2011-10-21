@@ -1,24 +1,34 @@
 #include "stdafx.h"
 #include "dbgexcept.h"
 
-using namespace pykd;
+namespace pykd {
 
 ////////////////////////////////////////////////////////////////////////////////
 
 PyObject *DbgException::baseExceptTypeObject = NULL;
+PyObject *MemoryException::memoryExceptionTypeObject = NULL;
 
 /////////////////////////////////////////////////////////////////////////////////
 
 void DbgException::exceptionTranslate( const DbgException &e )
 {
-    boost::python::object pyExcept(e);
+    python::object pyExcept(e);
 
     PyErr_SetObject( baseExceptTypeObject, pyExcept.ptr() );
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
+void MemoryException::exceptionTranslate( const MemoryException &e )
+{
+    python::object pyExcept(e);
 
+    PyErr_SetObject( memoryExceptionTypeObject, pyExcept.ptr() );
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+}; // end namespace pykd
 
 
 

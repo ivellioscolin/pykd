@@ -9,7 +9,24 @@ addr64( ULONG64  addr );
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+void
+readMemory( ULONG64 address, PVOID buffer, ULONG length, BOOLEAN phyAddr = FALSE );
+
+void
+writeMemory( ULONG64 address, PVOID buffer, ULONG length, BOOLEAN phyAddr = FALSE );
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string loadChars( ULONG64 address, ULONG  number, bool phyAddr = FALSE );
+
+std::wstring loadWChars( ULONG64 address, ULONG  number, bool phyAddr = FALSE );
+
+///////////////////////////////////////////////////////////////////////////////////
+
 };
+
+
+
 
 
 
