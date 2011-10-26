@@ -56,6 +56,11 @@ structTest      **g_structTestPtrPtr = &g_structTestPtr;
 char            helloStr[] = "Hello";
 wchar_t         helloWStr[] = L"Hello";
 
+unsigned char ucharArray[] = {0, 10, 0x78, 128, 0xFF };
+unsigned short ushortArray[] = {0, 10, 0xFF, 0xFFF, 0xFFFF };
+unsigned long ulongArray[] = {0, 0xFF, 0xFFF, 0xFFFF, 0xFFFFFFFF };
+unsigned __int64 ulonglongArray[] = {0, 0xFF, 0xFFF, 0x8000000000000000, 0xFFFFFFFFFFFFFFFF };
+
 class classChild : public classBase {
 public:
     int m_childField;
@@ -93,6 +98,10 @@ void FuncWithName0()
 
     std::cout << helloStr;
     std::wcout << helloWStr;
+    std::cout << ucharArray[2];
+    std::cout << ushortArray[2];
+    std::cout << ulongArray[2];
+    std::cout << ulonglongArray[2];
 }
 
 void FuncWithName1(int a)

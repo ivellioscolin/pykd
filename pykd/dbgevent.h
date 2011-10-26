@@ -21,7 +21,7 @@ public:
 
     EventHandler();
 
-    EventHandler( DebugClient  &client );
+    EventHandler( DebugClientPtr  &client );
 
     virtual ~EventHandler();
 
@@ -30,18 +30,43 @@ protected:
     STDMETHOD_(ULONG, AddRef)() { return 1; }
     STDMETHOD_(ULONG, Release)() { return 1; }
 
-    STDMETHOD(GetInterestMask)(
-        __out PULONG Mask
-        ) {
-        *Mask = 0;
-        *Mask |= DEBUG_EVENT_LOAD_MODULE;
-        *Mask |= DEBUG_EVENT_UNLOAD_MODULE;
-        *Mask |= DEBUG_EVENT_SESSION_STATUS;
-        *Mask |= DEBUG_EVENT_EXCEPTION;
-        *Mask |= DEBUG_EVENT_BREAKPOINT;
-        return S_OK;
-    }
-    
+    STDMETHOD( GetInterestMask ) (
+       __out PULONG Mask
+    );
+
+    STDMETHOD(Breakpoint)(
+        __in PDEBUG_BREAKPOINT Bp
+    );
+
+    STDMETHOD(Exception)(
+        __in PEXCEPTION_RECORD64 Exception,
+        __in ULONG FirstChance
+    );
+
+    STDMETHOD(LoadModule)(
+        __in ULONG64 ImageFileHandle,
+        __in ULONG64 BaseOffset,
+        __in ULONG ModuleSize,
+        __in PCSTR ModuleName,
+        __in PCSTR ImageName,
+        __in ULONG CheckSum,
+        __in ULONG TimeDateStamp
+    );
+
+    STDMETHOD(UnloadModule)(
+        __in PCSTR ImageBaseName,
+        __in ULONG64 BaseOffset
+    );  
+
+    STDMETHOD(SessionStatus)(
+        __in ULONG  Status
+    );
+
+    STDMETHOD(ChangeDebuggeeState)(
+        __in ULONG  Flags,
+        __in ULONG64 Argument );
+
+
 protected:
 
     virtual ULONG onBreakpoint(const python::dict &/*bpParameters*/) = 0;
@@ -58,7 +83,9 @@ protected:
 
 protected:
 
-    CComPtr<IDebugClient>       m_client;     
+    CComPtr<IDebugClient>       m_handlerClient;
+
+    DebugClientPtr              m_parentClient;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +98,7 @@ public:
     EventHandlerWrap()
     {}
 
-    EventHandlerWrap( DebugClient  &client ) : EventHandler( client )
+    EventHandlerWrap( DebugClientPtr  &client ) : EventHandler( client )
     {}
 
     ULONG onBreakpoint(const python::dict &bpParameters) {

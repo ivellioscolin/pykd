@@ -86,9 +86,17 @@ public:
         return DbgExtensionPtr( new DbgExtension( m_client, extPath ) );
     }
 
-    std::string loadChars( ULONG64 address, ULONG  number, bool phyAddr = FALSE );
+    python::list loadBytes( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 
-    std::wstring loadWChars( ULONG64 address, ULONG  number, bool phyAddr = FALSE );
+    python::list loadWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+
+    python::list loadDWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+
+    python::list loadQWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+
+    std::string loadChars( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+
+    std::wstring loadWChars( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 
     void dprint( const std::wstring &str, bool dml = false );
 
@@ -130,6 +138,10 @@ public:
     }
 
 private:
+
+    template<typename T>
+    python::list
+    loadArray( ULONG64 offset, ULONG count, bool phyAddr );
 
     DebugClient( IDebugClient4 *client ) : DbgObject( client ) {}
 

@@ -8,8 +8,8 @@ import pykd
 
 class BaseTest( unittest.TestCase ):
       
-    def testOldSupportedApi( self ):
-        """ Branch test: API 0.0.x what must be available """
+    def testOldSupportedRoutines( self ):
+        """ Branch test: old API 0.0.x what must be available """
     
         self.assertTrue( hasattr(pykd, 'addSynSymbol') )
         self.assertTrue( hasattr(pykd, 'attachKernel') )
@@ -87,6 +87,9 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'typedVarList') )
         self.assertTrue( hasattr(pykd, 'wrmsr') )
 
+
+    def testOldSupportedClass( self ):
+        """ Branch test: old API 0.0.x class must be available """
         self.assertTrue( hasattr(pykd, 'BaseException') )
         self.assertTrue( hasattr(pykd, 'MemoryException') )
         self.assertTrue( hasattr(pykd, 'TypeException') )

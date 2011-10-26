@@ -21,6 +21,14 @@ std::string loadChars( ULONG64 address, ULONG  number, bool phyAddr = FALSE );
 
 std::wstring loadWChars( ULONG64 address, ULONG  number, bool phyAddr = FALSE );
 
+python::list loadBytes( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+
+python::list loadWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+
+python::list loadDWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+
+python::list loadQWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 };

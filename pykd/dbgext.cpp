@@ -57,9 +57,17 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, dprintln, 1, 2 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadChars_, loadChars, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadWChars_, loadWChars, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadBytes_, loadBytes, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadWords_, loadWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadDWords_, loadDWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadQWords_, loadQWords, 2, 3 );
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadChars, DebugClient::loadChars, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadWChars, DebugClient::loadWChars, 2, 3 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadBytes, DebugClient::loadBytes, 2, 3 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadWords, DebugClient::loadWords, 2, 3 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadDWords, DebugClient::loadDWords, 2, 3 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadQWords, DebugClient::loadQWords, 2, 3 );
 
 
 #define DEF_PY_CONST_ULONG(x)    \
@@ -88,9 +96,17 @@ BOOST_PYTHON_MODULE( pykd )
             "Check if it is a dump analyzing ( not living debuggee )" )
         .def( "isKernelDebugging", &pykd::DebugClient::isKernelDebugging,
             "Check if kernel dubugging is running" )
-        .def( "loadChars", &pykd::DebugClient::loadChars, DebugClient_loadChars( python::args( "address", "count", "phyAddr" ),
+        .def( "loadBytes", &pykd::DebugClient::loadBytes, DebugClient_loadBytes( python::args( "offset", "count", "phyAddr" ),
+            "Read the block of the target's memory and return it as list of unsigned bytes" ) )
+        .def( "loadWords", &pykd::DebugClient::loadWords, DebugClient_loadWords( python::args( "offset", "count", "phyAddr" ),
+            "Read the block of the target's memory and return it as list of unsigned shorts" ) )
+        .def( "loadDWords", &pykd::DebugClient::loadDWords, DebugClient_loadDWords( python::args( "offset", "count", "phyAddr" ),
+            "Read the block of the target's memory and return it as list of unsigned long ( double word )" ) )
+        .def( "loadQWords", &pykd::DebugClient::loadQWords, DebugClient_loadQWords( python::args( "offset", "count", "phyAddr" ),
+            "Read the block of the target's memory and return it as list of unsigned long long ( quad word )" ) )
+        .def( "loadChars", &pykd::DebugClient::loadChars, DebugClient_loadChars( python::args( "offset", "count", "phyAddr" ),
             "Load string from target memory" ) )
-        .def( "loadWChars", &pykd::DebugClient::loadWChars, DebugClient_loadWChars( python::args( "address", "count", "phyAddr" ),
+        .def( "loadWChars", &pykd::DebugClient::loadWChars, DebugClient_loadWChars( python::args( "offset", "count", "phyAddr" ),
             "Load string from target memory" ) )
         .def ( "loadExt", &pykd::DebugClient::loadExtension,
             "Load a debuger extension" )
@@ -135,6 +151,14 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if it is a dump analyzing ( not living debuggee )" );
     python::def( "isKernelDebugging", &pykd::isKernelDebugging,
         "Check if kernel dubugging is running" );
+    python::def( "loadBytes", &loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as liat of unsigned bytes" ) );
+    python::def( "loadWords", &loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
+         "Read the block of the target's memory and return it as list of unsigned shorts" ) );
+    python::def( "loadDWords", &loadDWords, loadDWords_( python::args( "offset", "count", "phyAddr" ),
+         "Read the block of the target's memory and return it as list of unsigned long ( double word )" ) );
+    python::def( "loadQWords", &loadQWords, loadQWords_( python::args( "offset", "count", "phyAddr" ),
+         "Read the block of the target's memory and return it as list of unsigned long long ( quad word )" ) );
     python::def( "loadChars", &loadChars, loadChars_( python::args( "address", "count", "phyAddr" ),
         "Load string from target memory" ) );
     python::def( "loadWChars", &loadWChars, loadWChars_( python::args( "address", "count", "phyAddr" ),
