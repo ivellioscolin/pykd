@@ -1,11 +1,15 @@
 #include "stdafx.h"
-#include "dbgext.h"
 #include "disasm.h"
 #include "dbgexcept.h"
+#include "dbgmem.h"
+#include "dbgclient.h"
+
+namespace pykd {
 
 /////////////////////////////////////////////////////////////////////////////////
 
-disasm::disasm( ULONG64 offset )
+Disasm::Disasm( IDebugClient4 *client, ULONG64 offset ) :
+    DbgObject( client )
 {
     HRESULT     hres;
 
@@ -13,7 +17,7 @@ disasm::disasm( ULONG64 offset )
 
     if ( m_beginOffset == 0 )
     {
-        hres = dbgExt->registers->GetInstructionOffset( &m_beginOffset );
+        hres = m_registers->GetInstructionOffset( &m_beginOffset );
         if ( FAILED( hres ) )
             throw DbgException( "IDebugRegisters::GetInstructionOffset failed" );
     }
@@ -25,7 +29,28 @@ disasm::disasm( ULONG64 offset )
 
 /////////////////////////////////////////////////////////////////////////////////
 
-void disasm::doDisasm()
+Disasm::Disasm( ULONG64 offset ) :
+    DbgObject( g_dbgClient->client() )
+{
+    HRESULT     hres;
+
+    m_beginOffset = addr64(offset);
+
+    if ( m_beginOffset == 0 )
+    {
+        hres = m_registers->GetInstructionOffset( &m_beginOffset );
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugRegisters::GetInstructionOffset failed" );
+    }
+
+    m_currentOffset = m_beginOffset;
+
+    doDisasm();
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void Disasm::doDisasm()
 {
     HRESULT     hres;
     char        buffer[0x100];
@@ -33,7 +58,7 @@ void disasm::doDisasm()
     ULONG64     endOffset = 0;
     
     hres = 
-        dbgExt->control->Disassemble(
+        m_control->Disassemble(
             m_currentOffset,
             DEBUG_DISASM_EFFECTIVE_ADDRESS,
             buffer,
@@ -44,7 +69,7 @@ void disasm::doDisasm()
     if ( FAILED( hres ) )
         throw DbgException( "IDebugControl::Disassemble failed" );
 
-    hres = dbgExt->control->GetDisassembleEffectiveOffset( &m_ea );
+    hres = m_control->GetDisassembleEffectiveOffset( &m_ea );
     if ( FAILED( hres ) )
         m_ea = 0;
 
@@ -56,12 +81,12 @@ void disasm::doDisasm()
 /////////////////////////////////////////////////////////////////////////////////
 
 std::string
-disasm::assembly( const std::string &instr )
+Disasm::assembly( const std::string &instr )
 {
     HRESULT     hres;
 
     ULONG64     endOffset = 0;
-    hres = dbgExt->control->Assemble( m_currentOffset, instr.c_str(), &endOffset );
+    hres = m_control->Assemble( m_currentOffset, instr.c_str(), &endOffset );
     if ( FAILED( hres ) )
         throw DbgException( "IDebugControl::Assemble failed" );
 
@@ -74,3 +99,4 @@ disasm::assembly( const std::string &instr )
 
 /////////////////////////////////////////////////////////////////////////////////
 
+}; // end pykd namespace

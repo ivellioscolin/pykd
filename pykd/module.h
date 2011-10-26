@@ -80,8 +80,6 @@ private:
     ULONG64                 m_base;
     ULONG                   m_size;
     pyDia::GlobalScopePtr   m_dia;
-
-
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

@@ -394,6 +394,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\disasm.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\module.cpp"
 				>
 			</File>
@@ -485,6 +489,10 @@
 			</File>
 			<File
 				RelativePath=".\diawrapper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\disasm.h"
 				>
 			</File>
 			<File

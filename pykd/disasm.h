@@ -1,14 +1,18 @@
 #pragma once
 
-#include "dbgmem.h"
+#include "dbgobj.h"
+
+namespace pykd {
 
 /////////////////////////////////////////////////////////////////////////////////
 
-class disasm {
+class Disasm : private DbgObject {
 
 public:
 
-    disasm( ULONG64 offset = 0);
+    Disasm( IDebugClient4 *client, ULONG64 offset = 0 );
+
+    Disasm( ULONG64 offset = 0);
 
     std::string  disassemble() {
         std::string  s = m_disasm;
@@ -60,3 +64,6 @@ private:
 };
 
 /////////////////////////////////////////////////////////////////////////////////
+
+} ; // end pykd namespace
+

@@ -266,6 +266,17 @@ BOOST_PYTHON_MODULE( pykd )
             "Unload module event. Parameter is instance of dbgModuleClass.\n"
             "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" );
 
+    python::class_<Disasm>("disasm", "Class disassemble a processor instructions" )
+        .def( python::init<>( "constructor" ) )
+        .def( python::init<ULONG64>( boost::python::args("offset"), "constructor" ) )
+        .def( "disasm", &Disasm::disassemble, "Disassemble next instruction" )
+        .def( "asm", &Disasm::assembly, "Insert assemblied instuction to current offset" )
+        .def( "begin", &Disasm::begin, "Return begin offset" )
+        .def( "current", &Disasm::current, "Return current offset" )
+        .def( "length", &Disasm::length, "Return current instruction length" )
+        .def( "instruction", &Disasm::instruction, "Returm current disassembled instruction" )
+        .def( "ea", &Disasm::ea, "Return effective address for last disassembled instruction or 0" )
+        .def( "reset", &Disasm::reset, "Reset current offset to begin" );
         
     python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");

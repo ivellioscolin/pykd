@@ -12,6 +12,7 @@
 #include "dbgio.h"
 #include "dbgcmd.h"
 #include "pyaux.h"
+#include "disasm.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -59,6 +60,18 @@ public:
 
     void attachKernel( const std::wstring  &param );
 
+    Disasm disasm( ULONG offset = 0 ) {
+        return Disasm( m_client, offset );
+    }
+
+    void dprint( const std::wstring &str, bool dml = false );
+
+    void dprintln( const std::wstring &str, bool dml = false );
+
+    void eprint( const std::wstring &str );
+
+    void eprintln( const std::wstring &str );
+
     ULONG64 evaluate( const std::wstring  &expression );
 
     python::tuple getDebuggeeType();
@@ -97,14 +110,6 @@ public:
     std::string loadChars( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 
     std::wstring loadWChars( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
-
-    void dprint( const std::wstring &str, bool dml = false );
-
-    void dprintln( const std::wstring &str, bool dml = false );
-
-    void eprint( const std::wstring &str );
-
-    void eprintln( const std::wstring &str );
 
     void readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr = FALSE );
 
