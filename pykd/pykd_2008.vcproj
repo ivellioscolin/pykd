@@ -442,6 +442,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\typedvar.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\typeinfo.cpp"
 				>
 			</File>

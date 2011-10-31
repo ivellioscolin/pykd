@@ -90,7 +90,7 @@ protected:
 
 /////////////////////////////////////////////////////////////////////////////////
 
-class EventHandlerWrap : public boost::python::wrapper<EventHandler>, public EventHandler
+class EventHandlerWrap : public python::wrapper<EventHandler>, public EventHandler
 {
 
 public:

@@ -89,7 +89,7 @@ std::string DebugClient::loadChars( ULONG64 address, ULONG  number, bool phyAddr
 {
     std::vector<char>   buffer(number);
 
-    ULONG  bufferSize = sizeof(std::vector<char>::value_type)*buffer.size();
+    ULONG  bufferSize = (ULONG)( sizeof(std::vector<char>::value_type)*buffer.size() );
     
     if (number)
         readMemory( address, &buffer[0], bufferSize, phyAddr );
@@ -108,7 +108,7 @@ std::wstring DebugClient::loadWChars( ULONG64 address, ULONG  number, bool phyAd
 {
     std::vector<wchar_t>   buffer(number);
 
-    ULONG  bufferSize = sizeof(std::vector<wchar_t>::value_type)*buffer.size();
+    ULONG  bufferSize = (ULONG)( sizeof(std::vector<wchar_t>::value_type)*buffer.size() );
     
     if (number)
         readMemory( address, &buffer[0], bufferSize, phyAddr );

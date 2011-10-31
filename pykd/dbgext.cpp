@@ -16,6 +16,7 @@
 #include "typeinfo.h"
 #include "typedvar.h"
 #include "dbgmem.h"
+#include "intbase.h"
 
 using namespace pykd;
 
@@ -75,6 +76,88 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadQWords, DebugClient::loa
 
 BOOST_PYTHON_MODULE( pykd )
 {
+    python::class_<intBase>( "intBase", "intBase", python::no_init )
+        .def( int_( boost::python::self ) )
+        //.def( boost::python::self = long() )
+
+        .def( boost::python::self + long() )
+        .def( long() + boost::python::self )
+        .def( boost::python::self += long() )
+        .def( boost::python::self + boost::python::self )
+        .def( boost::python::self += boost::python::self )
+
+        .def( boost::python::self - long() )
+        .def( long() - boost::python::self )
+        .def( boost::python::self -= long() )
+        .def( boost::python::self - boost::python::self )
+        .def( boost::python::self -= boost::python::self )
+
+        .def( boost::python::self * long() )
+        .def( long() * boost::python::self )
+        .def( boost::python::self *= long() )
+        .def( boost::python::self * boost::python::self )
+        .def( boost::python::self *= boost::python::self )
+
+        .def( boost::python::self / long() )
+        .def( long() / boost::python::self )
+        .def( boost::python::self /= long() )
+        .def( boost::python::self / boost::python::self )
+        .def( boost::python::self /= boost::python::self )
+        
+        .def( boost::python::self % long() )
+        .def( long() % boost::python::self )
+        .def( boost::python::self %= long() )
+        .def( boost::python::self % boost::python::self )
+        .def( boost::python::self %= boost::python::self )
+
+        .def( boost::python::self & long() )
+        .def( long() & boost::python::self )
+        .def( boost::python::self &= long() )
+        .def( boost::python::self & boost::python::self )
+        .def( boost::python::self &= boost::python::self )
+
+        .def( boost::python::self | long() )
+        .def( long() | boost::python::self )
+        .def( boost::python::self |= long() )
+        .def( boost::python::self | boost::python::self )
+        .def( boost::python::self |= boost::python::self )
+
+        .def( boost::python::self ^ long() )
+        .def( long() ^ boost::python::self )
+        .def( boost::python::self ^= long() )
+        .def( boost::python::self ^ boost::python::self )
+        .def( boost::python::self ^= boost::python::self )
+
+        .def( boost::python::self << long() )
+        .def( boost::python::self <<= long() )
+
+        .def( boost::python::self >> long() )
+        .def( boost::python::self >>= long() ) 
+
+        .def( boost::python::self < long() )
+        .def( boost::python::self < boost::python::self )
+
+        .def( boost::python::self <= long() )
+        .def( boost::python::self <= boost::python::self )
+
+        .def( boost::python::self == long() )           
+        .def( boost::python::self == boost::python::self )
+
+        .def( boost::python::self >= long() )
+        .def( boost::python::self >= boost::python::self )
+
+        .def( boost::python::self > long() )
+        .def( boost::python::self > boost::python::self )
+
+        .def( boost::python::self != long() )
+        .def( boost::python::self != boost::python::self )
+
+        .def( ~boost::python::self )
+        .def( !boost::python::self )
+
+        .def( "__str__", &intBase::str )
+        .def( "__hex__", &intBase::hex );
+
     python::class_<pykd::DebugClient, pykd::DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
         .def( "loadDump", &pykd::DebugClient::loadDump,
             "Load crash dump" )
@@ -191,18 +274,22 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "field", &pykd::TypeInfo::getField )
         .def( "__getattr__", &pykd::TypeInfo::getField );
 
-    python::class_<pykd::TypedVar>("typedVar", 
-        "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance",
+    python::class_<TypedVar, TypedVarPtr, python::bases<intBase> >("typedVar", 
+        "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", 
         python::no_init )
-        .def("getAddress", &pykd::TypedVar::getAddress, 
+        .def( python::init<const TypeInfo&, ULONG64>() )
+        .def("getAddress", &TypedVar::getAddress, 
             "Return virtual address" )
-        .def("sizeof", &pykd::TypedVar::getSize,
-            "Return size of a variable in the target memory" );
+        .def("sizeof", &TypedVar::getSize,
+            "Return size of a variable in the target memory" )
+        .def("__getattr__", &TypedVar::getField,
+            "Return field of structure as an object attribute" )
+        .def( "__str__", &TypedVar::print );
+
         //.def("data", &pykd::TypedVar::data,
         //    "Return raw string object with data stream" );
         //.def("__getattr__", &pykd::TypedVar::getFieldWrap,
         //    "Return field of structure as an object attribute" );
-
 
     python::class_<pykd::Module>("module", "Class representing executable module", python::no_init )
         .def("begin", &pykd::Module::getBase,

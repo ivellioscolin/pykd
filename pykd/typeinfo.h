@@ -38,7 +38,19 @@ public:
     ULONG
     getSize() {
         return (ULONG)m_dia->getSize();
-    }   
+    }  
+
+    bool
+    isBasicType();
+
+    bool
+    isArrayType();
+
+    bool
+    isPointer();
+
+    bool
+    isUserDefined();
   
 private:
 
