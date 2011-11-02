@@ -2,6 +2,7 @@
 
 #include "typeinfo.h"
 #include "intbase.h"
+#include "dbgobj.h"
 
 namespace pykd {
 
@@ -12,21 +13,21 @@ typedef boost::shared_ptr<TypedVar>  TypedVarPtr;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class TypedVar : public intBase {
+class TypedVar : public intBase, protected DbgObject {
 
 public:
 
-    TypedVar ( const TypeInfo& typeInfo, ULONG64 offset ) :
-      m_typeInfo( typeInfo ),
-      m_offset( offset )
-      {}
+    TypedVar ( const TypeInfo& typeInfo, ULONG64 offset );
+
+
+    TypedVar ( IDebugClient4 *client, const TypeInfo& typeInfo, ULONG64 offset );
 
     ULONG64 getAddress() const {
         return m_offset;
     }
 
-    ULONG getSize() {
-        return m_typeInfo.getSize();
+    ULONG getSize() const {
+        return m_size;
     }
 
     TypeInfo
@@ -47,14 +48,14 @@ protected:
     }
     
     virtual void setValue( ULONG64  value) {
-        m_offset = value;
+       throw DbgException("can not change");
     }
 
-private:
+    TypeInfo                m_typeInfo;
 
-    TypeInfo        m_typeInfo;
+    ULONG64                 m_offset;
 
-    ULONG64         m_offset;
+    ULONG                   m_size;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +64,7 @@ class BasicTypedVar : public TypedVar {
 
 public:
 
-    BasicTypedVar ( const TypeInfo& typeInfo, ULONG64 offset ) : TypedVar(typeInfo, offset){}
+    BasicTypedVar ( IDebugClient4 *client, const TypeInfo& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
 
     TypedVarPtr
     virtual getField( const std::string &fieldName ) {
@@ -74,8 +75,10 @@ public:
         return "BasicTypedVar";
     }
 
+    virtual ULONG64  getValue() const;
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-}; // namespace pykd
+} // namespace pykd
