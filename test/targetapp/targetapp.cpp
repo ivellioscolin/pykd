@@ -59,9 +59,9 @@ char            helloStr[] = "Hello";
 wchar_t         helloWStr[] = L"Hello";
 
 unsigned char ucharArray[] = {0, 10, 0x78, 128, 0xFF };
-unsigned short ushortArray[] = {0, 10, 0xFF, 0xFFF, 0xFFFF };
-unsigned long ulongArray[] = {0, 0xFF, 0xFFF, 0xFFFF, 0xFFFFFFFF };
-unsigned __int64 ulonglongArray[] = {0, 0xFF, 0xFFF, 0x8000000000000000, 0xFFFFFFFFFFFFFFFF };
+unsigned short ushortArray[] = {0, 10, 0xFF, 0x8000, 0xFFFF };
+unsigned long ulongArray[] = {0, 0xFF, 0x8000, 0x80000000, 0xFFFFFFFF };
+unsigned __int64 ulonglongArray[] = {0, 0xFF, 0xFFFFFFFF, 0x8000000000000000, 0xFFFFFFFFFFFFFFFF };
 
 class classChild : public classBase {
 public:

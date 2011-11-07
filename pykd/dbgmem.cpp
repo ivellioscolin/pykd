@@ -8,6 +8,18 @@ namespace pykd {
 /////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
+struct PyListType
+{
+    typedef T       ElementType;
+};
+
+template<>
+struct PyListType<char>
+{
+    typedef int     ElementType;
+};
+
+template<typename T>
 python::list
 DebugClient::loadArray( ULONG64 offset, ULONG count, bool phyAddr )
 {
@@ -19,7 +31,7 @@ DebugClient::loadArray( ULONG64 offset, ULONG count, bool phyAddr )
     python::list        lst;
 
     for( ULONG  i = 0; i < count; ++i )
-        lst.append( buffer[i] );
+        lst.append( static_cast<PyListType<T>::ElementType> (buffer[i]) );
 
     return lst;
 }
@@ -171,6 +183,53 @@ python::list loadQWords( ULONG64 offset, ULONG count, bool phyAddr )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+python::list DebugClient::loadSignBytes( ULONG64 offset, ULONG count, bool phyAddr )
+{
+    return loadArray<char>( offset, count, phyAddr );
+}
+
+python::list loadSignBytes( ULONG64 offset, ULONG count, bool phyAddr )
+{
+    return g_dbgClient->loadSignBytes( offset, count, phyAddr );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+python::list DebugClient::loadSignWords( ULONG64 offset, ULONG count, bool phyAddr )
+{
+    return loadArray<short>( offset, count, phyAddr );
+}
+
+python::list loadSignWords( ULONG64 offset, ULONG count, bool phyAddr )
+{
+    return g_dbgClient->loadSignWords( offset, count, phyAddr );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+python::list DebugClient::loadSignDWords( ULONG64 offset, ULONG count, bool phyAddr )
+{
+    return loadArray<long>( offset, count, phyAddr );
+}
+
+python::list loadSignDWords( ULONG64 offset, ULONG count, bool phyAddr )
+{
+    return g_dbgClient->loadSignDWords( offset, count, phyAddr );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+python::list DebugClient::loadSignQWords( ULONG64 offset, ULONG count, bool phyAddr )
+{
+    return loadArray<__int64>( offset, count, phyAddr );
+}
+
+python::list loadSignQWords( ULONG64 offset, ULONG count, bool phyAddr )
+{
+    return g_dbgClient->loadSignQWords( offset, count, phyAddr );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
 
 }; // end of pykd
 

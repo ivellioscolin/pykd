@@ -107,6 +107,14 @@ public:
 
     python::list loadQWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 
+    python::list loadSignBytes( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+
+    python::list loadSignWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+
+    python::list loadSignDWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+
+    python::list loadSignQWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+
     std::string loadChars( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 
     std::wstring loadWChars( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
@@ -147,6 +155,9 @@ private:
     template<typename T>
     python::list
     loadArray( ULONG64 offset, ULONG count, bool phyAddr );
+
+    //python::list
+    //loadArray( ULONG64 offset, ULONG count, bool phyAddr );
 
     DebugClient( IDebugClient4 *client ) : DbgObject( client ) {}
 

@@ -62,13 +62,20 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadBytes_, loadBytes, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadWords_, loadWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadDWords_, loadDWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadQWords_, loadQWords, 2, 3 );
-
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignBytes_, loadSignBytes, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords_, loadSignWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadChars, DebugClient::loadChars, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadWChars, DebugClient::loadWChars, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadBytes, DebugClient::loadBytes, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadWords, DebugClient::loadWords, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadDWords, DebugClient::loadDWords, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadQWords, DebugClient::loadQWords, 2, 3 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignBytes, DebugClient::loadSignBytes, 2, 3 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignWords, DebugClient::loadSignWords, 2, 3 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignDWords, DebugClient::loadSignDWords, 2, 3 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignQWords, DebugClient::loadSignQWords, 2, 3 );
 
 
 #define DEF_PY_CONST_ULONG(x)    \
@@ -187,6 +194,14 @@ BOOST_PYTHON_MODULE( pykd )
             "Read the block of the target's memory and return it as list of unsigned long ( double word )" ) )
         .def( "loadQWords", &pykd::DebugClient::loadQWords, DebugClient_loadQWords( python::args( "offset", "count", "phyAddr" ),
             "Read the block of the target's memory and return it as list of unsigned long long ( quad word )" ) )
+        .def( "loadSignBytes", &pykd::DebugClient::loadSignBytes, DebugClient_loadSignBytes( python::args( "offset", "count", "phyAddr" ),
+            "Read the block of the target's memory and return it as list of signed bytes" ) )
+        .def( "loadSignWords", &pykd::DebugClient::loadSignWords, DebugClient_loadSignWords( python::args( "offset", "count", "phyAddr" ),
+            "Read the block of the target's memory and return it as list of signed shorts" ) )
+        .def( "loadSignDWords", &pykd::DebugClient::loadSignDWords, DebugClient_loadSignDWords( python::args( "offset", "count", "phyAddr" ),
+            "Read the block of the target's memory and return it as list of signed longs" ) )
+        .def( "loadSignQWords", &pykd::DebugClient::loadSignQWords, DebugClient_loadSignQWords( python::args( "offset", "count", "phyAddr" ),
+            "Read the block of the target's memory and return it as list of signed long longs" ) )
         .def( "loadChars", &pykd::DebugClient::loadChars, DebugClient_loadChars( python::args( "offset", "count", "phyAddr" ),
             "Load string from target memory" ) )
         .def( "loadWChars", &pykd::DebugClient::loadWChars, DebugClient_loadWChars( python::args( "offset", "count", "phyAddr" ),
@@ -237,11 +252,19 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "loadBytes", &loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as liat of unsigned bytes" ) );
     python::def( "loadWords", &loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
-         "Read the block of the target's memory and return it as list of unsigned shorts" ) );
+        "Read the block of the target's memory and return it as list of unsigned shorts" ) );
     python::def( "loadDWords", &loadDWords, loadDWords_( python::args( "offset", "count", "phyAddr" ),
-         "Read the block of the target's memory and return it as list of unsigned long ( double word )" ) );
+        "Read the block of the target's memory and return it as list of unsigned long ( double word )" ) );
     python::def( "loadQWords", &loadQWords, loadQWords_( python::args( "offset", "count", "phyAddr" ),
-         "Read the block of the target's memory and return it as list of unsigned long long ( quad word )" ) );
+        "Read the block of the target's memory and return it as list of unsigned long long ( quad word )" ) );
+    python::def( "loadSignBytes", &loadSignBytes, loadSignBytes_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of signed bytes" ) );
+    python::def( "loadSignWords", &loadSignWords, loadSignWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of signed words" ) );
+    python::def( "loadSignDWords", &loadSignDWords, loadSignDWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of signed longs" ) );
+    python::def( "loadSignQWords", &loadSignQWords, loadSignQWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of signed long longs" ) );
     python::def( "loadChars", &loadChars, loadChars_( python::args( "address", "count", "phyAddr" ),
         "Load string from target memory" ) );
     python::def( "loadWChars", &loadWChars, loadWChars_( python::args( "address", "count", "phyAddr" ),

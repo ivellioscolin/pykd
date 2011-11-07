@@ -52,6 +52,7 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'loadModule') )
         self.assertTrue( hasattr(pykd, 'loadPtrs') )
         self.assertTrue( hasattr(pykd, 'loadQWords') )
+        self.assertTrue( hasattr(pykd, 'loadSignBytes') )
         self.assertTrue( hasattr(pykd, 'loadSignDWords') )
         self.assertTrue( hasattr(pykd, 'loadSignQWords') )
         self.assertTrue( hasattr(pykd, 'loadSignWords') )
