@@ -48,5 +48,5 @@ class TypeInfoTest( unittest.TestCase ):
         
     def testSize( self ):
         ti1 = target.module.type( "structTest" )
-        self.assertEqual( 16, ti1.size() )
+        self.assertEqual( 20, ti1.size() )
        

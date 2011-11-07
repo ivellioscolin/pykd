@@ -30,6 +30,10 @@ public:
         return m_size;
     }
 
+    ULONG getOffset() {
+        return m_typeInfo.getOffset();
+    }
+
     TypeInfo
     getType() const {
         return m_typeInfo;
@@ -73,6 +77,27 @@ public:
 
     virtual std::string  print() {
         return "BasicTypedVar";
+    }
+
+    virtual ULONG64  getValue() const;
+
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+
+class PtrTypedVar : public TypedVar {
+
+public:
+
+    PtrTypedVar ( IDebugClient4 *client, const TypeInfo& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
+
+    TypedVarPtr
+    virtual getField( const std::string &fieldName ) {
+        throw DbgException("no fields");
+    }
+
+    virtual std::string  print() {
+        return "PtrTypedVar";
     }
 
     virtual ULONG64  getValue() const;

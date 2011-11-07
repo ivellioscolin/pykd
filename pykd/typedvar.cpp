@@ -37,9 +37,22 @@ TypedVar::getField( const std::string &fieldName )
     if ( fieldType.isBasicType() )
     {
         tv.reset( new BasicTypedVar( m_client, fieldType, m_offset + fieldType.getOffset() ) );
+        return tv;
     }
-    else
-        throw DbgException( "can not get field" );
+
+    if ( fieldType.isPointer() )
+    {
+        tv.reset( new PtrTypedVar( m_client, fieldType, m_offset + fieldType.getOffset() ) );
+        return tv;
+    }
+
+    if ( fieldType.isUserDefined() )       
+    {
+        tv.reset( new TypedVar( m_client, fieldType, m_offset + fieldType.getOffset() ) );
+        return tv;
+    }
+
+    throw DbgException( "can not get field" );
 
     return tv;
 }
@@ -54,6 +67,21 @@ BasicTypedVar::getValue() const
 
     hres = m_dataSpaces->ReadVirtual( m_offset, &val, getSize(), NULL );
 
+    if ( FAILED( hres ) )
+        throw MemoryException( m_offset, false );
+
+    return val;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ULONG64
+PtrTypedVar::getValue() const
+{
+    HRESULT     hres;
+    ULONG64     val = 0;
+
+    hres = m_dataSpaces->ReadPointersVirtual( 1, m_offset, &val );
     if ( FAILED( hres ) )
         throw MemoryException( m_offset, false );
 

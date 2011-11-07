@@ -282,14 +282,13 @@ BOOST_PYTHON_MODULE( pykd )
             "Return virtual address" )
         .def("sizeof", &TypedVar::getSize,
             "Return size of a variable in the target memory" )
+        .def("offset", &TypedVar::getOffset,
+            "Return offset to parent" )
+        .def("field",  &TypedVar::getField,
+            "Return field of structure as an object attribute" )
         .def("__getattr__", &TypedVar::getField,
             "Return field of structure as an object attribute" )
         .def( "__str__", &TypedVar::print );
-
-        //.def("data", &pykd::TypedVar::data,
-        //    "Return raw string object with data stream" );
-        //.def("__getattr__", &pykd::TypedVar::getFieldWrap,
-        //    "Return field of structure as an object attribute" );
 
     python::class_<pykd::Module>("module", "Class representing executable module", python::no_init )
         .def("begin", &pykd::Module::getBase,
@@ -312,9 +311,13 @@ BOOST_PYTHON_MODULE( pykd )
             "Return rva of the symbol" )
         .def("type", &pykd::Module::getTypeByName,
             "Return typeInfo class by type name" )
-        .def("typedVar", &pykd::Module::getTypedVarByAddr,
-            "Return a typedVar class instance" )
+        //.def("typedVar", &pykd::Module::getTypedVarByAddr,
+        //    "Return a typedVar class instance" )
         .def("typedVar",&pykd::Module::getTypedVarByName,
+            "Return a typedVar class instance" )
+        .def("typedVar",&pykd::Module::getTypedVarByType,
+            "Return a typedVar class instance" )
+        .def("typedVar",&pykd::Module::getTypedVarByTypeName,
             "Return a typedVar class instance" )
         .def("__getattr__", &pykd::Module::getSymbol,
             "Return address of the symbol" );

@@ -161,9 +161,17 @@ Module::getTypeByName( const std::string  &typeName )
 ///////////////////////////////////////////////////////////////////////////////////
 
 TypedVar 
-Module::getTypedVarByAddr( const std::string &typeName, ULONG64 addr )
+Module::getTypedVarByTypeName( const std::string &typeName, ULONG64 addr )
 {
    return TypedVar( TypeInfo( m_dia, typeName ), addr );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVar 
+Module::getTypedVarByType( const TypeInfo &typeInfo, ULONG64 addr )
+{
+   return TypedVar( typeInfo, addr );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -175,6 +183,33 @@ Module::getTypedVarByName( const std::string &symName )
 
     return TypedVar( TypeInfo( typeSym->getType() ), typeSym->getRva() + m_base );
 }
+
+///////////////////////////////////////////////////////////////////////////////////
+
+//TypedVar 
+//Module::getTypedVarByAddr( ULONG64 addr )
+//{
+//    addr = addr64(addr);
+//
+//    if ( addr < m_base || addr > getEnd() )
+//        throw DbgException("address is out of the module space" );
+//
+//    ULONG   rva = (ULONG)(addr - m_base);
+//
+//    for( ULONG i = 0; i < m_dia->getChildCount(); i++ )
+//    {
+//        pyDia::SymbolPtr   typeSym = m_dia->getChildByIndex(i);
+//
+//        std::string  name = m_dia->getName();
+//
+//        if ( typeSym->getSymTag() == SymTagData && typeSym->getRva() == rva )
+//        {
+//            return TypedVar( TypeInfo( typeSym->getType() ), typeSym->getRva() + m_base );    
+//        }
+//    }
+//
+//    throw DbgException("failed to find type info for this offset" );
+//}
 
 ///////////////////////////////////////////////////////////////////////////////////
 

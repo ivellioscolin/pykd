@@ -69,7 +69,11 @@ public:
 
     TypeInfo getTypeByName( const std::string &typeName );
 
-    TypedVar getTypedVarByAddr( const std::string &typeName, ULONG64 addr );
+    TypedVar getTypedVarByTypeName( const std::string &typeName, ULONG64 addr );
+
+    TypedVar getTypedVarByType( const TypeInfo  &typeInfo, ULONG64 addr );
+
+    TypedVar getTypedVarByAddr( ULONG64 addr );
 
     TypedVar getTypedVarByName( const std::string &symName );
 

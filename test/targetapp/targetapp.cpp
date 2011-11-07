@@ -44,9 +44,11 @@ struct structTest {
     ULONGLONG m_field1;
     bool m_field2;
     USHORT m_field3;
+    structTest* m_field4;
 };
 
-structTest      g_structTest = { 0, 500, true, 1 };
+structTest      g_structTest = { 0, 500, true, 1, NULL };
+structTest      g_structTest1 = { 0, 500, true, 1, &g_structTest };
 
 structTest      g_testArray[2] = { { 0, 500, true, 1 }, { 2, 1500, false, 1 } };
 

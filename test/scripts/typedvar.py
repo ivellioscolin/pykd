@@ -18,13 +18,26 @@ class TypedVarTest( unittest.TestCase ):
         
     def testGetSize( self ):
         tv1 = target.module.typedVar( "structTest", target.module.g_structTest )
-        self.assertEqual( 16, tv1.sizeof() )
+        self.assertEqual( 20, tv1.sizeof() )
         #tv2 = target.module.typedVar( "structTest[2]", target.module.g_testArray )
         #self.assertEqual( tv1.sizeof()*2, tv2.sizeof() )        
         
     def testStruct(self):
         tv1 = target.module.typedVar( "structTest", target.module.g_structTest )
-        self.assertEqual( 0, tv1.m_field0 + 0 )
+        self.assertEqual( 0, tv1.m_field0 )
         self.assertEqual( 500, tv1.m_field1 )
         self.assertEqual( True, tv1.m_field2 )
         self.assertEqual( 1, tv1.m_field3 )
+        
+    def testPtrField(self):
+        tv = target.module.typedVar( "g_structTest" )
+        self.assertEqual( 0, tv.m_field4 )
+    
+        tv1 = target.module.typedVar( "g_structTest1" )
+        self.assertEqual( tv.getAddress(), tv1.m_field4 )
+        
+    def testFieldOffset(self):
+        tv = target.module.typedVar( "g_structTest" )
+        self.assertEqual( 0, tv.m_field0.offset() )
+        self.assertEqual( 4, tv.m_field1.offset() )
+        self.assertEqual( 16, tv.m_field4.offset() )
