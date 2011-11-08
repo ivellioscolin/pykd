@@ -47,22 +47,14 @@ public:
    
     ULONG64
     getSymbol( const std::string &symbolname ) {
-
-        if ( !m_dia )
-            m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
-
-        pyDia::SymbolPtr   sym = m_dia->getChildByName( symbolname );          
+        pyDia::SymbolPtr   sym = getDia()->getChildByName( symbolname );
 
         return m_base + sym->getRva();
     }
 
     ULONG
     getSymbolRva( const std::string &symbolname ) {
-
-        if ( !m_dia )
-            m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
-
-        pyDia::SymbolPtr   sym = m_dia->getChildByName( symbolname );          
+        pyDia::SymbolPtr   sym = getDia()->getChildByName( symbolname );
 
         return sym->getRva();
     }
@@ -78,6 +70,13 @@ public:
     TypedVar getTypedVarByName( const std::string &symName );
 
 private:
+
+    pyDia::GlobalScopePtr getDia() {
+        if (!m_dia)
+            m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
+        return m_dia;
+    }
+
 
     std::string             m_name;
     std::string             m_imageName;

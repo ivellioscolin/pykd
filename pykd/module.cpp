@@ -127,7 +127,7 @@ Module::getPdbName()
     if ( FAILED( hres ) )
         throw DbgException( "IDebugAdvanced2::GetSymbolInformation failed" );
 
-    char  pdbName[ 256 ];                
+    char  pdbName[ 256 ];
     WideCharToMultiByte( CP_ACP, 0, moduleInfo.LoadedPdbName, 256, pdbName, 256, NULL, NULL );
 
     return std::string( pdbName );
@@ -147,6 +147,7 @@ Module::reloadSymbols()
     if ( FAILED( hres ) )
         throw DbgException("IDebugSymbols::Reload failed" );
 
+    m_dia.reset();
     m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
 }
 
@@ -155,7 +156,7 @@ Module::reloadSymbols()
 TypeInfo
 Module::getTypeByName( const std::string  &typeName )
 {
-    return TypeInfo( m_dia, typeName );
+    return TypeInfo( getDia(), typeName );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -163,7 +164,7 @@ Module::getTypeByName( const std::string  &typeName )
 TypedVar 
 Module::getTypedVarByTypeName( const std::string &typeName, ULONG64 addr )
 {
-   return TypedVar( TypeInfo( m_dia, typeName ), addr );
+   return TypedVar( TypeInfo( getDia(), typeName ), addr );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -179,37 +180,29 @@ Module::getTypedVarByType( const TypeInfo &typeInfo, ULONG64 addr )
 TypedVar 
 Module::getTypedVarByName( const std::string &symName )
 {
-    pyDia::SymbolPtr  typeSym = m_dia->getChildByName( symName );
+    pyDia::SymbolPtr  typeSym = getDia()->getChildByName( symName );
 
     return TypedVar( TypeInfo( typeSym->getType() ), typeSym->getRva() + m_base );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-//TypedVar 
-//Module::getTypedVarByAddr( ULONG64 addr )
-//{
-//    addr = addr64(addr);
-//
-//    if ( addr < m_base || addr > getEnd() )
-//        throw DbgException("address is out of the module space" );
-//
-//    ULONG   rva = (ULONG)(addr - m_base);
-//
-//    for( ULONG i = 0; i < m_dia->getChildCount(); i++ )
-//    {
-//        pyDia::SymbolPtr   typeSym = m_dia->getChildByIndex(i);
-//
-//        std::string  name = m_dia->getName();
-//
-//        if ( typeSym->getSymTag() == SymTagData && typeSym->getRva() == rva )
-//        {
-//            return TypedVar( TypeInfo( typeSym->getType() ), typeSym->getRva() + m_base );    
-//        }
-//    }
-//
-//    throw DbgException("failed to find type info for this offset" );
-//}
+TypedVar 
+Module::getTypedVarByAddr( ULONG64 addr )
+{
+    addr = addr64(addr);
+
+    if ( addr < m_base || addr > getEnd() )
+        throw DbgException( "address is out of the module space" );
+
+    LONG displacement;
+    pyDia::SymbolPtr diaSym = 
+        getDia()->findByRvaImpl((ULONG)(addr - m_base), SymTagData, displacement);
+    if (displacement)
+        throw DbgException( "not exactly match by RVA" );
+
+    return TypedVar( TypeInfo( diaSym->getType() ), addr );
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 

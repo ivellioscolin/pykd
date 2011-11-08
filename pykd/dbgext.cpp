@@ -334,8 +334,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return rva of the symbol" )
         .def("type", &pykd::Module::getTypeByName,
             "Return typeInfo class by type name" )
-        //.def("typedVar", &pykd::Module::getTypedVarByAddr,
-        //    "Return a typedVar class instance" )
+        .def("typedVar", &pykd::Module::getTypedVarByAddr,
+            "Return a typedVar class instance" )
         .def("typedVar",&pykd::Module::getTypedVarByName,
             "Return a typedVar class instance" )
         .def("typedVar",&pykd::Module::getTypedVarByType,
@@ -347,7 +347,7 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::class_<DbgOut>( "dout", "dout", python::no_init )
         .def( "write", &pykd::DbgOut::write );
-        
+
     python::class_<DbgIn>( "din", "din", python::no_init )
         .def( "readline", &pykd::DbgIn::readline );
 
