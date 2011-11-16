@@ -15,6 +15,9 @@ readMemory( ULONG64 address, PVOID buffer, ULONG length, BOOLEAN phyAddr = FALSE
 void
 writeMemory( ULONG64 address, PVOID buffer, ULONG length, BOOLEAN phyAddr = FALSE );
 
+bool 
+compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr = FALSE );
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::string loadChars( ULONG64 address, ULONG  number, bool phyAddr = FALSE );

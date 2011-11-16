@@ -66,6 +66,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignBytes_, loadSignBytes, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords_, loadSignWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, compareMemory, 3, 4 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadChars, DebugClient::loadChars, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadWChars, DebugClient::loadWChars, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadBytes, DebugClient::loadBytes, 2, 3 );
@@ -76,6 +77,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignBytes, DebugClient::
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignWords, DebugClient::loadSignWords, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignDWords, DebugClient::loadSignDWords, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignQWords, DebugClient::loadSignQWords, 2, 3 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_compareMemory, DebugClient::compareMemory, 3, 4 );
 
 
 #define DEF_PY_CONST_ULONG(x)    \
@@ -170,6 +172,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Extend address to 64 bits formats" )
         .def( "breakin", &DebugClient::breakin,
             "Break into debugger" )
+        .def( "compareMemory", &DebugClient::compareMemory, DebugClient_compareMemory( python::args( "offset1", "offset2", "length", "phyAddr" ),
+            "Compare two memory buffers by virtual or physical addresses" ) )
         .def( "loadDump", &DebugClient::loadDump,
             "Load crash dump" )
         .def( "startProcess", &DebugClient::startProcess, 
@@ -259,6 +263,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Extend address to 64 bits formats" );
     python::def( "breakin", &breakin,
         "Break into debugger" );
+    python::def( "compareMemory", &compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
+        "Compare two memory buffers by virtual or physical addresses" ) );
     python::def( "createDbgClient", (DebugClientPtr(*)())&pykd::DebugClient::createDbgClient, 
         "create a new instance of the dbgClient class" );
     python::def( "loadDump", &pykd::loadDump,

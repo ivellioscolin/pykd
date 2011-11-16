@@ -46,6 +46,8 @@ public:
 
     void breakin();
 
+    bool compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr = FALSE );
+
     DbgOut  dout() {
         return DbgOut( m_client );
     }

@@ -97,6 +97,29 @@ void readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+bool DebugClient::compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
+{
+    bool        result = false;
+
+    addr1 = addr64( addr1 );
+    addr2 = addr64( addr2 );
+
+    std::vector<char>   m1(length);
+    std::vector<char>   m2(length);
+
+    readMemory( addr1, &m1[0], length, phyAddr );
+    readMemory( addr2, &m2[0], length, phyAddr );
+
+    return std::equal( m1.begin(), m1.end(), m2.begin() );
+}
+
+bool compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
+{
+    return g_dbgClient->compareMemory( addr1, addr2, length, phyAddr );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 std::string DebugClient::loadChars( ULONG64 address, ULONG  number, bool phyAddr )
 {
     std::vector<char>   buffer(number);

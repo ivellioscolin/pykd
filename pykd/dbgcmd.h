@@ -14,6 +14,9 @@ dbgCommand( const std::wstring  &command );
 ULONG64
 evaluate( const std::wstring  &expression );
 
+void
+breakin();
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 class DbgExtension : private DbgObject { 

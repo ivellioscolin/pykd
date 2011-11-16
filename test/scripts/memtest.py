@@ -73,3 +73,7 @@ class MemoryTest( unittest.TestCase ):
         self.assertEqual( -32640, pykd.ptrSignWord( target.module.g_bigValue ) )
         self.assertEqual( -2139062144, pykd.ptrSignDWord( target.module.g_bigValue ) )
         self.assertEqual( -9187201950435737472, pykd.ptrSignQWord( target.module.g_bigValue ) )
+
+    def testCompare( self ):
+        self.assertTrue( pykd.compareMemory( target.module.helloStr, pykd.ptrPtr(target.module.strArray), 5 ) )
+        self.assertFalse( pykd.compareMemory( target.module.helloStr, target.module.helloWStr, 5 ) )
