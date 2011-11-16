@@ -44,6 +44,8 @@ public:
 
     ULONG64  addr64( ULONG64 addr );
 
+    void breakin();
+
     DbgOut  dout() {
         return DbgOut( m_client );
     }

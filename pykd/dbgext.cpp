@@ -166,13 +166,17 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__hex__", &intBase::hex );
 
     python::class_<pykd::DebugClient, pykd::DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
-        .def( "loadDump", &pykd::DebugClient::loadDump,
+        .def( "addr64", &DebugClient::addr64,
+            "Extend address to 64 bits formats" )
+        .def( "breakin", &DebugClient::breakin,
+            "Break into debugger" )
+        .def( "loadDump", &DebugClient::loadDump,
             "Load crash dump" )
-        .def( "startProcess", &pykd::DebugClient::startProcess, 
+        .def( "startProcess", &DebugClient::startProcess, 
             "Start process for debugging" )
-        .def( "attachProcess", &pykd::DebugClient::attachProcess,
+        .def( "attachProcess", &DebugClient::attachProcess,
             "Attach debugger to a exsisting process" )
-        .def( "attachKernel", &pykd::DebugClient::attachKernel, 
+        .def( "attachKernel", &DebugClient::attachKernel, 
             "Attach debugger to a target's kernel" )
         .def( "expr", &pykd::DebugClient::evaluate,
             "Evaluate windbg expression" )
@@ -251,6 +255,10 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "waitForEvent", &pykd::DebugClient::waitForEvent,
             "Wait for events that breaks into the debugger" );
 
+    python::def( "addr64", &addr64,
+        "Extend address to 64 bits formats" );
+    python::def( "breakin", &breakin,
+        "Break into debugger" );
     python::def( "createDbgClient", (DebugClientPtr(*)())&pykd::DebugClient::createDbgClient, 
         "create a new instance of the dbgClient class" );
     python::def( "loadDump", &pykd::loadDump,
