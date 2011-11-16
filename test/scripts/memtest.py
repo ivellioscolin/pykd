@@ -63,4 +63,13 @@ class MemoryTest( unittest.TestCase ):
         testArray = [0, 255, 4294967295L, -9223372036854775808L, -1]
         self.assertEqual( len(testArray), len(loadArray) )
         self.assertEqual( 0, len( [ loadArray[i] for i in xrange(len(testArray)) if loadArray[i] != testArray[i] ] ) )
-        
+
+    def testPtrRead( self ):
+        self.assertEqual( 0x80, pykd.ptrByte( target.module.g_bigValue ) )
+        self.assertEqual( 0x8080, pykd.ptrWord( target.module.g_bigValue ) )
+        self.assertEqual( 0x80808080, pykd.ptrDWord( target.module.g_bigValue ) )
+        self.assertEqual( 0x8080808080808080, pykd.ptrQWord( target.module.g_bigValue ) )
+        self.assertEqual( -128, pykd.ptrSignByte( target.module.g_bigValue ) )
+        self.assertEqual( -32640, pykd.ptrSignWord( target.module.g_bigValue ) )
+        self.assertEqual( -2139062144, pykd.ptrSignDWord( target.module.g_bigValue ) )
+        self.assertEqual( -9187201950435737472, pykd.ptrSignQWord( target.module.g_bigValue ) )

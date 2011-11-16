@@ -186,26 +186,48 @@ BOOST_PYTHON_MODULE( pykd )
             "Check if it is a dump analyzing ( not living debuggee )" )
         .def( "isKernelDebugging", &pykd::DebugClient::isKernelDebugging,
             "Check if kernel dubugging is running" )
-        .def( "loadBytes", &pykd::DebugClient::loadBytes, DebugClient_loadBytes( python::args( "offset", "count", "phyAddr" ),
+        .def( "loadBytes", &DebugClient::loadBytes, DebugClient_loadBytes( python::args( "offset", "count", "phyAddr" ),
             "Read the block of the target's memory and return it as list of unsigned bytes" ) )
-        .def( "loadWords", &pykd::DebugClient::loadWords, DebugClient_loadWords( python::args( "offset", "count", "phyAddr" ),
+        .def( "loadWords", &DebugClient::loadWords, DebugClient_loadWords( python::args( "offset", "count", "phyAddr" ),
             "Read the block of the target's memory and return it as list of unsigned shorts" ) )
-        .def( "loadDWords", &pykd::DebugClient::loadDWords, DebugClient_loadDWords( python::args( "offset", "count", "phyAddr" ),
+        .def( "loadDWords", &DebugClient::loadDWords, DebugClient_loadDWords( python::args( "offset", "count", "phyAddr" ),
             "Read the block of the target's memory and return it as list of unsigned long ( double word )" ) )
-        .def( "loadQWords", &pykd::DebugClient::loadQWords, DebugClient_loadQWords( python::args( "offset", "count", "phyAddr" ),
+        .def( "loadQWords", &DebugClient::loadQWords, DebugClient_loadQWords( python::args( "offset", "count", "phyAddr" ),
             "Read the block of the target's memory and return it as list of unsigned long long ( quad word )" ) )
-        .def( "loadSignBytes", &pykd::DebugClient::loadSignBytes, DebugClient_loadSignBytes( python::args( "offset", "count", "phyAddr" ),
+        .def( "loadSignBytes", &DebugClient::loadSignBytes, DebugClient_loadSignBytes( python::args( "offset", "count", "phyAddr" ),
             "Read the block of the target's memory and return it as list of signed bytes" ) )
-        .def( "loadSignWords", &pykd::DebugClient::loadSignWords, DebugClient_loadSignWords( python::args( "offset", "count", "phyAddr" ),
+        .def( "loadSignWords", &DebugClient::loadSignWords, DebugClient_loadSignWords( python::args( "offset", "count", "phyAddr" ),
             "Read the block of the target's memory and return it as list of signed shorts" ) )
-        .def( "loadSignDWords", &pykd::DebugClient::loadSignDWords, DebugClient_loadSignDWords( python::args( "offset", "count", "phyAddr" ),
+        .def( "loadSignDWords", &DebugClient::loadSignDWords, DebugClient_loadSignDWords( python::args( "offset", "count", "phyAddr" ),
             "Read the block of the target's memory and return it as list of signed longs" ) )
-        .def( "loadSignQWords", &pykd::DebugClient::loadSignQWords, DebugClient_loadSignQWords( python::args( "offset", "count", "phyAddr" ),
+        .def( "loadSignQWords", &DebugClient::loadSignQWords, DebugClient_loadSignQWords( python::args( "offset", "count", "phyAddr" ),
             "Read the block of the target's memory and return it as list of signed long longs" ) )
-        .def( "loadChars", &pykd::DebugClient::loadChars, DebugClient_loadChars( python::args( "offset", "count", "phyAddr" ),
+        .def( "loadChars", &DebugClient::loadChars, DebugClient_loadChars( python::args( "offset", "count", "phyAddr" ),
             "Load string from target memory" ) )
-        .def( "loadWChars", &pykd::DebugClient::loadWChars, DebugClient_loadWChars( python::args( "offset", "count", "phyAddr" ),
+        .def( "loadWChars", &DebugClient::loadWChars, DebugClient_loadWChars( python::args( "offset", "count", "phyAddr" ),
             "Load string from target memory" ) )
+        .def( "ptrByte", &DebugClient::ptrByte,
+            "Read an unsigned 1-byte integer from the target memory" )
+        .def( "ptrWord", &DebugClient::ptrWord,
+            "Read an unsigned 2-byte integer from the target memory" )
+        .def( "ptrDWord", &DebugClient::ptrDWord,
+            "Read an unsigned 4-byte integer from the target memory" )
+        .def( "ptrQWord", &DebugClient::ptrQWord,
+            "Read an unsigned 8-byte integer from the target memory" )
+        .def( "ptrMWord", &DebugClient::ptrMWord,
+            "Read an unsigned mashine's word wide integer from the target memory" )
+        .def( "ptrSignByte", &DebugClient::ptrSignByte,
+            "Read an signed 1-byte integer from the target memory" )
+        .def( "ptrSignWord", &DebugClient::ptrSignWord,
+            "Read an signed 2-byte integer from the target memory" )
+        .def( "ptrSignDWord", &DebugClient::ptrSignDWord,
+            "Read an signed 4-byte integer from the target memory" )
+        .def( "ptrSignQWord", &DebugClient::ptrSignQWord,
+            "Read an signed 8-byte integer from the target memory" )
+        .def( "ptrSignMWord", &DebugClient::ptrSignMWord,
+            "Read an signed mashine's word wide integer from the target memory" )
+        .def( "ptrPtr", &DebugClient::ptrPtr,
+            "Read an pointer value from the target memory" )
         .def ( "loadExt", &pykd::DebugClient::loadExtension,
             "Load a debuger extension" )
         .def( "loadModule", &pykd::DebugClient::loadModule, 
@@ -271,6 +293,29 @@ BOOST_PYTHON_MODULE( pykd )
         "Load string from target memory" ) );
     python::def( "loadWChars", &loadWChars, loadWChars_( python::args( "address", "count", "phyAddr" ),
         "Load string from target memory" ) );
+    python::def( "ptrByte", &ptrByte,
+        "Read an unsigned 1-byte integer from the target memory" );
+    python::def( "ptrWord", &ptrWord,
+        "Read an unsigned 2-byte integer from the target memory" );
+    python::def( "ptrDWord", &ptrDWord,
+        "Read an unsigned 4-byte integer from the target memory" );
+    python::def( "ptrQWord", &ptrQWord,
+        "Read an unsigned 8-byte integer from the target memory" );
+    python::def( "ptrMWord", &ptrMWord,
+        "Read an unsigned mashine's word wide integer from the target memory" );
+    python::def( "ptrSignByte", &ptrSignByte,
+        "Read an signed 1-byte integer from the target memory" );
+    python::def( "ptrSignWord", &ptrSignWord,
+        "Read an signed 2-byte integer from the target memory" );
+    python::def( "ptrSignDWord", &ptrSignDWord,
+        "Read an signed 4-byte integer from the target memory" );
+    python::def( "ptrSignQWord", &ptrSignQWord,
+        "Read an signed 8-byte integer from the target memory" );
+    python::def( "ptrSignMWord", &ptrSignMWord,
+        "Read an signed mashine's word wide integer from the target memory" );
+    python::def( "ptrPtr", &ptrPtr,
+        "Read an pointer value from the target memory" );
+
     python::def( "loadExt", &pykd::loadExtension,
         "Load a debuger extension" );
     python::def( "loadModule", &pykd::loadModule,

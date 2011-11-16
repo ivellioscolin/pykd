@@ -85,6 +85,8 @@ struct struct2 {
     int m_field;
 };
 
+__int64  g_bigValue = 0x8080808080808080;
+
 void FuncWithName0()
 {
     classChild _classChild;

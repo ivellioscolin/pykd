@@ -37,6 +37,28 @@ python::list loadSignDWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE )
 
 python::list loadSignQWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 
+ULONG64 ptrByte( ULONG64 offset );
+
+ULONG64 ptrWord( ULONG64 offset );
+
+ULONG64 ptrDWord( ULONG64 offset );
+
+ULONG64 ptrQWord( ULONG64 offset );
+
+ULONG64 ptrMWord( ULONG64 offset );
+
+LONG64 ptrSignByte( ULONG64 offset );
+
+LONG64 ptrSignWord( ULONG64 offset );
+
+LONG64 ptrSignDWord( ULONG64 offset );
+
+LONG64 ptrSignQWord( ULONG64 offset );
+
+LONG64 ptrSignMWord( ULONG64 offset );
+
+ULONG64 ptrPtr( ULONG64 offset );
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 };

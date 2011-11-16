@@ -121,26 +121,28 @@ public:
 
     ULONG ptrSize();
 
-    LONG64 ptrByte();
+    ULONG64 ptrByte( ULONG64 offset );
 
-    LONG64 ptrWord();
+    ULONG64 ptrWord( ULONG64 offset );
 
-    LONG64 ptrDWord();
+    ULONG64 ptrDWord( ULONG64 offset );
 
-    LONG64 ptrQWord();
+    ULONG64 ptrQWord( ULONG64 offset );
 
-    LONG64 ptrMWord();
+    ULONG64 ptrMWord( ULONG64 offset );
 
-    ULONG64 ptrSignByte();
+    LONG64 ptrSignByte( ULONG64 offset );
 
-    ULONG64 ptrSignWord();
+    LONG64 ptrSignWord( ULONG64 offset );
 
-    ULONG64 ptrSignDWord();
+    LONG64 ptrSignDWord( ULONG64 offset );
 
-    ULONG64 ptrSignQWord();
+    LONG64 ptrSignQWord( ULONG64 offset );
 
-    ULONG64 ptrSignMWord();
+    LONG64 ptrSignMWord( ULONG64 offset );
 
+    ULONG64 ptrPtr( ULONG64 offset );
+    
     void readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr = FALSE );
 
     void setExecutionStatus( ULONG status );
