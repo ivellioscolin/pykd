@@ -48,18 +48,5 @@
 #include <boost/python/module.hpp>
 #pragma warning(pop)
 namespace python = boost::python;
-//
-//#include <vector>
-//
-//template <typename TElem>
-//TElem *getVectorBuffer(std::vector<TElem> &vec)
-//{
-//    return vec.size() ? &vec[0] : NULL;
-//}
-//template <typename TElem>
-//const TElem *getVectorBuffer(const std::vector<TElem> &vec)
-//{
-//    return vec.size() ? &vec[0] : NULL;
-//}
-//
-//// TODO: reference additional headers your program requires here
+
+#include <boost/regex.hpp> 

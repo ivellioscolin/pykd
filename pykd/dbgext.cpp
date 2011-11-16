@@ -218,6 +218,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" )
         .def( "dprintln", &pykd::DebugClient::dprintln,
             "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" )
+        .def( "ptrSize", &DebugClient::ptrSize,
+            "Return effective pointer size" )
         .def( "setExecutionStatus",  &pykd::DebugClient::setExecutionStatus,
             "Requests that the debugger engine enter an executable state" )
         .def( "step", &pykd::DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
@@ -281,6 +283,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
     python::def( "dprintln", &pykd::dprintln, dprintln_( boost::python::args( "str", "dml" ), 
         "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
+    python::def( "ptrSize", &ptrSize,
+        "Return effective pointer size" );
     python::def( "setExecutionStatus",  &pykd::setExecutionStatus,
         "Requests that the debugger engine enter an executable state" );
     python::def( "step", &pykd::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
@@ -290,7 +294,7 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "waitForEvent", &pykd::waitForEvent,
         "Wait for events that breaks into the debugger" );
     
-    python::class_<pykd::TypeInfo>("typeInfo", "Class representing typeInfo", python::no_init )
+    python::class_<TypeInfo, TypeInfoPtr, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
         .def( "name", &pykd::TypeInfo::getName )
         .def( "size", &pykd::TypeInfo::getSize )
         .def( "offset", &pykd::TypeInfo::getOffset )
@@ -300,7 +304,7 @@ BOOST_PYTHON_MODULE( pykd )
     python::class_<TypedVar, TypedVarPtr, python::bases<intBase> >("typedVar", 
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", 
         python::no_init )
-        .def( python::init<const TypeInfo&, ULONG64>() )
+        .def( python::init<const TypeInfoPtr&, ULONG64>() )
         .def("getAddress", &TypedVar::getAddress, 
             "Return virtual address" )
         .def("sizeof", &TypedVar::getSize,

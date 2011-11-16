@@ -17,10 +17,10 @@ class TypedVar : public intBase, protected DbgObject {
 
 public:
 
-    TypedVar ( const TypeInfo& typeInfo, ULONG64 offset );
+    TypedVar ( const TypeInfoPtr& typeInfo, ULONG64 offset );
 
 
-    TypedVar ( IDebugClient4 *client, const TypeInfo& typeInfo, ULONG64 offset );
+    TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset );
 
     ULONG64 getAddress() const {
         return m_offset;
@@ -31,10 +31,10 @@ public:
     }
 
     ULONG getOffset() {
-        return m_typeInfo.getOffset();
+        return m_typeInfo->getOffset();
     }
 
-    TypeInfo
+    TypeInfoPtr
     getType() const {
         return m_typeInfo;
     }
@@ -55,7 +55,7 @@ protected:
        throw DbgException("can not change");
     }
 
-    TypeInfo                m_typeInfo;
+    TypeInfoPtr             m_typeInfo;
 
     ULONG64                 m_offset;
 
@@ -68,7 +68,7 @@ class BasicTypedVar : public TypedVar {
 
 public:
 
-    BasicTypedVar ( IDebugClient4 *client, const TypeInfo& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
+    BasicTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
 
     TypedVarPtr
     virtual getField( const std::string &fieldName ) {
@@ -89,7 +89,7 @@ class PtrTypedVar : public TypedVar {
 
 public:
 
-    PtrTypedVar ( IDebugClient4 *client, const TypeInfo& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
+    PtrTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
 
     TypedVarPtr
     virtual getField( const std::string &fieldName ) {

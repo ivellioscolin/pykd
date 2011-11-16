@@ -4,90 +4,206 @@
 
 namespace pykd {
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 
-TypeInfo::TypeInfo( pyDia::GlobalScopePtr &diaScope, const std::string &symName ) : 
-    m_offset( 0 )
+TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
 {
-    pyDia::SymbolPtr  typeSym = diaScope->getChildByName( symName );
+    ULONG  tag = typeSym->getSymTag();
 
-    if ( typeSym->getSymTag() == SymTagData )
+    switch( typeSym->getSymTag() )
     {
-        m_dia = typeSym->getType();
+    case SymTagBaseType:
+        return getBaseTypeInfo( typeSym );
+
+    case SymTagUDT:
+        return TypeInfoPtr( new UdtTypeInfo( typeSym ) );
+
+    case SymTagArrayType:
+        return TypeInfoPtr( new ArrayTypeInfo( typeSym ) );
+
+    case SymTagPointerType:
+        return TypeInfoPtr( new PointerTypeInfo( typeSym ) );
     }
-    else
-    {
-        m_dia = typeSym;
-    }
+
+    throw DbgException( "type name invalid" );
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 
-std::string 
-TypeInfo::getName() 
+static const boost::regex arrayMatch("^(.*)\\[(\\d+)\\]$"); 
+
+TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName )
 {
-    std::stringstream    sstr;
+    size_t pos = symName.find_first_of( "*[" );
 
-    pyDia::SymbolPtr    diaptr = m_dia;
+    if ( pos == std::string::npos )
+    {
+        TypeInfoPtr    basePtr = getBaseTypeInfo( symName );
+        if ( basePtr != 0 )
+            return basePtr;
+
+        pyDia::SymbolPtr  typeSym = symScope->getChildByName( symName );
+
+        if ( typeSym->getSymTag() == SymTagData )
+            typeSym = typeSym->getType();
+
+        return getTypeInfo( typeSym );
+    }
     
-    int                 symtag = diaptr->getSymTag();
+    if ( symName[ symName.size() - 1 ] == '*' )
+        return TypeInfoPtr( new PointerTypeInfo( symScope,symName.substr( 0, symName.size() - 1 )  ) );
 
-    while( symtag == SymTagArrayType || symtag == SymTagPointerType )
+    boost::cmatch    matchResult;
+
+    if ( boost::regex_match( symName.c_str(), matchResult, arrayMatch ) )
     {
-        if ( symtag == SymTagArrayType )
-        {
-            sstr << '[' << diaptr->getCount() << ']';
-        }
-        else
-        {
-            sstr << '*';
-        }
+        std::string     sym = std::string( matchResult[1].first, matchResult[1].second );
 
-        diaptr = diaptr->getType();
-        symtag = diaptr->getSymTag();
+        return TypeInfoPtr( new ArrayTypeInfo( symScope, sym, std::atoi( matchResult[2].first ) ) );
     }
 
-    std::string    typeName = symtag == SymTagBaseType ?
-        diaptr->getBasicTypeName( diaptr->getBaseType() ) :
-        diaptr->getName();
 
-    typeName += sstr.str();
-
-    return typeName;
-};
-
-///////////////////////////////////////////////////////////////////////////////////
-
-bool
-TypeInfo::isBasicType()
-{
-    return  m_dia->getSymTag() == SymTagBaseType;  
+    throw DbgException( "type name invalid" );
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 
-bool
-TypeInfo::isArrayType()
+static const boost::regex baseMatch("^(Char)|(WChar)|(Int2B)|(UInt2B)|(Int4B)|(UInt4B)|(Int8B)|(UInt8B)|(Long)|(ULong)|(Float)|(Bool)$" );
+
+TypeInfoPtr 
+TypeInfo::getBaseTypeInfo( const std::string &symName )
 {
-    return m_dia->getSymTag() == SymTagArrayType;
+    boost::cmatch    baseMatchResult;
+
+    if ( boost::regex_match( symName.c_str(), baseMatchResult, baseMatch ) )
+    {
+        if ( baseMatchResult[1].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<char>("Char") );
+
+        if ( baseMatchResult[2].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<wchar_t>("WChar") );
+
+        if ( baseMatchResult[3].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<short>("Int2B") );
+
+        if ( baseMatchResult[4].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned short>("UInt2B") );
+
+        if ( baseMatchResult[5].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<long>("Int4B") );
+
+        if ( baseMatchResult[6].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned long>("UInt4B") );
+
+        if ( baseMatchResult[7].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<__int64>("Int8B") );
+
+        if ( baseMatchResult[8].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned __int64>("UInt8B") );
+
+        if ( baseMatchResult[9].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<long>("Long") );
+
+        if ( baseMatchResult[10].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned long>("ULong") );
+
+        if ( baseMatchResult[11].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<float>("Float") );
+
+        if ( baseMatchResult[12].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<bool>("Bool") );
+   }
+
+    return TypeInfoPtr();
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 
-bool
-TypeInfo::isPointer()
+TypeInfoPtr 
+TypeInfo::getBaseTypeInfo( pyDia::SymbolPtr &symbol )  
 {
-    return m_dia->getSymTag() == SymTagPointerType;
+    std::string     symName = symbol->getBasicTypeName( symbol->getBaseType() );
+
+    if ( symName == "Int" || symName == "UInt" ) 
+    {
+        std::stringstream   sstr;
+        sstr << symName << symbol->getSize() << "B";
+
+        return getBaseTypeInfo( sstr.str() );
+    }
+
+    TypeInfoPtr     ptr = getBaseTypeInfo( symName );
+
+    if ( ptr == 0 )
+        ptr = TypeInfoPtr( new BaseTypeInfo( symbol ) );
+
+    return ptr;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 
-bool
-TypeInfo::isUserDefined()
+PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symbol  ) 
 {
-    return m_dia->getSymTag() == SymTagUDT;
+    m_derefType = TypeInfo::getTypeInfo( symbol->getType() );
+    m_size = (ULONG)symbol->getSize();
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+
+PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName ) 
+{
+    m_derefType = TypeInfo::getTypeInfo( symScope, symName );
+    m_size = symScope->getMachineType() == CV_CFL_X64  ? 8 : 4;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+std::string PointerTypeInfo::getName()
+{
+    return m_derefType->getName() + '*';
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ULONG PointerTypeInfo::getSize()
+{
+    return m_size;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ArrayTypeInfo::ArrayTypeInfo( pyDia::SymbolPtr &symbol  ) 
+{
+    m_derefType = TypeInfo::getTypeInfo( symbol->getType() );
+    m_count = symbol->getCount();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ArrayTypeInfo::ArrayTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName, ULONG count ) 
+{
+    m_derefType = TypeInfo::getTypeInfo( symScope, symName );
+    m_count = count;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+std::string ArrayTypeInfo::getName()
+{
+    std::stringstream       sstr;
+
+    sstr  << m_derefType->getName() << '[' << m_count << ']';
+
+    return sstr.str();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ULONG ArrayTypeInfo::getSize()
+{
+    return m_derefType->getSize() * m_count;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
 
 }; // end namespace pykd

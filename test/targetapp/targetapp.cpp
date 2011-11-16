@@ -64,6 +64,11 @@ unsigned short ushortArray[] = {0, 10, 0xFF, 0x8000, 0xFFFF };
 unsigned long ulongArray[] = {0, 0xFF, 0x8000, 0x80000000, 0xFFFFFFFF };
 unsigned __int64 ulonglongArray[] = {0, 0xFF, 0xFFFFFFFF, 0x8000000000000000, 0xFFFFFFFFFFFFFFFF };
 
+int intMatrix[2][3] = { { 0, 1, 2}, { 3, 4, 5 } };
+char* strArray[] = { "hello", "bye" };
+int (*ptrIntMatrix)[2][3] = &intMatrix;
+char *(*ptrStrArray)[2] = &strArray;
+
 class classChild : public classBase {
 public:
     int m_childField;
@@ -105,6 +110,10 @@ void FuncWithName0()
     std::cout << ushortArray[2];
     std::cout << ulongArray[2];
     std::cout << ulonglongArray[2];
+
+    std::cout << intMatrix[1][1];
+    std::cout << strArray[0];
+    std::cout << (*ptrIntMatrix)[0][1];
 }
 
 void FuncWithName1(int a)

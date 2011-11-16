@@ -251,4 +251,23 @@ void waitForEvent()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+ULONG DebugClient::ptrSize()
+{
+    HRESULT     hres;
+
+    hres = m_control->IsPointer64Bit();
+
+    if ( FAILED( hres ) )
+        throw  DbgException( "IDebugControl::IsPointer64Bit  failed" );
+    
+    return S_OK == hres ? 8 : 4;
+}
+
+ULONG ptrSize()
+{ 
+    return g_dbgClient->ptrSize();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }; // end of namespace pykd

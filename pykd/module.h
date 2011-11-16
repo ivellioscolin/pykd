@@ -59,11 +59,13 @@ public:
         return sym->getRva();
     }
 
-    TypeInfo getTypeByName( const std::string &typeName );
+    TypeInfoPtr getTypeByName( const std::string &typeName ) {
+        return TypeInfo::getTypeInfo( boost::static_pointer_cast<pyDia::Symbol>( getDia() ), typeName);
+    }
 
     TypedVar getTypedVarByTypeName( const std::string &typeName, ULONG64 addr );
 
-    TypedVar getTypedVarByType( const TypeInfo  &typeInfo, ULONG64 addr );
+    TypedVar getTypedVarByType( const TypeInfoPtr  &typeInfo, ULONG64 addr );
 
     TypedVar getTypedVarByAddr( ULONG64 addr );
 
@@ -71,7 +73,7 @@ public:
 
 private:
 
-    pyDia::GlobalScopePtr getDia() {
+    pyDia::GlobalScopePtr& getDia() {
         if (!m_dia)
             m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
         return m_dia;

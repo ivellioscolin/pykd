@@ -119,6 +119,28 @@ public:
 
     std::wstring loadWChars( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 
+    ULONG ptrSize();
+
+    LONG64 ptrByte();
+
+    LONG64 ptrWord();
+
+    LONG64 ptrDWord();
+
+    LONG64 ptrQWord();
+
+    LONG64 ptrMWord();
+
+    ULONG64 ptrSignByte();
+
+    ULONG64 ptrSignWord();
+
+    ULONG64 ptrSignDWord();
+
+    ULONG64 ptrSignQWord();
+
+    ULONG64 ptrSignMWord();
+
     void readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr = FALSE );
 
     void setExecutionStatus( ULONG status );
@@ -183,6 +205,8 @@ ULONG getExecutionStatus();
 bool isKernelDebugging();
 
 bool isDumpAnalyzing();
+
+ULONG ptrSize();
 
 void setExecutionStatus( ULONG status );
 

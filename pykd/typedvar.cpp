@@ -7,22 +7,22 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVar::TypedVar ( IDebugClient4 *client, const TypeInfo& typeInfo, ULONG64 offset ) :
+TypedVar::TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) :
     DbgObject( client ),
     m_typeInfo( typeInfo ),
     m_offset( offset )
 {
-    m_size = m_typeInfo.getSize();
+    m_size = m_typeInfo->getSize();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVar::TypedVar( const TypeInfo& typeInfo, ULONG64 offset ) :
+TypedVar::TypedVar( const TypeInfoPtr& typeInfo, ULONG64 offset ) :
     DbgObject( g_dbgClient->client() ),
     m_typeInfo( typeInfo ),
     m_offset( offset )
 {
-    m_size = m_typeInfo.getSize();
+    m_size = m_typeInfo->getSize();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -30,25 +30,25 @@ TypedVar::TypedVar( const TypeInfo& typeInfo, ULONG64 offset ) :
 TypedVarPtr
 TypedVar::getField( const std::string &fieldName ) 
 {
-    TypeInfo fieldType = m_typeInfo.getField( fieldName );
+    TypeInfoPtr fieldType = m_typeInfo->getField( fieldName );
 
     TypedVarPtr     tv;
 
-    if ( fieldType.isBasicType() )
+    if ( fieldType->isBasicType() )
     {
-        tv.reset( new BasicTypedVar( m_client, fieldType, m_offset + fieldType.getOffset() ) );
+        tv.reset( new BasicTypedVar( m_client, fieldType, m_offset + fieldType->getOffset() ) );
         return tv;
     }
 
-    if ( fieldType.isPointer() )
+    if ( fieldType->isPointer() )
     {
-        tv.reset( new PtrTypedVar( m_client, fieldType, m_offset + fieldType.getOffset() ) );
+        tv.reset( new PtrTypedVar( m_client, fieldType, m_offset + fieldType->getOffset() ) );
         return tv;
     }
 
-    if ( fieldType.isUserDefined() )       
+    if ( fieldType->isUserDefined() )       
     {
-        tv.reset( new TypedVar( m_client, fieldType, m_offset + fieldType.getOffset() ) );
+        tv.reset( new TypedVar( m_client, fieldType, m_offset + fieldType->getOffset() ) );
         return tv;
     }
 
