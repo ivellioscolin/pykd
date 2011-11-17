@@ -153,7 +153,7 @@ PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symbol  )
 PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName ) 
 {
     m_derefType = TypeInfo::getTypeInfo( symScope, symName );
-    m_size = symScope->getMachineType() == CV_CFL_X64  ? 8 : 4;
+    m_size = (symScope->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
