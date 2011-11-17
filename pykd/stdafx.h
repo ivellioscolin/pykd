@@ -29,6 +29,7 @@
 #include <tchar.h>
 #include <windows.h>
 #include <atlbase.h>
+#include <psapi.h>
 
 #include <dia2.h>
 

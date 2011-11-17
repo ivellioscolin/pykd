@@ -53,6 +53,16 @@ static python::dict genDict(const pyDia::Symbol::ValueNameEntry srcValues[], siz
 
 ////////////////////////////////////////////////////////////////////////////////
 
+std::string
+getDebuggerImage()
+{
+    std::vector<char>   buffer(MAX_PATH);
+    GetModuleFileNameExA( GetCurrentProcess(), NULL, &buffer[0], buffer.size() );
+    return std::string( &buffer[0] );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, dprint, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, dprintln, 1, 2 );
 
@@ -277,15 +287,17 @@ BOOST_PYTHON_MODULE( pykd )
         "Attach debugger to a kernel target" );
     python::def( "expr", &pykd::evaluate,
         "Evaluate windbg expression" );
-    python::def( "getDebuggeeType", &pykd::getDebuggeeType,
+    python::def( "getDebuggeeType", &getDebuggeeType,
         "Return type of the debuggee" );
-    python::def( "getExecutionStatus", &pykd::getExecutionStatus,
+    python::def( "debuggerPath", &getDebuggerImage,
+        "Return full path to the process image that uses pykd" );
+    python::def( "getExecutionStatus", &getExecutionStatus,
         "Return information about the execution status of the debugger" );
-    python::def( "go", &pykd::changeDebuggerStatus<DEBUG_STATUS_GO>,
+    python::def( "go", &changeDebuggerStatus<DEBUG_STATUS_GO>,
         "Change debugger status to DEBUG_STATUS_GO"  );
-    python::def( "isDumpAnalyzing", &pykd::isDumpAnalyzing,
+    python::def( "isDumpAnalyzing", &isDumpAnalyzing,
         "Check if it is a dump analyzing ( not living debuggee )" );
-    python::def( "isKernelDebugging", &pykd::isKernelDebugging,
+    python::def( "isKernelDebugging", &isKernelDebugging,
         "Check if kernel dubugging is running" );
     python::def( "loadBytes", &loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as liat of unsigned bytes" ) );
