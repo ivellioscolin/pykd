@@ -65,8 +65,18 @@ unsigned long ulongArray[] = {0, 0xFF, 0x8000, 0x80000000, 0xFFFFFFFF };
 unsigned __int64 ulonglongArray[] = {0, 0xFF, 0xFFFFFFFF, 0x8000000000000000, 0xFFFFFFFFFFFFFFFF };
 
 int intMatrix[2][3] = { { 0, 1, 2}, { 3, 4, 5 } };
+int intMatrix2[2][3] = { { 0, 1, 2}, { 3, 4, 5 } };
+int intMatrix3[2][3] = { { 0, 1, 2}, { 3, 4, 5 } };
+int intMatrix4[2][3] = { { 0, 1, 2}, { 3, 4, 5 } };
 char* strArray[] = { "Hello", "Bye" };
 int (*ptrIntMatrix)[2][3] = &intMatrix;
+
+// kd> x targetapp!arrIntMatrixPtrs
+// xxxxxxxx targetapp!arrIntMatrixPtrs = int (*[4])[2][3]
+int (* arrIntMatrixPtrs[4])[2][3] = {
+    &intMatrix, &intMatrix2, &intMatrix3, &intMatrix4
+};
+
 char *(*ptrStrArray)[2] = &strArray;
 
 class classChild : public classBase {
