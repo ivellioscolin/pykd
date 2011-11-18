@@ -53,3 +53,5 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 0, tv.m_arrayField[0] )
         self.assertEqual( 2, tv.m_arrayField[1] )
         self.assertEqual( 3, tv.m_noArrayField )
+        self.assertNotEqual( -1, tv.m_arrayField[0] )
+        self.assertNotEqual( 0, tv.m_noArrayField )        
