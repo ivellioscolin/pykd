@@ -372,10 +372,10 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "field", &pykd::TypeInfo::getField )
         .def( "__getattr__", &pykd::TypeInfo::getField );
 
-    python::class_<TypedVar, TypedVarPtr, python::bases<intBase> >("typedVar", 
+    python::class_<TypedVar, TypedVarPtr, python::bases<intBase>, boost::noncopyable >("typedVar", 
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", 
         python::no_init )
-        .def( python::init<const TypeInfoPtr&, ULONG64>() )
+        //.def( python::init<const TypeInfoPtr&, ULONG64>() )
         .def("getAddress", &TypedVar::getAddress, 
             "Return virtual address" )
         .def("sizeof", &TypedVar::getSize,

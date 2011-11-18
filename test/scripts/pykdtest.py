@@ -51,8 +51,8 @@ if __name__ == "__main__":
     target.module = pykd.loadModule( target.moduleName )
     target.module.reload();
     
-    suite = getTestSuite()
-    #suite = getTestSuite( "typedvar.TypedVarTest" )
+    #suite = getTestSuite()
+    suite = getTestSuite( "typedvar.TypedVarTest.testGlobalVar" )
    
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
     

@@ -153,33 +153,33 @@ Module::reloadSymbols()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVar 
+TypedVarPtr
 Module::getTypedVarByTypeName( const std::string &typeName, ULONG64 addr )
 {
-   return TypedVar( getTypeByName(typeName), addr );
+    return TypedVar::getTypedVar( m_client, getTypeByName(typeName), addr );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVar 
+TypedVarPtr
 Module::getTypedVarByType( const TypeInfoPtr &typeInfo, ULONG64 addr )
 {
-   return TypedVar( typeInfo, addr );
+   return TypedVar::getTypedVar( m_client, typeInfo, addr );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVar 
+TypedVarPtr
 Module::getTypedVarByName( const std::string &symName )
 {
     pyDia::SymbolPtr  typeSym = getDia()->getChildByName( symName );
 
-    return TypedVar( TypeInfo::getTypeInfo( typeSym->getType() ), typeSym->getRva() + m_base );
+    return TypedVar::getTypedVar( m_client, TypeInfo::getTypeInfo( typeSym->getType() ), typeSym->getRva() + m_base );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVar 
+TypedVarPtr
 Module::getTypedVarByAddr( ULONG64 addr )
 {
     addr = addr64(addr);
@@ -193,7 +193,7 @@ Module::getTypedVarByAddr( ULONG64 addr )
     if (displacement)
         throw DbgException( "not exactly match by RVA" );
 
-    return TypedVar( TypeInfo::getTypeInfo( diaSym->getType() ), addr ); 
+    return TypedVar::getTypedVar( m_client, TypeInfo::getTypeInfo( diaSym->getType() ), addr ); 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

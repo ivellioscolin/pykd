@@ -140,16 +140,22 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class UdtTypeInfo : public BaseTypeInfo 
+class UdtTypeInfo : public TypeInfo 
 {
 public:
 
     UdtTypeInfo ( pyDia::SymbolPtr &symbol ) :
-        BaseTypeInfo( symbol )
-        {}
+      m_dia( symbol )
+      {}
+
+protected:
 
     virtual std::string getName() {
         return m_dia->getName();
+    }
+
+    virtual ULONG getSize() {
+        return (ULONG)m_dia->getSize();
     }
 
     virtual TypeInfoPtr getField( const std::string &fieldName ) {
@@ -162,6 +168,8 @@ public:
     virtual bool isUserDefined() {
         return true;
     }
+
+    pyDia::SymbolPtr    m_dia;
 };
   
 ///////////////////////////////////////////////////////////////////////////////////

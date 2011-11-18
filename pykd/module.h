@@ -63,13 +63,13 @@ public:
         return TypeInfo::getTypeInfo( boost::static_pointer_cast<pyDia::Symbol>( getDia() ), typeName);
     }
 
-    TypedVar getTypedVarByTypeName( const std::string &typeName, ULONG64 addr );
+    TypedVarPtr getTypedVarByTypeName( const std::string &typeName, ULONG64 addr );
 
-    TypedVar getTypedVarByType( const TypeInfoPtr  &typeInfo, ULONG64 addr );
+    TypedVarPtr getTypedVarByType( const TypeInfoPtr  &typeInfo, ULONG64 addr );
 
-    TypedVar getTypedVarByAddr( ULONG64 addr );
+    TypedVarPtr getTypedVarByAddr( ULONG64 addr );
 
-    TypedVar getTypedVarByName( const std::string &symName );
+    TypedVarPtr getTypedVarByName( const std::string &symName );
 
 private:
 

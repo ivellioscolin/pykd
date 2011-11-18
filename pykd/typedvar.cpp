@@ -31,7 +31,7 @@ TypedVarPtr   TypedVar::getTypedVar( IDebugClient4 *client, const TypeInfoPtr& t
 
     if ( typeInfo->isUserDefined() )       
     {
-        tv.reset( new TypedVar( client, typeInfo, offset ) );
+        tv.reset( new UdtTypedVar( client, typeInfo, offset ) );
         return tv;
     }
 
@@ -49,55 +49,6 @@ TypedVar::TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64
 {
     m_size = m_typeInfo->getSize();
 }
-
-///////////////////////////////////////////////////////////////////////////////////
-
-TypedVar::TypedVar( const TypeInfoPtr& typeInfo, ULONG64 offset ) :
-    DbgObject( g_dbgClient->client() ),
-    m_typeInfo( typeInfo ),
-    m_offset( offset )
-{
-    m_size = m_typeInfo->getSize();
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-TypedVarPtr
-TypedVar::getField( const std::string &fieldName ) 
-{
-    TypeInfoPtr fieldType = m_typeInfo->getField( fieldName );
-
-    TypedVarPtr     tv;
-
-    if ( fieldType->isBasicType() )
-    {
-        tv.reset( new BasicTypedVar( m_client, fieldType, m_offset + fieldType->getOffset() ) );
-        return tv;
-    }
-
-    if ( fieldType->isPointer() )
-    {
-        tv.reset( new PtrTypedVar( m_client, fieldType, m_offset + fieldType->getOffset() ) );
-        return tv;
-    }
-
-    if ( fieldType->isArray() )
-    {
-        tv.reset( new ArrayTypedVar( m_client, fieldType, m_offset + fieldType->getOffset() ) );
-        return tv;
-    }
-
-    if ( fieldType->isUserDefined() )       
-    {
-        tv.reset( new TypedVar( m_client, fieldType, m_offset + fieldType->getOffset() ) );
-        return tv;
-    }
-
-    throw DbgException( "can not get field" );
-
-    return tv;
-}
-
 ///////////////////////////////////////////////////////////////////////////////////
 
 ULONG64  
@@ -127,6 +78,16 @@ PtrTypedVar::getValue() const
         throw MemoryException( m_offset, false );
 
     return val;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVarPtr
+UdtTypedVar::getField( const std::string &fieldName ) 
+{
+    TypeInfoPtr fieldType = m_typeInfo->getField( fieldName );
+
+    return  TypedVar::getTypedVar( m_client, fieldType, m_offset + fieldType->getOffset() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

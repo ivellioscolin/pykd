@@ -62,6 +62,7 @@ wchar_t         helloWStr[] = L"Hello";
 unsigned char ucharArray[] = {0, 10, 0x78, 128, 0xFF };
 unsigned short ushortArray[] = {0, 10, 0xFF, 0x8000, 0xFFFF };
 unsigned long ulongArray[] = {0, 0xFF, 0x8000, 0x80000000, 0xFFFFFFFF };
+long longArray[] = {0, -10, -2000, -100000, 0xFFFFFFFF };
 unsigned __int64 ulonglongArray[] = {0, 0xFF, 0xFFFFFFFF, 0x8000000000000000, 0xFFFFFFFFFFFFFFFF };
 
 int intMatrix[2][3] = { { 0, 1, 2}, { 3, 4, 5 } };

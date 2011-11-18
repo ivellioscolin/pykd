@@ -54,4 +54,12 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 2, tv.m_arrayField[1] )
         self.assertEqual( 3, tv.m_noArrayField )
         self.assertNotEqual( -1, tv.m_arrayField[0] )
-        self.assertNotEqual( 0, tv.m_noArrayField )        
+        self.assertNotEqual( 0, tv.m_noArrayField )    
+        
+    def testGlobalVar(self):
+        self.assertEqual( 4, target.module.typedVar( "g_ulongValue" ) )
+        self.assertEqual( -100000,  target.module.typedVar( "longArray" )[3] )
+        self.assertEqual( 0x80000000, target.module.typedVar( "ulongArray" )[3] )
+        self.assertEqual( 0x8000000000000000, target.module.typedVar( "ulonglongArray" )[3] )
+        self.assertEqual( target.module.g_structTest, target.module.typedVar( "g_structTestPtr" ) )
+        
