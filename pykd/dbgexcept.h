@@ -5,6 +5,32 @@
 
 namespace pykd {
 
+
+/////////////////////////////////////////////////////////////////////////////////
+
+class PyException 
+{
+public:
+
+    PyException( PyObject*  pyObj, const std::string &desc ) :
+        m_typeObj( pyObj ),
+        m_desc( desc )
+        {}    
+
+    static
+    void
+    exceptionTranslate(const PyException &e ) {
+        PyErr_SetString( e.m_typeObj, e.m_desc.c_str() );
+    }
+
+private:
+
+    PyObject*       m_typeObj;
+
+    std::string     m_desc;
+
+};
+
 /////////////////////////////////////////////////////////////////////////////////
 
 class DbgException : public std::exception

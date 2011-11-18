@@ -95,6 +95,13 @@ struct struct2 {
     int m_field;
 };
 
+struct struct3 {
+    int   m_arrayField[2];
+    int   m_noArrayField;
+};
+
+struct3  g_struct3 = { { 0, 2 }, 3 };
+
 __int64  g_bigValue = 0x8080808080808080;
 
 void FuncWithName0()
@@ -126,6 +133,7 @@ void FuncWithName0()
     std::cout << intMatrix[1][1];
     std::cout << strArray[0];
     std::cout << (*ptrIntMatrix)[0][1];
+    std::cout << g_struct3.m_noArrayField;
 }
 
 void FuncWithName1(int a)

@@ -36,7 +36,11 @@ public:
         std::stringstream   ss;
         ss << std::hex << getValue();
         return ss.str();
-    }        
+    }     
+
+    template <class T>
+    bool operator!=(T const& rhs)
+    { return getValue() == rhs }
     
     template <class T>
     intBase& operator+=(T const& rhs)

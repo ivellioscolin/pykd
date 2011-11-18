@@ -45,8 +45,20 @@ public:
         return false;
     }
 
+    virtual bool isArray() {
+        return false;
+    }
+
     virtual bool isUserDefined() {
         return false;
+    }
+
+    virtual ULONG getCount() {
+        throw DbgException( "there is no element" );   
+    }
+
+    virtual TypeInfoPtr getElementType() {
+        throw DbgException( "there is no element" );   
     }
 
     ULONG getOffset() {
@@ -198,6 +210,19 @@ public:
     virtual TypeInfoPtr getField( const std::string &fieldName ) {
         throw DbgException( "there is no such field" );
     }
+
+    virtual bool isArray() {
+        return true;
+    }
+
+    virtual ULONG getCount() {
+        return m_count;
+    }
+
+    virtual TypeInfoPtr getElementType() {
+        return m_derefType;
+    }
+
 
 private:
 

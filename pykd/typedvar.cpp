@@ -7,6 +7,41 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+TypedVarPtr   TypedVar::getTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset )
+{
+    TypedVarPtr     tv;
+
+    if ( typeInfo->isBasicType() )
+    {
+        tv.reset( new BasicTypedVar( client, typeInfo, offset) );
+        return tv;
+    }
+
+    if ( typeInfo->isPointer() )
+    {
+        tv.reset( new PtrTypedVar( client, typeInfo, offset ) );
+        return tv;
+    }
+
+    if ( typeInfo->isArray() )
+    {
+        tv.reset( new ArrayTypedVar( client, typeInfo, offset  ) );
+        return tv;
+    }
+
+    if ( typeInfo->isUserDefined() )       
+    {
+        tv.reset( new TypedVar( client, typeInfo, offset ) );
+        return tv;
+    }
+
+    throw DbgException( "can not get field" );
+
+    return tv;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 TypedVar::TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) :
     DbgObject( client ),
     m_typeInfo( typeInfo ),
@@ -43,6 +78,12 @@ TypedVar::getField( const std::string &fieldName )
     if ( fieldType->isPointer() )
     {
         tv.reset( new PtrTypedVar( m_client, fieldType, m_offset + fieldType->getOffset() ) );
+        return tv;
+    }
+
+    if ( fieldType->isArray() )
+    {
+        tv.reset( new ArrayTypedVar( m_client, fieldType, m_offset + fieldType->getOffset() ) );
         return tv;
     }
 

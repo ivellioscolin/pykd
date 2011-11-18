@@ -52,8 +52,8 @@ if __name__ == "__main__":
     target.module.reload();
     
     suite = getTestSuite()
-    #suite = getTestSuite( "memtest.MemoryTest.testPtrRead" )
+    #suite = getTestSuite( "typedvar.TypedVarTest" )
    
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
     
-    #a = raw_input("\npress return\n")
+    a = raw_input("\npress return\n")

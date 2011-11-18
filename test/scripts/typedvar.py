@@ -19,8 +19,8 @@ class TypedVarTest( unittest.TestCase ):
     def testGetSize( self ):
         tv1 = target.module.typedVar( "structTest", target.module.g_structTest )
         self.assertEqual( 20, tv1.sizeof() )
-        #tv2 = target.module.typedVar( "structTest[2]", target.module.g_testArray )
-        #self.assertEqual( tv1.sizeof()*2, tv2.sizeof() )
+        tv2 = target.module.typedVar( "structTest[2]", target.module.g_testArray )
+        self.assertEqual( tv1.sizeof()*2, tv2.sizeof() )
 
     def testByAddress( self ):
         tv1 = target.module.typedVar( "structTest", target.module.g_structTest )
@@ -46,3 +46,10 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 0, tv.m_field0.offset() )
         self.assertEqual( 4, tv.m_field1.offset() )
         self.assertEqual( 16, tv.m_field4.offset() )
+
+    def testArrayField(self):
+        tv = target.module.typedVar( "g_struct3" )
+        self.assertEqual( 2, len(tv.m_arrayField) )
+        self.assertEqual( 0, tv.m_arrayField[0] )
+        self.assertEqual( 2, tv.m_arrayField[1] )
+        self.assertEqual( 3, tv.m_noArrayField )

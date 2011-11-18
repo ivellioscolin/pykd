@@ -386,7 +386,9 @@ BOOST_PYTHON_MODULE( pykd )
             "Return field of structure as an object attribute" )
         .def("__getattr__", &TypedVar::getField,
             "Return field of structure as an object attribute" )
-        .def( "__str__", &TypedVar::print );
+        .def( "__str__", &TypedVar::print )
+        .def("__len__", &TypedVar::getElementCount )
+        .def("__getitem__", &TypedVar::getElementByIndex );
 
     python::class_<pykd::Module>("module", "Class representing executable module", python::no_init )
         .def("begin", &pykd::Module::getBase,
@@ -624,6 +626,9 @@ BOOST_PYTHON_MODULE( pykd )
         genDict(pyDia::Symbol::amd64RegName, pyDia::Symbol::cntAmd64RegName);
 
     // exception:
+
+    // wrapper for standart python exceptions
+    python::register_exception_translator<pykd::PyException>( &PyException::exceptionTranslate );
 
     // base exception
     python::class_<pykd::DbgException>  dbgExceptionClass( "BaseException",

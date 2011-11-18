@@ -3,6 +3,7 @@
 #include "typeinfo.h"
 #include "intbase.h"
 #include "dbgobj.h"
+#include "dbgexcept.h"
 
 namespace pykd {
 
@@ -16,6 +17,8 @@ typedef boost::shared_ptr<TypedVar>  TypedVarPtr;
 class TypedVar : public intBase, protected DbgObject {
 
 public:
+
+    static TypedVarPtr  getTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset );
 
     TypedVar ( const TypeInfoPtr& typeInfo, ULONG64 offset );
 
@@ -43,6 +46,14 @@ public:
 
     virtual std::string  print() {
         return "TypeVar";
+    }
+
+    virtual ULONG getElementCount() {
+        throw PyException( PyExc_TypeError, "object has no len()" );
+    }
+
+    virtual TypedVarPtr getElementByIndex( ULONG  index ) {
+        throw PyException( PyExc_TypeError, "object is unsubscriptable");  
     }
 
 protected:
@@ -102,6 +113,31 @@ public:
 
     virtual ULONG64  getValue() const;
 
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+
+class ArrayTypedVar: public TypedVar {
+
+public:
+
+    ArrayTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
+
+    virtual ULONG getElementCount() {
+        return m_typeInfo->getCount();
+    }
+
+    virtual TypedVarPtr getElementByIndex( ULONG  index ) {
+
+        if ( index > m_typeInfo->getCount() )
+        {
+            throw PyException( PyExc_IndexError, "Index out of range" );
+        }
+
+        TypeInfoPtr     elementType = m_typeInfo->getElementType();
+
+        return TypedVar::getTypedVar( m_client, elementType, m_offset + elementType->getSize()*index );
+    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
