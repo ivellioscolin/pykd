@@ -82,6 +82,8 @@ public:
     intBase& operator>>=(T const& rhs)
     { setValue( getValue() >> rhs ); return *this; }  
 
+    PyObject* convertLong() { return PyLong_FromLongLong( getValue() ); }
+
 private:
 
     ULONG64     m_intValue;

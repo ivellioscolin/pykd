@@ -64,6 +64,7 @@ unsigned short ushortArray[] = {0, 10, 0xFF, 0x8000, 0xFFFF };
 unsigned long ulongArray[] = {0, 0xFF, 0x8000, 0x80000000, 0xFFFFFFFF };
 long longArray[] = {0, -10, -2000, -100000, 0xFFFFFFFF };
 unsigned __int64 ulonglongArray[] = {0, 0xFF, 0xFFFFFFFF, 0x8000000000000000, 0xFFFFFFFFFFFFFFFF };
+long long longlongArray[] = {0, -10, -2000, -100000, -10000000000 };
 
 int intMatrix[2][3] = { { 0, 1, 2}, { 3, 4, 5 } };
 int intMatrix2[2][3] = { { 0, 1, 2}, { 3, 4, 5 } };

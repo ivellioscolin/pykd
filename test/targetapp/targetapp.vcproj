@@ -421,6 +421,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\scripts\intbase.py"
+				>
+			</File>
+			<File
 				RelativePath="..\scripts\memtest.py"
 				>
 			</File>

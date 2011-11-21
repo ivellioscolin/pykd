@@ -33,7 +33,7 @@ def getTestSuite( singleName = "" ):
                unittest.TestLoader().loadTestsFromTestCase( dbgcmd.DbgcmdTest ),
                unittest.TestLoader().loadTestsFromTestCase( clienttest.DbgClientTest ),
                unittest.TestLoader().loadTestsFromTestCase( eventtest.EventTest ),
-               unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest )
+               unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
            ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )
@@ -51,9 +51,9 @@ if __name__ == "__main__":
     target.module = pykd.loadModule( target.moduleName )
     target.module.reload();
     
-    #suite = getTestSuite()
-    suite = getTestSuite( "typedvar.TypedVarTest.testGlobalVar" )
+    suite = getTestSuite()
+    #suite = getTestSuite( "typedvar.TypedVarTest" )    
    
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
     
-    a = raw_input("\npress return\n")
+    #a = raw_input("\npress return\n")
