@@ -13,6 +13,7 @@
 #include "dbgcmd.h"
 #include "pyaux.h"
 #include "disasm.h"
+#include "cpureg.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -148,6 +149,10 @@ public:
     ULONG64 ptrPtr( ULONG64 offset );
     
     void readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr = FALSE );
+
+    python::object getRegByName( const std::wstring &regName );
+
+    python::object getRegByIndex( ULONG index );
 
     void setExecutionStatus( ULONG status );
     

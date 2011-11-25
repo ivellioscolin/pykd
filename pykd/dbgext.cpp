@@ -57,7 +57,7 @@ std::string
 getDebuggerImage()
 {
     std::vector<char>   buffer(MAX_PATH);
-    GetModuleFileNameExA( GetCurrentProcess(), NULL, &buffer[0], buffer.size() );
+    GetModuleFileNameExA( GetCurrentProcess(), NULL, &buffer[0], (DWORD)buffer.size() );
     return std::string( &buffer[0] );
 }
 
@@ -213,6 +213,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" )
         .def( "ptrSize", &DebugClient::ptrSize,
             "Return effective pointer size" )
+        .def( "reg", &DebugClient::getRegByName,
+            "Return a CPU regsiter value by the register's name" )
+        .def( "reg", &DebugClient::getRegByIndex,
+            "Return a CPU regsiter value by the register's value" )
         .def( "setExecutionStatus",  &pykd::DebugClient::setExecutionStatus,
             "Requests that the debugger engine enter an executable state" )
         .def( "step", &pykd::DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
@@ -252,6 +256,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if it is a dump analyzing ( not living debuggee )" );
     python::def( "isKernelDebugging", &isKernelDebugging,
         "Check if kernel dubugging is running" );
+    python::def( "isWindbgExt", &WindbgGlobalSession::isInit,
+        "Check if script works in windbg context" );
     python::def( "loadBytes", &loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as liat of unsigned bytes" ) );
     python::def( "loadWords", &loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
@@ -308,6 +314,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
     python::def( "ptrSize", &ptrSize,
         "Return effective pointer size" );
+    python::def( "reg", &getRegByName,
+        "Return a CPU regsiter value by the register's name" );
+    python::def( "reg", &getRegByIndex,
+         "Return a CPU regsiter value by the register's value" );
     python::def( "setExecutionStatus",  &pykd::setExecutionStatus,
         "Requests that the debugger engine enter an executable state" );
     python::def( "step", &pykd::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
