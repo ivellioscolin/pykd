@@ -33,18 +33,26 @@ class ModuleTest( unittest.TestCase ):
 
     def testFindModule( self ):
     
-        try: pykd.findModule( target.module.begin() - 0x10 )
-        except pykd.BaseException: pass
-        #self.assertRaises( pykd.BaseException, pykd.findModule, target.module.begin() - 0x10 ) 
+        try: 
+            pykd.loadModule( target.module.begin() - 0x10 )
+            self.assertTrue( False )
+        except pykd.BaseException: 
+			self.assertTrue( True )
 
-        self.assertNotEqual( None, pykd.findModule( target.module.begin() ) )
-        self.assertNotEqual( None, pykd.findModule( target.module.begin() + 0x10) )
+        self.assertNotEqual( None, pykd.loadModule( target.module.begin() ) )
+        self.assertNotEqual( None, pykd.loadModule( target.module.begin() + 0x10) )
 
-        try: pykd.findModule( target.module.end() )
-        except pykd.BaseException: pass
+        try: 
+            pykd.loadModule( target.module.end() )
+            self.assertTrue( False )
+        except pykd.BaseException: 
+            self.assertTrue( True )
  
-        try: pykd.findModule( target.module.end() + 0x10)
-        except pykd.BaseException: pass
+        try: 
+            pykd.loadModule( target.module.end() + 0x10 )
+            self.assertTrue( False )
+        except pykd.BaseException: 
+            self.assertTrue( True )
 
     def testSymbol( self ):
         self.assertEqual( target.module.rva("FuncWithName0"), target.module.offset("FuncWithName0") - target.module.begin() )

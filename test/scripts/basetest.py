@@ -26,7 +26,6 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'delSynSymbol') )
         self.assertTrue( hasattr(pykd, 'delSynSymbolsMask') )
         self.assertTrue( hasattr(pykd, 'expr') )
-        self.assertTrue( hasattr(pykd, 'findModule') )
         self.assertTrue( hasattr(pykd, 'findSymbol') )
         self.assertTrue( hasattr(pykd, 'getCurrentProcess') )
         self.assertTrue( hasattr(pykd, 'getCurrentStack') )
@@ -107,7 +106,8 @@ class BaseTest( unittest.TestCase ):
     def testOldRemovedApi( self ):
         """ Branch test: old API 0.0.x what should be removed """
         self.assertFalse( hasattr(pykd, 'dbgModuleClass') )
-        self.assertFalse( hasattr(pykd, 'debugEvent') )        
+        self.assertFalse( hasattr(pykd, 'debugEvent') )    
+        self.assertFalse( hasattr(pykd, 'findModule') )            
         self.assertFalse( hasattr(pykd, 'windbgIn') )
         self.assertFalse( hasattr(pykd, 'windbgOut') )        
         

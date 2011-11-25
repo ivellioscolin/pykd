@@ -58,4 +58,4 @@ if __name__ == "__main__":
    
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
     
-    #a = raw_input("\npress return\n")
+    a = raw_input("\npress return\n")

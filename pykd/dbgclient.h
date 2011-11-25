@@ -91,11 +91,11 @@ public:
 
     void loadDump( const std::wstring &fileName );
 
-    Module loadModule( const std::string  &moduleName ) {
+    Module loadModuleByName( const std::string  &moduleName ) {
         return Module( m_client, moduleName );
     }
 
-    Module findModule( ULONG64  offset ) {
+    Module loadModuleByOffset( ULONG64  offset ) {
         return Module( m_client, offset ); 
     }
 

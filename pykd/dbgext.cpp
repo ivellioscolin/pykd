@@ -199,11 +199,11 @@ BOOST_PYTHON_MODULE( pykd )
             "Read an signed mashine's word wide integer from the target memory" )
         .def( "ptrPtr", &DebugClient::ptrPtr,
             "Read an pointer value from the target memory" )
-        .def ( "loadExt", &pykd::DebugClient::loadExtension,
+        .def( "loadExt", &pykd::DebugClient::loadExtension,
             "Load a debuger extension" )
-        .def( "loadModule", &pykd::DebugClient::loadModule, 
+        .def( "loadModule", &pykd::DebugClient::loadModuleByName, 
             "Return instance of Module class" )
-        .def( "findModule", &pykd::DebugClient::findModule, 
+        .def( "loadModule", &pykd::DebugClient::loadModuleByOffset, 
             "Return instance of the Module class which posseses specified address" )
         .def( "dbgCommand", &pykd::DebugClient::dbgCommand,
              "Run a debugger's command and return it's result as a string" )
@@ -294,12 +294,11 @@ BOOST_PYTHON_MODULE( pykd )
         "Read an signed mashine's word wide integer from the target memory" );
     python::def( "ptrPtr", &ptrPtr,
         "Read an pointer value from the target memory" );
-
     python::def( "loadExt", &pykd::loadExtension,
         "Load a debuger extension" );
-    python::def( "loadModule", &pykd::loadModule,
+    python::def( "loadModule", &loadModuleByName,
         "Return instance of Module class"  );
-    python::def( "findModule", &pykd::findModule,
+    python::def( "loadModule", &loadModuleByOffset,
         "Return instance of the Module class which posseses specified address" );
     python::def( "dbgCommand", &pykd::dbgCommand,    
         "Run a debugger's command and return it's result as a string" ),

@@ -8,14 +8,14 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-Module loadModule( const std::string  &moduleName ) {
-    return g_dbgClient->loadModule( moduleName );  
+Module loadModuleByName( const std::string  &moduleName ) {
+    return g_dbgClient->loadModuleByName( moduleName );  
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-Module findModule( ULONG64  offset ) {
-    return g_dbgClient->findModule( offset );
+Module loadModuleByOffset( ULONG64  offset ) {
+    return g_dbgClient->loadModuleByOffset( offset );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
