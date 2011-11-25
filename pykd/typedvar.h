@@ -59,12 +59,8 @@ protected:
 
     TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset );
 
-    virtual ULONG64  getValue() const {
+    virtual BaseTypeVariant getValue() {
         return m_offset;
-    }
-    
-    virtual void setValue( ULONG64  value) {
-       throw DbgException("can not change");
     }
 
     TypeInfoPtr             m_typeInfo;
@@ -87,7 +83,7 @@ public:
         return intBase::str();
     }
 
-    virtual ULONG64  getValue() const;
+    virtual BaseTypeVariant  getValue();
 
 };
 
@@ -108,7 +104,7 @@ public:
         return "PtrTypedVar";
     }
 
-    virtual ULONG64  getValue() const;
+    virtual BaseTypeVariant  getValue();
 
 };
 

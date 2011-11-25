@@ -51,24 +51,55 @@ TypedVar::TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
-ULONG64  
-BasicTypedVar::getValue() const
+BaseTypeVariant BasicTypedVar::getValue()
 {
+    ULONG64     val = 0;    
     HRESULT     hres;
-    ULONG64     val = 0;
 
     hres = m_dataSpaces->ReadVirtual( m_offset, &val, getSize(), NULL );
 
     if ( FAILED( hres ) )
         throw MemoryException( m_offset, false );
 
-    return val;
+    if ( m_typeInfo->getName() == "Char" )
+        return (LONG)*(PCHAR)&val;
+
+    if ( m_typeInfo->getName() == "WChar" )
+        return (LONG)*(PWCHAR)&val;
+
+    if ( m_typeInfo->getName() == "Int2B" )
+        return (LONG)*(PSHORT)&val;
+
+    if ( m_typeInfo->getName() == "UInt2B" )
+        return (ULONG)*(PUSHORT)&val;
+
+    if ( m_typeInfo->getName() == "Int4B" )
+        return *(PLONG)&val;
+
+    if ( m_typeInfo->getName() == "UInt4B" )
+        return *(PULONG)&val;
+
+    if ( m_typeInfo->getName() == "Int8B" )
+        return (LONG64)*(PLONG64)&val;
+
+    if ( m_typeInfo->getName() == "UInt8B" )
+        return (ULONG64)*(PULONG64)&val;
+
+    if ( m_typeInfo->getName() == "Long" )
+        return *(PLONG)&val;
+
+    if ( m_typeInfo->getName() == "ULong" )
+        return *(PULONG)&val;
+
+    if ( m_typeInfo->getName() == "Bool" )
+        return *(bool*)&val;
+    
+    throw DbgException( "failed get value " );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ULONG64
-PtrTypedVar::getValue() const
+BaseTypeVariant PtrTypedVar::getValue()
 {
     HRESULT     hres;
     ULONG64     val = 0;

@@ -96,84 +96,37 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_compareMemory, DebugClient::
 BOOST_PYTHON_MODULE( pykd )
 {
     python::class_<intBase>( "intBase", "intBase", python::no_init )
-        .def( int_( python::self ) )
-        .def( "__long__", &intBase::convertLong )
-
-        .def( python::self + ULONG64() )
-        .def( ULONG64() + python::self )
-        .def( python::self += ULONG64() )
-        .def( python::self + python::self )
-        .def( python::self += python::self )
-
-        .def( python::self - ULONG64() )
-        .def( ULONG64() - python::self )
-        .def( python::self -= ULONG64() )
-        .def( python::self - python::self )
-        .def( python::self -= python::self )
-
-        .def( python::self * ULONG64() )
-        .def( ULONG64() * python::self )
-        .def( python::self *= ULONG64() )
-        .def( python::self * python::self )
-        .def( python::self *= python::self )
-
-        .def( python::self / ULONG64() )
-        .def( ULONG64() / python::self )
-        .def( python::self /= ULONG64() )
-        .def( python::self / python::self )
-        .def( python::self /= python::self )
-        
-        .def( python::self % ULONG64() )
-        .def( ULONG64() % python::self )
-        .def( python::self %= ULONG64() )
-        .def( python::self % python::self )
-        .def( python::self %= python::self )
-
-        .def( python::self & ULONG64() )
-        .def( ULONG64() & python::self )
-        .def( python::self &= ULONG64() )
-        .def( python::self & python::self )
-        .def( python::self &= python::self )
-
-        .def( python::self | ULONG64() )
-        .def( ULONG64() | python::self )
-        .def( python::self |= ULONG64() )
-        .def( python::self | python::self )
-        .def( python::self |= python::self )
-
-        .def( python::self ^ ULONG64() )
-        .def( ULONG64() ^ python::self )
-        .def( python::self ^= ULONG64() )
-        .def( python::self ^ python::self )
-        .def( python::self ^= python::self )
-
-        .def( python::self << ULONG64() )
-        .def( python::self <<= ULONG64() )
-
-        .def( python::self >> ULONG64() )
-        .def( python::self >>= ULONG64() ) 
-
-        .def( python::self < ULONG64() )
-        .def( python::self < python::self )
-
-        .def( python::self <= ULONG64() )
-        .def( python::self <= python::self )
-
-        .def( python::self == ULONG64() )           
-        .def( python::self == boost::python::self )
-
-        .def( python::self >= ULONG64() )
-        .def( python::self >= boost::python::self )
-
-        .def( python::self > ULONG64() )
-        .def( python::self > boost::python::self )
-
-        .def( python::self != ULONG64() )
-        .def( python::self != boost::python::self )
-
-        .def( ~boost::python::self )
-        .def( !boost::python::self )
-
+        .def( python::init<python::object&>() )
+        .def( "__eq__", &intBase::eq )
+        .def( "__ne__", &intBase::ne)
+        .def( "__lt__", &intBase::lt)
+        .def( "__gt__", &intBase::gt )
+        .def( "__le__", &intBase::le )
+        .def( "__ge__", &intBase::ge )
+        .def( "__add__", &intBase::add )
+        .def( "__radd__", &intBase::add )
+        .def( "__sub__", &intBase::sub )
+        .def( "__rsub__", &intBase::rsub )
+        .def( "__mul__", &intBase::mul )
+        .def( "__rmul__", &intBase::mul )
+        .def( "__div__", &intBase::div )
+        .def( "__rdiv__", &intBase::rdiv )
+        .def( "__mod__", &intBase::mod )
+        .def( "__rmod__", &intBase::rmod )
+        .def( "__rshift__", &intBase::rshift )
+        .def( "__rrshift__", &intBase::rrshift )
+        .def( "__lshift__", &intBase::lshift )
+        .def( "__rlshift__", &intBase::rlshift )
+        .def( "__and__", &intBase::and )
+        .def( "__rand__", &intBase::and )
+        .def( "__or__", &intBase::or )
+        .def( "__ror__", &intBase::or )
+        .def( "__xor__", &intBase::xor )
+        .def( "__rxor__", &intBase::xor )
+        .def( "__neg__", &intBase::neg )
+        .def( "__pos__", &intBase::pos ) 
+        .def( "__invert__", &intBase::invert ) 
+        .def( "__nonzero__", &intBase::nonzero )
         .def( "__str__", &intBase::str )
         .def( "__hex__", &intBase::hex );
 
@@ -366,11 +319,11 @@ BOOST_PYTHON_MODULE( pykd )
         "Wait for events that breaks into the debugger" );
     
     python::class_<TypeInfo, TypeInfoPtr, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
-        .def( "name", &pykd::TypeInfo::getName )
-        .def( "size", &pykd::TypeInfo::getSize )
-        .def( "offset", &pykd::TypeInfo::getOffset )
-        .def( "field", &pykd::TypeInfo::getField )
-        .def( "__getattr__", &pykd::TypeInfo::getField );
+        .def( "name", &TypeInfo::getName )
+        .def( "size", &TypeInfo::getSize )
+        .def( "offset", &TypeInfo::getOffset )
+        .def( "field", &TypeInfo::getField )
+        .def( "__getattr__", &TypeInfo::getField );
 
     python::class_<TypedVar, TypedVarPtr, python::bases<intBase>, boost::noncopyable >("typedVar", 
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", 

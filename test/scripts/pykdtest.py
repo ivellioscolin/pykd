@@ -21,6 +21,7 @@ import clienttest
 import eventtest
 import typedvar
 import memtest
+import intbase
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
@@ -34,6 +35,7 @@ def getTestSuite( singleName = "" ):
                unittest.TestLoader().loadTestsFromTestCase( clienttest.DbgClientTest ),
                unittest.TestLoader().loadTestsFromTestCase( eventtest.EventTest ),
                unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
+               unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
            ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )
@@ -52,7 +54,7 @@ if __name__ == "__main__":
     target.module.reload();
     
     suite = getTestSuite()
-    #suite = getTestSuite( "typedvar.TypedVarTest" )    
+    #suite = getTestSuite( "typedvar.TypedVarTest.testStruct" )    
    
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
     
