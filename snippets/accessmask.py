@@ -90,8 +90,6 @@ def main():
 
     argc = len(sys.argv)
 
-    0/0
-
     if argc == 1 :
         dprintln("Syntax: [object type] <;hex mask>;")
         dprintln("Supported object types: process, thread, file, generic")
