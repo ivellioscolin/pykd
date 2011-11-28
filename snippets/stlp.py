@@ -3,15 +3,18 @@
 import sys
 from pykd import *
 
+def ptr_t():
+	return is64bitSystem() and ulonglong_t  or ulong_t
+
 StlpNodeBase = typeInfo()
-StlpNodeBase.append(ptr_t, "color")
-StlpNodeBase.append(ptr_t, "parent")
-StlpNodeBase.append(ptr_t, "left")
-StlpNodeBase.append(ptr_t, "right")
+StlpNodeBase.append(ptr_t(), "color")
+StlpNodeBase.append(ptr_t(), "parent")
+StlpNodeBase.append(ptr_t(), "left")
+StlpNodeBase.append(ptr_t(), "right")
 
 StlpMap = typeInfo()
 StlpMap.append(StlpNodeBase, "header")
-StlpMap.append(ptr_t, "node_count")
+StlpMap.append(ptr_t(), "node_count")
 
 def stlpMapIncrement(addr):
     node = StlpNodeBase.load(addr)
