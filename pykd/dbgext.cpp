@@ -128,7 +128,9 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__invert__", &intBase::invert ) 
         .def( "__nonzero__", &intBase::nonzero )
         .def( "__str__", &intBase::str )
-        .def( "__hex__", &intBase::hex );
+        .def( "__hex__", &intBase::hex )
+        .def( "__long__", &intBase::long_ )
+        .def( "__int__", &intBase::int_ );
 
     python::class_<pykd::DebugClient, pykd::DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
         .def( "addr64", &DebugClient::addr64,

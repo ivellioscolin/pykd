@@ -142,5 +142,12 @@ class IntBaseTest( unittest.TestCase ):
         self.assertEqual( -0xFFFFFFFF, -intBase(0xFFFFFFFF) )
         self.assertEqual( 0xFFFFFFFF, +intBase(0xFFFFFFFF) )
         self.assertEqual( 0, ~intBase(0xFFFFFFFF) )
+        
+    def testLongConvert( self ):
+        self.assertEqual( "100", "%d" % intBase(100) )
+        self.assertEqual( "FFFF", "%X" % intBase(0xFFFF) )
+        self.assertEqual( "-70000000000", "%d" % intBase(-70000000000) )
+        self.assertEqual( "FFFFFFFFFFFFFF", "%X" % intBase(0xFFFFFFFFFFFFFF) )
+        self.assertEqual( "0", "%d" % intBase(False) )
     
             

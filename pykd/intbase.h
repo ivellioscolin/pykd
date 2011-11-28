@@ -37,6 +37,15 @@ public:
     }
 };
 
+class VariantToPylong : public boost::static_visitor<python::object>
+{
+public:
+    template<typename T>
+    python::object operator()(T i ) const {
+        return  python::long_( i );        
+    }
+};
+
 
 
 class intBase {
@@ -58,6 +67,16 @@ public:
     std::string 
     hex() {
         return boost::apply_visitor( VariantToHex(), getValue() );
+    }
+
+    python::object
+    long_() {
+        return boost::apply_visitor( VariantToPylong(), getValue() );
+    }
+
+    python::object
+    int_() {
+        return boost::apply_visitor( VariantToPylong(), getValue() );
     }
 
     python::object eq( python::object&  obj ) {
