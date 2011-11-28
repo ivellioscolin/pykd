@@ -805,27 +805,58 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
             PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL;
             
             PyErr_Fetch( &errtype, &errvalue, &traceback );
-            
+
+            PyErr_NormalizeException( &errtype, &errvalue, &traceback );
+
             if(errvalue != NULL) 
             {
-                PyObject *errvalueStr= PyUnicode_FromObject(errvalue);         
-
-                dbgClient->eprintln( PyUnicode_AS_UNICODE( errvalueStr ) );
-
-                if ( traceback )
+                if ( PyErr_GivenExceptionMatches(errtype, PyExc_SyntaxError))
                 {
-                    python::object    traceObj( python::handle<>( python::borrowed( traceback ) ) );
-                    
-                    dbgClient->eprintln( L"\nTraceback:" );
+                    PyObject *filenamePtr = PyObject_GetAttrString(errvalue ,"filename" );
+                    PyObject *filenameStr = PyUnicode_FromObject(filenamePtr);
+                    PyObject *linenoPtr = PyObject_GetAttrString(errvalue ,"lineno");
+                    PyObject *offsetPtr = PyObject_GetAttrString(errvalue ,"offset");
+                    PyObject *msg = PyObject_GetAttrString(errvalue, "msg");
+                    PyObject *msgStr = PyUnicode_FromObject(msg);    
 
-                    python::object   pFunc( tracebackModule.attr("format_tb") );
-                    python::list     traceList( pFunc( traceObj ) );
+                    std::wstringstream       sstr;
+                    sstr << std::endl << L"Syntax error" << std::endl;
+                    sstr << std::endl << PyUnicode_AS_UNICODE( msgStr ) << std::endl << std::endl;
+                    sstr << "Filename: " << PyUnicode_AS_UNICODE( filenameStr );
+                    sstr << "  Line: " << PyInt_AsLong( linenoPtr );
+                    sstr << "  Pos: " << PyInt_AsLong( offsetPtr );
+                    sstr << std::endl;
 
-                    for ( long i = 0; i < python::len(traceList); ++i )
-                        dbgClient->eprintln( python::extract<std::wstring>(traceList[i]) );
+                    dbgClient->eprintln( sstr.str() );
+
+                    Py_XDECREF( linenoPtr );
+                    Py_XDECREF( offsetPtr );
+                    Py_XDECREF( msgStr );
+                    Py_XDECREF( msg );
                 }
+                else    
+                {
+                    PyObject *errvalueStr= PyUnicode_FromObject(errvalue);    
 
-                Py_DECREF(errvalueStr);
+                    if ( errvalueStr )
+                    {
+                        dbgClient->eprintln( PyUnicode_AS_UNICODE( errvalueStr ) );
+                        Py_DECREF(errvalueStr);
+                    }
+
+                    if ( traceback )
+                    {
+                        python::object    traceObj( python::handle<>( python::borrowed( traceback ) ) );
+                        
+                        dbgClient->eprintln( L"\nTraceback:" );
+
+                        python::object   pFunc( tracebackModule.attr("format_tb") );
+                        python::list     traceList( pFunc( traceObj ) );
+
+                        for ( long i = 0; i < python::len(traceList); ++i )
+                            dbgClient->eprintln( python::extract<std::wstring>(traceList[i]) );
+                    }
+                }                
             }
 
             Py_XDECREF(errvalue);
