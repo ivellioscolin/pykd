@@ -86,6 +86,8 @@ public:
     template<ULONG status>
     void changeDebuggerStatus();
 
+    bool is64bitSystem();
+
     bool isKernelDebugging();
 
     bool isDumpAnalyzing();
@@ -212,6 +214,8 @@ void attachKernel( const std::wstring  &param );
 python::tuple getDebuggeeType();
 
 ULONG getExecutionStatus();
+
+bool is64bitSystem();
 
 bool isKernelDebugging();
 

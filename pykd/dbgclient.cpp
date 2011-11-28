@@ -90,6 +90,26 @@ ULONG getExecutionStatus()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+bool DebugClient::is64bitSystem()
+{
+    HRESULT     hres;
+    
+    hres = m_control->IsPointer64Bit();
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::IsPointer64Bit failed" );
+        
+    return hres == S_OK;    
+}
+
+bool
+is64bitSystem()
+{
+    return g_dbgClient->is64bitSystem();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////
+
 bool DebugClient::isDumpAnalyzing()
 {
     HRESULT         hres;

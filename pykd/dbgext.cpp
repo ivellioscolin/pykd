@@ -145,14 +145,16 @@ BOOST_PYTHON_MODULE( pykd )
             "Attach debugger to a exsisting process" )
         .def( "attachKernel", &DebugClient::attachKernel, 
             "Attach debugger to a target's kernel" )
-        .def( "expr", &pykd::DebugClient::evaluate,
+        .def( "expr", &DebugClient::evaluate,
             "Evaluate windbg expression" )
-        .def( "getDebuggeeType", &pykd::DebugClient::getDebuggeeType,
+        .def( "getDebuggeeType", &DebugClient::getDebuggeeType,
             "Return type of the debuggee" )
-        .def( "getExecutionStatus", &pykd::DebugClient::getExecutionStatus,
+        .def( "getExecutionStatus", &DebugClient::getExecutionStatus,
             "Return information about the execution status of the debugger" )
-        .def( "go", &pykd::DebugClient::changeDebuggerStatus<DEBUG_STATUS_GO>,
+        .def( "go", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_GO>,
             "Change debugger status to DEBUG_STATUS_GO"  )
+        .def( "is64bitSystem", &DebugClient::is64bitSystem,
+            "Check if target system has 64 address space" )
         .def( "isDumpAnalyzing", &pykd::DebugClient::isDumpAnalyzing,
             "Check if it is a dump analyzing ( not living debuggee )" )
         .def( "isKernelDebugging", &pykd::DebugClient::isKernelDebugging,
@@ -252,6 +254,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return information about the execution status of the debugger" );
     python::def( "go", &changeDebuggerStatus<DEBUG_STATUS_GO>,
         "Change debugger status to DEBUG_STATUS_GO"  );
+    python::def( "is64bitSystem", &is64bitSystem,
+        "Check if target system has 64 address space" );
     python::def( "isDumpAnalyzing", &isDumpAnalyzing,
         "Check if it is a dump analyzing ( not living debuggee )" );
     python::def( "isKernelDebugging", &isKernelDebugging,
