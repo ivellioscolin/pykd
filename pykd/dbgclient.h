@@ -128,6 +128,10 @@ public:
 
     std::wstring loadWChars( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 
+    std::string loadCStr( ULONG64 offset );
+
+    std::wstring loadWStr( ULONG64 offset );
+
     ULONG ptrSize();
 
     ULONG64 ptrByte( ULONG64 offset );

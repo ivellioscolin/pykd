@@ -9,8 +9,8 @@ from pykd import *
 
 def export( moduleName, mask = "*" ):
 
-    module = loadModule( moduleName )
-    dprintln( "Module: " + moduleName + " base: %x" % module.begin() + " end: %x" % module.end() )
+    modObj = loadModule( moduleName )
+    dprintln( "Module: " + moduleName + " base: %x" % modObj.begin() + " end: %x" % modObj.end() )
 
     if isKernelDebugging():
         systemModule = loadModule( "nt" )
@@ -19,12 +19,12 @@ def export( moduleName, mask = "*" ):
    
 
     if is64bitSystem():
-        ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS64", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+        ntHeader = systemModule.typedVar( "_IMAGE_NT_HEADERS64", modObj.begin() + ptrDWord( modObj.begin() + 0x3c ) )
         if ntHeader.OptionalHeader.Magic == 0x10b:
             systemModule = loadModule( "ntdll32" ) 
-            ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+            ntHeader = systemModule.typedVar( "_IMAGE_NT_HEADERS", modObj.begin() + ptrDWord( modObj.begin() + 0x3c ) )
     else:
-        ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+        ntHeader = systemModule.typedVar("_IMAGE_NT_HEADERS", modObj.begin() + ptrDWord( modObj.begin() + 0x3c ) )
 
 
     dprintln( "Export RVA: %x  Size: %x" % ( ntHeader.OptionalHeader.DataDirectory[0].VirtualAddress, ntHeader.OptionalHeader.DataDirectory[0].Size  ) )
@@ -33,14 +33,14 @@ def export( moduleName, mask = "*" ):
     if ntHeader.OptionalHeader.DataDirectory[0].Size == 0:
         return
     
-    exportDirAddr = module.begin() + ntHeader.OptionalHeader.DataDirectory[0].VirtualAddress;
+    exportDirAddr = modObj.begin() + ntHeader.OptionalHeader.DataDirectory[0].VirtualAddress;
 
     namesCount = ptrDWord( exportDirAddr + 0x18 )
    
-    namesRva = module.begin() + ptrDWord( exportDirAddr + 0x20 ) 
+    namesRva = modObj.begin() + ptrDWord( exportDirAddr + 0x20 ) 
 
     for i in range( 0, namesCount ):
-        exportName = loadCStr( module.begin() + ptrDWord( namesRva + 4 * i ) )
+        exportName = loadCStr( modObj.begin() + ptrDWord( namesRva + 4 * i ) )
         if fnmatch.fnmatch( exportName, mask ): 
             dprintln( exportName )    
 

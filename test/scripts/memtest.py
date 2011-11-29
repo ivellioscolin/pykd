@@ -77,3 +77,7 @@ class MemoryTest( unittest.TestCase ):
     def testCompare( self ):
         self.assertTrue( pykd.compareMemory( target.module.helloStr, pykd.ptrPtr(target.module.strArray), 5 ) )
         self.assertFalse( pykd.compareMemory( target.module.helloStr, target.module.helloWStr, 5 ) )
+        
+    def testCStr( self ):        
+        self.assertEqual( 'Hello', pykd.loadCStr( target.module.helloStr ) )
+        self.assertEqual( u'Hello', pykd.loadWStr( target.module.helloWStr ) )

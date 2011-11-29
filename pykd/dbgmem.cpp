@@ -158,6 +158,64 @@ std::wstring loadWChars( ULONG64 address, ULONG  number, bool phyAddr )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+std::string DebugClient::loadCStr( ULONG64 address )
+{
+    const   size_t              maxLength = 0x1000;
+ 
+    address = addr64( address );
+
+    std::vector<char>   buffer(maxLength);
+        
+    HRESULT     hres = 
+        m_dataSpaces->ReadMultiByteStringVirtual(
+            address,
+            maxLength,
+            &buffer[0],
+            maxLength,
+            NULL );
+    
+    if ( FAILED( hres ) )
+        throw MemoryException( address );
+                           
+    return std::string( &buffer[0] );
+}
+
+std::string loadCStr( ULONG64 offset )
+{
+    return g_dbgClient->loadCStr( offset );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+std::wstring DebugClient::loadWStr( ULONG64 address )
+{
+    const   size_t              maxLength = 0x2000;
+ 
+    address = addr64( address );
+
+    std::vector<char>   buffer(maxLength);
+        
+    HRESULT     hres = 
+        m_dataSpaces->ReadMultiByteStringVirtual(
+            address,
+            maxLength,
+            &buffer[0],
+            maxLength,
+            NULL );
+    
+    if ( FAILED( hres ) )
+        throw MemoryException( address );
+                           
+    return std::wstring( (wchar_t*)&buffer[0] );
+}
+
+std::wstring loadWStr( ULONG64 offset )
+{
+    return g_dbgClient->loadWStr( offset );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 python::list DebugClient::loadBytes( ULONG64 offset, ULONG count, bool phyAddr )
 {
     return loadArray<unsigned char>( offset, count, phyAddr );

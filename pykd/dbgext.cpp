@@ -183,6 +183,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Load string from target memory" ) )
         .def( "loadWChars", &DebugClient::loadWChars, DebugClient_loadWChars( python::args( "offset", "count", "phyAddr" ),
             "Load string from target memory" ) )
+        .def( "loadCStr", &DebugClient::loadCStr,
+            "Load string from the target buffer containing 0-terminated ansi-string" )
+        .def( "loadWStr", &DebugClient::loadWStr,
+            "Load string from the target buffer containing 0-terminated unicode-string" )
         .def( "ptrByte", &DebugClient::ptrByte,
             "Read an unsigned 1-byte integer from the target memory" )
         .def( "ptrWord", &DebugClient::ptrWord,
@@ -288,6 +292,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Load string from target memory" ) );
     python::def( "loadWChars", &loadWChars, loadWChars_( python::args( "address", "count", "phyAddr" ),
         "Load string from target memory" ) );
+    python::def( "loadCStr", &loadCStr,
+        "Load string from the target buffer containing 0-terminated ansi-string" );
+    python::def( "loadWStr", &loadWStr,
+        "Load string from the target buffer containing 0-terminated unicode-string" );
     python::def( "ptrByte", &ptrByte,
         "Read an unsigned 1-byte integer from the target memory" );
     python::def( "ptrWord", &ptrWord,
