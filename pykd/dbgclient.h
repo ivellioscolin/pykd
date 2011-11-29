@@ -79,6 +79,8 @@ public:
 
     ULONG64 evaluate( const std::wstring  &expression );
 
+    std::string findSymbol( ULONG64 offset );
+
     python::tuple getDebuggeeType();
 
     ULONG getExecutionStatus();
@@ -210,6 +212,8 @@ void startProcess( const std::wstring  &processName );
 void attachProcess( ULONG  processId );
 
 void attachKernel( const std::wstring  &param );
+
+std::string findSymbol( ULONG64 offset );
 
 python::tuple getDebuggeeType();
 

@@ -232,6 +232,31 @@ void attachKernel( const std::wstring  &param ) {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+std::string DebugClient::findSymbol( ULONG64 offset ) 
+{
+    HRESULT     hres;
+
+    offset = addr64( offset );
+
+    char        symbolName[0x100];
+    ULONG64     displace = 0;
+    hres = m_symbols->GetNameByOffset( offset, symbolName, sizeof(symbolName), NULL, &displace );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol::GetNameByOffset  failed" );
+
+    std::stringstream      ss;
+    displace == 0 ?  ss << symbolName : ss << symbolName << '+' << std::hex << displace;
+
+    return ss.str();
+}
+
+std::string findSymbol( ULONG64 offset ) 
+{
+    return g_dbgClient->findSymbol( offset );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 void DebugClient::setExecutionStatus( ULONG status )
 {
     HRESULT     hres;

@@ -149,6 +149,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Attach debugger to a target's kernel" )
         .def( "expr", &DebugClient::evaluate,
             "Evaluate windbg expression" )
+        .def( "findSymbol", &DebugClient::findSymbol,
+            "Find symbol by the target virtual memory offset" )
         .def( "getDebuggeeType", &DebugClient::getDebuggeeType,
             "Return type of the debuggee" )
         .def( "getExecutionStatus", &DebugClient::getExecutionStatus,
@@ -236,18 +238,20 @@ BOOST_PYTHON_MODULE( pykd )
         "Break into debugger" );
     python::def( "compareMemory", &compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
         "Compare two memory buffers by virtual or physical addresses" ) );
-    python::def( "createDbgClient", (DebugClientPtr(*)())&pykd::DebugClient::createDbgClient, 
+    python::def( "createDbgClient", (DebugClientPtr(*)())&DebugClient::createDbgClient, 
         "create a new instance of the dbgClient class" );
-    python::def( "loadDump", &pykd::loadDump,
+    python::def( "loadDump", &loadDump,
         "Load crash dump (only for console)");
-    python::def( "startProcess", &pykd::startProcess,
+    python::def( "startProcess", &startProcess,
         "Start process for debugging (only for console)"); 
-    python::def( "attachProcess", &pykd::attachProcess,
+    python::def( "attachProcess", &attachProcess,
         "Attach debugger to a exsisting process" );
-    python::def( "attachKernel", &pykd::attachKernel,
+    python::def( "attachKernel", &attachKernel,
         "Attach debugger to a kernel target" );
-    python::def( "expr", &pykd::evaluate,
+    python::def( "expr", &evaluate,
         "Evaluate windbg expression" );
+    python::def( "findSymbol", &findSymbol,
+        "Find symbol by the target virtual memory offset" );
     python::def( "getDebuggeeType", &getDebuggeeType,
         "Return type of the debuggee" );
     python::def( "debuggerPath", &getDebuggerImage,

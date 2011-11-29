@@ -19,15 +19,15 @@ def iat( moduleName, mask = "*" ):
     
 
     if is64bitSystem():
-        ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS64", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+        ntHeader = systemModule.typedVar( "_IMAGE_NT_HEADERS64", module.begin() + ptrDWord( module.begin() + 0x3c ) )
         if ntHeader.OptionalHeader.Magic == 0x10b:
             systemModule = loadModule( "ntdll32" ) 
-            ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+            ntHeader = systemModule.typedVar( "_IMAGE_NT_HEADERS", module.begin() + ptrDWord( module.begin() + 0x3c ) )
             pSize = 4
         else:
             pSize = 8     
     else:
-        ntHeader = typedVar( systemModule.name(), "_IMAGE_NT_HEADERS", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+        ntHeader = systemModule.typedVar(  "_IMAGE_NT_HEADERS", module.begin() + ptrDWord( module.begin() + 0x3c ) )
         pSize = 4
 
 
