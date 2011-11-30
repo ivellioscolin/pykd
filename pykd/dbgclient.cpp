@@ -12,6 +12,15 @@ DebugClientPtr  g_dbgClient( DebugClient::createDbgClient() );
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+DebugClient::DebugClient( IDebugClient4 *client )
+    : DbgObject( client )
+    , m_symSymbols( new SyntheticSymbols(*m_symbols, *this) )
+    , m_internalDbgEventHandler(client, m_symSymbols)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 DebugClientPtr DebugClient::createDbgClient() {
 
     HRESULT                  hres;

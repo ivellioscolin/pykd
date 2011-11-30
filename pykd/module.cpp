@@ -20,7 +20,9 @@ Module loadModuleByOffset( ULONG64  offset ) {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-Module::Module( IDebugClient4 *client, const std::string& moduleName ) : DbgObject( client )
+Module::Module( IDebugClient4 *client, SynSymbolsPtr synSymbols, const std::string& moduleName ) 
+    : DbgObject( client )
+    , m_synSymbols(synSymbols)
 {
     HRESULT    hres;
 
@@ -36,6 +38,8 @@ Module::Module( IDebugClient4 *client, const std::string& moduleName ) : DbgObje
          throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );    
 
     m_size = moduleParam.Size;
+    m_timeDataStamp = moduleParam.TimeDateStamp;
+    m_checkSumm = moduleParam.Checksum;
 
     char imageName[0x100];
 
@@ -55,7 +59,9 @@ Module::Module( IDebugClient4 *client, const std::string& moduleName ) : DbgObje
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-Module::Module( IDebugClient4 *client, ULONG64 offset ) : DbgObject( client )
+Module::Module( IDebugClient4 *client, SynSymbolsPtr synSymbols, ULONG64 offset ) 
+    : DbgObject( client )
+    , m_synSymbols(synSymbols)
 {
     HRESULT     hres;
 
@@ -102,6 +108,8 @@ Module::Module( IDebugClient4 *client, ULONG64 offset ) : DbgObject( client )
          throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );    
 
     m_size = moduleParam.Size;
+    m_timeDataStamp = moduleParam.TimeDateStamp;
+    m_checkSumm = moduleParam.Checksum;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -194,6 +202,19 @@ Module::getTypedVarByAddr( ULONG64 addr )
         throw DbgException( "not exactly match by RVA" );
 
     return TypedVar::getTypedVar( m_client, TypeInfo::getTypeInfo( diaSym->getType() ), addr ); 
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ULONG Module::getRvaByName(const std::string &symName)
+{
+    try {
+        pyDia::SymbolPtr sym = getDia()->getChildByName( symName );
+        return sym->getRva();
+    } 
+    catch (const pyDia::Exception &) {
+    }
+    return (ULONG)m_synSymbols->getRvaByName(m_timeDataStamp, m_checkSumm, symName);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

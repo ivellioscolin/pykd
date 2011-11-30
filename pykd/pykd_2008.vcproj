@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="pykd"
 	ProjectGUID="{FE961905-666F-4908-A212-961465F46F13}"
 	RootNamespace="pykd"
@@ -402,6 +402,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\inteventhandler.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\module.cpp"
 				>
 			</File>
@@ -444,6 +448,14 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\synsymbol.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\synsymhelpers.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\typedvar.cpp"
@@ -512,6 +524,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\inteventhandler.h"
+				>
+			</File>
+			<File
 				RelativePath=".\module.h"
 				>
 			</File>
@@ -525,6 +541,14 @@
 			</File>
 			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\synsymbol.h"
+				>
+			</File>
+			<File
+				RelativePath=".\synsymhelpers.h"
 				>
 			</File>
 			<File

@@ -6,6 +6,7 @@
 #include "diawrapper.h"
 #include "typeinfo.h"
 #include "typedvar.h"
+#include "synsymbol.h"
 
 namespace pykd {
 
@@ -15,9 +16,9 @@ class Module : private DbgObject {
 
 public:
     
-    Module( IDebugClient4 *client, const std::string& moduleName );
+    Module( IDebugClient4 *client, SynSymbolsPtr synSymbols, const std::string& moduleName );
 
-    Module( IDebugClient4 *client, ULONG64 offset );
+    Module( IDebugClient4 *client, SynSymbolsPtr synSymbols, ULONG64 offset );
 
     std::string  getName() {
         return m_name;
@@ -47,16 +48,12 @@ public:
    
     ULONG64
     getSymbol( const std::string &symbolname ) {
-        pyDia::SymbolPtr   sym = getDia()->getChildByName( symbolname );
-
-        return m_base + sym->getRva();
+        return m_base + getRvaByName(symbolname);
     }
 
     ULONG
     getSymbolRva( const std::string &symbolname ) {
-        pyDia::SymbolPtr   sym = getDia()->getChildByName( symbolname );
-
-        return sym->getRva();
+        return getRvaByName(symbolname);
     }
 
     TypeInfoPtr getTypeByName( const std::string &typeName ) {
@@ -73,6 +70,8 @@ public:
 
 private:
 
+    ULONG getRvaByName(const std::string &symName);
+
     pyDia::GlobalScopePtr& getDia() {
         if (!m_dia)
             m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
@@ -84,7 +83,12 @@ private:
     std::string             m_imageName;
     ULONG64                 m_base;
     ULONG                   m_size;
+
     pyDia::GlobalScopePtr   m_dia;
+
+    ULONG                   m_timeDataStamp;
+    ULONG                   m_checkSumm;
+    SynSymbolsPtr           m_synSymbols;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

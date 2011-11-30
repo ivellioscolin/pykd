@@ -234,7 +234,15 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "trace", &pykd::DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
             "Change debugger status to DEBUG_STATUS_STEP_INTO" )
         .def( "waitForEvent", &pykd::DebugClient::waitForEvent,
-            "Wait for events that breaks into the debugger" );
+            "Wait for events that breaks into the debugger" )
+        .def( "addSynSymbol", &pykd::DebugClient::addSyntheticSymbol,
+            "Add new synthetic symbol for virtual address" )
+        .def( "delAllSynSymbols", &pykd::DebugClient::delAllSyntheticSymbols, 
+            "Delete all synthetic symbol for all modules")
+        .def( "delSynSymbol", &pykd::DebugClient::delSyntheticSymbol, 
+            "Delete synthetic symbols by virtual address" )
+        .def( "delSynSymbolsMask", &pykd::DebugClient::delSyntheticSymbolsMask, 
+            "Delete synthetic symbols by mask of module and symbol name");
 
     python::def( "addr64", &addr64,
         "Extend address to 64 bits formats" );
@@ -318,6 +326,16 @@ BOOST_PYTHON_MODULE( pykd )
         "Read an signed mashine's word wide integer from the target memory" );
     python::def( "ptrPtr", &ptrPtr,
         "Read an pointer value from the target memory" );
+
+    boost::python::def( "addSynSymbol", &addSyntheticSymbol,
+        "Add new synthetic symbol for virtual address" );
+    boost::python::def( "delAllSynSymbols", &delAllSyntheticSymbols, 
+        "Delete all synthetic symbol for all modules");
+    boost::python::def( "delSynSymbol", &delSyntheticSymbol, 
+        "Delete synthetic symbols by virtual address" );
+    boost::python::def( "delSynSymbolsMask", &delSyntheticSymbolsMask, 
+        "Delete synthetic symbols by mask of module and symbol name");
+
     python::def( "loadExt", &pykd::loadExtension,
         "Load a debuger extension" );
     python::def( "loadModule", &loadModuleByName,
@@ -610,6 +628,8 @@ BOOST_PYTHON_MODULE( pykd )
     // wrapper for standart python exceptions
     python::register_exception_translator<pykd::PyException>( &PyException::exceptionTranslate );
 
+#define _DECL_BASE_EXCEPT_STR   .def( "__str__", &pykd::DbgException::print )
+
     // base exception
     python::class_<pykd::DbgException>  dbgExceptionClass( "BaseException",
         "Pykd base exception class",
@@ -618,17 +638,17 @@ BOOST_PYTHON_MODULE( pykd )
         .def( python::init<std::string>( python::args("desc"), "constructor" ) )
         .def( "desc", &pykd::DbgException::getDesc,
             "Get exception description" )
-        .def( "__str__", &pykd::DbgException::print);
+        _DECL_BASE_EXCEPT_STR;
     pykd::DbgException::setTypeObject( dbgExceptionClass.ptr() );
     python::register_exception_translator<pykd::DbgException>( 
         &pykd::DbgException::exceptionTranslate );
 
     // DIA exceptions
     python::class_<pyDia::Exception, python::bases<DbgException> > diaException( 
-        "DiaException", "Debug interface access exception",
-        python::no_init );
+        "DiaException", "Debug interface access exception", python::no_init);
     diaException
-        .def( "hres", &pyDia::Exception::getRes );
+        .def( "hres", &pyDia::Exception::getRes )
+        _DECL_BASE_EXCEPT_STR;
     pyDia::Exception::setTypeObject( diaException.ptr() );
     python::register_exception_translator<pyDia::Exception>( 
         &pyDia::Exception::exceptionTranslate );

@@ -22,6 +22,7 @@ import eventtest
 import typedvar
 import memtest
 import intbase
+import synsymtest
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
@@ -36,6 +37,7 @@ def getTestSuite( singleName = "" ):
                unittest.TestLoader().loadTestsFromTestCase( eventtest.EventTest ),
                unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
                unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
+               unittest.TestLoader().loadTestsFromTestCase( synsymtest.SynSymTest )
            ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )
@@ -58,5 +60,5 @@ if __name__ == "__main__":
     #suite = getTestSuite( "typedvar.TypedVarTest.testStruct" )    
    
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
-    
-    #a = raw_input("\npress return\n")
+
+    a = raw_input("\npress return\n")

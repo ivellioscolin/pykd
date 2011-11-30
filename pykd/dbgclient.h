@@ -14,6 +14,8 @@
 #include "pyaux.h"
 #include "disasm.h"
 #include "cpureg.h"
+#include "inteventhandler.h"
+#include "synsymbol.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -97,11 +99,11 @@ public:
     void loadDump( const std::wstring &fileName );
 
     Module loadModuleByName( const std::string  &moduleName ) {
-        return Module( m_client, moduleName );
+        return Module( m_client, m_symSymbols, moduleName );
     }
 
     Module loadModuleByOffset( ULONG64  offset ) {
-        return Module( m_client, offset ); 
+        return Module( m_client, m_symSymbols, offset ); 
     }
 
     DbgExtensionPtr loadExtension( const std::wstring &extPath ) {
@@ -191,6 +193,35 @@ public:
         return m_pyThreadState;
     }
 
+    void addSyntheticSymbol(
+        ULONG64 addr,
+        ULONG size,
+        const std::string &symName
+    )
+    {
+        return m_symSymbols->add(addr, size, symName);
+    }
+
+    void delAllSyntheticSymbols()
+    {
+        return m_symSymbols->clear();
+    }
+
+    ULONG delSyntheticSymbol(
+        ULONG64 addr
+    )
+    {
+        return m_symSymbols->remove(addr);
+    }
+
+    ULONG delSyntheticSymbolsMask(
+        const std::string &moduleName,
+        const std::string &symName
+    )
+    {
+        return m_symSymbols->removeByMask(moduleName, symName);
+    }
+
 private:
 
     template<typename T>
@@ -200,7 +231,10 @@ private:
     //python::list
     //loadArray( ULONG64 offset, ULONG count, bool phyAddr );
 
-    DebugClient( IDebugClient4 *client ) : DbgObject( client ) {}
+    SynSymbolsPtr m_symSymbols; // DebugClient is creator
+    InternalDbgEventHandler m_internalDbgEventHandler;
+
+    DebugClient( IDebugClient4 *client );
 
     PyThreadStateSaver      m_pyThreadState;
 };
@@ -234,6 +268,38 @@ ULONG ptrSize();
 void setExecutionStatus( ULONG status );
 
 void waitForEvent();
+
+/////////////////////////////////////////////////////////////////////////////////
+// Synthetic symbols global finctions:
+
+inline void addSyntheticSymbol(
+    ULONG64 addr,
+    ULONG size,
+    const std::string &symName
+)
+{
+    return g_dbgClient->addSyntheticSymbol(addr, size, symName);
+}
+
+inline void delAllSyntheticSymbols()
+{
+    return g_dbgClient->delAllSyntheticSymbols();
+}
+
+inline ULONG delSyntheticSymbol(
+    ULONG64 addr
+)
+{
+    return g_dbgClient->delSyntheticSymbol(addr);
+}
+
+inline ULONG delSyntheticSymbolsMask(
+    const std::string &moduleName,
+    const std::string &symName
+)
+{
+    return g_dbgClient->delSyntheticSymbolsMask(moduleName, symName);
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 

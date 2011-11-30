@@ -2,6 +2,7 @@
 
 #include <dbgeng.h>
 #include "dbgexcept.h"
+#include "synsymbol.h"
 
 namespace pykd {
 
@@ -11,7 +12,8 @@ class DbgObject {
 
 protected:
 
-    DbgObject( IDebugClient4 *client ) {
+    DbgObject( IDebugClient4 *client )
+    {
 
         m_client = client;
 
@@ -38,7 +40,7 @@ protected:
 
         hres = client->QueryInterface( __uuidof(IDebugRegisters2), (void**)&m_registers );
         if ( FAILED( hres ) )
-            throw DbgException("QueryInterface IDebugDataSpaces  failed"); 
+            throw DbgException("QueryInterface IDebugDataSpaces  failed");
     }
     
     virtual ~DbgObject() {};
@@ -50,7 +52,6 @@ protected:
     CComPtr<IDebugAdvanced2>    m_advanced;
     CComPtr<IDebugDataSpaces4>  m_dataSpaces;
     CComPtr<IDebugRegisters2>   m_registers;
-
 };
 
 
