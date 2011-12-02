@@ -628,7 +628,7 @@ BOOST_PYTHON_MODULE( pykd )
     // wrapper for standart python exceptions
     python::register_exception_translator<pykd::PyException>( &PyException::exceptionTranslate );
 
-#define _DECL_BASE_EXCEPT_STR   .def( "__str__", &pykd::DbgException::print )
+#define _DECL_BASE_EXCEPT_STR   .def( "__repr__", &pykd::DbgException::print )
 
     // base exception
     python::class_<pykd::DbgException>  dbgExceptionClass( "BaseException",
