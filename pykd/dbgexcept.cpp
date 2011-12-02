@@ -28,6 +28,16 @@ void MemoryException::exceptionTranslate( const MemoryException &e )
 
 /////////////////////////////////////////////////////////////////////////////////
 
+std::string buildExceptDesc(PCSTR routineName, HRESULT hres)
+{
+    std::stringstream sstream;
+    sstream << "Call " << routineName << " failed\n";
+    sstream << "HRESULT 0x" << std::hex << hres;
+    return sstream.str();
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
 }; // end namespace pykd
 
 
