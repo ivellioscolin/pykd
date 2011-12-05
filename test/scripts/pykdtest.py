@@ -56,6 +56,7 @@ if __name__ == "__main__":
     target.module.reload();
     
     suite = getTestSuite()
+    #suite = getTestSuite( "typeinfo.TypeInfoTest.testCreateBySymbol" )
     #suite = getTestSuite( "intbase.IntBaseTest.testLongConvert" )
     #suite = getTestSuite( "typedvar.TypedVarTest.testStruct" )    
    

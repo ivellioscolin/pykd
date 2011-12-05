@@ -15,9 +15,20 @@ class TypeInfoTest( unittest.TestCase ):
 
     def testCreateByName( self ):
         """ creating typeInfo by the type name """
-        #self.assertEqual( "structTest", target.module.type( "structTest" ).name() )
-        #self.assertEqual( "structTest**", target.module.type( "structTest**" ).name() )
+        self.assertEqual( "structTest", target.module.type( "structTest" ).name() )
+        self.assertEqual( "structTest**", target.module.type( "structTest**" ).name() )
         self.assertEqual( "Int4B[2][3]", target.module.type("Int4B[2][3]").name() )
+        
+        
+    def testCreateBySymbol(self):
+        """ creating typeInfo by the symbol name """
+        self.assertEqual( "structTest[2]", target.module.type("g_testArray").name() )
+        self.assertEqual( "Int4B[2][3]", target.module.type("intMatrix").name() )
+        self.assertEqual( "structTest*", target.module.type("g_structTestPtr").name() )
+        self.assertEqual( "structTest**", target.module.type("g_structTestPtrPtr").name() )
+        self.assertEqual( "Char*[2]", target.module.type("strArray").name() )
+        self.assertEqual( "Char*(*)[2]", target.module.type("ptrStrArray").name() )
+        self.assertEqual( "Int4B(*[4])[2][3]", target.module.type("arrIntMatrixPtrs").name() )
 
     def testGetField( self ):
         """ get field of the complex type """
@@ -42,19 +53,6 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "Int4B", ti1.m_childField.name() )
         self.assertEqual( "structTest", ti1.m_childField3.name() )
         self.assertEqual( "structTest", target.module.type("g_structTest").name() )
-
-    def testPtrName( self ):
-        self.assertEqual( "structTest*", target.module.type("g_structTestPtr").name() )
-        self.assertEqual( "structTest**", target.module.type("g_structTestPtrPtr").name() )        
-        self.assertEqual( "structTest**", target.module.type("structTest**").name() )        
-
-    def testArrayName( self ):
-        self.assertEqual( "structTest[2]", target.module.type("g_testArray").name() )
-        self.assertEqual( "Int4B[2][3]", target.module.type("intMatrix").name() )
-        self.assertEqual( "Char*[2]", target.module.type("strArray").name() )
-        self.assertEqual( "Int4B[2][3]*",target.module.type("ptrIntMatrix").name() )
-        self.assertEqual( "Char*[2]*", target.module.type("ptrStrArray").name() )   
-        self.assertEqual( "Int4B[2][3]",  target.module.type("Int[2][3]").name() )
         
     def testOffset( self ):
         ti1 = target.module.type( "structTest" )

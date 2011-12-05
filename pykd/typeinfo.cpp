@@ -160,7 +160,8 @@ PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symScope, const std::string 
 
 std::string PointerTypeInfo::getName()
 {
-    return m_derefType->getName() + '*';
+    //return m_derefType->getName() + '*';
+    return getComplexName();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -190,11 +191,12 @@ ArrayTypeInfo::ArrayTypeInfo( pyDia::SymbolPtr &symScope, const std::string &sym
 
 std::string ArrayTypeInfo::getName()
 {
-    std::stringstream       sstr;
+    //std::stringstream       sstr;
 
-    sstr  << m_derefType->getName() << '[' << m_count << ']';
+    //sstr  << m_derefType->getName() << '[' << m_count << ']';
 
-    return sstr.str();
+    //return sstr.str();
+    return getComplexName();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -202,6 +204,58 @@ std::string ArrayTypeInfo::getName()
 ULONG ArrayTypeInfo::getSize()
 {
     return m_derefType->getSize() * m_count;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+std::string TypeInfo::getComplexName()
+{
+    std::string       name;
+    TypeInfo          *typeInfo = this;
+
+    do {
+
+        if ( typeInfo->isArray() )
+        {
+            std::vector<ULONG>  indices;
+
+            do {
+                indices.push_back( typeInfo->getCount() );
+            }
+            while( ( typeInfo = dynamic_cast<ArrayTypeInfo*>(typeInfo)->getDerefType().get() )->isArray() );
+
+            if ( !name.empty() )
+            {
+                name.insert( 0, 1, '(' );    
+                name.insert( name.size(), 1, ')' );
+            }
+
+            std::stringstream       sstr;
+
+            for ( std::vector<ULONG>::iterator  it = indices.begin(); it != indices.end(); ++it )
+                sstr << '[' << *it << ']';
+
+            name += sstr.str();
+
+            continue;
+        }
+        else
+        if ( typeInfo->isPointer() )
+        {
+            name.insert( 0, 1, '*' );
+
+            typeInfo = dynamic_cast<PointerTypeInfo*>(typeInfo)->getDerefType().get();
+
+            continue;
+        }
+
+        break;
+
+    } while ( true );
+
+    name.insert( 0, typeInfo->getName() );
+
+    return name;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
