@@ -155,10 +155,30 @@ void FuncWithName1(int a)
 
 #pragma pack( pop )
 
+////////////////////////////////////////////////////////////////////////////////
+
+int doLoadUnload()
+{
+    HMODULE hmod = ::LoadLibrary( _T("iphlpapi.dll") );
+    if (hmod)
+        ::FreeLibrary(hmod);
+
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 int _tmain(int argc, _TCHAR* argv[])
 {
     try
     {
+        if (2 == argc)
+        {
+            // run with parameters
+            if ( !_tcsicmp(argv[1], _T("-testLoadUnload")) )
+                return doLoadUnload();
+        }
+
         // Let test scripts to execute
         __debugbreak();
         __debugbreak();
