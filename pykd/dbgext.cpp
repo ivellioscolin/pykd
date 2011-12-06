@@ -448,10 +448,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Detailed information: http://msdn.microsoft.com/en-us/library/aa363082(VS.85).aspx \n"
             "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" )
         .def( "onLoadModule", &pykd::EventHandlerWrap::onLoadModule,
-            "Load module event. Parameter is instance of dbgModuleClass.\n"
+            "Load module event. Parameter is instance of module.\n"
             "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" )
         .def( "onUnloadModule", &pykd::EventHandlerWrap::onUnloadModule,
-            "Unload module event. Parameter is instance of dbgModuleClass.\n"
+            "Unload module event. Parameter is base address of unloaded module.\n"
             "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" );
 
     python::class_<Disasm>("disasm", "Class disassemble a processor instructions" )
@@ -661,6 +661,15 @@ BOOST_PYTHON_MODULE( pykd )
     pykd::MemoryException::setTypeObject( memException.ptr() );
     python::register_exception_translator<pykd::MemoryException>(
         &pykd::MemoryException::exceptionTranslate );
+
+    // Wait debug event exception
+    python::class_<WaitEventException, python::bases<DbgException> > waitEventException( 
+        "WaitEventException", "Debug interface access exception", python::no_init);
+    waitEventException
+        _DECL_BASE_EXCEPT_STR;
+    WaitEventException::setTypeObject( waitEventException.ptr() );
+    python::register_exception_translator<WaitEventException>( 
+        &WaitEventException::exceptionTranslate );
 
     DEF_PY_CONST_ULONG( DEBUG_CLASS_UNINITIALIZED );
     DEF_PY_CONST_ULONG( DEBUG_CLASS_KERNEL );

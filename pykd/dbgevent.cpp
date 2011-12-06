@@ -177,25 +177,8 @@ HRESULT EventHandler::LoadModule(
     __in ULONG TimeDateStamp
 )
 {
-    //PyThread_StateSave pyThreadSave( m_parentClient->getThreadState() );
-
-    //return onLoadModule( module );
-
-    //std::auto_ptr<OutputReader> silentMode( new OutputReader(dbgExt->client) );
-
-    //ULONG64         moduleBase;
-    //ULONG           moduleSize;
-    //std::string     moduleName;       
-    //
-    //queryModuleParams(BaseOffset, moduleName, moduleBase, moduleSize);
-    //dbgModuleClass module(moduleName, moduleBase, moduleSize);
-    //silentMode.reset(); 
-
-    //PyThread_StateSave pyThreadSave;
-    //return onLoadModule( module );
-
-    return S_OK;
-
+    PyThread_StateSave pyThreadSave( m_parentClient->getThreadState() );
+    return onLoadModule( m_parentClient->loadModuleByOffset(BaseOffset) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -205,19 +188,9 @@ HRESULT EventHandler::UnloadModule(
     __in ULONG64 BaseOffset
 )
 {
-    //std::auto_ptr<OutputReader> silentMode( new OutputReader(dbgExt->client) );
-
-    //ULONG64         moduleBase;
-    //ULONG           moduleSize;
-    //std::string     moduleName;       
-    //
-    //queryModuleParams(BaseOffset, moduleName, moduleBase, moduleSize);
-    //dbgModuleClass module(moduleName, moduleBase, moduleSize);
-    //silentMode.reset(); 
-
-    //PyThread_StateSave pyThreadSave;
-    //return onUnloadModule( module );
-    return S_OK;
+    PyThread_StateSave pyThreadSave( m_parentClient->getThreadState() );
+    BaseOffset = m_parentClient->addr64(BaseOffset);
+    return onUnloadModule( BaseOffset );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

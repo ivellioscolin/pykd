@@ -23,6 +23,7 @@ import typedvar
 import memtest
 import intbase
 import synsymtest
+import ehloadtest
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
@@ -37,7 +38,8 @@ def getTestSuite( singleName = "" ):
                unittest.TestLoader().loadTestsFromTestCase( eventtest.EventTest ),
                unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
                unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
-               unittest.TestLoader().loadTestsFromTestCase( synsymtest.SynSymTest )
+               unittest.TestLoader().loadTestsFromTestCase( synsymtest.SynSymTest ),
+               unittest.TestLoader().loadTestsFromTestCase( ehloadtest.EhLoadTest )
            ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )
@@ -45,12 +47,12 @@ def getTestSuite( singleName = "" ):
 
 if __name__ == "__main__":
 
-    targetAppPath = sys.argv[1]
+    target.appPath = sys.argv[1]
    
-    target.moduleName = os.path.splitext(os.path.basename(targetAppPath))[0]
-    print "\nTest module: %s" % targetAppPath
+    target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
+    print "\nTest module: %s" % target.appPath
   
-    pykd.startProcess( targetAppPath )
+    pykd.startProcess( target.appPath )
 
     target.module = pykd.loadModule( target.moduleName )
     target.module.reload();

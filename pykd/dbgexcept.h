@@ -118,6 +118,25 @@ std::string buildExceptDesc(PCSTR routineName, HRESULT hres);
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+class WaitEventException : public DbgException
+{
+public:
+    WaitEventException()
+        : DbgException( "None of the targets could generate events" )
+    {
+    }
+
+    static void exceptionTranslate(const WaitEventException &e);
+
+    static void setTypeObject(PyObject *p) {
+        waitEventExceptTypeObject = p;
+    }
+private:
+    static PyObject *waitEventExceptTypeObject;
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }; // namespace pykd
 
 ///////////////////////////////////////////////////////////////////////////////////

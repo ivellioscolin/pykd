@@ -222,6 +222,10 @@ public:
         return m_symSymbols->removeByMask(moduleName, symName);
     }
 
+    SynSymbolsPtr getSynSymbols() {
+        return m_symSymbols;
+    }
+
 private:
 
     template<typename T>

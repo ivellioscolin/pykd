@@ -159,6 +159,7 @@ void FuncWithName1(int a)
 
 int doLoadUnload()
 {
+    __debugbreak();
     HMODULE hmod = ::LoadLibrary( _T("iphlpapi.dll") );
     if (hmod)
         ::FreeLibrary(hmod);
@@ -172,6 +173,9 @@ int _tmain(int argc, _TCHAR* argv[])
 {
     try
     {
+        // Let test scripts to execute
+        __debugbreak();
+
         if (2 == argc)
         {
             // run with parameters
@@ -179,8 +183,6 @@ int _tmain(int argc, _TCHAR* argv[])
                 return doLoadUnload();
         }
 
-        // Let test scripts to execute
-        __debugbreak();
         __debugbreak();
         __debugbreak();
         __debugbreak();

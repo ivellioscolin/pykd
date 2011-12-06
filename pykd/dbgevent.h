@@ -75,7 +75,7 @@ protected:
 
     virtual ULONG onLoadModule(const Module &/* module */)  = 0;
 
-    virtual ULONG onUnloadModule(const Module &/* module */)  = 0;
+    virtual ULONG onUnloadModule(ULONG64 /*modBase*/)  = 0;
     
     virtual ULONG onChangeSessionStatus( ULONG status ) = 0;
     
@@ -113,8 +113,8 @@ public:
         return handler<const Module&>("onLoadModule", module );
     }
 
-    ULONG onUnloadModule(const Module &module) {
-        return handler<const Module&>("onUnloadModule", module );
+    ULONG onUnloadModule(ULONG64 modBase) {
+        return handler<ULONG64>("onUnloadModule", modBase );
     }
 
     ULONG onChangeSessionStatus( ULONG status ) {

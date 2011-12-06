@@ -295,7 +295,12 @@ void DebugClient::waitForEvent()
     } while( false );
 
     if ( FAILED( hres ) )
+    {
+        if (E_UNEXPECTED == hres)
+            throw WaitEventException();
+
         throw  DbgException( "IDebugControl::WaitForEvent  failed" );
+    }
 }
 
 void waitForEvent()
@@ -316,6 +321,8 @@ ULONG DebugClient::ptrSize()
     
     return S_OK == hres ? 8 : 4;
 }
+
+///////////////////////////////////////////////////////////////////////////////////
 
 ULONG ptrSize()
 { 

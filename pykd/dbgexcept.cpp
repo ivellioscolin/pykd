@@ -7,6 +7,7 @@ namespace pykd {
 
 PyObject *DbgException::baseExceptTypeObject = NULL;
 PyObject *MemoryException::memoryExceptionTypeObject = NULL;
+PyObject *WaitEventException::waitEventExceptTypeObject = NULL;
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -35,6 +36,16 @@ std::string buildExceptDesc(PCSTR routineName, HRESULT hres)
     sstream << "HRESULT 0x" << std::hex << hres;
     return sstream.str();
 }
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void WaitEventException::exceptionTranslate( const WaitEventException &e )
+{
+    python::object pyExcept(e);
+
+    PyErr_SetObject( waitEventExceptTypeObject, pyExcept.ptr() );
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 
