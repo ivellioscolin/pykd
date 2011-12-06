@@ -73,6 +73,12 @@ protected:
 
     std::string getComplexName();
 
+    static
+    TypeInfoPtr getComplexType( pyDia::SymbolPtr &symScope, const std::string &symName );
+
+    static
+    TypeInfoPtr getRecurciveComplexType( TypeInfoPtr &lowestType, std::string &suffix, ULONG ptrSize );
+
     ULONG   m_offset;
 };
 
@@ -180,6 +186,11 @@ class PointerTypeInfo : public TypeInfo {
 
 public:
 
+    PointerTypeInfo( const TypeInfoPtr  ptr, ULONG ptrSize ) :
+        m_size( ptrSize ),
+        m_derefType( ptr )
+        {}        
+
     PointerTypeInfo( pyDia::SymbolPtr &symbol  );
 
     PointerTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName );
@@ -200,7 +211,6 @@ public:
         return m_derefType;
     }
 
-
 private:
     
     TypeInfoPtr     m_derefType;
@@ -213,6 +223,11 @@ private:
 class ArrayTypeInfo : public TypeInfo {
 
 public:
+
+    ArrayTypeInfo( const TypeInfoPtr  ptr, ULONG count ) :
+        m_derefType( ptr ),
+        m_count( count )
+        {}
 
     ArrayTypeInfo( pyDia::SymbolPtr &symbol  );
 
@@ -241,8 +256,6 @@ public:
     TypeInfoPtr getDerefType() {
         return m_derefType;
     }
-
-
 
 private:
 

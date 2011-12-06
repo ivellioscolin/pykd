@@ -30,7 +30,7 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-static const boost::regex arrayMatch("^(.*)\\[(\\d+)\\]$"); 
+//static const boost::regex arrayMatch("^(.*)\\[(\\d+)\\]$"); 
 
 TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName )
 {
@@ -50,20 +50,22 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::strin
         return getTypeInfo( typeSym );
     }
     
-    if ( symName[ symName.size() - 1 ] == '*' )
-        return TypeInfoPtr( new PointerTypeInfo( symScope,symName.substr( 0, symName.size() - 1 )  ) );
+    return  getComplexType( symScope, symName );
 
-    boost::cmatch    matchResult;
+    //if ( symName[ symName.size() - 1 ] == '*' )
+    //    return TypeInfoPtr( new PointerTypeInfo( symScope,symName.substr( 0, symName.size() - 1 )  ) );
 
-    if ( boost::regex_match( symName.c_str(), matchResult, arrayMatch ) )
-    {
-        std::string     sym = std::string( matchResult[1].first, matchResult[1].second );
+    //boost::cmatch    matchResult;
 
-        return TypeInfoPtr( new ArrayTypeInfo( symScope, sym, std::atoi( matchResult[2].first ) ) );
-    }
+    //if ( boost::regex_match( symName.c_str(), matchResult, arrayMatch ) )
+    //{
+    //    std::string     sym = std::string( matchResult[1].first, matchResult[1].second );
+
+    //    return TypeInfoPtr( new ArrayTypeInfo( symScope, sym, std::atoi( matchResult[2].first ) ) );
+    //}
 
 
-    throw DbgException( "type name invalid" );
+    //throw DbgException( "type name invalid" );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -160,7 +162,6 @@ PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symScope, const std::string 
 
 std::string PointerTypeInfo::getName()
 {
-    //return m_derefType->getName() + '*';
     return getComplexName();
 }
 
@@ -191,11 +192,6 @@ ArrayTypeInfo::ArrayTypeInfo( pyDia::SymbolPtr &symScope, const std::string &sym
 
 std::string ArrayTypeInfo::getName()
 {
-    //std::stringstream       sstr;
-
-    //sstr  << m_derefType->getName() << '[' << m_count << ']';
-
-    //return sstr.str();
     return getComplexName();
 }
 
@@ -256,6 +252,74 @@ std::string TypeInfo::getComplexName()
     name.insert( 0, typeInfo->getName() );
 
     return name;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+static const boost::regex bracketMatch("^([^\\(]*)\\((.*)\\)([^\\)]*)$"); 
+
+static const boost::regex typeMatch("^([^\\(\\)\\*\\[\\]]*)([\\(\\)\\*\\[\\]\\d]*)$"); 
+
+static const boost::regex ptrMatch("^\\*(.*)$");
+
+static const boost::regex arrayMatch("^(.*)\\[(\\d+)\\]$");
+
+TypeInfoPtr TypeInfo::getComplexType( pyDia::SymbolPtr &symScope, const std::string &symName )
+{
+    ULONG  ptrSize = (symScope->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
+
+    boost::cmatch    matchResult;
+
+    if ( !boost::regex_match( symName.c_str(), matchResult, typeMatch  ) )
+         DbgException( "type name invalid" );
+
+    TypeInfoPtr     lowestTypeInfo = getTypeInfo( symScope, std::string( matchResult[1].first, matchResult[1].second ) );
+
+    return getRecurciveComplexType( lowestTypeInfo, std::string( matchResult[2].first, matchResult[2].second ), ptrSize );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+TypeInfoPtr TypeInfo::getRecurciveComplexType( TypeInfoPtr &lowestType, std::string &suffix, ULONG ptrSize )
+{
+    boost::cmatch    matchResult;
+
+    std::string     bracketExpr;
+
+    if ( boost::regex_match( suffix.c_str(), matchResult, bracketMatch  ) )
+    {
+        bracketExpr = std::string( matchResult[2].first, matchResult[2].second );
+        
+        suffix = "";
+
+        if ( matchResult[1].matched )
+            suffix += std::string( matchResult[1].first, matchResult[1].second );
+
+        if ( matchResult[3].matched )
+            suffix += std::string( matchResult[3].first, matchResult[3].second );        
+    }
+
+    while( !suffix.empty() )
+    {
+        if ( boost::regex_match( suffix.c_str(), matchResult, ptrMatch  ) )
+        {
+            lowestType = TypeInfoPtr( new PointerTypeInfo( lowestType, ptrSize ) );
+            suffix = std::string(matchResult[1].first, matchResult[1].second );
+            continue;
+        }
+
+        if ( boost::regex_match( suffix.c_str(), matchResult, arrayMatch  ) )
+        {
+            lowestType = TypeInfoPtr( new ArrayTypeInfo( lowestType, std::atoi( matchResult[2].first ) ) );
+            suffix = std::string(matchResult[1].first, matchResult[1].second );
+            continue;
+        }
+    }
+    
+    if ( !bracketExpr.empty() )
+        return getRecurciveComplexType( lowestType, bracketExpr, ptrSize );
+
+    return lowestType;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
