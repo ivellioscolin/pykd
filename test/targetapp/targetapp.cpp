@@ -79,6 +79,8 @@ int (* arrIntMatrixPtrs[4])[2][3] = {
     &intMatrix, &intMatrix2, &intMatrix3, &intMatrix4
 };
 
+int ((*ptrIntMatrix1))[2][3] = &intMatrix;
+
 char *(*ptrStrArray)[2] = &strArray;
 
 class classChild : public classBase {

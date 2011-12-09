@@ -68,6 +68,8 @@ public:
 
     TypedVarPtr getTypedVarByName( const std::string &symName );
 
+    TypedVarPtr contaningRecord( ULONG64 addr, const std::string &typeName, const std::string &fieldName );
+
 private:
 
     ULONG getRvaByName(const std::string &symName);

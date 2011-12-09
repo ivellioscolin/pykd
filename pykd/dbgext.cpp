@@ -388,46 +388,49 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__len__", &TypedVar::getElementCount )
         .def("__getitem__", &TypedVar::getElementByIndex );
 
-    python::class_<pykd::Module>("module", "Class representing executable module", python::no_init )
-        .def("begin", &pykd::Module::getBase,
+    python::class_<Module>("module", "Class representing executable module", python::no_init )
+        .def("begin", &Module::getBase,
              "Return start address of the module" )
-        .def("end", &pykd::Module::getEnd,
+        .def("end", &Module::getEnd,
              "Return end address of the module" )
-        .def("size", &pykd::Module::getSize,
+        .def("size", &Module::getSize,
               "Return size of the module" )
-        .def("name", &pykd::Module::getName,
+        .def("name", &Module::getName,
              "Return name of the module" )      
-        .def("image", &pykd::Module::getImageName,
+        .def("image", &Module::getImageName,
              "Return name of the image of the module" )
-        .def("pdb", &pykd::Module::getPdbName,
+        .def("pdb", &Module::getPdbName,
              "Return the full path to the module's pdb file ( symbol information )" )
-        .def("reload", &pykd::Module::reloadSymbols,
+        .def("reload", &Module::reloadSymbols,
             "(Re)load symbols for the module" )
-        .def("offset", &pykd::Module::getSymbol,
+        .def("offset", &Module::getSymbol,
             "Return offset of the symbol" )
-        .def("rva", &pykd::Module::getSymbolRva,
+        .def("rva", &Module::getSymbolRva,
             "Return rva of the symbol" )
-        .def("type", &pykd::Module::getTypeByName,
+        .def("type", &Module::getTypeByName,
             "Return typeInfo class by type name" )
-        .def("typedVar", &pykd::Module::getTypedVarByAddr,
+        .def("typedVar", &Module::getTypedVarByAddr,
             "Return a typedVar class instance" )
-        .def("typedVar",&pykd::Module::getTypedVarByName,
+        .def("typedVar",&Module::getTypedVarByName,
             "Return a typedVar class instance" )
-        .def("typedVar",&pykd::Module::getTypedVarByType,
+        .def("typedVar",&Module::getTypedVarByType,
             "Return a typedVar class instance" )
-        .def("typedVar",&pykd::Module::getTypedVarByTypeName,
+        .def("typedVar",&Module::getTypedVarByTypeName,
             "Return a typedVar class instance" )
-        .def("__getattr__", &pykd::Module::getSymbol,
+        .def("containingRecord", &Module::contaningRecord,
+            "Return instance of the typedVar class. It's value are loaded from the target memory."
+            "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
+        .def("__getattr__", &Module::getSymbol,
             "Return address of the symbol" );
 
     python::class_<DbgOut>( "dout", "dout", python::no_init )
-        .def( "write", &pykd::DbgOut::write );
+        .def( "write", &DbgOut::write );
 
     python::class_<DbgIn>( "din", "din", python::no_init )
-        .def( "readline", &pykd::DbgIn::readline );
+        .def( "readline", &DbgIn::readline );
 
-    python::class_<DbgExtension, pykd::DbgExtensionPtr>("ext", python::no_init )
-        .def( "call", &pykd::DbgExtension::call,
+    python::class_<DbgExtension, DbgExtensionPtr>("ext", python::no_init )
+        .def( "call", &DbgExtension::call,
             "Call debug extension command end return it's result as a string" );
 
     python::class_<EventHandlerWrap, boost::noncopyable>(

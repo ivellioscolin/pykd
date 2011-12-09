@@ -19,6 +19,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "structTest**", target.module.type( "structTest**" ).name() )
         self.assertEqual( "Int4B[2][3]", target.module.type("Int4B[2][3]").name() )
         self.assertEqual( "Int4B(*[4])[2][3]", target.module.type("Int4B(*[4])[2][3]").name() )
+        self.assertEqual( "Int4B(*)[2][3]", target.module.type("Int4B((*))[2][3]").name() )
         
     def testCreateBySymbol(self):
         """ creating typeInfo by the symbol name """
@@ -29,6 +30,8 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "Char*[2]", target.module.type("strArray").name() )
         self.assertEqual( "Char*(*)[2]", target.module.type("ptrStrArray").name() )
         self.assertEqual( "Int4B(*[4])[2][3]", target.module.type("arrIntMatrixPtrs").name() )
+        self.assertEqual( "Int4B(*)[2][3]", target.module.type("ptrIntMatrix1").name() )
+
 
     def testGetField( self ):
         """ get field of the complex type """

@@ -62,4 +62,9 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( -100000,  target.module.typedVar( "longArray" )[3])
         self.assertEqual( -10000000000, target.module.typedVar( "longlongArray" )[4])
         self.assertEqual( target.module.g_structTest, target.module.typedVar( "g_structTestPtr" ) )
-        
+
+    def testContainingRecord(self):
+        off1 = target.module.type( "structTest" ).m_field2.offset()
+        off2 = target.module.offset( "g_structTest" )
+        tv = target.module.containingRecord( off2 + off1, "structTest", "m_field2" )
+        self.assertEqual( True, tv.m_field2 )

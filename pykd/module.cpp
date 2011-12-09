@@ -219,5 +219,41 @@ ULONG Module::getRvaByName(const std::string &symName)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+TypedVarPtr Module::contaningRecord( ULONG64 address, const std::string &typeName, const std::string &fieldName )
+{
+    address = addr64(address); 
+
+    TypeInfoPtr     typeInfo = getTypeByName( typeName );
+
+    TypeInfoPtr     fieldTypeInfo = typeInfo->getField( fieldName );
+
+    return TypedVar::getTypedVar( m_client, typeInfo, address - fieldTypeInfo->getOffset() );
+
+
+    //HRESULT         hres;
+    //ULONG64         moduleBase;
+
+    //hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
+    //if ( FAILED( hres ) )
+    //     throw TypeException();   
+
+    //ULONG        typeId;
+    //hres = dbgExt->symbols->GetTypeId( moduleBase, typeName.c_str(), &typeId );
+    //if ( FAILED( hres ) )
+    //     throw TypeException();   
+
+    //ULONG       fieldTypeId;
+    //ULONG       fieldOffset;
+    //hres = dbgExt->symbols3->GetFieldTypeAndOffset( moduleBase, typeId, fieldName.c_str(), &fieldTypeId, &fieldOffset );   
+    //if ( FAILED( hres ) )
+    //     throw TypeException(); 
+    //
+    //TypedVar   var( moduleName, typeName, address - fieldOffset );
+    //
+    //return boost::python::object( var );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }; // end of namespace pykd
 

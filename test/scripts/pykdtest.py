@@ -59,9 +59,7 @@ if __name__ == "__main__":
     
     suite = getTestSuite()
     #suite = getTestSuite( "typeinfo.TypeInfoTest.testCreateBySymbol" )
-    #suite = getTestSuite( "intbase.IntBaseTest.testLongConvert" )
-    #suite = getTestSuite( "typedvar.TypedVarTest.testStruct" )    
    
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
 
-    a = raw_input("\npress return\n")
+    #a = raw_input("\npress return\n")
