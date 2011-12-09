@@ -16,8 +16,7 @@ set PythonRegKey=HKLM\Software\Python\PythonCore\2.6\InstallPath
 set RegSwitch=64
 if "%TestAppPlatform%"=="Win32" set RegSwitch=32
 
-for /F "tokens=3*" %%A in ('reg.exe query %PythonRegKey% /ve /reg:%RegSwitch% 2^>NUL ^| FIND "REG_SZ"') do set PythonInstallPath=%%B
-::echo %PythonInstallPath%
+for /F "tokens=3*" %%A in ('reg.exe query %PythonRegKey% /ve /reg:%RegSwitch% 2^>NUL ^| FIND "REG_SZ"') do set PythonInstallPath=%%A
 
 %PythonInstallPath%python.exe "%~dp0pykdtest.py" %TestAppPath%
 
