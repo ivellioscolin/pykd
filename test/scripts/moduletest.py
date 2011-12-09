@@ -21,6 +21,8 @@ class ModuleTest( unittest.TestCase ):
          
     def testBegin( self ):
         self.assertNotEqual( 0, target.module.begin() )
+        self.assertEqual( target.module.begin(), target.module )
+        self.assertEqual( target.module.begin() + 100, target.module + 100 )
              
     def testEnd( self ):
         self.assertEqual( target.module.size(), target.module.end() - target.module.begin() )
@@ -37,7 +39,7 @@ class ModuleTest( unittest.TestCase ):
             pykd.loadModule( target.module.begin() - 0x10 )
             self.assertTrue( False )
         except pykd.BaseException: 
-			self.assertTrue( True )
+            self.assertTrue( True )
 
         self.assertNotEqual( None, pykd.loadModule( target.module.begin() ) )
         self.assertNotEqual( None, pykd.loadModule( target.module.begin() + 0x10) )
@@ -61,3 +63,4 @@ class ModuleTest( unittest.TestCase ):
     def testType( self ):
         self.assertEqual( "structTest", target.module.type("structTest").name() );
         self.assertEqual( "structTest", target.module.type("g_structTest").name() );
+

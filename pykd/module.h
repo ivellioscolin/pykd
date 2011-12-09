@@ -12,7 +12,7 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class Module : private DbgObject {
+class Module :  public intBase, private DbgObject {
 
 public:
     
@@ -78,6 +78,10 @@ private:
         if (!m_dia)
             m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
         return m_dia;
+    }
+
+    BaseTypeVariant getValue() {
+        return BaseTypeVariant(m_base);
     }
 
 

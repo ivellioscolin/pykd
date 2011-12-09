@@ -388,7 +388,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__len__", &TypedVar::getElementCount )
         .def("__getitem__", &TypedVar::getElementByIndex );
 
-    python::class_<Module>("module", "Class representing executable module", python::no_init )
+    python::class_<Module, python::bases<intBase> >("module", "Class representing executable module", python::no_init )
         .def("begin", &Module::getBase,
              "Return start address of the module" )
         .def("end", &Module::getEnd,
