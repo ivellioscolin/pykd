@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="pykd"
 	ProjectGUID="{FE961905-666F-4908-A212-961465F46F13}"
 	RootNamespace="pykd"
@@ -410,6 +410,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\process.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pykd.def"
 				>
 			</File>
@@ -529,6 +533,10 @@
 			</File>
 			<File
 				RelativePath=".\module.h"
+				>
+			</File>
+			<File
+				RelativePath=".\process.h"
 				>
 			</File>
 			<File

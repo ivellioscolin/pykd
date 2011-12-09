@@ -17,6 +17,7 @@
 #include "typedvar.h"
 #include "dbgmem.h"
 #include "intbase.h"
+#include "process.h"
 
 using namespace pykd;
 
@@ -132,7 +133,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__long__", &intBase::long_ )
         .def( "__int__", &intBase::int_ );
 
-    python::class_<pykd::DebugClient, pykd::DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
+    python::class_<DebugClient, DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
         .def( "addr64", &DebugClient::addr64,
             "Extend address to 64 bits formats" )
         .def( "breakin", &DebugClient::breakin,
@@ -151,8 +152,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Evaluate windbg expression" )
         .def( "findSymbol", &DebugClient::findSymbol,
             "Find symbol by the target virtual memory offset" )
+        .def( "getCurrentProcess", &DebugClient::getCurrentProcess,
+            "Return pointer to current process's block" )
         .def( "getDebuggeeType", &DebugClient::getDebuggeeType,
             "Return type of the debuggee" )
+        .def( "getImplicitThread", &getImplicitThread, 
+            "Return implicit thread for current process" )
         .def( "getExecutionStatus", &DebugClient::getExecutionStatus,
             "Return information about the execution status of the debugger" )
         .def( "go", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_GO>,
@@ -264,8 +269,12 @@ BOOST_PYTHON_MODULE( pykd )
         "Evaluate windbg expression" );
     python::def( "findSymbol", &findSymbol,
         "Find symbol by the target virtual memory offset" );
+    python::def( "getCurrentProcess", &getCurrentProcess,
+        "Return pointer to current process's block" );
     python::def( "getDebuggeeType", &getDebuggeeType,
         "Return type of the debuggee" );
+    python::def( "getImplicitThread", &getImplicitThread, 
+        "Return implicit thread for current process" );
     python::def( "debuggerPath", &getDebuggerImage,
         "Return full path to the process image that uses pykd" );
     python::def( "getExecutionStatus", &getExecutionStatus,

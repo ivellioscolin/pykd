@@ -41,17 +41,22 @@ protected:
         hres = client->QueryInterface( __uuidof(IDebugRegisters2), (void**)&m_registers );
         if ( FAILED( hres ) )
             throw DbgException("QueryInterface IDebugDataSpaces  failed");
+
+        hres = client->QueryInterface( __uuidof(IDebugSystemObjects), (void**)&m_system );
+        if ( FAILED( hres ) )
+            throw DbgException("QueryInterface IDebugSystem2 failed");
     }
     
     virtual ~DbgObject() {};
 
-    CComPtr<IDebugClient5>      m_client5;     
-    CComPtr<IDebugClient4>      m_client;    
-    CComPtr<IDebugControl4>     m_control;
-    CComPtr<IDebugSymbols3>     m_symbols;
-    CComPtr<IDebugAdvanced2>    m_advanced;
-    CComPtr<IDebugDataSpaces4>  m_dataSpaces;
-    CComPtr<IDebugRegisters2>   m_registers;
+    CComPtr<IDebugClient5>          m_client5;     
+    CComPtr<IDebugClient4>          m_client;    
+    CComPtr<IDebugControl4>         m_control;
+    CComPtr<IDebugSymbols3>         m_symbols;
+    CComPtr<IDebugAdvanced2>        m_advanced;
+    CComPtr<IDebugDataSpaces4>      m_dataSpaces;
+    CComPtr<IDebugRegisters2>       m_registers;
+    CComPtr<IDebugSystemObjects2>   m_system;
 };
 
 

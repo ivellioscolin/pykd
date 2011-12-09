@@ -83,7 +83,11 @@ public:
 
     std::string findSymbol( ULONG64 offset );
 
+    ULONG64 getCurrentProcess();
+
     python::tuple getDebuggeeType();
+
+    ULONG64 getImplicitThread();
 
     ULONG getExecutionStatus();
 
