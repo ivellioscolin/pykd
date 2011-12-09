@@ -477,6 +477,19 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "instruction", &Disasm::instruction, "Returm current disassembled instruction" )
         .def( "ea", &Disasm::ea, "Return effective address for last disassembled instruction or 0" )
         .def( "reset", &Disasm::reset, "Reset current offset to begin" );
+
+   python::class_<DEBUG_STACK_FRAME>( "stackFrame", 
+         "Class representing a frame of the call satck", python::no_init )
+        .def_readonly( "instructionOffset", &DEBUG_STACK_FRAME::InstructionOffset,
+            "Return a frame's instruction offset" )
+        .def_readonly( "returnOffset", &DEBUG_STACK_FRAME::ReturnOffset,
+            "Return a frame's return offset" )
+        .def_readonly( "frameOffset", &DEBUG_STACK_FRAME::FrameOffset,
+            "Return a frame's offset" )
+        .def_readonly( "stackOffset", &DEBUG_STACK_FRAME::StackOffset,
+            "Return a frame's stack offset" )
+        .def_readonly( "frameNumber", &DEBUG_STACK_FRAME::FrameNumber,
+            "Return a frame's number" );
         
     python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");
