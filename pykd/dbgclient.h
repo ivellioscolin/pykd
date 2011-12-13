@@ -95,6 +95,8 @@ public:
 
     ULONG64 getOffset( const std::wstring  symbolname );
 
+    std::string getPdbFile( ULONG64 moduleBase );
+
     template<ULONG status>
     void changeDebuggerStatus();
 
@@ -270,6 +272,8 @@ python::tuple getDebuggeeType();
 ULONG getExecutionStatus();
 
 ULONG64 getOffset( const std::wstring  symbolname );
+
+std::string getPdbFile( ULONG64 moduleBase );
 
 bool is64bitSystem();
 

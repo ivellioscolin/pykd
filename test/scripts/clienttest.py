@@ -21,6 +21,9 @@ class DbgClientTest( unittest.TestCase ):
         pykd.setExecutionStatus( pykd.DEBUG_STATUS_GO )
         pykd.waitForEvent()
         self.assertEqual( pykd.DEBUG_STATUS_BREAK, pykd.getExecutionStatus() )
+        
+	def testPdbFile( self ):
+		self.assertNotEqual( '', target.module )
        
         
                

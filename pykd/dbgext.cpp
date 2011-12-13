@@ -164,6 +164,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return information about the execution status of the debugger" )
         .def( "getOffset", &DebugClient::getOffset,
             "Return traget virtual address for specified symbol" )
+        .def( "getPdbFile", &DebugClient::getPdbFile, 
+            "Return full path to PDB (Program DataBase, debug information) file" )
         .def( "go", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_GO>,
             "Change debugger status to DEBUG_STATUS_GO"  )
         .def( "is64bitSystem", &DebugClient::is64bitSystem,
@@ -287,6 +289,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return information about the execution status of the debugger" );
     python::def( "getOffset", &getOffset,
         "Return traget virtual address for specified symbol" );
+    python::def( "getPdbFile", &getPdbFile, 
+        "Return full path to PDB (Program DataBase, debug information) file" );
     python::def( "go", &changeDebuggerStatus<DEBUG_STATUS_GO>,
         "Change debugger status to DEBUG_STATUS_GO"  );
     python::def( "is64bitSystem", &is64bitSystem,

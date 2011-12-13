@@ -285,6 +285,39 @@ ULONG64 getOffset( const std::wstring  symbolname )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+std::string DebugClient::getPdbFile( ULONG64 moduleBase )
+{
+    HRESULT                 hres;
+    IMAGEHLP_MODULEW64      imageHelpInfo = { 0 };
+
+    hres = 
+        m_advanced->GetSymbolInformation(
+            DEBUG_SYMINFO_IMAGEHLP_MODULEW64,
+            moduleBase,
+            0,
+            &imageHelpInfo,
+            sizeof( imageHelpInfo ),
+            NULL,
+            NULL,
+            0,
+            NULL );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugAdvanced2::GetSymbolInformation  failed" );
+
+    char  fileName[ 256 ];                
+    WideCharToMultiByte( CP_ACP, 0, imageHelpInfo.LoadedPdbName, 256, fileName, 256, NULL, NULL );
+        
+    return std::string( fileName );      
+}
+
+std::string getPdbFile( ULONG64 moduleBase )
+{
+    return g_dbgClient->getPdbFile( moduleBase );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 void DebugClient::setExecutionStatus( ULONG status )
 {
     HRESULT     hres;
