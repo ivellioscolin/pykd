@@ -85,11 +85,15 @@ public:
 
     ULONG64 getCurrentProcess();
 
+    python::list getCurrentStack();
+
     python::tuple getDebuggeeType();
 
     ULONG64 getImplicitThread();
 
     ULONG getExecutionStatus();
+
+    ULONG64 getOffset( const std::wstring  symbolname );
 
     template<ULONG status>
     void changeDebuggerStatus();
@@ -264,6 +268,8 @@ std::string findSymbol( ULONG64 offset );
 python::tuple getDebuggeeType();
 
 ULONG getExecutionStatus();
+
+ULONG64 getOffset( const std::wstring  symbolname );
 
 bool is64bitSystem();
 

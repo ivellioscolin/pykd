@@ -154,12 +154,16 @@ BOOST_PYTHON_MODULE( pykd )
             "Find symbol by the target virtual memory offset" )
         .def( "getCurrentProcess", &DebugClient::getCurrentProcess,
             "Return pointer to current process's block" )
+        .def( "getCurrentStack", &DebugClient::getCurrentStack,
+            "Return a current stack as a list of stackFrame objects" )
         .def( "getDebuggeeType", &DebugClient::getDebuggeeType,
             "Return type of the debuggee" )
         .def( "getImplicitThread", &getImplicitThread, 
             "Return implicit thread for current process" )
         .def( "getExecutionStatus", &DebugClient::getExecutionStatus,
             "Return information about the execution status of the debugger" )
+        .def( "getOffset", &DebugClient::getOffset,
+            "Return traget virtual address for specified symbol" )
         .def( "go", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_GO>,
             "Change debugger status to DEBUG_STATUS_GO"  )
         .def( "is64bitSystem", &DebugClient::is64bitSystem,
@@ -271,6 +275,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Find symbol by the target virtual memory offset" );
     python::def( "getCurrentProcess", &getCurrentProcess,
         "Return pointer to current process's block" );
+    python::def( "getCurrentStack", &getCurrentStack,
+        "Return a current stack as a list of stackFrame objects" );
     python::def( "getDebuggeeType", &getDebuggeeType,
         "Return type of the debuggee" );
     python::def( "getImplicitThread", &getImplicitThread, 
@@ -279,6 +285,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return full path to the process image that uses pykd" );
     python::def( "getExecutionStatus", &getExecutionStatus,
         "Return information about the execution status of the debugger" );
+    python::def( "getOffset", &getOffset,
+        "Return traget virtual address for specified symbol" );
     python::def( "go", &changeDebuggerStatus<DEBUG_STATUS_GO>,
         "Change debugger status to DEBUG_STATUS_GO"  );
     python::def( "is64bitSystem", &is64bitSystem,
@@ -376,13 +384,14 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "name", &TypeInfo::getName )
         .def( "size", &TypeInfo::getSize )
         .def( "offset", &TypeInfo::getOffset )
+        .def( "bitOffset", &TypeInfo::getBitOffset )
+        .def( "bitWidth", &TypeInfo::getBitWidth )
         .def( "field", &TypeInfo::getField )
         .def( "__getattr__", &TypeInfo::getField );
 
     python::class_<TypedVar, TypedVarPtr, python::bases<intBase>, boost::noncopyable >("typedVar", 
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", 
         python::no_init )
-        //.def( python::init<const TypeInfoPtr&, ULONG64>() )
         .def("getAddress", &TypedVar::getAddress, 
             "Return virtual address" )
         .def("sizeof", &TypedVar::getSize,

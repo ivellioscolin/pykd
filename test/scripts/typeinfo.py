@@ -68,4 +68,13 @@ class TypeInfoTest( unittest.TestCase ):
         ti1 = target.module.type( "structTest" )
         self.assertEqual( 20, ti1.size() )
         self.assertEqual( pykd.ptrSize(), target.module.type("structTest**").size() )
+        
+    def testBitField( self ):
+        ti = target.module.type( "g_structWithBits" )
+        self.assertEqual( 0, ti.m_bit6_7.offset() )
+        self.assertEqual( 4, ti.m_bit6_7.size() )
+        self.assertEqual( "ULong:2", ti.m_bit6_7.name() )
+        self.assertEqual( 2, ti.m_bit6_7.bitWidth() )
+        self.assertEqual( 6, ti.m_bit6_7.bitOffset() )
+
 

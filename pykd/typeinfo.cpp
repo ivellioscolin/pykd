@@ -30,8 +30,6 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-//static const boost::regex arrayMatch("^(.*)\\[(\\d+)\\]$"); 
-
 TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName )
 {
     size_t pos = symName.find_first_of( "*[" );
@@ -45,27 +43,19 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::strin
         pyDia::SymbolPtr  typeSym = symScope->getChildByName( symName );
 
         if ( typeSym->getSymTag() == SymTagData )
+        {
+            if ( typeSym->getLocType() == LocIsBitField )
+            {
+                return TypeInfoPtr( new BitFieldTypeInfo(typeSym) );
+            }
+
             typeSym = typeSym->getType();
+        }
 
         return getTypeInfo( typeSym );
     }
     
     return  getComplexType( symScope, symName );
-
-    //if ( symName[ symName.size() - 1 ] == '*' )
-    //    return TypeInfoPtr( new PointerTypeInfo( symScope,symName.substr( 0, symName.size() - 1 )  ) );
-
-    //boost::cmatch    matchResult;
-
-    //if ( boost::regex_match( symName.c_str(), matchResult, arrayMatch ) )
-    //{
-    //    std::string     sym = std::string( matchResult[1].first, matchResult[1].second );
-
-    //    return TypeInfoPtr( new ArrayTypeInfo( symScope, sym, std::atoi( matchResult[2].first ) ) );
-    //}
-
-
-    //throw DbgException( "type name invalid" );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -134,12 +124,24 @@ TypeInfo::getBaseTypeInfo( pyDia::SymbolPtr &symbol )
         return getBaseTypeInfo( sstr.str() );
     }
 
-    TypeInfoPtr     ptr = getBaseTypeInfo( symName );
+    return getBaseTypeInfo( symName );
+}
 
-    if ( ptr == 0 )
-        ptr = TypeInfoPtr( new BaseTypeInfo( symbol ) );
+/////////////////////////////////////////////////////////////////////////////////////
 
-    return ptr;
+BitFieldTypeInfo::BitFieldTypeInfo(  pyDia::SymbolPtr &symbol )
+{
+    m_bitWidth = (ULONG)symbol->getSize();
+    m_bitPos = (ULONG)symbol->getBitPosition();
+
+    TypeInfoPtr    typeInfo = TypeInfo::getBaseTypeInfo( symbol->getType() );
+
+    m_size = (ULONG)typeInfo->getSize();
+
+    std::stringstream   sstr;
+
+    sstr << typeInfo->getName() << ":" << (ULONG)m_bitWidth;
+    m_name = sstr.str();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

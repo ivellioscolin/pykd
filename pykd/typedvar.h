@@ -55,8 +55,6 @@ public:
 
 protected:
 
-    //TypedVar ( const TypeInfoPtr& typeInfo, ULONG64 offset );
-
     TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset );
 
     virtual BaseTypeVariant getValue() {
@@ -142,6 +140,21 @@ public:
     UdtTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
 
     virtual TypedVarPtr  getField( const std::string &fieldName );
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+
+class BitFieldVar: public TypedVar {
+
+public:
+
+    BitFieldVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
+
+    virtual std::string  print() {
+        return intBase::str();
+    }
+
+    virtual BaseTypeVariant  getValue();
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

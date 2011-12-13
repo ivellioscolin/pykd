@@ -68,3 +68,7 @@ class TypedVarTest( unittest.TestCase ):
         off2 = target.module.offset( "g_structTest" )
         tv = target.module.containingRecord( off2 + off1, "structTest", "m_field2" )
         self.assertEqual( True, tv.m_field2 )
+        
+    def testBitField(self):
+        tv = target.module.typedVar("g_structWithBits")
+        self.assertEqual( 4, tv.m_bit0_4 )

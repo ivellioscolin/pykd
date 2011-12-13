@@ -35,7 +35,9 @@ public:
 
     virtual ULONG getSize() = 0;
 
-    virtual TypeInfoPtr getField( const std::string &fieldName ) = 0;
+    virtual TypeInfoPtr getField( const std::string &fieldName ) {
+        throw DbgException( "there is no fields" );   
+    }
 
     virtual bool isBasicType() {
         return false;
@@ -53,6 +55,10 @@ public:
         return false;
     }
 
+    virtual bool isBitField() {
+        return false;
+    }
+
     virtual ULONG getCount() {
         throw DbgException( "there is no element" );   
     }
@@ -60,6 +66,15 @@ public:
     virtual TypeInfoPtr getElementType() {
         throw DbgException( "there is no element" );   
     }
+
+    virtual ULONG getBitOffset() {
+        return 0;
+    }
+
+    virtual ULONG getBitWidth() {
+        return 8 * getSize();
+    }
+
 
     ULONG getOffset() {
         return m_offset;
@@ -80,38 +95,6 @@ protected:
     TypeInfoPtr getRecurciveComplexType( TypeInfoPtr &lowestType, std::string &suffix, ULONG ptrSize );
 
     ULONG   m_offset;
-};
-
-///////////////////////////////////////////////////////////////////////////////////
-
-class BaseTypeInfo : public TypeInfo 
-{
-public:
-
-    BaseTypeInfo( pyDia::SymbolPtr &symbol ) :
-      m_dia( symbol )
-      {}
-        
-protected:
-
-    virtual std::string getName() {
-        return m_dia->getBasicTypeName( m_dia->getBaseType() );
-    }
-
-    virtual ULONG getSize() {
-        return (ULONG)m_dia->getSize();
-    }
-
-    virtual TypeInfoPtr getField( const std::string &fieldName ) {
-        throw DbgException( "there is no such field" );
-    }
-
-    virtual bool isBasicType() {
-        return true;
-    }
-
-    pyDia::SymbolPtr    m_dia;
-
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -144,6 +127,42 @@ private:
 
     std::string     m_name;
 
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+
+class BitFieldTypeInfo : public TypeInfo
+{
+public:
+
+    BitFieldTypeInfo(  pyDia::SymbolPtr &symbol );
+
+    virtual std::string getName() {
+        return m_name;
+    }
+
+    virtual ULONG getSize() {
+        return m_size;
+    }
+
+    virtual bool isBitField() {
+        return true;
+    }
+
+    virtual ULONG getBitOffset() {
+        return m_bitPos;
+    }
+
+    virtual ULONG getBitWidth() {
+        return m_bitWidth;
+    }
+
+private:
+
+    ULONG           m_size;
+    ULONG           m_bitWidth;
+    ULONG           m_bitPos;
+    std::string     m_name;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

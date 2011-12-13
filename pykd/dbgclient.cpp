@@ -266,6 +266,25 @@ std::string findSymbol( ULONG64 offset )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+ULONG64 DebugClient::getOffset( const std::wstring  symbolname )
+{
+    HRESULT     hres;
+    ULONG64     offset;
+
+    hres = m_symbols->GetOffsetByNameWide( symbolname.c_str(), &offset );
+    if ( FAILED( hres ) )
+        throw DbgException( "failed to find offset for symbol" );  
+
+    return offset;
+}
+
+ULONG64 getOffset( const std::wstring  symbolname )
+{
+    return g_dbgClient->getOffset( symbolname );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 void DebugClient::setExecutionStatus( ULONG status )
 {
     HRESULT     hres;

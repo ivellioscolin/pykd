@@ -25,6 +25,7 @@ struct structWithBits {
     ULONG m_bit6_7  : 2;
 };
 
+
 union unionTest {
     ULONG m_value;
     structWithBits m_bits;
@@ -46,7 +47,7 @@ struct structTest {
     structTest* m_field4;
 };
 
-structWithBits g_structWithBits = {0};
+structWithBits g_structWithBits = { 4, 1, 3};
 
 structTest      g_structTest = { 0, 500, true, 1, NULL };
 structTest      g_structTest1 = { 0, 500, true, 1, &g_structTest };

@@ -46,4 +46,36 @@ getImplicitThread() {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+python::list 
+DebugClient::getCurrentStack()
+{
+    HRESULT     hres;
+
+    ULONG   filledFrames;
+    std::vector<DEBUG_STACK_FRAME>      frames(1000); 
+
+    hres = m_control->GetStackTrace( 0, 0, 0, &frames[0], 1000, &filledFrames );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetStackTrace  failed" );         
+    
+    python::list    frameList;
+    
+    for ( ULONG i = 0; i < filledFrames; ++i )
+    {
+        python::object       frameObj( frames[i] ); 
+    
+        frameList.append( frameObj );
+    }         
+
+    return frameList; 
+}
+
+python::list 
+getCurrentStack()
+{
+    return g_dbgClient->getCurrentStack();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }

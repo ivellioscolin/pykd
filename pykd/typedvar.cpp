@@ -29,13 +29,19 @@ TypedVarPtr   TypedVar::getTypedVar( IDebugClient4 *client, const TypeInfoPtr& t
         return tv;
     }
 
-    if ( typeInfo->isUserDefined() )       
+    if ( typeInfo->isUserDefined() )
     {
         tv.reset( new UdtTypedVar( client, typeInfo, offset ) );
         return tv;
     }
 
-    throw DbgException( "can not get field" );
+    if ( typeInfo->isBitField() )
+    {
+        tv.reset( new BitFieldVar( client, typeInfo, offset ) );
+        return tv;
+    }
+
+    throw DbgException( "can not create typedVar for this type" );
 
     return tv;
 }
@@ -119,6 +125,38 @@ UdtTypedVar::getField( const std::string &fieldName )
     TypeInfoPtr fieldType = m_typeInfo->getField( fieldName );
 
     return  TypedVar::getTypedVar( m_client, fieldType, m_offset + fieldType->getOffset() );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+BaseTypeVariant BitFieldVar::getValue()
+{
+    ULONG64     val = 0;
+    HRESULT     hres;
+
+    hres = m_dataSpaces->ReadVirtual( m_offset, &val, m_typeInfo->getSize(), NULL );
+    if ( FAILED( hres ) )
+        throw MemoryException( m_offset, false );
+
+    val >>= m_typeInfo->getBitOffset();
+    val &= m_typeInfo->getBitWidth();
+
+    switch ( m_typeInfo->getSize() )
+    {
+    case 1:
+        return (ULONG)*(PUCHAR)&val;
+
+    case 2:
+        return (ULONG)*(PUSHORT)&val;
+
+    case 4:
+        return *(PULONG)&val;
+
+    case 8:
+        return *(PULONG64)&val;
+    }
+
+    throw DbgException( "failed get value " );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
