@@ -166,6 +166,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Return traget virtual address for specified symbol" )
         .def( "getPdbFile", &DebugClient::getPdbFile, 
             "Return full path to PDB (Program DataBase, debug information) file" )
+        .def( "getProcessorMode", &DebugClient::getProcessorMode, 
+            "Return current processor mode as string: X86, ARM, IA64 or X64" )
+        .def( "getProcessorType", &DebugClient::getProcessorType,
+            "Return type of physical processor: X86, ARM, IA64 or X64" )
         .def( "go", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_GO>,
             "Change debugger status to DEBUG_STATUS_GO"  )
         .def( "is64bitSystem", &DebugClient::is64bitSystem,
@@ -293,6 +297,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Return full path to PDB (Program DataBase, debug information) file" );
     python::def( "go", &changeDebuggerStatus<DEBUG_STATUS_GO>,
         "Change debugger status to DEBUG_STATUS_GO"  );
+    python::def( "getProcessorMode", &getProcessorMode, 
+        "Return current processor mode as string: X86, ARM, IA64 or X64" );
+    python::def( "getProcessorType", &getProcessorType,
+        "Return type of physical processor: X86, ARM, IA64 or X64" );
     python::def( "is64bitSystem", &is64bitSystem,
         "Check if target system has 64 address space" );
     python::def( "isDumpAnalyzing", &isDumpAnalyzing,

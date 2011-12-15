@@ -10,6 +10,10 @@ ULONG64 getImplicitThread();
 
 python::list getCurrentStack();
 
+std::string getProcessorMode();
+
+std::string getProcessorType();
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 }

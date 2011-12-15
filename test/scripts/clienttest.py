@@ -24,9 +24,7 @@ class DbgClientTest( unittest.TestCase ):
         
 	def testPdbFile( self ):
 		self.assertNotEqual( '', target.module )
-       
-        
-               
-            
-        
-
+		
+	def testProcessorMode( self ):
+		self.assertNotEqual( '', pykd.getProcessorMode() )
+		self.assertNotEqual( '', pykd.getProcessorType() )

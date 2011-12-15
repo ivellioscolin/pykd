@@ -97,6 +97,10 @@ public:
 
     std::string getPdbFile( ULONG64 moduleBase );
 
+    std::string getProcessorMode();
+
+    std::string getProcessorType();
+
     template<ULONG status>
     void changeDebuggerStatus();
 
