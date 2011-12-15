@@ -526,5 +526,102 @@ bool compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+std::wstring DebugClient::loadUnicodeStr( ULONG64 address )
+{
+    USHORT   length;
+    USHORT   maximumLength;
+    ULONG64  buffer = 0;
+    
+    readMemory( m_dataSpaces, address, &length, sizeof( length ) );
+        
+    if ( length == 0 )
+        return L"";       
+        
+    address += sizeof( length );
+        
+    readMemory( m_dataSpaces, address, &maximumLength, sizeof( maximumLength ) );
+        
+    address += sizeof( maximumLength );            
+    
+    if ( is64bitSystem() )
+    {
+        address += address % 8 ? ( 8 - address % 8 ) : 0 ;  // выравнивание на 8 байт
+    
+        buffer = ptrPtr( address );
+            
+        address += 8;                
+    }
+    else
+    {
+        address += address % 4 ? ( 4 - address % 4 ) : 0 ;  // выравнивание на 8 байт
+    
+        buffer = addr64( ptrPtr( address ) ); 
+        
+        address += 4;               
+    }    
+
+    std::vector<wchar_t> str(length / 2);
+    
+    readMemory( m_dataSpaces, buffer, &str[0], length );
+        
+    return  std::wstring (&str[0], length/2);
+}
+
+std::wstring loadUnicodeStr( ULONG64 address )
+{
+    return g_dbgClient->loadUnicodeStr( address );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+std::string DebugClient::loadAnsiStr( ULONG64 address )
+{
+    USHORT   length;
+    USHORT   maximumLength;
+    ULONG64  buffer = 0;
+    
+    readMemory( m_dataSpaces, address, &length, sizeof( length ) );
+        
+    if ( length == 0 )
+        return "";       
+        
+    address += sizeof( length );
+        
+    readMemory( m_dataSpaces, address, &maximumLength, sizeof( maximumLength ) );
+        
+    address += sizeof( maximumLength );            
+    
+    if ( is64bitSystem() )
+    {
+        address += address % 8 ? ( 8 - address % 8 ) : 0 ;  // выравнивание на 8 байт
+    
+        buffer = ptrPtr( address );
+            
+        address += 8;                
+    }
+    else
+    {
+        address += address % 4 ? ( 4 - address % 4 ) : 0 ;  // выравнивание на 8 байт
+    
+        buffer = addr64( ptrPtr( address ) ); 
+        
+        address += 4;               
+    }    
+
+    std::vector<char> str(length);
+    
+    readMemory( m_dataSpaces, buffer, &str[0], length );
+        
+    return  std::string (&str[0], length);
+}
+
+
+std::string loadAnsiStr( ULONG64 address )
+{
+    return g_dbgClient->loadAnsiStr( address );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 }; // end of pykd
 

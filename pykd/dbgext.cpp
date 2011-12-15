@@ -207,6 +207,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Load string from the target buffer containing 0-terminated ansi-string" )
         .def( "loadWStr", &DebugClient::loadWStr,
             "Load string from the target buffer containing 0-terminated unicode-string" )
+        .def( "loadUnicodeString", &DebugClient::loadUnicodeStr,
+            "Return string represention of windows UNICODE_STRING type" )
+        .def( "loadAnsiString", &DebugClient::loadAnsiStr,
+            "Return string represention of windows ANSU_STRING type" )
         .def( "ptrByte", &DebugClient::ptrByte,
             "Read an unsigned 1-byte integer from the target memory" )
         .def( "ptrWord", &DebugClient::ptrWord,
@@ -342,6 +346,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Load string from the target buffer containing 0-terminated ansi-string" );
     python::def( "loadWStr", &loadWStr,
         "Load string from the target buffer containing 0-terminated unicode-string" );
+    python::def( "loadUnicodeString", &loadUnicodeStr,
+        "Return string represention of windows UNICODE_STRING type" );
+    python::def( "loadAnsiString", &loadAnsiStr,
+        "Return string represention of windows ANSU_STRING type" );
     python::def( "ptrByte", &ptrByte,
         "Read an unsigned 1-byte integer from the target memory" );
     python::def( "ptrWord", &ptrWord,

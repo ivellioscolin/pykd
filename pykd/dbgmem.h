@@ -82,6 +82,10 @@ ULONG64 ptrPtr( ULONG64 offset, IDebugDataSpaces4*  dbgDataSpace );
 bool 
 compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr = FALSE );
 
+std::wstring loadUnicodeStr( ULONG64 address );
+
+std::string loadAnsiStr( ULONG64 address );
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 };

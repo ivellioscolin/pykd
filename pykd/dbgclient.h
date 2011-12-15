@@ -152,6 +152,10 @@ public:
 
     std::wstring loadWStr( ULONG64 offset );
 
+    std::string loadAnsiStr( ULONG64 address );
+
+    std::wstring loadUnicodeStr( ULONG64 address );
+
     ULONG ptrSize();
 
     ULONG64 ptrByte( ULONG64 offset );

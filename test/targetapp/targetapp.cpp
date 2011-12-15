@@ -149,7 +149,6 @@ listStruct1  g_listItem13 = { 300 };
     _EX_ListHead->Blink = (Entry);\
     }
 
-
 void FuncWithName0()
 {
     classChild _classChild;
@@ -180,6 +179,11 @@ void FuncWithName0()
     std::cout << strArray[0];
     std::cout << (*ptrIntMatrix)[0][1];
     std::cout << g_struct3.m_noArrayField;
+    std::cout << g_structWithBits.m_bit5;
+    std::cout << ptrStrArray;
+    std::cout << g_structTest1.m_field2;
+    std::cout << ptrIntMatrix1;
+    std::cout << g_bigValue;
 }
 
 void FuncWithName1(int a)
