@@ -14,6 +14,8 @@ std::string getProcessorMode();
 
 std::string getProcessorType();
 
+python::list getThreadList();
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 }

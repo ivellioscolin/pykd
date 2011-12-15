@@ -138,4 +138,54 @@ std::string getProcessorType()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+python::list DebugClient::getThreadList()
+{
+    HRESULT         hres;  
+    ULONG           i;
+    ULONG           oldThreadId = 0;
+    ULONG           threadCount;
+
+    hres = m_system->GetNumberThreads( &threadCount );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSystemObjects::GetNumberThreads failed" );
+        
+    std::vector<ULONG> threadIds(threadCount);
+    hres = m_system->GetThreadIdsByIndex( 0, threadCount, &threadIds[0], NULL );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSystemObjects::GetThreadIdsByIndex failed" );
+    
+    hres = m_system->GetCurrentThreadId( &oldThreadId );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSystemObjects::GetCurrentThreadId failed" );   
+    
+    boost::python::list     threadList;
+    
+    for ( i = 0; i < threadCount; ++i )
+    {
+        m_system->SetCurrentThreadId( threadIds[i] );
+
+        ULONG64   threadOffset;                
+        hres = m_system->GetCurrentThreadDataOffset( &threadOffset );
+        
+        if ( FAILED( hres ) )
+        {
+            m_system->SetCurrentThreadId( oldThreadId );
+            throw DbgException( "IDebugSystemObjects::GetCurrentThreadDataOffset failed" );
+        }                
+            
+        threadList.append( threadOffset );            
+    }
+
+    m_system->SetCurrentThreadId( oldThreadId );
+    
+    return threadList; 
+}
+
+python::list getThreadList()
+{
+    return g_dbgClient->getThreadList();     
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }

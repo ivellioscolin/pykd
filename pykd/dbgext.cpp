@@ -171,14 +171,18 @@ BOOST_PYTHON_MODULE( pykd )
             "Return current processor mode as string: X86, ARM, IA64 or X64" )
         .def( "getProcessorType", &DebugClient::getProcessorType,
             "Return type of physical processor: X86, ARM, IA64 or X64" )
+        .def( "getThreadList", &DebugClient::getThreadList, 
+            "Return list of threads (each item is numeric identifier of thread)" )
         .def( "go", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_GO>,
             "Change debugger status to DEBUG_STATUS_GO"  )
         .def( "is64bitSystem", &DebugClient::is64bitSystem,
             "Check if target system has 64 address space" )
-        .def( "isDumpAnalyzing", &pykd::DebugClient::isDumpAnalyzing,
+        .def( "isDumpAnalyzing", &DebugClient::isDumpAnalyzing,
             "Check if it is a dump analyzing ( not living debuggee )" )
-        .def( "isKernelDebugging", &pykd::DebugClient::isKernelDebugging,
+        .def( "isKernelDebugging", &DebugClient::isKernelDebugging,
             "Check if kernel dubugging is running" )
+        .def( "isValid", &DebugClient::isVaValid,
+            "Check if the virtual address is valid" )
         .def( "loadBytes", &DebugClient::loadBytes, DebugClient_loadBytes( python::args( "offset", "count", "phyAddr" ),
             "Read the block of the target's memory and return it as list of unsigned bytes" ) )
         .def( "loadWords", &DebugClient::loadWords, DebugClient_loadWords( python::args( "offset", "count", "phyAddr" ),
@@ -302,6 +306,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return current processor mode as string: X86, ARM, IA64 or X64" );
     python::def( "getProcessorType", &getProcessorType,
         "Return type of physical processor: X86, ARM, IA64 or X64" );
+    python::def( "getThreadList", &getThreadList, 
+        "Return list of threads (each item is numeric identifier of thread)" );
     python::def( "is64bitSystem", &is64bitSystem,
         "Check if target system has 64 address space" );
     python::def( "isDumpAnalyzing", &isDumpAnalyzing,
@@ -310,6 +316,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if kernel dubugging is running" );
     python::def( "isWindbgExt", &WindbgGlobalSession::isInit,
         "Check if script works in windbg context" );
+    python::def( "isValid", &isVaValid,
+        "Check if the virtual address is valid" );
     python::def( "loadBytes", &loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as liat of unsigned bytes" ) );
     python::def( "loadWords", &loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),

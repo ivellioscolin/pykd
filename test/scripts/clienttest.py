@@ -22,9 +22,12 @@ class DbgClientTest( unittest.TestCase ):
         pykd.waitForEvent()
         self.assertEqual( pykd.DEBUG_STATUS_BREAK, pykd.getExecutionStatus() )
         
-	def testPdbFile( self ):
-		self.assertNotEqual( '', target.module )
-		
-	def testProcessorMode( self ):
-		self.assertNotEqual( '', pykd.getProcessorMode() )
-		self.assertNotEqual( '', pykd.getProcessorType() )
+    def testPdbFile( self ):
+        self.assertNotEqual( '', pykd.getPdbFile( target.module.begin() ) )
+
+    def testProcessorMode( self ):
+        self.assertNotEqual( '', pykd.getProcessorMode() )
+        self.assertNotEqual( '', pykd.getProcessorType() )
+
+    def testThreadList( self ):
+        self.assertNotEqual( 0, len(pykd.getThreadList()) )

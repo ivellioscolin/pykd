@@ -73,6 +73,33 @@ addr64( ULONG64  addr)
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+bool DebugClient::isVaValid( ULONG64 addr )
+{
+    HRESULT     hres;
+    ULONG       offsetInfo;
+    
+    hres = 
+        m_dataSpaces->GetOffsetInformation(
+            DEBUG_DATA_SPACE_VIRTUAL,
+            DEBUG_OFFSINFO_VIRTUAL_SOURCE,
+            addr,
+            &offsetInfo,
+            sizeof( offsetInfo ),
+            NULL );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugDataSpace4::GetOffsetInformation  failed" );
+
+    return  offsetInfo != DEBUG_VSOURCE_INVALID;
+}
+
+bool isVaValid( ULONG64 addr )
+{
+    return g_dbgClient->isVaValid( addr );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 void
 readMemory( IDebugDataSpaces4*  dbgDataSpace, ULONG64 address, PVOID buffer, ULONG length, bool phyAddr = FALSE )
 {
@@ -91,50 +118,7 @@ readMemory( IDebugDataSpaces4*  dbgDataSpace, ULONG64 address, PVOID buffer, ULO
         throw MemoryException( address, phyAddr );
 }
 
-//void DebugClient::readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr )
-//{
-//    HRESULT     hres;
-//
-//    if ( phyAddr == false )
-//    {
-//        hres = m_dataSpaces->ReadVirtual( address, buffer, length, NULL );
-//    }        
-//    else
-//    {
-//        hres = m_dataSpaces->ReadPhysical( address, buffer, length, NULL );
-//    }               
-//    
-//    if ( FAILED( hres ) )
-//        throw MemoryException( address, phyAddr );
-//}
-//
-//void readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr )
-//{
-//    return g_dbgClient->readMemory( address, buffer, length, phyAddr );
-//}
-
 /////////////////////////////////////////////////////////////////////////////////////
-
-//bool DebugClient::compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
-//{
-//    bool        result = false;
-//
-//    addr1 = addr64( addr1 );
-//    addr2 = addr64( addr2 );
-//
-//    std::vector<char>   m1(length);
-//    std::vector<char>   m2(length);
-//
-//    readMemory( addr1, &m1[0], length, phyAddr );
-//    readMemory( addr2, &m2[0], length, phyAddr );
-//
-//    return std::equal( m1.begin(), m1.end(), m2.begin() );
-//}
-//
-//bool compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
-//{
-//    return g_dbgClient->compareMemory( addr1, addr2, length, phyAddr );
-//}
 
 bool compareMemoryRange( IDebugDataSpaces4* dbgDataSpace, ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
 {

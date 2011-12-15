@@ -101,6 +101,8 @@ public:
 
     std::string getProcessorType();
 
+    python::list getThreadList();
+
     template<ULONG status>
     void changeDebuggerStatus();
 
@@ -109,6 +111,8 @@ public:
     bool isKernelDebugging();
 
     bool isDumpAnalyzing();
+
+    bool isVaValid( ULONG64 addr );
 
     void loadDump( const std::wstring &fileName );
 
