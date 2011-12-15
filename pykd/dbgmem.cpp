@@ -26,7 +26,7 @@ DebugClient::loadArray( ULONG64 offset, ULONG count, bool phyAddr )
     std::vector<T>   buffer(count);
 
     if (count)
-        readMemory( offset, &buffer[0], count*sizeof(T), phyAddr );
+        readMemory( m_dataSpaces, offset, &buffer[0], count*sizeof(T), phyAddr );
 
     python::list        lst;
 
@@ -73,31 +73,70 @@ addr64( ULONG64  addr)
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void DebugClient::readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr )
+void
+readMemory( IDebugDataSpaces4*  dbgDataSpace, ULONG64 address, PVOID buffer, ULONG length, bool phyAddr = FALSE )
 {
     HRESULT     hres;
 
     if ( phyAddr == false )
     {
-        hres = m_dataSpaces->ReadVirtual( address, buffer, length, NULL );
+        hres = dbgDataSpace->ReadVirtual( address, buffer, length, NULL );
     }        
     else
     {
-        hres = m_dataSpaces->ReadPhysical( address, buffer, length, NULL );
+        hres = dbgDataSpace->ReadPhysical( address, buffer, length, NULL );
     }               
     
     if ( FAILED( hres ) )
         throw MemoryException( address, phyAddr );
 }
 
-void readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr )
-{
-    return g_dbgClient->readMemory( address, buffer, length, phyAddr );
-}
+//void DebugClient::readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr )
+//{
+//    HRESULT     hres;
+//
+//    if ( phyAddr == false )
+//    {
+//        hres = m_dataSpaces->ReadVirtual( address, buffer, length, NULL );
+//    }        
+//    else
+//    {
+//        hres = m_dataSpaces->ReadPhysical( address, buffer, length, NULL );
+//    }               
+//    
+//    if ( FAILED( hres ) )
+//        throw MemoryException( address, phyAddr );
+//}
+//
+//void readMemory( ULONG64 address, PVOID buffer, ULONG length, bool phyAddr )
+//{
+//    return g_dbgClient->readMemory( address, buffer, length, phyAddr );
+//}
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-bool DebugClient::compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
+//bool DebugClient::compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
+//{
+//    bool        result = false;
+//
+//    addr1 = addr64( addr1 );
+//    addr2 = addr64( addr2 );
+//
+//    std::vector<char>   m1(length);
+//    std::vector<char>   m2(length);
+//
+//    readMemory( addr1, &m1[0], length, phyAddr );
+//    readMemory( addr2, &m2[0], length, phyAddr );
+//
+//    return std::equal( m1.begin(), m1.end(), m2.begin() );
+//}
+//
+//bool compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
+//{
+//    return g_dbgClient->compareMemory( addr1, addr2, length, phyAddr );
+//}
+
+bool compareMemoryRange( IDebugDataSpaces4* dbgDataSpace, ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
 {
     bool        result = false;
 
@@ -107,15 +146,10 @@ bool DebugClient::compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, boo
     std::vector<char>   m1(length);
     std::vector<char>   m2(length);
 
-    readMemory( addr1, &m1[0], length, phyAddr );
-    readMemory( addr2, &m2[0], length, phyAddr );
+    readMemory( dbgDataSpace, addr1, &m1[0], length, phyAddr );
+    readMemory( dbgDataSpace, addr2, &m2[0], length, phyAddr );
 
     return std::equal( m1.begin(), m1.end(), m2.begin() );
-}
-
-bool compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
-{
-    return g_dbgClient->compareMemory( addr1, addr2, length, phyAddr );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -127,7 +161,7 @@ std::string DebugClient::loadChars( ULONG64 address, ULONG  number, bool phyAddr
     ULONG  bufferSize = (ULONG)( sizeof(std::vector<char>::value_type)*buffer.size() );
     
     if (number)
-        readMemory( address, &buffer[0], bufferSize, phyAddr );
+        readMemory( m_dataSpaces, address, &buffer[0], bufferSize, phyAddr );
 
     return std::string( buffer.begin(), buffer.end() );
 }
@@ -146,7 +180,7 @@ std::wstring DebugClient::loadWChars( ULONG64 address, ULONG  number, bool phyAd
     ULONG  bufferSize = (ULONG)( sizeof(std::vector<wchar_t>::value_type)*buffer.size() );
     
     if (number)
-        readMemory( address, &buffer[0], bufferSize, phyAddr );
+        readMemory( m_dataSpaces, address, &buffer[0], bufferSize, phyAddr );
 
     return std::wstring( buffer.begin(), buffer.end() );
 }
@@ -316,7 +350,7 @@ ULONG64 DebugClient::ptrByte( ULONG64 offset )
 {
     unsigned char     val = 0;
     
-    readMemory( offset, &val, sizeof(val), false );
+    readMemory( m_dataSpaces, offset, &val, sizeof(val), false );
 
     return val;
 }
@@ -332,7 +366,7 @@ ULONG64 DebugClient::ptrWord( ULONG64 offset )
 {
     unsigned short     val = 0;
     
-    readMemory( offset, &val, sizeof(val), false );
+    readMemory( m_dataSpaces, offset, &val, sizeof(val), false );
 
     return val;
 }
@@ -344,29 +378,39 @@ ULONG64 ptrWord( ULONG64 offset )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-ULONG64 DebugClient::ptrDWord( ULONG64 offset )
+ULONG64 ptrDWord( ULONG64 offset, IDebugDataSpaces4*  dbgDataSpace )
 {
     unsigned long     val = 0;
     
-    readMemory( offset, &val, sizeof(val), false );
+    readMemory( dbgDataSpace, offset, &val, sizeof(val), false );
 
     return val;
+}
+
+ULONG64 DebugClient::ptrDWord( ULONG64 offset )
+{
+    return pykd::ptrDWord( offset, m_dataSpaces );
 }
 
 ULONG64 ptrDWord( ULONG64 offset )
 {
-    return g_dbgClient->ptrDWord( offset );
+    return  g_dbgClient->ptrDWord( offset );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-ULONG64 DebugClient::ptrQWord( ULONG64 offset )
+ULONG64 ptrQWord( ULONG64 offset, IDebugDataSpaces4*  dbgDataSpace )
 {
     unsigned __int64     val = 0;
     
-    readMemory( offset, &val, sizeof(val), false );
+    readMemory( dbgDataSpace, offset, &val, sizeof(val), false );
 
     return val;
+}
+
+ULONG64 DebugClient::ptrQWord( ULONG64 offset )
+{
+    return pykd::ptrQWord( offset, m_dataSpaces );
 }
 
 ULONG64 ptrQWord( ULONG64 offset )
@@ -375,6 +419,11 @@ ULONG64 ptrQWord( ULONG64 offset )
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
+
+ULONG64 ptrMWord( ULONG64 offset, IDebugDataSpaces4*  dbgDataSpace )
+{
+    return ptrSize() == 8 ? ptrQWord( offset, dbgDataSpace ) : ptrDWord(offset, dbgDataSpace);
+}
 
 ULONG64 DebugClient::ptrMWord( ULONG64 offset )
 {
@@ -386,14 +435,21 @@ ULONG64 ptrMWord( ULONG64 offset )
     return g_dbgClient->ptrMWord( offset );
 }
 
+/////////////////////////////////////////////////////////////////////////////////////
+
+ULONG64 ptrPtr( ULONG64 offset, IDebugDataSpaces4*  dbgDataSpace )
+{
+    return ptrMWord( offset, dbgDataSpace );
+}
+
 ULONG64 DebugClient::ptrPtr( ULONG64 offset )
 {
-    return ptrMWord( offset );
+    return pykd::ptrPtr( offset, m_dataSpaces );
 }
 
 ULONG64 ptrPtr( ULONG64 offset )
 {
-    return  g_dbgClient->ptrMWord( offset );
+    return  g_dbgClient->ptrPtr( offset );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -402,7 +458,7 @@ LONG64 DebugClient::ptrSignByte( ULONG64 offset )
 {
     char     val = 0;
     
-    readMemory( offset, &val, sizeof(val), false );
+    readMemory( m_dataSpaces, offset, &val, sizeof(val), false );
 
     return val;
 }
@@ -418,7 +474,7 @@ LONG64 DebugClient::ptrSignWord( ULONG64 offset )
 {
     short     val = 0;
     
-    readMemory( offset, &val, sizeof(val), false );
+    readMemory( m_dataSpaces, offset, &val, sizeof(val), false );
 
     return val;
 }
@@ -434,7 +490,7 @@ LONG64 DebugClient::ptrSignDWord( ULONG64 offset )
 {
     long     val = 0;
     
-    readMemory( offset, &val, sizeof(val), false );
+    readMemory( m_dataSpaces, offset, &val, sizeof(val), false );
 
     return val;
 }
@@ -450,7 +506,7 @@ LONG64 DebugClient::ptrSignQWord( ULONG64 offset )
 {
     __int64     val = 0;
     
-    readMemory( offset, &val, sizeof(val), false );
+    readMemory( m_dataSpaces, offset, &val, sizeof(val), false );
 
     return val;
 }
@@ -470,6 +526,18 @@ LONG64 DebugClient::ptrSignMWord( ULONG64 offset )
 LONG64 ptrSignMWord( ULONG64 offset )
 {
     return g_dbgClient->ptrSignMWord( offset );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+bool DebugClient::compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
+{
+    return  compareMemoryRange( m_dataSpaces, addr1, addr2, length, phyAddr );  
+}
+
+bool compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
+{
+    return g_dbgClient->compareMemory( addr1, addr2, length, phyAddr );   
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

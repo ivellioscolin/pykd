@@ -57,8 +57,11 @@ if __name__ == "__main__":
     target.module = pykd.loadModule( target.moduleName )
     target.module.reload();
     
+    pykd.go()
+    
     suite = getTestSuite()
-    #suite = getTestSuite( "typeinfo.TypeInfoTest.testCreateBySymbol" )
+    #suite = getTestSuite( "typedvar.TypedVarTest.testBitField" )
+    #suite = getTestSuite( "typeinfo.TypeInfoTest.testBitField" )
    
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
 

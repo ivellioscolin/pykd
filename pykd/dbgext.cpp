@@ -78,6 +78,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords_, loadSignWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, compareMemory, 3, 4 );
+
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadChars, DebugClient::loadChars, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadWChars, DebugClient::loadWChars, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadBytes, DebugClient::loadBytes, 2, 3 );
@@ -337,11 +338,11 @@ BOOST_PYTHON_MODULE( pykd )
         "Read an unsigned 1-byte integer from the target memory" );
     python::def( "ptrWord", &ptrWord,
         "Read an unsigned 2-byte integer from the target memory" );
-    python::def( "ptrDWord", &ptrDWord,
+    python::def( "ptrDWord", (ULONG64(*)(ULONG64))&ptrDWord,
         "Read an unsigned 4-byte integer from the target memory" );
-    python::def( "ptrQWord", &ptrQWord,
+    python::def( "ptrQWord", (ULONG64(*)(ULONG64))&ptrQWord,
         "Read an unsigned 8-byte integer from the target memory" );
-    python::def( "ptrMWord", &ptrMWord,
+    python::def( "ptrMWord", (ULONG64(*)(ULONG64))&ptrMWord,
         "Read an unsigned mashine's word wide integer from the target memory" );
     python::def( "ptrSignByte", &ptrSignByte,
         "Read an signed 1-byte integer from the target memory" );
@@ -353,9 +354,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Read an signed 8-byte integer from the target memory" );
     python::def( "ptrSignMWord", &ptrSignMWord,
         "Read an signed mashine's word wide integer from the target memory" );
-    python::def( "ptrPtr", &ptrPtr,
+    python::def( "ptrPtr", (ULONG64(*)(ULONG64))&ptrPtr,
         "Read an pointer value from the target memory" );
-
     boost::python::def( "addSynSymbol", &addSyntheticSymbol,
         "Add new synthetic symbol for virtual address" );
     boost::python::def( "delAllSynSymbols", &delAllSyntheticSymbols, 
@@ -447,7 +447,14 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a typedVar class instance" )
         .def("typedVar",&Module::getTypedVarByTypeName,
             "Return a typedVar class instance" )
-        .def("containingRecord", &Module::contaningRecord,
+        .def("typedVarList", &Module::getTypedVarListByTypeName,
+            "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
+        .def("typedVarList", &Module::getTypedVarListByType,
+            "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
+        .def("containingRecord", &Module::containingRecordByName,
+            "Return instance of the typedVar class. It's value are loaded from the target memory."
+            "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
+        .def("containingRecord", &Module::containingRecordByType,
             "Return instance of the typedVar class. It's value are loaded from the target memory."
             "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
         .def("__getattr__", &Module::getSymbol,

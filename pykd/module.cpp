@@ -219,7 +219,7 @@ ULONG Module::getRvaByName(const std::string &symName)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVarPtr Module::contaningRecord( ULONG64 address, const std::string &typeName, const std::string &fieldName )
+TypedVarPtr Module::containingRecordByName( ULONG64 address, const std::string &typeName, const std::string &fieldName )
 {
     address = addr64(address); 
 
@@ -228,29 +228,51 @@ TypedVarPtr Module::contaningRecord( ULONG64 address, const std::string &typeNam
     TypeInfoPtr     fieldTypeInfo = typeInfo->getField( fieldName );
 
     return TypedVar::getTypedVar( m_client, typeInfo, address - fieldTypeInfo->getOffset() );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVarPtr Module::containingRecordByType( ULONG64 address, const TypeInfoPtr &typeInfo, const std::string &fieldName )
+{
+    address = addr64(address); 
+
+    TypeInfoPtr     fieldTypeInfo = typeInfo->getField( fieldName );
+
+    return TypedVar::getTypedVar( m_client, typeInfo, address - fieldTypeInfo->getOffset() );
+}
 
 
-    //HRESULT         hres;
-    //ULONG64         moduleBase;
+///////////////////////////////////////////////////////////////////////////////////
 
-    //hres = dbgExt->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &moduleBase );
-    //if ( FAILED( hres ) )
-    //     throw TypeException();   
+python::list Module::getTypedVarListByTypeName( ULONG64 listHeadAddress, const std::string  &typeName, const std::string &listEntryName )
+{
+    return getTypedVarListByType( listHeadAddress, getTypeByName( typeName ), listEntryName );
+}
 
-    //ULONG        typeId;
-    //hres = dbgExt->symbols->GetTypeId( moduleBase, typeName.c_str(), &typeId );
-    //if ( FAILED( hres ) )
-    //     throw TypeException();   
+///////////////////////////////////////////////////////////////////////////////////
 
-    //ULONG       fieldTypeId;
-    //ULONG       fieldOffset;
-    //hres = dbgExt->symbols3->GetFieldTypeAndOffset( moduleBase, typeId, fieldName.c_str(), &fieldTypeId, &fieldOffset );   
-    //if ( FAILED( hres ) )
-    //     throw TypeException(); 
-    //
-    //TypedVar   var( moduleName, typeName, address - fieldOffset );
-    //
-    //return boost::python::object( var );
+python::list Module::getTypedVarListByType( ULONG64 listHeadAddress, const TypeInfoPtr &typeInfo, const std::string &listEntryName )
+{
+    python::list    lst;
+
+    listHeadAddress = addr64( listHeadAddress );
+
+    ULONG64                 entryAddress = 0;
+
+    TypeInfoPtr             fieldTypeInfo = typeInfo->getField( listEntryName );
+
+    if ( fieldTypeInfo->getName() == ( typeInfo->getName() + "*" ) )
+    {
+        for( entryAddress = ptrPtr( listHeadAddress ); entryAddress != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress + fieldTypeInfo->getOffset() ) )
+            lst.append( getTypedVarByType( typeInfo, entryAddress ) );
+    }
+    else
+    {
+        for( entryAddress = ptrPtr( listHeadAddress ); entryAddress != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress ) )
+            lst.append( containingRecordByType( entryAddress, typeInfo, listEntryName ) );
+    }
+
+    return lst;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

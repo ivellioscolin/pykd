@@ -109,6 +109,47 @@ struct3  g_struct3 = { { 0, 2 }, 3 };
 
 __int64  g_bigValue = 0x8080808080808080;
 
+
+static LIST_ENTRY       g_listHead;
+
+struct listStruct {
+    int             num;
+    LIST_ENTRY      listEntry;
+};
+
+listStruct  g_listItem1 = { 1 };
+listStruct  g_listItem2 = { 2 };
+listStruct  g_listItem3 = { 3 };
+
+
+struct listStruct1;
+
+static listStruct1       *g_listHead1 = NULL;
+
+struct listStruct1 {
+    int                     num;
+    struct listStruct1     *next;
+};
+
+listStruct1  g_listItem11 = { 100 };
+listStruct1  g_listItem12 = { 200 };
+listStruct1  g_listItem13 = { 300 };
+
+#define InitializeListHead(ListHead) (\
+    (ListHead)->Flink = (ListHead)->Blink = (ListHead))
+
+#define InsertTailList(ListHead,Entry) {\
+    PLIST_ENTRY _EX_Blink;\
+    PLIST_ENTRY _EX_ListHead;\
+    _EX_ListHead = (ListHead);\
+    _EX_Blink = _EX_ListHead->Blink;\
+    (Entry)->Flink = _EX_ListHead;\
+    (Entry)->Blink = _EX_Blink;\
+    _EX_Blink->Flink = (Entry);\
+    _EX_ListHead->Blink = (Entry);\
+    }
+
+
 void FuncWithName0()
 {
     classChild _classChild;
@@ -176,6 +217,15 @@ int _tmain(int argc, _TCHAR* argv[])
 {
     try
     {
+        InitializeListHead( &g_listHead );
+        InsertTailList( &g_listHead, &g_listItem1.listEntry );
+        InsertTailList( &g_listHead, &g_listItem2.listEntry );
+        InsertTailList( &g_listHead, &g_listItem3.listEntry );
+
+        g_listHead1 = &g_listItem11;
+        g_listItem11.next = &g_listItem12;
+        g_listItem12.next = &g_listItem13;
+
         // Let test scripts to execute
         __debugbreak();
 

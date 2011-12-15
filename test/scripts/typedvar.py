@@ -72,3 +72,21 @@ class TypedVarTest( unittest.TestCase ):
     def testBitField(self):
         tv = target.module.typedVar("g_structWithBits")
         self.assertEqual( 4, tv.m_bit0_4 )
+
+    def testTypeVarList(self):
+        tvl = target.module.typedVarList( target.module.g_listHead, "listStruct", "listEntry" )
+        self.assertEqual( 3, len( tvl ) )
+        self.assertEqual( [1,2,3], [ tv.num for tv in tvl ] )
+        
+        tvl = target.module.typedVarList( target.module.g_listHead, target.module.type("listStruct"), "listEntry" )
+        self.assertEqual( 3, len( tvl ) )
+        self.assertEqual( [1,2,3], [ tv.num for tv in tvl ] )
+        
+        tvl = target.module.typedVarList( target.module.g_listHead1, "listStruct1", "next" )
+        self.assertEqual( 3, len( tvl ) )
+        self.assertEqual( [100,200,300], [ tv.num for tv in tvl ] )
+        
+        tvl = target.module.typedVarList( target.module.g_listHead1, target.module.type("listStruct1"), "next" )
+        self.assertEqual( 3, len( tvl ) )
+        self.assertEqual( [100,200,300], [ tv.num for tv in tvl ] )        
+        

@@ -68,7 +68,13 @@ public:
 
     TypedVarPtr getTypedVarByName( const std::string &symName );
 
-    TypedVarPtr contaningRecord( ULONG64 addr, const std::string &typeName, const std::string &fieldName );
+    TypedVarPtr containingRecordByName( ULONG64 addr, const std::string &typeName, const std::string &fieldName );
+
+    TypedVarPtr containingRecordByType( ULONG64 addr, const TypeInfoPtr &typeInfo, const std::string &fieldName );
+
+    python::list getTypedVarListByTypeName( ULONG64 listHeadAddres, const std::string  &typeName, const std::string &listEntryName );
+
+    python::list getTypedVarListByType( ULONG64 listHeadAddres, const TypeInfoPtr &typeInfo, const std::string &listEntryName );
 
 private:
 
