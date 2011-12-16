@@ -844,11 +844,10 @@ py( PDEBUG_CLIENT4 client, PCSTR args)
         
         // найти путь к файлу
         std::string     fullFileName;
-        std::string     filePath;
         DbgPythonPath   dbgPythonPath;
         
         
-        if ( dbgPythonPath.findPath( argsList[0], fullFileName, filePath ) )
+        if ( dbgPythonPath.getFullFileName( argsList[0], fullFileName ) )
         {
             try {             
           
