@@ -8,24 +8,12 @@
 class DbgPythonPath
 {
 public:
-
     DbgPythonPath();
 
-    std::string 
-    getStr() const;
-    
-    bool
-    findPath( 
-        const std::string  &fileName,
-        std::string  &fullFileName,
-        std::string  &filePath ) const;
-    
-    
+    bool getFullFileName(const std::string &fileName, std::string &fullFileName) const;
+
 private:
-
-    std::vector< std::string >      m_pathList;    
-
+    std::vector<std::string> m_extactedPathList;
 };
-
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -896,11 +896,10 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
         delete[]  pythonArgs;       
 
        // найти путь к файлу
-        std::string     scriptName;
-        std::string     filePath;
+        std::string     fullScriptName;
         DbgPythonPath   dbgPythonPath;        
         
-        if ( !dbgPythonPath.findPath( argsList[0], scriptName, filePath ) )
+        if ( !dbgPythonPath.getFullFileName( argsList[0], fullScriptName ) )
         {
             dbgClient->eprintln( L"script file not found" );            
         }
@@ -909,7 +908,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
       
             python::object       result;
     
-            result =  python::exec_file( scriptName.c_str(), global, global );
+            result =  python::exec_file( fullScriptName.c_str(), global, global );
         }                
         catch( boost::python::error_already_set const & )
         {
