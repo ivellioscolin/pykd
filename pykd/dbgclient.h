@@ -156,6 +156,10 @@ public:
 
     std::wstring loadUnicodeStr( ULONG64 address );
 
+    python::list loadPtrList( ULONG64 address );
+
+    python::list loadPtrArray( ULONG64 address, ULONG  number );
+
     ULONG ptrSize();
 
     ULONG64 ptrByte( ULONG64 offset );

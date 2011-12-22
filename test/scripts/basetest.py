@@ -46,9 +46,7 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'loadChars') )
         self.assertTrue( hasattr(pykd, 'loadDWords') )
         self.assertTrue( hasattr(pykd, 'loadDump') )
-        self.assertTrue( hasattr(pykd, 'loadLinkedList') )
         self.assertTrue( hasattr(pykd, 'loadModule') )
-        self.assertTrue( hasattr(pykd, 'loadPtrs') )
         self.assertTrue( hasattr(pykd, 'loadQWords') )
         self.assertTrue( hasattr(pykd, 'loadSignBytes') )
         self.assertTrue( hasattr(pykd, 'loadSignDWords') )
@@ -106,10 +104,12 @@ class BaseTest( unittest.TestCase ):
         self.assertFalse( hasattr(pykd, 'cpuReg') )
         self.assertFalse( hasattr(pykd, 'dbgModuleClass') )
         self.assertFalse( hasattr(pykd, 'dbgStackFrameClass') )
-        self.assertFalse( hasattr(pykd, 'debugEvent') )    
-        self.assertFalse( hasattr(pykd, 'findModule') )            
+        self.assertFalse( hasattr(pykd, 'debugEvent') )
+        self.assertFalse( hasattr(pykd, 'findModule') )
+        self.assertFalse( hasattr(pykd, 'loadLinkedList') )
+        self.assertFalse( hasattr(pykd, 'loadPtrs') )
         self.assertFalse( hasattr(pykd, 'windbgIn') )
-        self.assertFalse( hasattr(pykd, 'windbgOut') )        
+        self.assertFalse( hasattr(pykd, 'windbgOut') )
         
     def testNewAddededApi( self ):
         """ Branch test: new API 0.1.x what must be available """
@@ -118,6 +118,8 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'getDebuggeeType' ) )
         self.assertTrue( hasattr(pykd, 'getExecutionStatus' ) )
         self.assertTrue( hasattr(pykd, 'loadExt') )
+        self.assertTrue( hasattr(pykd, 'loadPtrList') )
+        self.assertTrue( hasattr(pykd, 'loadPtrArray') )
         self.assertTrue( hasattr(pykd, 'setExecutionStatus') )
         self.assertTrue( hasattr(pykd, 'waitForEvent') )
         

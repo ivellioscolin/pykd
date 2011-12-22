@@ -210,7 +210,11 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "loadUnicodeString", &DebugClient::loadUnicodeStr,
             "Return string represention of windows UNICODE_STRING type" )
         .def( "loadAnsiString", &DebugClient::loadAnsiStr,
-            "Return string represention of windows ANSU_STRING type" )
+            "Return string represention of windows ANSI_STRING type" )
+        .def( "loadPtrList", &DebugClient::loadPtrList,
+            "Return list of pointers, each points to next" )
+        .def( "loadPtrArray", &DebugClient::loadPtrArray,
+            "Read the block of the target's memory and return it as a list of pointers" )
         .def( "ptrByte", &DebugClient::ptrByte,
             "Read an unsigned 1-byte integer from the target memory" )
         .def( "ptrWord", &DebugClient::ptrWord,
@@ -350,6 +354,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Return string represention of windows UNICODE_STRING type" );
     python::def( "loadAnsiString", &loadAnsiStr,
         "Return string represention of windows ANSU_STRING type" );
+    python::def( "loadPtrList", &loadPtrList,
+        "Return list of pointers, each points to next" );
+    python::def( "loadPtrArray", &loadPtrArray,
+        "Read the block of the target's memory and return it as a list of pointers" );
     python::def( "ptrByte", &ptrByte,
         "Read an unsigned 1-byte integer from the target memory" );
     python::def( "ptrWord", &ptrWord,

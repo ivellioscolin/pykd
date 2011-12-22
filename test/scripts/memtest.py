@@ -86,4 +86,12 @@ class MemoryTest( unittest.TestCase ):
         self.assertTrue( pykd.isValid( target.module.begin() ) )
         self.assertFalse( pykd.isValid( 0 ) )
         self.assertFalse( pykd.isValid( 0xDEADBEAF ) )
-            
+        
+    def testPtrList( self ):
+        lst = pykd.loadPtrList( target.module.g_listHead )
+        self.assertEqual( 3, len( lst ) )
+        
+    def testPtrArray( self ):
+        lst = pykd.loadPtrArray( target.module.arrIntMatrixPtrs, 3 )
+        self.assertEqual( 3, len( lst ) )
+

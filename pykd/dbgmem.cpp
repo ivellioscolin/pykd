@@ -623,5 +623,36 @@ std::string loadAnsiStr( ULONG64 address )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+python::list DebugClient::loadPtrList( ULONG64 address )
+{
+    ULONG64     entryAddress = 0;
+   
+    python::list    lst;
+    
+    for( entryAddress = ptrPtr( address ); entryAddress != address && entryAddress != 0; entryAddress = ptrPtr( entryAddress ) )
+        lst.append( entryAddress );
+    
+    return lst;
+}
+
+python::list loadPtrList( ULONG64 address )
+{
+    return g_dbgClient->loadPtrList( address );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+python::list DebugClient::loadPtrArray( ULONG64 address, ULONG  number )
+{
+    return ptrSize() == 8 ? loadQWords( address, number ) : loadDWords( address, number );
+}
+
+python::list loadPtrArray( ULONG64 address, ULONG  number )
+{
+    return g_dbgClient->loadPtrArray( address, number );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 }; // end of pykd
 

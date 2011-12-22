@@ -86,6 +86,10 @@ std::wstring loadUnicodeStr( ULONG64 address );
 
 std::string loadAnsiStr( ULONG64 address );
 
+python::list loadPtrList( ULONG64 address );
+
+python::list loadPtrArray( ULONG64 address, ULONG  number );
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 };
