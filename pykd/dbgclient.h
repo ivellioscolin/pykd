@@ -51,6 +51,8 @@ public:
 
     bool compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr = FALSE );
 
+    void detachProcess();
+
     DbgOut  dout() {
         return DbgOut( m_client );
     }
@@ -189,6 +191,8 @@ public:
     python::object getRegByIndex( ULONG index );
 
     void setExecutionStatus( ULONG status );
+
+    void terminateProcess();
     
     void waitForEvent();
 
@@ -278,6 +282,8 @@ void attachProcess( ULONG  processId );
 
 void attachKernel( const std::wstring  &param );
 
+void detachProcess();
+
 std::string findSymbol( ULONG64 offset );
 
 python::tuple getDebuggeeType();
@@ -297,6 +303,8 @@ bool isDumpAnalyzing();
 ULONG ptrSize();
 
 void setExecutionStatus( ULONG status );
+
+void terminateProcess();
 
 void waitForEvent();
 
@@ -370,62 +378,3 @@ void changeDebuggerStatus()
 };  // namespace pykd
 
 
-
-
-
-
-
-
-
-
-//#include "dbgext.h"
-//#include "dbgeventcb.h"
-//
-/////////////////////////////////////////////////////////////////////////////////
-//
-//class dbgClient {
-//
-//public:
-//
-//    dbgClient() 
-//    {
-//        m_callbacks = NULL;
-//        
-//        IDebugClient4     *client = NULL;
-//        DebugCreate( __uuidof(IDebugClient4), (void **)&client );
-//    
-//        m_ext = new DbgExt( client );
-//        
-//        client->Release();
-//    }
-//    
-//    ~dbgClient() 
-//    {
-//        removeEventsMgr();
-//            
-//        delete m_ext;
-//    }
-//    
-//    void startEventsMgr() {
-// 
-//         m_callbacks = new DbgEventCallbacksManager( m_ext->client );    
-//    }
-//    
-//    void removeEventsMgr() {
-//    
-//        if ( m_callbacks )
-//        {
-//            delete m_callbacks;
-//            m_callbacks = NULL;
-//        }
-//    }
-//    
-//private:
-//
-//    DbgExt                          *m_ext;
-//    DbgEventCallbacksManager        *m_callbacks;  
-//};
-//
-//extern dbgClient    g_dbgClient;
-//
-/////////////////////////////////////////////////////////////////////////////////

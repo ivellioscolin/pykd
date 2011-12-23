@@ -149,6 +149,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Attach debugger to a exsisting process" )
         .def( "attachKernel", &DebugClient::attachKernel, 
             "Attach debugger to a target's kernel" )
+        .def( "detachProcess", &DebugClient::detachProcess,
+            "Detach debugger from the current process" )
         .def( "expr", &DebugClient::evaluate,
             "Evaluate windbg expression" )
         .def( "findSymbol", &DebugClient::findSymbol,
@@ -183,6 +185,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Check if kernel dubugging is running" )
         .def( "isValid", &DebugClient::isVaValid,
             "Check if the virtual address is valid" )
+        .def( "killProcess", &DebugClient::terminateProcess,
+            "Stop debugging and terminate current process" )
         .def( "loadBytes", &DebugClient::loadBytes, DebugClient_loadBytes( python::args( "offset", "count", "phyAddr" ),
             "Read the block of the target's memory and return it as list of unsigned bytes" ) )
         .def( "loadWords", &DebugClient::loadWords, DebugClient_loadWords( python::args( "offset", "count", "phyAddr" ),
@@ -255,21 +259,21 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a CPU regsiter value by the register's name" )
         .def( "reg", &DebugClient::getRegByIndex,
             "Return a CPU regsiter value by the register's value" )
-        .def( "setExecutionStatus",  &pykd::DebugClient::setExecutionStatus,
+        .def( "setExecutionStatus",  &DebugClient::setExecutionStatus,
             "Requests that the debugger engine enter an executable state" )
-        .def( "step", &pykd::DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
+        .def( "step", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
             "Change debugger status to DEBUG_STATUS_STEP_OVER" )
-        .def( "trace", &pykd::DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
+        .def( "trace", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
             "Change debugger status to DEBUG_STATUS_STEP_INTO" )
-        .def( "waitForEvent", &pykd::DebugClient::waitForEvent,
+        .def( "waitForEvent", &DebugClient::waitForEvent,
             "Wait for events that breaks into the debugger" )
-        .def( "addSynSymbol", &pykd::DebugClient::addSyntheticSymbol,
+        .def( "addSynSymbol", &DebugClient::addSyntheticSymbol,
             "Add new synthetic symbol for virtual address" )
-        .def( "delAllSynSymbols", &pykd::DebugClient::delAllSyntheticSymbols, 
+        .def( "delAllSynSymbols", &DebugClient::delAllSyntheticSymbols, 
             "Delete all synthetic symbol for all modules")
-        .def( "delSynSymbol", &pykd::DebugClient::delSyntheticSymbol, 
+        .def( "delSynSymbol", &DebugClient::delSyntheticSymbol, 
             "Delete synthetic symbols by virtual address" )
-        .def( "delSynSymbolsMask", &pykd::DebugClient::delSyntheticSymbolsMask, 
+        .def( "delSynSymbolsMask", &DebugClient::delSyntheticSymbolsMask, 
             "Delete synthetic symbols by mask of module and symbol name");
 
     python::def( "addr64", &addr64,
@@ -288,6 +292,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Attach debugger to a exsisting process" );
     python::def( "attachKernel", &attachKernel,
         "Attach debugger to a kernel target" );
+    python::def( "detachProcess", &detachProcess,
+        "Detach denugger from the current process" );
     python::def( "expr", &evaluate,
         "Evaluate windbg expression" );
     python::def( "findSymbol", &findSymbol,
@@ -326,6 +332,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if script works in windbg context" );
     python::def( "isValid", &isVaValid,
         "Check if the virtual address is valid" );
+    python::def( "killProcess", &terminateProcess,
+            "Stop debugging and terminate current process" );
     python::def( "loadBytes", &loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as liat of unsigned bytes" ) );
     python::def( "loadWords", &loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
@@ -388,7 +396,6 @@ BOOST_PYTHON_MODULE( pykd )
         "Delete synthetic symbols by virtual address" );
     boost::python::def( "delSynSymbolsMask", &delSyntheticSymbolsMask, 
         "Delete synthetic symbols by mask of module and symbol name");
-
     python::def( "loadExt", &pykd::loadExtension,
         "Load a debuger extension" );
     python::def( "loadModule", &loadModuleByName,

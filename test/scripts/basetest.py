@@ -56,7 +56,7 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'loadWChars') )
         self.assertTrue( hasattr(pykd, 'loadWStr') )
         self.assertTrue( hasattr(pykd, 'loadWords') )
-        self.assertTrue( hasattr(pykd, 'locals') )
+        #self.assertTrue( hasattr(pykd, 'locals') )
         self.assertTrue( hasattr(pykd, 'ptrByte') )
         self.assertTrue( hasattr(pykd, 'ptrDWord') )
         self.assertTrue( hasattr(pykd, 'ptrMWord') )
@@ -114,9 +114,11 @@ class BaseTest( unittest.TestCase ):
     def testNewAddededApi( self ):
         """ Branch test: new API 0.1.x what must be available """
         self.assertTrue( hasattr(pykd, 'createDbgClient') )
+        self.asseerTrue( hasattr(pykd, 'detachProcess') )
         self.assertTrue( hasattr(pykd, 'diaLoadPdb') )
         self.assertTrue( hasattr(pykd, 'getDebuggeeType' ) )
         self.assertTrue( hasattr(pykd, 'getExecutionStatus' ) )
+        self.asseerTrue( hasattr(pykd, 'killProcess') )
         self.assertTrue( hasattr(pykd, 'loadExt') )
         self.assertTrue( hasattr(pykd, 'loadPtrList') )
         self.assertTrue( hasattr(pykd, 'loadPtrArray') )

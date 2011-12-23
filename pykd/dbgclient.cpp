@@ -226,6 +226,21 @@ void attachProcess( ULONG  processId ) {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+void DebugClient::detachProcess()
+{
+    HRESULT     hres;
+    
+    hres = m_client->DetachCurrentProcess();
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugClient::DetachCurrentProcess failed" );
+}
+
+void detachProcess() {
+    g_dbgClient->detachProcess();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 void DebugClient::attachKernel( const std::wstring  &param )
 {
     HRESULT     hres;
@@ -379,6 +394,22 @@ ULONG DebugClient::ptrSize()
 ULONG ptrSize()
 { 
     return g_dbgClient->ptrSize();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void DebugClient::terminateProcess()
+{
+    HRESULT     hres;
+    
+    hres = m_client->TerminateCurrentProcess();
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugClient::TerminateCurrentProcess failed" );
+}
+
+void terminateProcess()
+{
+    g_dbgClient->terminateProcess();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
