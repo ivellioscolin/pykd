@@ -114,11 +114,11 @@ class BaseTest( unittest.TestCase ):
     def testNewAddededApi( self ):
         """ Branch test: new API 0.1.x what must be available """
         self.assertTrue( hasattr(pykd, 'createDbgClient') )
-        self.asseerTrue( hasattr(pykd, 'detachProcess') )
+        self.assertTrue( hasattr(pykd, 'detachProcess') )
         self.assertTrue( hasattr(pykd, 'diaLoadPdb') )
         self.assertTrue( hasattr(pykd, 'getDebuggeeType' ) )
         self.assertTrue( hasattr(pykd, 'getExecutionStatus' ) )
-        self.asseerTrue( hasattr(pykd, 'killProcess') )
+        self.assertTrue( hasattr(pykd, 'killProcess') )
         self.assertTrue( hasattr(pykd, 'loadExt') )
         self.assertTrue( hasattr(pykd, 'loadPtrList') )
         self.assertTrue( hasattr(pykd, 'loadPtrArray') )

@@ -162,6 +162,8 @@ public:
 
     python::list loadPtrArray( ULONG64 address, ULONG  number );
 
+    ULONG64 loadMSR( ULONG  msr );
+
     ULONG ptrSize();
 
     ULONG64 ptrByte( ULONG64 offset );
@@ -185,6 +187,8 @@ public:
     LONG64 ptrSignMWord( ULONG64 offset );
 
     ULONG64 ptrPtr( ULONG64 offset );
+
+    void setMSR( ULONG msr, ULONG64 value);
     
     python::object getRegByName( const std::wstring &regName );
 
@@ -300,9 +304,13 @@ bool isKernelDebugging();
 
 bool isDumpAnalyzing();
 
+ULONG64 loadMSR( ULONG  msr );
+
 ULONG ptrSize();
 
 void setExecutionStatus( ULONG status );
+
+void setMSR( ULONG msr, ULONG64 value);
 
 void terminateProcess();
 

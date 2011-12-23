@@ -255,12 +255,16 @@ BOOST_PYTHON_MODULE( pykd )
             "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" )
         .def( "ptrSize", &DebugClient::ptrSize,
             "Return effective pointer size" )
+         .def ( "rdmsr", &DebugClient::loadMSR,
+            "Return MSR value" )
         .def( "reg", &DebugClient::getRegByName,
             "Return a CPU regsiter value by the register's name" )
         .def( "reg", &DebugClient::getRegByIndex,
             "Return a CPU regsiter value by the register's value" )
         .def( "setExecutionStatus",  &DebugClient::setExecutionStatus,
             "Requests that the debugger engine enter an executable state" )
+        .def( "wrmsr", &DebugClient::setMSR,
+            "Set MSR value" )
         .def( "step", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
             "Change debugger status to DEBUG_STATUS_STEP_OVER" )
         .def( "trace", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
@@ -410,6 +414,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
     python::def( "ptrSize", &ptrSize,
         "Return effective pointer size" );
+    python::def ( "rdmsr", &DebugClient::loadMSR,
+            "Return MSR value" );
     python::def( "reg", &getRegByName,
         "Return a CPU regsiter value by the register's name" );
     python::def( "reg", &getRegByIndex,
@@ -418,6 +424,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Requests that the debugger engine enter an executable state" );
     python::def( "step", &pykd::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
         "Change debugger status to DEBUG_STATUS_STEP_OVER" );
+    python::def( "wrmsr", &setMSR,
+        "Set MSR value" );
     python::def( "trace", &pykd::changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
         "Change debugger status to DEBUG_STATUS_STEP_INTO" );
     python::def( "waitForEvent", &pykd::waitForEvent,
