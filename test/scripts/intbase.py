@@ -26,6 +26,7 @@ class IntBaseTest( unittest.TestCase ):
         self.assertTrue( 0xFFFFFFFFFFFFFFFF ==  intBase(0xFFFFFFFFFFFFFFFF) )
         self.assertTrue( -20 == intBase(-20) )
         self.assertTrue( -2000 == intBase(-2000) )
+        self.assertTrue( -0x7FFFFFFF == intBase(-0x7FFFFFFF) )
         self.assertTrue( -20000000000 == intBase(-20000000000) )         
         self.assertTrue( -0x8000000000000000 == intBase(-0x8000000000000000) )
         self.assertTrue( intBase(0x20L) == intBase(0x20) )

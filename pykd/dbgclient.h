@@ -304,13 +304,9 @@ bool isKernelDebugging();
 
 bool isDumpAnalyzing();
 
-ULONG64 loadMSR( ULONG  msr );
-
 ULONG ptrSize();
 
 void setExecutionStatus( ULONG status );
-
-void setMSR( ULONG msr, ULONG64 value);
 
 void terminateProcess();
 

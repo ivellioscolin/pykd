@@ -65,4 +65,39 @@ python::object getRegByName( const std::wstring &regName )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+ULONG64 DebugClient::loadMSR( ULONG  msr )
+{
+    HRESULT     hres;
+    ULONG64     value;
+
+    hres = m_dataSpaces->ReadMsr( msr, &value );
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugDataSpaces::ReadMsr  failed" );
+
+    return value;
+}
+
+ULONG64 loadMSR( ULONG  msr )
+{
+    return g_dbgClient->loadMSR( msr );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void DebugClient::setMSR( ULONG msr, ULONG64 value)
+{
+    HRESULT     hres;
+
+    hres = m_dataSpaces->WriteMsr(msr, value);
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugDataSpaces::WriteMsr  failed" );
+}
+
+void setMSR( ULONG msr, ULONG64 value)
+{
+    g_dbgClient->setMSR( msr, value );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 } // end namespace pykd

@@ -195,20 +195,15 @@ private:
 
             return BaseTypeVariant(false);
         }
-        else if ( _PyLong_Sign( obj.ptr() ) >= 0 )
+        else if ( PyInt_CheckExact( obj.ptr() ) )
         {
-            if ( PyInt_CheckExact( obj.ptr() ) )
-                return BaseTypeVariant( ULONG( PyLong_AsUnsignedLong( obj.ptr() ) ) );
-            else
-            if( PyLong_CheckExact( obj.ptr() ) )
-                return BaseTypeVariant( ULONG64( PyLong_AsUnsignedLongLong( obj.ptr() ) ) );
+             return BaseTypeVariant( LONG( PyLong_AsLong( obj.ptr() ) ) );
         }
         else
         {
-            if ( PyInt_CheckExact( obj.ptr() ) )
-                return BaseTypeVariant( LONG( PyLong_AsLong( obj.ptr() ) ) );
+            if ( _PyLong_Sign( obj.ptr() ) >= 0 )
+                return BaseTypeVariant( ULONG64( PyLong_AsUnsignedLongLong( obj.ptr() ) ) );
             else
-            if( PyLong_CheckExact( obj.ptr() ) )
                 return BaseTypeVariant( LONG64( PyLong_AsLongLong( obj.ptr() ) ) );
         }
 
