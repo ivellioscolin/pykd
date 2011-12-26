@@ -333,6 +333,29 @@ std::string getPdbFile( ULONG64 moduleBase )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+std::string DebugClient::dbgSymPath()
+{
+    HRESULT         hres;
+    std::string     pathStr;
+    
+    ULONG    size;
+    m_symbols->GetSymbolPath( NULL, 0, &size );
+        
+    std::vector<char> path(size);
+    hres = m_symbols->GetSymbolPath( &path[0], size, NULL );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbols::GetSymbolPath  failed" ); 
+        
+    return std::string(&path[0],size);
+}
+
+std::string dbgSymPath()
+{
+    return g_dbgClient->dbgSymPath();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 void DebugClient::setExecutionStatus( ULONG status )
 {
     HRESULT     hres;

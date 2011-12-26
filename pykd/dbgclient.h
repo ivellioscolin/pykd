@@ -103,6 +103,8 @@ public:
 
     std::string getProcessorType();
 
+    std::string dbgSymPath();
+
     python::list getThreadList();
 
     template<ULONG status>
@@ -194,7 +196,13 @@ public:
 
     python::object getRegByIndex( ULONG index );
 
+    void setCurrentProcess( ULONG64 addr );
+
     void setExecutionStatus( ULONG status );
+
+    void setImplicitThread( ULONG64 threadAddr );
+
+    void setProcessorMode( const std::wstring &mode );
 
     void terminateProcess();
     
@@ -297,6 +305,8 @@ ULONG getExecutionStatus();
 ULONG64 getOffset( const std::wstring  symbolname );
 
 std::string getPdbFile( ULONG64 moduleBase );
+
+std::string dbgSymPath();
 
 bool is64bitSystem();
 

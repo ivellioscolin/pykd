@@ -76,6 +76,11 @@ public:
 
     python::list getTypedVarListByType( ULONG64 listHeadAddres, const TypeInfoPtr &typeInfo, const std::string &listEntryName );
 
+    python::list getTypedVarArrayByTypeName( ULONG64 addr, const std::string  &typeName, ULONG number );
+
+    python::list getTypedVarArrayByType( ULONG64 addr, const TypeInfoPtr &typeInfo, ULONG number );
+
+
 private:
 
     ULONG getRvaByName(const std::string &symName);

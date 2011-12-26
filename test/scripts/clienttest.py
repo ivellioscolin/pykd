@@ -31,3 +31,6 @@ class DbgClientTest( unittest.TestCase ):
 
     def testThreadList( self ):
         self.assertNotEqual( 0, len(pykd.getThreadList()) )
+        
+    def testSymbolsPath( self ):
+        self.assertNotEqual( '', pykd.symbolsPath() )

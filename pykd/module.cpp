@@ -277,5 +277,26 @@ python::list Module::getTypedVarListByType( ULONG64 listHeadAddress, const TypeI
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+python::list Module::getTypedVarArrayByTypeName( ULONG64 addr, const std::string  &typeName, ULONG number )
+{
+    return getTypedVarArrayByType( addr, getTypeByName( typeName ), number );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+python::list Module::getTypedVarArrayByType( ULONG64 address, const TypeInfoPtr &typeInfo, ULONG number )
+{
+    address = addr64(address); 
+       
+    python::list     lst;
+    
+    for( ULONG i = 0; i < number; ++i )
+        lst.append( getTypedVarByType( typeInfo, address + i * typeInfo->getSize() ) );
+   
+    return lst;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }; // end of namespace pykd
 

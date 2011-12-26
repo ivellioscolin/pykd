@@ -71,17 +71,14 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'ptrWord') )
         self.assertTrue( hasattr(pykd, 'rdmsr') )
         self.assertTrue( hasattr(pykd, 'reg') )
-        self.assertTrue( hasattr(pykd, 'reloadModule') )
         self.assertTrue( hasattr(pykd, 'setCurrentProcess') )
         self.assertTrue( hasattr(pykd, 'setImplicitThread') )
         self.assertTrue( hasattr(pykd, 'setProcessorMode') )
-        self.assertTrue( hasattr(pykd, 'sizeof') )
+       # self.assertTrue( hasattr(pykd, 'sizeof') )
         self.assertTrue( hasattr(pykd, 'startProcess') )
         self.assertTrue( hasattr(pykd, 'step') )
         self.assertTrue( hasattr(pykd, 'symbolsPath') )
         self.assertTrue( hasattr(pykd, 'trace') )
-        self.assertTrue( hasattr(pykd, 'typedVarArray') )
-        self.assertTrue( hasattr(pykd, 'typedVarList') )
         self.assertTrue( hasattr(pykd, 'wrmsr') )
 
 
@@ -108,6 +105,9 @@ class BaseTest( unittest.TestCase ):
         self.assertFalse( hasattr(pykd, 'findModule') )
         self.assertFalse( hasattr(pykd, 'loadLinkedList') )
         self.assertFalse( hasattr(pykd, 'loadPtrs') )
+        self.assertFalse( hasattr(pykd, 'reloadModule') )   
+        self.assertFalse( hasattr(pykd, 'typedVarArray') )
+        self.assertFalse( hasattr(pykd, 'typedVarList') )             
         self.assertFalse( hasattr(pykd, 'windbgIn') )
         self.assertFalse( hasattr(pykd, 'windbgOut') )
         

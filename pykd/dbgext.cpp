@@ -261,16 +261,24 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a CPU regsiter value by the register's name" )
         .def( "reg", &DebugClient::getRegByIndex,
             "Return a CPU regsiter value by the register's value" )
-        .def( "setExecutionStatus",  &DebugClient::setExecutionStatus,
+        .def( "setCurrentProcess", &DebugClient::setCurrentProcess, 
+            "Set current process by address" )
+        .def( "setExecutionStatus", &DebugClient::setExecutionStatus,
             "Requests that the debugger engine enter an executable state" )
-        .def( "wrmsr", &DebugClient::setMSR,
-            "Set MSR value" )
+        .def( "setImplicitThread", &DebugClient::setImplicitThread, 
+            "Set implicit thread for current process" )
+        .def( "setProcessorMode", &DebugClient::setProcessorMode, 
+            "Set current processor mode by string (X86, ARM, IA64 or X64)" )
         .def( "step", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
             "Change debugger status to DEBUG_STATUS_STEP_OVER" )
+        .def( "symbolsPath", &DebugClient::dbgSymPath, 
+            "Return symbol path" )   
         .def( "trace", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
             "Change debugger status to DEBUG_STATUS_STEP_INTO" )
         .def( "waitForEvent", &DebugClient::waitForEvent,
             "Wait for events that breaks into the debugger" )
+        .def( "wrmsr", &DebugClient::setMSR,
+            "Set MSR value" )
         .def( "addSynSymbol", &DebugClient::addSyntheticSymbol,
             "Add new synthetic symbol for virtual address" )
         .def( "delAllSynSymbols", &DebugClient::delAllSyntheticSymbols, 
@@ -420,15 +428,23 @@ BOOST_PYTHON_MODULE( pykd )
         "Return a CPU regsiter value by the register's name" );
     python::def( "reg", &getRegByIndex,
          "Return a CPU regsiter value by the register's value" );
-    python::def( "setExecutionStatus",  &pykd::setExecutionStatus,
+    python::def( "setExecutionStatus",  &setExecutionStatus,
         "Requests that the debugger engine enter an executable state" );
-    python::def( "step", &pykd::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
+    python::def( "setCurrentProcess", &setCurrentProcess, 
+        "Set current process by address" );
+    python::def( "setImplicitThread", &setImplicitThread, 
+        "Set implicit thread for current process" );
+    python::def( "setProcessorMode", &setProcessorMode, 
+        "Set current processor mode by string (X86, ARM, IA64 or X64)" );
+    python::def( "step", &changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
         "Change debugger status to DEBUG_STATUS_STEP_OVER" );
+    python::def( "symbolsPath", &dbgSymPath, 
+        "Return symbol path" );
     python::def( "wrmsr", &setMSR,
         "Set MSR value" );
-    python::def( "trace", &pykd::changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
+    python::def( "trace", &changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
         "Change debugger status to DEBUG_STATUS_STEP_INTO" );
-    python::def( "waitForEvent", &pykd::waitForEvent,
+    python::def( "waitForEvent", &waitForEvent,
         "Wait for events that breaks into the debugger" );
     
     python::class_<TypeInfo, TypeInfoPtr, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
@@ -490,6 +506,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
         .def("typedVarList", &Module::getTypedVarListByType,
             "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
+        .def("typedVarArray", &Module::getTypedVarArrayByTypeName,
+            "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
+        .def("typedVarArray", &Module::getTypedVarArrayByType,
+            "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
         .def("containingRecord", &Module::containingRecordByName,
             "Return instance of the typedVar class. It's value are loaded from the target memory."
             "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )

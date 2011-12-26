@@ -16,6 +16,12 @@ std::string getProcessorType();
 
 python::list getThreadList();
 
+void setCurrentProcess( ULONG64 processAddr );
+
+void setImplicitThread( ULONG64 threadAddr );
+
+void setProcessorMode( const std::wstring &mode );
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 }

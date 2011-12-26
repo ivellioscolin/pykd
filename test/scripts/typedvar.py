@@ -73,7 +73,7 @@ class TypedVarTest( unittest.TestCase ):
         tv = target.module.typedVar("g_structWithBits")
         self.assertEqual( 4, tv.m_bit0_4 )
 
-    def testTypeVarList(self):
+    def testTypedVarList(self):
         tvl = target.module.typedVarList( target.module.g_listHead, "listStruct", "listEntry" )
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [1,2,3], [ tv.num for tv in tvl ] )
@@ -88,5 +88,15 @@ class TypedVarTest( unittest.TestCase ):
         
         tvl = target.module.typedVarList( target.module.g_listHead1, target.module.type("listStruct1"), "next" )
         self.assertEqual( 3, len( tvl ) )
-        self.assertEqual( [100,200,300], [ tv.num for tv in tvl ] )        
+        self.assertEqual( [100,200,300], [ tv.num for tv in tvl ] )
         
+    def testTypedVarArray(self):
+        tvl = target.module.typedVarArray( target.module.g_testArray, "structTest", 2 )
+        self.assertEqual( 2, len( tvl ) )
+        self.assertEqual( 500, tvl[0].m_field1 )
+        self.assertEqual( False, tvl[1].m_field2 )
+
+        tvl = target.module.typedVarArray( target.module.g_testArray, target.module.type("structTest"), 2 )
+        self.assertEqual( 2, len( tvl ) )
+        self.assertEqual( 1, tvl[0].m_field3 )
+        self.assertEqual( 0, tvl[1].m_field4 )

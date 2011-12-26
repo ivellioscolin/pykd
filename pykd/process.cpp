@@ -188,4 +188,66 @@ python::list getThreadList()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+void DebugClient::setCurrentProcess( ULONG64 processAddr )
+{
+    HRESULT     hres;
+
+    processAddr = addr64(processAddr);
+    hres = m_system->SetImplicitProcessDataOffset( processAddr );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSystemObjects2::SetImplicitProcessDataOffset  failed" );         
+}
+
+void setCurrentProcess( ULONG64 processAddr )
+{
+    g_dbgClient->setCurrentProcess( processAddr );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void DebugClient::setImplicitThread( ULONG64 threadAddr )
+{
+    HRESULT                 hres;  
+
+    threadAddr = addr64(threadAddr);
+    hres = m_system->SetImplicitThreadDataOffset( threadAddr );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSystemObjects2::SetImplicitThreadDataOffset  failed" );         
+}
+
+void setImplicitThread( ULONG64 threadAddr )
+{
+    g_dbgClient->setImplicitThread( threadAddr );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void DebugClient::setProcessorMode( const std::wstring &mode )
+{
+    HRESULT         hres;  
+    ULONG           processorMode;
+
+    if ( mode == L"X86" )
+        processorMode = IMAGE_FILE_MACHINE_I386;
+    else if ( mode == L"ARM" )
+        processorMode = IMAGE_FILE_MACHINE_ARM;
+    else if ( mode == L"IA64" )
+        processorMode = IMAGE_FILE_MACHINE_IA64;
+    else if ( mode == L"X64" )
+        processorMode = IMAGE_FILE_MACHINE_AMD64;
+    else
+        throw DbgException( "Unknown processor type" );
+
+    hres = m_control->SetEffectiveProcessorType( processorMode );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::SetEffectiveProcessorType  failed" );
+}
+
+void setProcessorMode( const std::wstring &mode )
+{
+    g_dbgClient->setProcessorMode( mode );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }
