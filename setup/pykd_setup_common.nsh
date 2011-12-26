@@ -136,7 +136,7 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion"     "${PRODUCT_VERSION}"
     !insertmacro _LOGICLIB_TEMP
     Push 'msvcr90.dll'
     Push 'Microsoft.VC90.CRT,version="9.0.21022.8",type="win32",processorArchitecture="${ARCH}",publicKeyToken="1fc8b3b9a1e18e3b"'
-    ${WinSxS_HasAssembly}
+    ${WinSxS_HasAssembly}   
     Pop $_LOGICLIB_TEMP
     !insertmacro _== $_LOGICLIB_TEMP 1 `${_t}` `${_f}`
 !macroend
@@ -213,6 +213,7 @@ Section "Python ${PYTHON_VERSION} ${PRODUCT_ARCH}" sec_python
     ${If} $0 == "OK" 
         DetailPrint "Successfully downloaded."
         DetailPrint "Installing Python..."
+        ClearErrors
         ExecWait '"msiexec" /i "$TEMP\${PYTHON_INSTALLER}"'
         IfErrors PythonInstallFailed
         DetailPrint "Successfully installed."
