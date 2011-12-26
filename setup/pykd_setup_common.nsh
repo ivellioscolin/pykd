@@ -134,8 +134,8 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion"     "${PRODUCT_VERSION}"
 
 !macro _IsVcRuntimeInstalled _a _b _t _f
     !insertmacro _LOGICLIB_TEMP
-    Push 'msvcr80.dll'
-    Push 'Microsoft.VC80.CRT,version="8.0.50727.6195",type="win32",processorArchitecture="${ARCH}",publicKeyToken="1fc8b3b9a1e18e3b"'
+    Push 'msvcr90.dll'
+    Push 'Microsoft.VC90.CRT,version="9.0.21022.8",type="win32",processorArchitecture="${ARCH}",publicKeyToken="1fc8b3b9a1e18e3b"'
     ${WinSxS_HasAssembly}
     Pop $_LOGICLIB_TEMP
     !insertmacro _== $_LOGICLIB_TEMP 1 `${_t}` `${_f}`
@@ -227,8 +227,8 @@ Section "Python ${PYTHON_VERSION} ${PRODUCT_ARCH}" sec_python
     ${EndIf}
 SectionEnd
 
-Section "Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime" sec_vcruntime
-    DetailPrint "Installing Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library..."
+Section "Visual C++ 2008 SP1 (${PRODUCT_ARCH}) runtime" sec_vcruntime
+    DetailPrint "Installing Microsoft Visual C++ 2008 SP1 (${PRODUCT_ARCH}) runtime library..."
 
     SetOutPath "$TEMP"
     !if ${PRODUCT_ARCH} == "x64"
@@ -255,7 +255,7 @@ Section "Debug Interface Access (${PRODUCT_ARCH}) library" sec_msdia
         RegDLL "$COMMONFILES64\Microsoft Shared\VC\${MSDIA_DLL_NAME}"
     !else
         RegDLL "$COMMONFILES32\Microsoft Shared\VC\${MSDIA_DLL_NAME}"
-    !endif	 
+    !endif
     ${IfNot} ${Errors}
         DetailPrint "Successfully registered."
         ${SetRegView64}
@@ -338,7 +338,7 @@ FunctionEnd
 LangString DESC_sec_pykd      ${LANG_ENGLISH} "${PRODUCT_FULL_NAME}"
 LangString DESC_sec_snippets  ${LANG_ENGLISH} "Useful code snippets. Will be installed in $DOCUMENTS\${PRODUCT_SHORT_NAME}"
 LangString DESC_sec_python    ${LANG_ENGLISH} "Let installer download and setup Python ${PYTHON_VERSION} ${PRODUCT_ARCH}"
-LangString DESC_sec_vcruntime ${LANG_ENGLISH} "Let installer download and setup Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library"
+LangString DESC_sec_vcruntime ${LANG_ENGLISH} "Let installer download and setup Microsoft Visual C++ 2008 SP1 (${PRODUCT_ARCH}) runtime library"
 LangString DESC_sec_msdia     ${LANG_ENGLISH} "Let installer register Debug Interface Access (${PRODUCT_ARCH}) library"
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -390,8 +390,8 @@ Section /o "un.Debug Interface Access (${PRODUCT_ARCH}) library" unsec_msdia
     UnRegDLL $R0
 SectionEnd
 
-Section /o "un.Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime" unsec_vcruntime
-    DetailPrint "Uninstalling Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library..."
+Section /o "un.Visual C++ 2008 SP1 (${PRODUCT_ARCH}) runtime" unsec_vcruntime
+    DetailPrint "Uninstalling Microsoft Visual C++ 2008 SP1 (${PRODUCT_ARCH}) runtime library..."
     ExecWait '"msiexec" /x ${VCRUNTIME_PRODUCT_CODE}'
 SectionEnd
 
@@ -456,7 +456,7 @@ FunctionEnd
 LangString DESC_unsec_pykd      ${LANG_ENGLISH} "${PRODUCT_FULL_NAME}"
 LangString DESC_unsec_python    ${LANG_ENGLISH} "Uninstall Python ${PYTHON_VERSION} ${PRODUCT_ARCH}"
 LangString DESC_unsec_msdia     ${LANG_ENGLISH} "Unregister Debug Interface Access (${PRODUCT_ARCH}) library"
-LangString DESC_unsec_vcruntime ${LANG_ENGLISH} "Uninstall Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library"
+LangString DESC_unsec_vcruntime ${LANG_ENGLISH} "Uninstall Microsoft Visual C++ 2008 SP1 (${PRODUCT_ARCH}) runtime library"
 
 !insertmacro MUI_UNFUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${unsec_pykd}      $(DESC_unsec_pykd)
