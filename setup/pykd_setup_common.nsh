@@ -27,7 +27,7 @@ SetCompressor LZMA
 
 !define PRODUCT_SHORT_NAME "pykd"
 !define PRODUCT_FULL_NAME  "Python extension for WinDbg"
-!define PRODUCT_VERSION "0.0.0.20"
+!define PRODUCT_VERSION "0.0.1.2"
 !define PRODUCT_URL  "http://pykd.codeplex.com/"
 !define PRODUCT_NAME_AND_VERSION "${PRODUCT_FULL_NAME} ${PRODUCT_ARCH} ${PRODUCT_VERSION}"
 !define PRODUCT_MANUFACTURER "PyKd Team"
@@ -111,7 +111,7 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName"     "${PRODUCT_SHORT_NAME}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "Comments"        "${PRODUCT_NAME_AND_VERSION}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName"     "${PRODUCT_MANUFACTURER}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalTrademarks" "${PRODUCT_SHORT_NAME} is a trademark of ${PRODUCT_MANUFACTURER}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright"  "© All rights reserved 2010-2011"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright"  "© All rights reserved 2010-2012"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "${PRODUCT_SHORT_NAME} setup"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion"     "${PRODUCT_VERSION}"
 
@@ -140,7 +140,6 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion"     "${PRODUCT_VERSION}"
     Pop $_LOGICLIB_TEMP
     !insertmacro _== $_LOGICLIB_TEMP 1 `${_t}` `${_f}`
 !macroend
-
 !define IsVcRuntimeInstalled `"" IsVcRuntimeInstalled ""`
 !define un.IsVcRuntimeInstalled `"" IsVcRuntimeInstalled ""`
 
@@ -155,6 +154,16 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion"     "${PRODUCT_VERSION}"
 !define IsPythonInstalled `"" IsPythonInstalled ""`
 !define un.IsPythonInstalled `"" IsPythonInstalled ""`
 
+!macro _IsDiaRegistered _a _b _t _f
+    !insertmacro _LOGICLIB_TEMP
+    ${SetRegView64}
+    ReadRegStr $_LOGICLIB_TEMP HKCR "CLSID\${CLSID_DiaSource}\InprocServer32" ""
+    ${SetRegView32}
+    !insertmacro _!= $_LOGICLIB_TEMP "" `${_t}` `${_f}`
+!macroend
+!define IsDiaRegistered `"" IsDiaRegistered ""`
+!define un.IsDiaRegistered `"" IsDiaRegistered ""`
+        
 #------------------------------------------------------------------------------
 # Check WinDbg executable presence in selected directory
 #------------------------------------------------------------------------------
@@ -204,11 +213,12 @@ Section "Python ${PYTHON_VERSION} ${PRODUCT_ARCH}" sec_python
     ${If} $0 == "OK" 
         DetailPrint "Successfully downloaded."
         DetailPrint "Installing Python..."
-        IfErrors ClearErrorFlag1
-        ClearErrorFlag1:
         ExecWait '"msiexec" /i "$TEMP\${PYTHON_INSTALLER}"'
         IfErrors PythonInstallFailed
         DetailPrint "Successfully installed."
+        ${SetRegView64}
+        WriteRegDWORD HKLM "Software\${PRODUCT_SHORT_NAME}" "UninstallPython" 1
+        ${SetRegView32}
     ${Else}
         PythonInstallFailed:
         DetailPrint "Operation failed. Installation will be continued without Python."
@@ -226,15 +236,34 @@ Section "Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime" sec_vcruntime
     !else
         File "..\Release\vcredist_${PRODUCT_ARCH}.exe"
     !endif
-
+    
     ExecWait "$TEMP\vcredist_${PRODUCT_ARCH}.exe"
-    IfErrors RuntimeInstallFailed
-    DetailPrint "Successfully installed."
-    Return
+    ${IfNot} ${Errors}
+        DetailPrint "Successfully installed."
+        ${SetRegView64}
+        WriteRegDWORD HKLM "Software\${PRODUCT_SHORT_NAME}" "UninstallVcRuntime" 1
+        ${SetRegView32}
+    ${Else}
+        DetailPrint "Operation failed. Installation will be continued without Visual C++ runtime."
+        DetailPrint "Please download and install it manually."
+    ${EndIf}
+SectionEnd
 
-    RuntimeInstallFailed:
-    DetailPrint "Operation failed. Installation will be continued without Visual C++ runtime."
-    DetailPrint "Please download and install it manually."
+Section "Debug Interface Access (${PRODUCT_ARCH}) library" sec_msdia
+    DetailPrint "Registering Debug Interface Access (${PRODUCT_ARCH}) library..."
+    !if ${PRODUCT_ARCH} == "x64"
+        RegDLL "$COMMONFILES64\Microsoft Shared\VC\${MSDIA_DLL_NAME}"
+    !else
+        RegDLL "$COMMONFILES32\Microsoft Shared\VC\${MSDIA_DLL_NAME}"
+    !endif	 
+    ${IfNot} ${Errors}
+        DetailPrint "Successfully registered."
+        ${SetRegView64}
+        WriteRegDWORD HKLM "Software\${PRODUCT_SHORT_NAME}" "UnregisterDia" 1
+        ${SetRegView32}
+    ${Else}
+        DetailPrint "Operation failed. Please register it manually."
+    ${EndIf}
 SectionEnd
 
 Section -FinishSection
@@ -295,6 +324,11 @@ Function .onInit
         !insertmacro UnselectSection ${sec_vcruntime}
         SectionSetText ${sec_vcruntime} ""
     ${EndIf}
+    
+    ${If} ${IsDiaRegistered}
+        !insertmacro UnselectSection ${sec_msdia}
+        SectionSetText ${sec_msdia} ""
+    ${EndIf}
 FunctionEnd
 
 #------------------------------------------------------------------------------
@@ -305,12 +339,14 @@ LangString DESC_sec_pykd      ${LANG_ENGLISH} "${PRODUCT_FULL_NAME}"
 LangString DESC_sec_snippets  ${LANG_ENGLISH} "Useful code snippets. Will be installed in $DOCUMENTS\${PRODUCT_SHORT_NAME}"
 LangString DESC_sec_python    ${LANG_ENGLISH} "Let installer download and setup Python ${PYTHON_VERSION} ${PRODUCT_ARCH}"
 LangString DESC_sec_vcruntime ${LANG_ENGLISH} "Let installer download and setup Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library"
+LangString DESC_sec_msdia     ${LANG_ENGLISH} "Let installer register Debug Interface Access (${PRODUCT_ARCH}) library"
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${sec_pykd}      $(DESC_sec_pykd)
     !insertmacro MUI_DESCRIPTION_TEXT ${sec_snippets}  $(DESC_sec_snippets)
     !insertmacro MUI_DESCRIPTION_TEXT ${sec_python}    $(DESC_sec_python)
     !insertmacro MUI_DESCRIPTION_TEXT ${sec_vcruntime} $(DESC_sec_vcruntime)
+    !insertmacro MUI_DESCRIPTION_TEXT ${sec_msdia}     $(DESC_sec_msdia)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 #------------------------------------------------------------------------------
@@ -346,9 +382,28 @@ Section /o "un.Python ${PYTHON_VERSION} ${PRODUCT_ARCH}" unsec_python
     ExecWait '"msiexec" /x ${PYTHON_PRODUCT_CODE}'
 SectionEnd
 
+Section /o "un.Debug Interface Access (${PRODUCT_ARCH}) library" unsec_msdia
+    DetailPrint "Unregistering Debug Interface Access (${PRODUCT_ARCH}) library..."
+    ${SetRegView64}
+    ReadRegStr $R0 HKCR "CLSID\${CLSID_DiaSource}\InprocServer32" ""
+    ${SetRegView32}
+    UnRegDLL $R0
+SectionEnd
+
 Section /o "un.Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime" unsec_vcruntime
     DetailPrint "Uninstalling Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library..."
     ExecWait '"msiexec" /x ${VCRUNTIME_PRODUCT_CODE}'
+SectionEnd
+
+Section -un.FinishSection
+    ${SetRegView64}
+    WriteRegDWORD HKLM "Software\${PRODUCT_SHORT_NAME}" "UninstallPython" 0
+    WriteRegDWORD HKLM "Software\${PRODUCT_SHORT_NAME}" "UnregisterDia" 0
+    WriteRegDWORD HKLM "Software\${PRODUCT_SHORT_NAME}" "UninstallVcRuntime" 0
+#    DeleteRegValue HKLM "Software\${PRODUCT_SHORT_NAME}" "UninstallPython"
+#    DeleteRegValue HKLM "Software\${PRODUCT_SHORT_NAME}" "UnregisterDia"
+#    DeleteRegValue HKLM "Software\${PRODUCT_SHORT_NAME}" "UninstallVcRuntime"
+    ${SetRegView32}
 SectionEnd
 
 #------------------------------------------------------------------------------
@@ -360,12 +415,35 @@ SectionEnd
 !define WinSxS_HasAssembly `Call un.WinSxS_HasAssembly`
 
 Function un.onInit
-    ${IfNot} ${IsPythonInstalled}
+    ${SetRegView64}
+    ReadRegDWORD $R0 HKLM "Software\${PRODUCT_SHORT_NAME}" "UninstallPython"
+    ${SetRegView32}
+
+    ${If} ${Errors}
+    ${OrIf} $R0 == 0
+    ${OrIfNot} ${IsPythonInstalled}
         !insertmacro UnselectSection ${unsec_python}
         SectionSetText ${unsec_python} ""
     ${EndIf}
 
-    ${IfNot} ${IsVcRuntimeInstalled}
+    ${SetRegView64}
+    ReadRegDWORD $R0 HKLM "Software\${PRODUCT_SHORT_NAME}" "UnregisterDia"
+    ${SetRegView32}
+    
+    ${If} ${Errors}
+    ${OrIf} $R0 == 0
+    ${OrIfNot} ${IsDiaRegistered}
+        !insertmacro UnselectSection ${unsec_msdia}
+        SectionSetText ${unsec_msdia} ""
+    ${EndIf}
+    
+    ${SetRegView64}
+    ReadRegDWORD $R0 HKLM "Software\${PRODUCT_SHORT_NAME}" "UninstallVcRuntime"
+    ${SetRegView32}
+
+    ${If} ${Errors}
+    ${OrIf} $R0 == 0
+    ${OrIfNot} ${IsVcRuntimeInstalled}
         !insertmacro UnselectSection ${unsec_vcruntime}
         SectionSetText ${unsec_vcruntime} ""
     ${EndIf}
@@ -377,10 +455,12 @@ FunctionEnd
 
 LangString DESC_unsec_pykd      ${LANG_ENGLISH} "${PRODUCT_FULL_NAME}"
 LangString DESC_unsec_python    ${LANG_ENGLISH} "Uninstall Python ${PYTHON_VERSION} ${PRODUCT_ARCH}"
+LangString DESC_unsec_msdia     ${LANG_ENGLISH} "Unregister Debug Interface Access (${PRODUCT_ARCH}) library"
 LangString DESC_unsec_vcruntime ${LANG_ENGLISH} "Uninstall Microsoft Visual C++ 2005 SP1 (${PRODUCT_ARCH}) runtime library"
 
 !insertmacro MUI_UNFUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${unsec_pykd}      $(DESC_unsec_pykd)
     !insertmacro MUI_DESCRIPTION_TEXT ${unsec_python}    $(DESC_unsec_python)
+    !insertmacro MUI_DESCRIPTION_TEXT ${unsec_msdia}     $(DESC_unsec_msdia)
     !insertmacro MUI_DESCRIPTION_TEXT ${unsec_vcruntime} $(DESC_unsec_vcruntime)
 !insertmacro MUI_UNFUNCTION_DESCRIPTION_END

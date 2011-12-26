@@ -12,4 +12,7 @@
 # When changing VC runtime vesion don't forget to update ProductCode appropriately
 !define VCRUNTIME_PRODUCT_CODE "{ad8a2fa1-06e7-4b0d-927d-6e54b3d31028}"
 
+!define MSDIA_DLL_NAME "msdia90.dll"
+!define CLSID_DiaSource "{4C41678E-887B-4365-A09E-925D28DB33C2}"
+
 !include "pykd_setup_common.nsh"
