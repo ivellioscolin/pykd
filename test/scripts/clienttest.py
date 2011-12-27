@@ -14,11 +14,11 @@ class DbgClientTest( unittest.TestCase ):
         self.assertFalse( pykd.isKernelDebugging() )
 
     def testNumberProcessors( self ):
-        """Number of processors mus be >= 0"""
+        """Number of processors can not be 0"""
         self.assertNotEqual( 0, pykd.getNumberProcessors() )
 
     def testPageSize( self ):
-        """Size of memory page mus be >= 4kb"""
+        """Size of memory page must be >= 4kb"""
         self.assertTrue( pykd.getPageSize() >= 4*1024 )
 
     def testIsDumpAnalyzing( self ):
