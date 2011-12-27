@@ -30,6 +30,23 @@ typedef boost::shared_ptr<DebugClient>  DebugClientPtr;
 
 class DebugClient : private DbgObject {
 
+private:
+    // simple IDebugControl4 call wrapper
+    template <typename T>
+    T getDbgControlT(
+        HRESULT (STDMETHODCALLTYPE IDebugControl4::*method)(T *),
+        const char *methodName
+    )
+    {
+        T retValue;
+        HRESULT hres = (m_control->*method)(&retValue);
+        if (S_OK != hres)
+            throw DbgException( buildExceptDesc(methodName, hres) );
+        return retValue;
+    }
+    #define getDbgControl(method)  \
+        getDbgControlT( &IDebugControl4::##method, "IDebugControl4::" #method )
+
 public:
 
     virtual ~DebugClient() {}
@@ -208,6 +225,13 @@ public:
     
     void waitForEvent();
 
+    ULONG getNumberProcessors() { 
+        return getDbgControl(GetNumberProcessors);
+    }
+
+    ULONG getPageSize() {
+        return getDbgControl(GetPageSize);
+    }
 
 public:
 
@@ -266,7 +290,6 @@ public:
     }
 
 private:
-
     template<typename T>
     python::list
     loadArray( ULONG64 offset, ULONG count, bool phyAddr );
@@ -352,6 +375,16 @@ inline ULONG delSyntheticSymbolsMask(
 )
 {
     return g_dbgClient->delSyntheticSymbolsMask(moduleName, symName);
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+inline ULONG getNumberProcessors() { 
+    return g_dbgClient->getNumberProcessors();
+}
+
+inline ULONG getPageSize() {
+    return g_dbgClient->getPageSize();
 }
 
 /////////////////////////////////////////////////////////////////////////////////

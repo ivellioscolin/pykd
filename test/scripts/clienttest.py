@@ -9,10 +9,18 @@ class DbgClientTest( unittest.TestCase ):
         c, q = pykd.getDebuggeeType()
         self.assertEqual( c, pykd.DEBUG_CLASS_USER_WINDOWS )
         self.assertEqual( q, pykd.DEBUG_USER_WINDOWS_PROCESS )
-        
+
     def testIsKernelDebugging( self ):
         self.assertFalse( pykd.isKernelDebugging() )
-        
+
+    def testNumberProcessors( self ):
+        """Number of processors mus be >= 0"""
+        self.assertNotEqual( 0, pykd.getNumberProcessors() )
+
+    def testPageSize( self ):
+        """Size of memory page mus be >= 4kb"""
+        self.assertTrue( pykd.getPageSize() >= 4*1024 )
+
     def testIsDumpAnalyzing( self ):
         self.assertFalse( pykd.isDumpAnalyzing() )
         

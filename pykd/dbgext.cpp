@@ -279,6 +279,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Wait for events that breaks into the debugger" )
         .def( "wrmsr", &DebugClient::setMSR,
             "Set MSR value" )
+        .def( "getNumberProcessors", &DebugClient::getNumberProcessors,
+            "Get the number of actual processors in the machine" )
+        .def( "getPageSize", &DebugClient::getPageSize,
+            "Get the page size for the currently executing processor context" )
         .def( "addSynSymbol", &DebugClient::addSyntheticSymbol,
             "Add new synthetic symbol for virtual address" )
         .def( "delAllSynSymbols", &DebugClient::delAllSyntheticSymbols, 
@@ -446,7 +450,11 @@ BOOST_PYTHON_MODULE( pykd )
         "Change debugger status to DEBUG_STATUS_STEP_INTO" );
     python::def( "waitForEvent", &waitForEvent,
         "Wait for events that breaks into the debugger" );
-    
+    python::def( "getNumberProcessors", &getNumberProcessors,
+        "Get the number of actual processors in the machine" );
+    python::def( "getPageSize", &getPageSize,
+        "Get the page size for the currently executing processor context" );
+
     python::class_<TypeInfo, TypeInfoPtr, python::bases<intBase>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
         .def( "name", &TypeInfo::getName )
         .def( "size", &TypeInfo::getSize )
