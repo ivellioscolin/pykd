@@ -160,6 +160,13 @@ void Symbol::getValueImpl(IDiaSymbol *_symbol, VARIANT &vtValue)
         throw Exception("Call IDiaSymbol::get_value", hres);
 }
 
+void Symbol::getValue( VARIANT &vtValue)
+{
+    HRESULT hres = m_symbol->get_value(&vtValue);
+    if (S_OK != hres)
+        throw Exception("Call IDiaSymbol::get_value", hres);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 python::object Symbol::getValue()
@@ -244,9 +251,23 @@ ULONG Symbol::getUdtKind()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+ULONG Symbol::getDataKind()
+{
+    return callSymbol(get_dataKind);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 ULONG Symbol::getRegisterId()
 {
     return callSymbol(get_registerId);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+bool Symbol::isConstant()
+{
+    return !!callSymbol(get_constType); 
 }
 
 ////////////////////////////////////////////////////////////////////////////////

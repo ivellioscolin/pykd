@@ -119,6 +119,7 @@ public:
 
     static void getValueImpl(IDiaSymbol *_symbol, VARIANT &vtValue);
     python::object getValue();
+    void getValue( VARIANT &vtValue);
 
     bool isBasicType();
 
@@ -130,6 +131,8 @@ public:
 
     ULONG getUdtKind();
 
+    ULONG getDataKind();
+
     ULONG getRegisterId();
 
     ULONG getMachineType() const {
@@ -140,7 +143,11 @@ public:
     ULONG getChildCount();
     SymbolPtr getChildByIndex(ULONG _index);
 
+    bool isConstant();
+
     std::string print();
+
+
 public:
     typedef std::pair<ULONG, const char *> ValueNameEntry;
 

@@ -42,7 +42,7 @@ public:
     }
 
     virtual std::string  print() {
-        return "TypeVar";
+        return "TypedVar";
     }
 
     virtual ULONG getElementCount() {
@@ -158,5 +158,16 @@ public:
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+class EnumTypedVar : public TypedVar {
+public:
+
+    EnumTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
+
+    virtual BaseTypeVariant  getValue();
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+
 
 } // namespace pykd

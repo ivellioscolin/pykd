@@ -447,7 +447,7 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "waitForEvent", &waitForEvent,
         "Wait for events that breaks into the debugger" );
     
-    python::class_<TypeInfo, TypeInfoPtr, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
+    python::class_<TypeInfo, TypeInfoPtr, python::bases<intBase>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
         .def( "name", &TypeInfo::getName )
         .def( "size", &TypeInfo::getSize )
         .def( "offset", &TypeInfo::getOffset )
@@ -605,7 +605,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrieves the offset of the symbol location" )
         .def( "count", &pyDia::Symbol::getCount, 
             "Retrieves the number of items in a list or array" )
-        .def( "value", &pyDia::Symbol::getValue,
+        .def( "value", (python::object(pyDia::Symbol::*)())&pyDia::Symbol::getValue,
             "Retrieves the value of a constant")
         .def( "isBasic", &pyDia::Symbol::isBasicType,
             "Retrieves a flag of basic type for symbol")

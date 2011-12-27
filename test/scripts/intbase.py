@@ -33,6 +33,7 @@ class IntBaseTest( unittest.TestCase ):
         self.assertTrue( True == intBase(True) )
         self.assertTrue( False == intBase(0) )
         self.assertTrue( True == intBase(1) )
+        self.assertTrue( intBase(1) == intBase(1) )
         
     def testNe( self ):
         self.assertTrue( 0xFE != intBase(0xFF) )
@@ -43,7 +44,8 @@ class IntBaseTest( unittest.TestCase ):
         self.assertTrue( -20 + 1 != intBase(-20) )        
         self.assertTrue( -2000 + 1 != intBase(-2000) )        
         self.assertTrue( -20000000000 + 1 != intBase(-20000000000) )
-        self.assertTrue( -0x8000000000000000 - 1 != intBase(-0x8000000000000000) )        
+        self.assertTrue( -0x8000000000000000 - 1 != intBase(-0x8000000000000000) )
+        self.assertTrue( intBase(1) != intBase(2) )
         
     def testLtGt( self ):
         self.assertTrue( 0xFE < intBase(0xFF) and intBase(0xFE) < 0xFF )
@@ -51,6 +53,7 @@ class IntBaseTest( unittest.TestCase ):
         self.assertTrue( 0xFFFFFFFFFFFFFFFE < intBase(0xFFFFFFFFFFFFFFFF) )
         self.assertFalse(0xFFFFFFFFFFFFFFFF < intBase(0xFFFFFFFFFFFFFFFE) )
         self.assertTrue( intBase(0xFFFFFFFFFFFFFFFE) < 0xFFFFFFFFFFFFFFFF )
+        self.assertTrue( intBase(1) < intBase(2) )
         
     def testLeGe( self ):
         self.assertTrue( 0xFE <= intBase(0xFF) and intBase(0xFE) <= 0xFF )
@@ -59,6 +62,7 @@ class IntBaseTest( unittest.TestCase ):
         self.assertTrue( 0xFFFFFFFFFFFFFFFE <= intBase(0xFFFFFFFFFFFFFFFF) )
         self.assertFalse(0xFFFFFFFFFFFFFFFF <= intBase(0xFFFFFFFFFFFFFFFE) )
         self.assertTrue( intBase(0xFFFFFFFFFFFFFFFF) <= 0xFFFFFFFFFFFFFFFF )
+        self.assertFalse( intBase(1) >= intBase(2) )
                 
     def testAdd( self ):
         self.assertEqual( 10, intBase(5) + 5 )
@@ -71,6 +75,7 @@ class IntBaseTest( unittest.TestCase ):
         self.assertEqual( 0x7fffffffffffffff + 1, intBase(0x7fffffffffffffff) + 1)
         self.assertEqual( -0x8000000000000000 + 10, intBase(-0x8000000000000000) + 10 )
         self.assertEqual( 0, intBase(-0x8000000000000000) + 0x8000000000000000 )
+        self.assertEqual( 5, intBase(3) + intBase(2) )
 
     def testSub( self ):
         self.assertEqual( 0, intBase(5) - 5 )
@@ -81,6 +86,7 @@ class IntBaseTest( unittest.TestCase ):
         self.assertEqual( -20, intBase(-10) -10 )
         self.assertEqual( -10, 10 - intBase(20) )
         self.assertEqual( -0xFFFFFFFF - 1, intBase(-0xFFFFFFFF) - 1 )
+        self.assertEqual( 5, intBase(7) - intBase(2) )
         
     def testMul( self ):
         self.assertEqual( 4, intBase(2) * 2 )
@@ -90,12 +96,14 @@ class IntBaseTest( unittest.TestCase ):
         self.assertEqual( 0x7fffffffffffffff * 2, intBase(0x7fffffffffffffff) * 2)
         self.assertEqual( 0x80000000*2, intBase(0x80000000)*2 )
         self.assertEqual( -0x80000000*2, 2 * intBase(-0x80000000))
+        self.assertEqual( 14, intBase(7)*intBase(2) )
         
     def testDiv( self ):
         self.assertEqual( 1, intBase(2) / 2 )
         self.assertEqual( 2, 5 / intBase(2) )
         self.assertEqual( -1, 2 / intBase(-2) )
         self.assertEqual( 1, -2 / intBase(-2) )
+        self.assertEqual( 3, intBase(7)/intBase(2) )
         
         try: 
             -2 / intBase(0)
@@ -109,11 +117,18 @@ class IntBaseTest( unittest.TestCase ):
         except ZeroDivisionError:
             self.assertTrue( True )
             
+        try:
+            intBase(0)/intBase(0)
+            self.assertTrue( False )
+        except ZeroDivisionError:
+            self.assertTrue( True )
+            
     def testMod( self ):
-        self.assertEqual( 1, intBase(3) % 2 )            
-        self.assertEqual( 0, intBase(3) % 3 )            
-        self.assertEqual( 1, 3 % intBase(2) )            
-        self.assertEqual( 0, 3 % intBase(3) )          
+        self.assertEqual( 1, intBase(3) % 2 )
+        self.assertEqual( 0, intBase(3) % 3 )
+        self.assertEqual( 1, 3 % intBase(2) )
+        self.assertEqual( 0, 3 % intBase(3) )
+        self.assertEqual( 2, intBase(5) % intBase(3) )
         
     def testShift( self ):
         self.assertEqual( 0xFFFFFFFF >> 8, intBase(0xFFFFFFFF) >> 8 )

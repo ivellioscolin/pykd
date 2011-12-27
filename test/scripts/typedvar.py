@@ -100,3 +100,15 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 2, len( tvl ) )
         self.assertEqual( 1, tvl[0].m_field3 )
         self.assertEqual( 0, tvl[1].m_field4 )
+        
+    def testEqual(self):
+        tv1 = target.module.typedVar("g_structTest")
+        tv2 = target.module.typedVar("intMatrix")
+        self.assertEqual( tv1.m_field3, tv2[0][1] )
+        
+    def testEnum(self):
+        tv = target.module.typedVar("g_classChild")
+        self.assertEqual( 3, tv.m_enumField )
+        self.assertEqual( target.module.type("enumType").THREE, tv.m_enumField )
+
+

@@ -41,6 +41,12 @@ TypedVarPtr   TypedVar::getTypedVar( IDebugClient4 *client, const TypeInfoPtr& t
         return tv;
     }
 
+    if ( typeInfo->isEnum() )
+    {
+        tv.reset( new EnumTypedVar( client, typeInfo, offset ) );
+        return tv;
+    }
+
     throw DbgException( "can not create typedVar for this type" );
 
     return tv;
@@ -158,6 +164,20 @@ BaseTypeVariant BitFieldVar::getValue()
 
     throw DbgException( "failed get value " );
 }
+
+///////////////////////////////////////////////////////////////////////////////////
+
+BaseTypeVariant  EnumTypedVar::getValue()
+{
+    ULONG       val = 0;
+    HRESULT     hres;
+
+    hres = m_dataSpaces->ReadVirtual( m_offset, &val, m_typeInfo->getSize(), NULL );
+    if ( FAILED( hres ) )
+        throw MemoryException( m_offset, false );
+
+    return val;
+};
 
 ///////////////////////////////////////////////////////////////////////////////////
 

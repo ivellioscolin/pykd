@@ -23,6 +23,9 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
 
     case SymTagPointerType:
         return TypeInfoPtr( new PointerTypeInfo( typeSym ) );
+
+    case SymTagEnum:
+        return TypeInfoPtr( new EnumTypeInfo( typeSym ) );
     }
 
     throw DbgException( "type name invalid" );
@@ -30,9 +33,47 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+BaseTypeVariant  TypeInfo::getValue() 
+{
+    if ( !m_constant )
+        throw DbgException( "The type is not a constant and has not a value" );
+
+    switch( m_constantValue.vt )
+    {
+    case VT_UI1:
+        return (ULONG)m_constantValue.bVal;;
+
+    case VT_I1:
+        return (LONG)m_constantValue.cVal;
+
+    case VT_UI2:
+        return (ULONG)m_constantValue.uiVal;
+
+    case VT_I2:
+        return (LONG)m_constantValue.iVal;
+
+    case VT_UI4:
+        return (ULONG)m_constantValue.lVal;
+
+    case VT_I4:
+        return (LONG)m_constantValue.ulVal;
+
+    case VT_UI8:
+        return (ULONG64)m_constantValue.ullVal;
+
+    case VT_I8:
+        return (LONG64)m_constantValue.llVal;
+    }
+
+    throw DbgException( "Failed to convert constatnt type" );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName )
 {
     size_t pos = symName.find_first_of( "*[" );
+    CComVariant     constVal;
 
     if ( pos == std::string::npos )
     {
@@ -49,10 +90,19 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::strin
                 return TypeInfoPtr( new BitFieldTypeInfo(typeSym) );
             }
 
+            if ( typeSym->getDataKind() == DataIsConstant )
+            {
+                typeSym->getValue( constVal );
+            }
+
             typeSym = typeSym->getType();
         }
 
-        return getTypeInfo( typeSym );
+        TypeInfoPtr ptr = getTypeInfo( typeSym );
+
+        ptr->setConstant( constVal );
+
+        return ptr;
     }
     
     return  getComplexType( symScope, symName );
@@ -60,7 +110,7 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::strin
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-static const boost::regex baseMatch("^(Char)|(WChar)|(Int2B)|(UInt2B)|(Int4B)|(UInt4B)|(Int8B)|(UInt8B)|(Long)|(ULong)|(Float)|(Bool)$" );
+static const boost::regex baseMatch("^(Char)|(WChar)|(Int2B)|(UInt2B)|(Int4B)|(UInt4B)|(Int8B)|(UInt8B)|(Long)|(ULong)|(Float)|(Bool)|(Double)$" );
 
 TypeInfoPtr 
 TypeInfo::getBaseTypeInfo( const std::string &symName )
@@ -104,6 +154,9 @@ TypeInfo::getBaseTypeInfo( const std::string &symName )
 
         if ( baseMatchResult[12].matched )
             return TypeInfoPtr( new TypeInfoWrapper<bool>("Bool") );
+
+        if ( baseMatchResult[13].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<double>("Double") );
    }
 
     return TypeInfoPtr();
@@ -122,6 +175,11 @@ TypeInfo::getBaseTypeInfo( pyDia::SymbolPtr &symbol )
         sstr << symName << symbol->getSize() << "B";
 
         return getBaseTypeInfo( sstr.str() );
+    }
+
+    if ( symName == "Float" && symbol->getSize() == 8  )
+    {
+        symName = "Double";
     }
 
     return getBaseTypeInfo( symName );

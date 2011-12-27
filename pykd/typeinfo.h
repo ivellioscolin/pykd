@@ -3,6 +3,7 @@
 #include <string>
 
 #include "diawrapper.h"
+#include "intbase.h"
 
 namespace pykd {
 
@@ -13,7 +14,7 @@ typedef boost::shared_ptr<TypeInfo>  TypeInfoPtr;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class TypeInfo : boost::noncopyable {
+class TypeInfo : boost::noncopyable, public intBase {
 
 public:
 
@@ -36,8 +37,10 @@ public:
     virtual ULONG getSize() = 0;
 
     virtual TypeInfoPtr getField( const std::string &fieldName ) {
-        throw DbgException( "there is no fields" );   
+        throw DbgException( "there is no fields" );
     }
+
+    virtual BaseTypeVariant  getValue();
 
     virtual bool isBasicType() {
         return false;
@@ -56,6 +59,10 @@ public:
     }
 
     virtual bool isBitField() {
+        return false;
+    }
+
+    virtual bool isEnum() {
         return false;
     }
 
@@ -84,6 +91,12 @@ public:
         m_offset = offset;
     }
 
+    void setConstant( const VARIANT& var )
+    {
+        m_constant = true;
+        m_constantValue = var;
+    }
+
 protected:
 
     std::string getComplexName();
@@ -95,6 +108,10 @@ protected:
     TypeInfoPtr getRecurciveComplexType( TypeInfoPtr &lowestType, std::string &suffix, ULONG ptrSize );
 
     ULONG   m_offset;
+
+    bool        m_constant;
+
+    VARIANT     m_constantValue;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -198,7 +215,41 @@ protected:
 
     pyDia::SymbolPtr    m_dia;
 };
-  
+
+///////////////////////////////////////////////////////////////////////////////////
+
+class EnumTypeInfo : public TypeInfo
+{
+public:
+
+    EnumTypeInfo ( pyDia::SymbolPtr &symbol ) :
+      m_dia( symbol )
+      {}
+
+protected:
+
+    virtual std::string getName() {
+        return m_dia->getName();
+    }
+
+    virtual ULONG getSize() {
+        return (ULONG)m_dia->getSize();
+    }
+
+    virtual TypeInfoPtr getField( const std::string &fieldName ) {
+        pyDia::SymbolPtr  field = m_dia->getChildByName( fieldName );
+        TypeInfoPtr  ti = TypeInfo::getTypeInfo( m_dia, fieldName );
+        ti->setOffset( 0 );
+        return ti;
+    }
+
+    virtual bool isEnum() {
+        return true;
+    }
+
+    pyDia::SymbolPtr    m_dia;
+};
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 class PointerTypeInfo : public TypeInfo {

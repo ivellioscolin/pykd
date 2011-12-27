@@ -28,6 +28,7 @@ struct structWithBits {
 
 union unionTest {
     ULONG m_value;
+    double m_doubleValue;
     structWithBits m_bits;
 };
 
@@ -84,15 +85,29 @@ int ((*ptrIntMatrix1))[2][3] = &intMatrix;
 
 char *(*ptrStrArray)[2] = &strArray;
 
+enum enumType {
+
+    ONE = 1,
+    TWO = 2,
+    THREE = 3
+};
+
 class classChild : public classBase {
 public:
     int m_childField;
     int m_childField2;
     structTest m_childField3;
+    enumType m_enumField;
     void childMethod() const {}
     virtual void virtFunc() {}
     virtual void virtFunc2() {}
+
+    classChild() :
+        m_enumField( THREE )
+        {}
 };
+
+classChild      g_classChild;
 
 struct struct2 {
     structTest m_struct;
@@ -184,6 +199,7 @@ void FuncWithName0()
     std::cout << g_structTest1.m_field2;
     std::cout << ptrIntMatrix1;
     std::cout << g_bigValue;
+    std::cout << g_classChild.m_enumField;
 }
 
 void FuncWithName1(int a)

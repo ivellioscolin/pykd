@@ -76,5 +76,17 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "ULong:2", ti.m_bit6_7.name() )
         self.assertEqual( 2, ti.m_bit6_7.bitWidth() )
         self.assertEqual( 6, ti.m_bit6_7.bitOffset() )
-
-
+        
+    def testEnum(self):
+        ti = target.module.type("enumType")
+        self.assertTrue( hasattr( ti, "TWO" ) )
+        self.assertEqual( 4, ti.TWO.size() )
+        
+        ti = target.module.type("classChild")
+        self.assertEqual( "enumType", ti.m_enumField.name() )
+        
+    def testUnion(self):
+        ti = target.module.type("unionTest")
+        self.assertEqual( 0, ti.m_doubleValue.offset() )
+        self.assertEqual( 0, ti.m_bits.offset() )
+        self.assertEqual( ti.size(), ti.m_doubleValue.size() )
