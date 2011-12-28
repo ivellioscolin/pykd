@@ -190,18 +190,44 @@ Module::getTypedVarByName( const std::string &symName )
 TypedVarPtr
 Module::getTypedVarByAddr( ULONG64 addr )
 {
+    HRESULT     hres;
+
     addr = addr64(addr);
 
     if ( addr < m_base || addr > getEnd() )
         throw DbgException( "address is out of the module space" );
 
-    LONG displacement;
-    pyDia::SymbolPtr diaSym = 
-        getDia()->findByRvaImpl((ULONG)(addr - m_base), SymTagData, displacement);
-    if (displacement)
-        throw DbgException( "not exactly match by RVA" );
+    char    nameBuf[0x100];
 
-    return TypedVar::getTypedVar( m_client, TypeInfo::getTypeInfo( diaSym->getType() ), addr ); 
+    hres = 
+        m_symbols->GetNameByOffset(
+            addr,
+            nameBuf,
+            sizeof(nameBuf),
+            NULL,
+            NULL );
+
+    std::string     fullName( nameBuf );
+
+    size_t          symPos = fullName.find ( '!' ) + 1;
+
+    std::string     symbolName;
+    symbolName.assign( fullName, symPos, fullName.length() - symPos );
+
+    if ( FAILED(hres) )
+        throw DbgException( "failed IDebugSymbols::GetNameByOffset" );
+
+    return getTypedVarByName( symbolName );
+
+
+
+    //LONG displacement;
+    //pyDia::SymbolPtr diaSym = 
+    //    getDia()->findByRvaImpl((ULONG)(addr - m_base), SymTagData, displacement);
+    //if (displacement)
+    //    throw DbgException( "not exactly match by RVA" );
+
+    //return TypedVar::getTypedVar( m_client, TypeInfo::getTypeInfo( diaSym->getType() ), addr ); 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
