@@ -625,6 +625,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrieves the unique symbol identifier")
         .def( "udtKind", &pyDia::Symbol::getUdtKind,
             "Retrieves the variety of a user-defined type")
+        .def( "dataKind", &pyDia::Symbol::getDataKind,
+            "Retrieves the variable classification of a data symbol")
         .def("registerId", &pyDia::Symbol::getRegisterId,
             "Retrieves the register designator of the location:\n"
             "CV_REG_XXX (for IMAGE_FILE_MACHINE_I386) or CV_AMD64_XXX (for IMAGE_FILE_MACHINE_AMD64)")
@@ -681,6 +683,19 @@ BOOST_PYTHON_MODULE( pykd )
     DEF_PY_CONST_ULONG(SymTagDimension);
     python::scope().attr("diaSymTagName") = 
         genDict(pyDia::Symbol::symTagName, _countof(pyDia::Symbol::symTagName));
+
+    DEF_PY_CONST_ULONG(DataIsUnknown);
+    DEF_PY_CONST_ULONG(DataIsLocal);
+    DEF_PY_CONST_ULONG(DataIsStaticLocal);
+    DEF_PY_CONST_ULONG(DataIsParam);
+    DEF_PY_CONST_ULONG(DataIsObjectPtr);
+    DEF_PY_CONST_ULONG(DataIsFileStatic);
+    DEF_PY_CONST_ULONG(DataIsGlobal);
+    DEF_PY_CONST_ULONG(DataIsMember);
+    DEF_PY_CONST_ULONG(DataIsStaticMember);
+    DEF_PY_CONST_ULONG(DataIsConstant);
+    python::scope().attr("diaDataKind") = 
+        genDict(pyDia::Symbol::dataKindName, _countof(pyDia::Symbol::dataKindName));
 
     // search options for symbol and file names
     DEF_PY_CONST_ULONG(nsfCaseSensitive);

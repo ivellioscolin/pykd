@@ -151,6 +151,8 @@ public:
 public:
     typedef std::pair<ULONG, const char *> ValueNameEntry;
 
+    static const ValueNameEntry dataKindName[DataIsConstant + 1];
+
     static const ValueNameEntry symTagName[SymTagMax];
 
     static const ValueNameEntry locTypeName[LocTypeMax];

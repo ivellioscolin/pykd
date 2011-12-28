@@ -45,6 +45,24 @@ const Symbol::ValueNameEntry Symbol::symTagName[SymTagMax] = {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+#define _DEF_DATA_KIND_VAL(x) Symbol::ValueNameEntry(DataIs##x, #x)
+const Symbol::ValueNameEntry Symbol::dataKindName[DataIsConstant + 1] = {
+    _DEF_DATA_KIND_VAL(Unknown),
+    _DEF_DATA_KIND_VAL(Local),
+    _DEF_DATA_KIND_VAL(StaticLocal),
+    _DEF_DATA_KIND_VAL(Param),
+    _DEF_DATA_KIND_VAL(ObjectPtr),
+    _DEF_DATA_KIND_VAL(FileStatic),
+    _DEF_DATA_KIND_VAL(Global),
+    _DEF_DATA_KIND_VAL(Member),
+    _DEF_DATA_KIND_VAL(StaticMember),
+    _DEF_DATA_KIND_VAL(Constant)
+};
+#undef _DEF_DATA_KIND_VAL
+
+
+////////////////////////////////////////////////////////////////////////////////
+
 #define _DEF_LOC_TYPE(x)    Symbol::ValueNameEntry(LocIs##x, #x)
 const Symbol::ValueNameEntry Symbol::locTypeName[LocTypeMax] = {
     _DEF_LOC_TYPE(Null),

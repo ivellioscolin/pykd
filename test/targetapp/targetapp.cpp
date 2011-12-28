@@ -146,6 +146,16 @@ struct listStruct1 {
     struct listStruct1     *next;
 };
 
+class classWithDestructor
+{
+public:
+    classWithDestructor(DWORD errCode) : m_errCode(errCode) {}
+    virtual ~classWithDestructor() {::SetLastError(m_errCode);}
+
+private:
+    DWORD m_errCode;
+};
+
 listStruct1  g_listItem11 = { 100 };
 listStruct1  g_listItem12 = { 200 };
 listStruct1  g_listItem13 = { 300 };
@@ -217,6 +227,47 @@ void FuncWithName1(int a)
     std::cout << g_string;
 }
 
+void FuncWithVolatileArg(volatile long *arg1)
+{
+    InterlockedIncrement(arg1);
+}
+
+BOOL CALLBACK EnumWindowsProc(
+    HWND hWindow,
+    LPARAM lParam
+)
+{
+    if (hWindow)
+        std::cout << lParam;
+
+    switch(lParam)
+    {
+    case 1:
+        std::cout << "case 1";
+        break;
+
+    case 2:
+        std::cout << "case 2";
+        break;
+
+    case 3:
+        std::cout << "case 2";
+        break;
+
+    default:
+        {
+            DWORD dwProccessId = 0;
+            DWORD dwThreadId = ::GetWindowThreadProcessId(hWindow, &dwProccessId);
+            std::cout << dwProccessId << dwThreadId;
+            classWithDestructor classInstance(dwProccessId);
+            std::cout << GetWindowLong(hWindow, GWL_STYLE);
+        }
+
+    }
+
+    return FALSE;
+}
+
 #pragma pack( pop )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -261,6 +312,8 @@ int _tmain(int argc, _TCHAR* argv[])
         __debugbreak();
         FuncWithName0();
         FuncWithName1(2);
+
+        EnumWindows(&::EnumWindowsProc, 6);
     }
     catch(std::exception & ex)
     {

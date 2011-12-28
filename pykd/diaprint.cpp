@@ -202,6 +202,13 @@ std::string Symbol::printImpl(
         bFuncDebugRange = 
             (SymTagFuncDebugStart == symTagName[dwValue].first) ||
             (SymTagFuncDebugEnd == symTagName[dwValue].first);
+
+        hres = _symbol->get_dataKind(&dwValue);
+        if ((S_OK == hres) && (DataIsUnknown != dwValue))
+        {
+            if (dwValue < _countof(dataKindName))
+                sstream << ", " << dataKindName[dwValue].second;
+        }
     }
     else
     {
