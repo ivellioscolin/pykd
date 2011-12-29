@@ -63,7 +63,12 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 2, tv.m_arrayField[1] )
         self.assertEqual( 3, tv.m_noArrayField )
         self.assertNotEqual( -1, tv.m_arrayField[0] )
-        self.assertNotEqual( 0, tv.m_noArrayField )    
+        self.assertNotEqual( 0, tv.m_noArrayField )
+        try:
+            tv.m_arrayField[len(tv.m_arrayField)]
+            self.assertTrue(False)
+        except IndexError:
+            self.assertTrue(True)
         
     def testGlobalVar(self):
         self.assertEqual( 4, target.module.typedVar( "g_ulongValue" ) )
@@ -120,5 +125,11 @@ class TypedVarTest( unittest.TestCase ):
         tv = target.module.typedVar("g_classChild")
         self.assertEqual( 3, tv.m_enumField )
         self.assertEqual( target.module.type("enumType").THREE, tv.m_enumField )
-
-
+        
+    def testIndex(self):
+    
+        ind  = target.module.typedVar( "g_ucharValue" )
+        self.assertEqual( 5, [0,5,10][ind] )
+    
+        tv = target.module.typedVar( "g_struct3" )
+        self.assertEqual( 2, tv.m_arrayField[ind] )

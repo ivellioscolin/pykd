@@ -53,6 +53,10 @@ public:
         throw PyException( PyExc_TypeError, "object is unsubscriptable");  
     }
 
+    virtual TypedVarPtr getElementByIndexPtr( const TypedVarPtr& tv ) {
+        return getElementByIndex( boost::apply_visitor( VariantToULong(), tv->getValue() ) );
+    }
+
 protected:
 
     TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset );
@@ -118,9 +122,9 @@ public:
         return m_typeInfo->getCount();
     }
 
-    virtual TypedVarPtr getElementByIndex( ULONG  index ) {
-
-        if ( index > m_typeInfo->getCount() )
+    virtual TypedVarPtr getElementByIndex( ULONG  index ) 
+    {
+        if ( index >= m_typeInfo->getCount() )
         {
             throw PyException( PyExc_IndexError, "Index out of range" );
         }

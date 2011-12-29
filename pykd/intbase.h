@@ -26,14 +26,12 @@ public:
     }
 };
 
-
-
 class VariantToPyobj : public boost::static_visitor<python::object>
 {
 public:
     template<typename T>
     python::object operator()(T i ) const {
-        return  python::object( i );        
+        return  python::object( i );
     }
 };
 
@@ -42,10 +40,18 @@ class VariantToPylong : public boost::static_visitor<python::object>
 public:
     template<typename T>
     python::object operator()(T i ) const {
-        return  python::long_( i );        
+        return  python::long_( i );
     }
 };
 
+class VariantToULong : public boost::static_visitor<ULONG>
+{
+public:
+    template<typename T>
+    ULONG operator()(T i ) const {
+        return  static_cast<ULONG>( i );
+    }
+};
 
 
 class intBase {

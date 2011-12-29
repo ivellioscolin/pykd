@@ -132,7 +132,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__str__", &intBase::str )
         .def( "__hex__", &intBase::hex )
         .def( "__long__", &intBase::long_ )
-        .def( "__int__", &intBase::int_ );
+        .def( "__int__", &intBase::int_ )
+        .def( "__index__", &intBase::long_ );
 
     python::class_<DebugClient, DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
         .def( "addr64", &DebugClient::addr64,
@@ -483,7 +484,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return field of structure as an object attribute" )
         .def( "__str__", &TypedVar::print )
         .def("__len__", &TypedVar::getElementCount )
-        .def("__getitem__", &TypedVar::getElementByIndex );
+        .def("__getitem__", &TypedVar::getElementByIndex )
+        .def("__getitem__", &TypedVar::getElementByIndexPtr );
 
     python::class_<Module, python::bases<intBase> >("module", "Class representing executable module", python::no_init )
         .def("begin", &Module::getBase,
