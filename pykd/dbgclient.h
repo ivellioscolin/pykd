@@ -16,6 +16,7 @@
 #include "cpureg.h"
 #include "inteventhandler.h"
 #include "synsymbol.h"
+#include "context.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -233,6 +234,12 @@ public:
         return getDbgControl(GetPageSize);
     }
 
+    Ctx::ContextPtr getThreadContext() {
+        return Ctx::ContextPtr(
+            new Ctx::Registers(m_control, m_advanced)
+        );
+    }
+
 public:
 
     CComPtr<IDebugClient4>&
@@ -385,6 +392,10 @@ inline ULONG getNumberProcessors() {
 
 inline ULONG getPageSize() {
     return g_dbgClient->getPageSize();
+}
+
+inline Ctx::ContextPtr getThreadContext() {
+    return g_dbgClient->getThreadContext();
 }
 
 /////////////////////////////////////////////////////////////////////////////////

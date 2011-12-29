@@ -283,6 +283,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Get the number of actual processors in the machine" )
         .def( "getPageSize", &DebugClient::getPageSize,
             "Get the page size for the currently executing processor context" )
+        .def( "getContext", &DebugClient::getThreadContext,
+            "Get context of current thread (register values)" )
         .def( "addSynSymbol", &DebugClient::addSyntheticSymbol,
             "Add new synthetic symbol for virtual address" )
         .def( "delAllSynSymbols", &DebugClient::delAllSyntheticSymbols, 
@@ -454,6 +456,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Get the number of actual processors in the machine" );
     python::def( "getPageSize", &getPageSize,
         "Get the page size for the currently executing processor context" );
+    python::def( "getContext", &getThreadContext,
+        "Get context of current thread (register values)" );
 
     python::class_<TypeInfo, TypeInfoPtr, python::bases<intBase>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
         .def( "name", &TypeInfo::getName )
@@ -585,7 +589,22 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a frame's stack offset" )
         .def_readonly( "frameNumber", &DEBUG_STACK_FRAME::FrameNumber,
             "Return a frame's number" );
-        
+
+   python::class_<Ctx::Registers, Ctx::ContextPtr>(
+        "Context", "Context of thread (register values)", python::no_init )
+        .def( "ip", &Ctx::Registers::getIp, 
+            "Get instruction pointer register" )
+        .def( "retreg", &Ctx::Registers::getIp, 
+            "Get primary return value register" )
+        .def( "csp", &Ctx::Registers::getSp, 
+            "Get current stack pointer" )
+        .def( "get", &Ctx::Registers::getValue, 
+            "Get register value by ID (CV_REG_XXX)" )
+        .def("__len__", &Ctx::Registers::getCount,
+            "Return count of registers")
+        .def("__getitem__", &Ctx::Registers::getByIndex,
+            "Return tuple<ID, VALUE> by index");
+
     python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
         "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");
 

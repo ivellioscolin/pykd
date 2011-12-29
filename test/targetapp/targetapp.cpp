@@ -7,6 +7,8 @@
 
 #include "utils.h"
 
+////////////////////////////////////////////////////////////////////////////////
+
 #pragma pack( push, 4 )
 
 const ULONG g_constNumValue = 0x5555;
@@ -160,6 +162,10 @@ listStruct1  g_listItem11 = { 100 };
 listStruct1  g_listItem12 = { 200 };
 listStruct1  g_listItem13 = { 300 };
 
+#pragma pack( pop )
+
+////////////////////////////////////////////////////////////////////////////////
+
 #define InitializeListHead(ListHead) (\
     (ListHead)->Flink = (ListHead)->Blink = (ListHead))
 
@@ -173,6 +179,8 @@ listStruct1  g_listItem13 = { 300 };
     _EX_Blink->Flink = (Entry);\
     _EX_ListHead->Blink = (Entry);\
     }
+
+////////////////////////////////////////////////////////////////////////////////
 
 void FuncWithName0()
 {
@@ -212,6 +220,8 @@ void FuncWithName0()
     std::cout << g_classChild.m_enumField;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 void FuncWithName1(int a)
 {
     unionTest _unionTest[2] = {0};
@@ -227,48 +237,22 @@ void FuncWithName1(int a)
     std::cout << g_string;
 }
 
-void FuncWithVolatileArg(volatile long *arg1)
-{
-    InterlockedIncrement(arg1);
-}
+////////////////////////////////////////////////////////////////////////////////
 
 BOOL CALLBACK EnumWindowsProc(
     HWND hWindow,
     LPARAM lParam
 )
 {
+    DWORD dwProccessId = 0;
     if (hWindow)
         std::cout << lParam;
-
-    switch(lParam)
     {
-    case 1:
-        std::cout << "case 1";
-        break;
-
-    case 2:
-        std::cout << "case 2";
-        break;
-
-    case 3:
-        std::cout << "case 2";
-        break;
-
-    default:
-        {
-            DWORD dwProccessId = 0;
-            DWORD dwThreadId = ::GetWindowThreadProcessId(hWindow, &dwProccessId);
-            std::cout << dwProccessId << dwThreadId;
-            classWithDestructor classInstance(dwProccessId);
-            std::cout << GetWindowLong(hWindow, GWL_STYLE);
-        }
-
+        DWORD dwThreadId = ::GetWindowThreadProcessId(hWindow, &dwProccessId);
+        std::cout << dwProccessId << dwThreadId;
     }
-
     return FALSE;
 }
-
-#pragma pack( pop )
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -328,3 +312,4 @@ int _tmain(int argc, _TCHAR* argv[])
     return 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////

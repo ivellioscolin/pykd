@@ -21,6 +21,20 @@ class DbgClientTest( unittest.TestCase ):
         """Size of memory page must be >= 4kb"""
         self.assertTrue( pykd.getPageSize() >= 4*1024 )
 
+    def testCurrentThreadContext( self ):
+        """Some check of current thread context content"""
+        ctx = pykd.getContext()
+#        for reg in ctx:
+#            regName = ""
+#            try:
+#                regName = pykd.diaI386Regs[ reg[0] ]
+#            except KeyError:
+#                regName = pykd.diaAmd64Regs[ reg[0] ]
+#            pykd.dprint( "\n" + regName + ": 0x%x " % reg[1])
+        self.assertNotEqual( 0, len(ctx) )
+        self.assertNotEqual( 0, ctx.ip() )
+        self.assertNotEqual( 0, ctx.csp() )
+
     def testIsDumpAnalyzing( self ):
         self.assertFalse( pykd.isDumpAnalyzing() )
         
@@ -29,7 +43,7 @@ class DbgClientTest( unittest.TestCase ):
         pykd.setExecutionStatus( pykd.DEBUG_STATUS_GO )
         pykd.waitForEvent()
         self.assertEqual( pykd.DEBUG_STATUS_BREAK, pykd.getExecutionStatus() )
-        
+
     def testPdbFile( self ):
         self.assertNotEqual( '', pykd.getPdbFile( target.module.begin() ) )
 
@@ -39,6 +53,6 @@ class DbgClientTest( unittest.TestCase ):
 
     def testThreadList( self ):
         self.assertNotEqual( 0, len(pykd.getThreadList()) )
-        
+
     def testSymbolsPath( self ):
         self.assertNotEqual( '', pykd.symbolsPath() )
