@@ -66,12 +66,26 @@ std::list< SymbolPtr > Symbol::findChildrenImpl(
 )
 {
     DiaEnumSymbolsPtr symbols;
-    HRESULT hres = 
-        m_symbol->findChildren(
-            static_cast<enum SymTagEnum>(symTag),
-            toWStr(name),
-            nameCmpFlags,
-            &symbols);
+    HRESULT hres;
+
+    if ( name.empty() )
+    {
+        hres = m_symbol->findChildren(
+                static_cast<enum SymTagEnum>(symTag),
+                NULL,
+                nameCmpFlags,
+                &symbols);
+
+    }
+    else
+    {
+        hres = m_symbol->findChildren(
+                static_cast<enum SymTagEnum>(symTag),
+                toWStr(name),
+                nameCmpFlags,
+                &symbols);
+    }
+
     if (S_OK != hres)
         throw Exception("Call IDiaSymbol::findChildren", hres);
 

@@ -390,4 +390,25 @@ TypeInfoPtr TypeInfo::getRecurciveComplexType( TypeInfoPtr &lowestType, std::str
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+python::dict EnumTypeInfo::asMap()
+{
+    python::dict                dct;
+
+    std::list< pyDia::SymbolPtr >      symbolsList = m_dia->findChildrenImpl(SymTagData, "", nsfCaseSensitive  );
+
+    for ( std::list< pyDia::SymbolPtr >::iterator  it = symbolsList.begin(); it != symbolsList.end(); it++ )
+    {
+         CComVariant     val;
+
+         (*it)->getValue( val );
+
+         dct[val.ulVal] = (*it)->getName();
+    }
+
+    return dct;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 }; // end namespace pykd

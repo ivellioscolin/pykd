@@ -101,3 +101,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( 0, ti.m_doubleValue.offset() )
         self.assertEqual( 0, ti.m_bits.offset() )
         self.assertEqual( ti.size(), ti.m_doubleValue.size() )
+        
+    def testAsMap(self):
+        ti = target.module.type("enumType")
+        self.assertEqual( { 1 : "ONE", 2 : "TWO", 3 : "THREE" }, ti.asMap() )

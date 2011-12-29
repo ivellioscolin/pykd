@@ -82,6 +82,9 @@ public:
         return 8 * getSize();
     }
 
+    virtual python::dict asMap() {
+        throw DbgException( "there is no fields" );
+    }
 
     ULONG getOffset() {
         return m_offset;
@@ -242,6 +245,8 @@ protected:
         ti->setOffset( 0 );
         return ti;
     }
+
+    virtual python::dict asMap();
 
     virtual bool isEnum() {
         return true;
