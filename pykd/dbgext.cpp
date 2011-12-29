@@ -133,7 +133,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__hex__", &intBase::hex )
         .def( "__long__", &intBase::long_ )
         .def( "__int__", &intBase::int_ )
-        .def( "__index__", &intBase::long_ );
+        .def( "__index__", &intBase::long_ )
+        .def( "__hash__", &intBase::long_ );
 
     python::class_<DebugClient, DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
         .def( "addr64", &DebugClient::addr64,

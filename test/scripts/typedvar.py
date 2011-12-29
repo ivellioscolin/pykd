@@ -130,6 +130,16 @@ class TypedVarTest( unittest.TestCase ):
     
         ind  = target.module.typedVar( "g_ucharValue" )
         self.assertEqual( 5, [0,5,10][ind] )
+      
+        self.assertTrue( ind in [0,1,2] )
     
         tv = target.module.typedVar( "g_struct3" )
         self.assertEqual( 2, tv.m_arrayField[ind] )
+        
+        ind = target.module.typedVar( "g_ulongValue" )
+        self.assertEqual( 4, ind )
+        self.assertTrue( ind in { 1 : "1", 4 : "2" } )
+        self.assertEqual( "2", { 1 : "1", 4 : "2" }[ind] )
+        
+
+
