@@ -11,6 +11,16 @@ class TypedVarTest( unittest.TestCase ):
     def testCtor( self ):
         tv = target.module.typedVar( "structTest", target.module.g_structTest )
         tv = target.module.typedVar( "g_structTest" )
+        
+    def testBaseTypes(self):
+        self.assertEqual( 1, target.module.typedVar( "g_ucharValue" ) )
+        self.assertEqual( 2, target.module.typedVar( "g_ushortValue" ) )
+        self.assertEqual( 4, target.module.typedVar( "g_ulongValue" ) )
+        self.assertEqual( 8, target.module.typedVar( "g_ulonglongValue" ) )
+        self.assertEqual( -1, target.module.typedVar( "g_charValue" ) )
+        self.assertEqual( -2, target.module.typedVar( "g_shortValue" ) )
+        self.assertEqual( -4, target.module.typedVar( "g_longValue" ) )
+        self.assertEqual( -8, target.module.typedVar( "g_longlongValue" ) )
 
     def testGetAddress( self ):
         tv = target.module.typedVar( "structTest", target.module.g_structTest )

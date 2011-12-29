@@ -11,7 +11,18 @@ class TypeInfoTest( unittest.TestCase ):
     def testCtor( self ):
         """ typeInfo class can not be created direct """
         try: pykd.typeInfo()
-        except RuntimeError: pass     
+        except RuntimeError: pass
+        
+        
+    def testBaseTypes(self):
+        self.assertEqual("Int1B", target.module.type( "Int1B" ).name() )
+        self.assertEqual("Int2B", target.module.type( "Int2B" ).name() )
+        self.assertEqual("Int4B", target.module.type( "Int4B" ).name() )
+        self.assertEqual("Int8B", target.module.type( "Int8B" ).name() )
+        self.assertEqual("UInt1B", target.module.type( "UInt1B" ).name() )
+        self.assertEqual("UInt2B", target.module.type( "UInt2B" ).name() )
+        self.assertEqual("UInt4B", target.module.type( "UInt4B" ).name() )
+        self.assertEqual("UInt8B", target.module.type( "UInt8B" ).name() )
 
     def testCreateByName( self ):
         """ creating typeInfo by the type name """

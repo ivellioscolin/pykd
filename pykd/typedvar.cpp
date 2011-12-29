@@ -79,6 +79,12 @@ BaseTypeVariant BasicTypedVar::getValue()
     if ( m_typeInfo->getName() == "WChar" )
         return (LONG)*(PWCHAR)&val;
 
+    if ( m_typeInfo->getName() == "Int1B" )
+        return (LONG)*(PCHAR)&val;
+
+    if ( m_typeInfo->getName() == "UInt1B" )
+        return (ULONG)*(PUCHAR)&val;
+
     if ( m_typeInfo->getName() == "Int2B" )
         return (LONG)*(PSHORT)&val;
 

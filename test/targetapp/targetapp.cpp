@@ -19,6 +19,11 @@ USHORT g_ushortValue = 2;
 ULONG g_ulongValue = 4;
 ULONGLONG g_ulonglongValue = 8;
 
+CHAR g_charValue = -1;
+SHORT g_shortValue = -2;
+LONG g_longValue = -4;
+LONGLONG g_longlongValue = -8;
+
 std::string g_string;
 
 struct structWithBits {
@@ -195,6 +200,10 @@ void FuncWithName0()
     std::cout << g_ushortValue;
     std::cout << g_ulongValue;
     std::cout << g_ulonglongValue;
+    std::cout << g_charValue;
+    std::cout << g_shortValue;
+    std::cout << g_longValue;
+    std::cout << g_longlongValue;
 
     std::cout << g_structTest.m_field0;
     std::cout << g_testArray[1].m_field3;

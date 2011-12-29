@@ -110,7 +110,7 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::strin
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-static const boost::regex baseMatch("^(Char)|(WChar)|(Int2B)|(UInt2B)|(Int4B)|(UInt4B)|(Int8B)|(UInt8B)|(Long)|(ULong)|(Float)|(Bool)|(Double)$" );
+static const boost::regex baseMatch("^(Char)|(WChar)|(Int1B)|(UInt1B)|(Int2B)|(UInt2B)|(Int4B)|(UInt4B)|(Int8B)|(UInt8B)|(Long)|(ULong)|(Float)|(Bool)|(Double)$" );
 
 TypeInfoPtr 
 TypeInfo::getBaseTypeInfo( const std::string &symName )
@@ -126,36 +126,42 @@ TypeInfo::getBaseTypeInfo( const std::string &symName )
             return TypeInfoPtr( new TypeInfoWrapper<wchar_t>("WChar") );
 
         if ( baseMatchResult[3].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<short>("Int2B") );
+            return TypeInfoPtr( new TypeInfoWrapper<char>("Int1B") );
 
         if ( baseMatchResult[4].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<unsigned short>("UInt2B") );
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned char>("UInt1B") );
 
         if ( baseMatchResult[5].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<long>("Int4B") );
+            return TypeInfoPtr( new TypeInfoWrapper<short>("Int2B") );
 
         if ( baseMatchResult[6].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<unsigned long>("UInt4B") );
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned short>("UInt2B") );
 
         if ( baseMatchResult[7].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<__int64>("Int8B") );
+            return TypeInfoPtr( new TypeInfoWrapper<long>("Int4B") );
 
         if ( baseMatchResult[8].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<unsigned __int64>("UInt8B") );
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned long>("UInt4B") );
 
         if ( baseMatchResult[9].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<long>("Long") );
+            return TypeInfoPtr( new TypeInfoWrapper<__int64>("Int8B") );
 
         if ( baseMatchResult[10].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<unsigned long>("ULong") );
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned __int64>("UInt8B") );
 
         if ( baseMatchResult[11].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<float>("Float") );
+            return TypeInfoPtr( new TypeInfoWrapper<long>("Long") );
 
         if ( baseMatchResult[12].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<bool>("Bool") );
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned long>("ULong") );
 
         if ( baseMatchResult[13].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<float>("Float") );
+
+        if ( baseMatchResult[14].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<bool>("Bool") );
+
+        if ( baseMatchResult[15].matched )
             return TypeInfoPtr( new TypeInfoWrapper<double>("Double") );
    }
 
