@@ -604,6 +604,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Get current stack pointer" )
         .def( "get", &Ctx::Registers::getValue, 
             "Get register value by ID (CV_REG_XXX)" )
+        .def( "processorType", &Ctx::Registers::getProcessorType,
+            "Get processor type as string")
         .def("__len__", &Ctx::Registers::getCount,
             "Return count of registers")
         .def("__getitem__", &Ctx::Registers::getByIndex,

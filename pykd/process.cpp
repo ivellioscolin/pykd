@@ -78,7 +78,7 @@ getCurrentStack()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-static std::string processorToStr(ULONG processorMode)
+std::string processorToStr(ULONG processorMode)
 {
     switch( processorMode )
     {

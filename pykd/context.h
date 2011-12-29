@@ -7,6 +7,10 @@
 
 #pragma once
 
+namespace pykd{
+    std::string processorToStr(ULONG processorMode);
+}
+
 namespace Ctx {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +46,16 @@ public:
     }
     python::object getByIndex(ULONG ind) const;
 
+    // get processor type
+    std::string getProcessorType() const {
+        return pykd::processorToStr(m_processorType);
+    }
+
 private:
+
+    struct IsNotSubRegister : public std::exception {
+        IsNotSubRegister() : std::exception("is not sub-register") { }
+    };
 
     // query i386 registers
     void getI386Context(
@@ -53,6 +66,9 @@ private:
     void getAmd64Context(
         IDebugAdvanced2 *advanced
     );
+
+    // try query as "sub-register"
+    ULONG64 getSubValue(ULONG cvRegId) const;
 
 private:
     typedef std::map<ULONG, ULONG64> RegValues;
