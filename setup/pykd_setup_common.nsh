@@ -27,7 +27,7 @@ SetCompressor LZMA
 
 !define PRODUCT_SHORT_NAME "pykd"
 !define PRODUCT_FULL_NAME  "Python extension for WinDbg"
-!define PRODUCT_VERSION "0.0.1.2"
+!define PRODUCT_VERSION "0.1.0.3"
 !define PRODUCT_URL  "http://pykd.codeplex.com/"
 !define PRODUCT_NAME_AND_VERSION "${PRODUCT_FULL_NAME} ${PRODUCT_ARCH} ${PRODUCT_VERSION}"
 !define PRODUCT_MANUFACTURER "PyKd Team"
@@ -252,11 +252,16 @@ SectionEnd
 
 Section "Debug Interface Access (${PRODUCT_ARCH}) library" sec_msdia
     DetailPrint "Registering Debug Interface Access (${PRODUCT_ARCH}) library..."
+    
     !if ${PRODUCT_ARCH} == "x64"
-        RegDLL "$COMMONFILES64\Microsoft Shared\VC\${MSDIA_DLL_NAME}"
+        ${DisableX64FSRedirection}
+        ClearErrors
+        ExecWait '"$SYSDIR\regsvr32.exe" /s "$COMMONFILES64\Microsoft Shared\VC\${MSDIA_DLL_NAME}"'
+        ${EnableX64FSRedirection}
     !else
-        RegDLL "$COMMONFILES32\Microsoft Shared\VC\${MSDIA_DLL_NAME}"
+        RegDLL "$COMMONFILES\Microsoft Shared\VC\${MSDIA_DLL_NAME}"
     !endif
+    
     ${IfNot} ${Errors}
         DetailPrint "Successfully registered."
         ${SetRegView64}
@@ -388,7 +393,15 @@ Section /o "un.Debug Interface Access (${PRODUCT_ARCH}) library" unsec_msdia
     ${SetRegView64}
     ReadRegStr $R0 HKCR "CLSID\${CLSID_DiaSource}\InprocServer32" ""
     ${SetRegView32}
-    UnRegDLL $R0
+
+    !if ${PRODUCT_ARCH} == "x64"
+        ${DisableX64FSRedirection}
+        ClearErrors
+        ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$R0"'
+        ${EnableX64FSRedirection}
+    !else
+        UnRegDLL $R0
+    !endif
 SectionEnd
 
 Section /o "un.Visual C++ 2008 SP1 (${PRODUCT_ARCH}) runtime" unsec_vcruntime
