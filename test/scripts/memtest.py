@@ -94,4 +94,10 @@ class MemoryTest( unittest.TestCase ):
     def testPtrArray( self ):
         lst = pykd.loadPtrArray( target.module.arrIntMatrixPtrs, 3 )
         self.assertEqual( 3, len( lst ) )
+        
+    def testInvalidAddr( self ):
+        try:
+            pykd.loadSignBytes( 0xDEADBEEF, 5 )
+        except pykd.MemoryException:
+            self.assertTrue( True )
 

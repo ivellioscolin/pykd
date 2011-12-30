@@ -21,6 +21,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( -2, target.module.typedVar( "g_shortValue" ) )
         self.assertEqual( -4, target.module.typedVar( "g_longValue" ) )
         self.assertEqual( -8, target.module.typedVar( "g_longlongValue" ) )
+        self.assertEqual( True, target.module.typedVar( "g_constBoolValue" ) )
 
     def testGetAddress( self ):
         tv = target.module.typedVar( "structTest", target.module.g_structTest )
