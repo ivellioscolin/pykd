@@ -12,6 +12,17 @@
 #pragma pack( push, 4 )
 
 const ULONG g_constNumValue = 0x5555;
+
+// 
+// kd> x targetapp!g_constBoolValue
+// *** nothing *** 
+// 
+// kd> > u 01331995 
+// targetapp!FuncWithName0+0x75 [c:\projects\pykd\branch\0.1.x\test\targetapp\targetapp.cpp @ 198]:
+// 01331995 8bf4            mov     esi,esp
+// 01331997 6a01            push    1   ; << g_constBoolValue
+// 01331999 8b0d84043401    mov     ecx,dword ptr [targetapp!_imp_?coutstd (01340484)]
+// 0133199f ff1578043401    call    dword ptr [targetapp!_imp_??6?$basic_ostreamDU?$char_traitsDstdstdQAEAAV01_NZ (01340478)]
 const bool g_constBoolValue = true;
 
 UCHAR g_ucharValue = 1;
