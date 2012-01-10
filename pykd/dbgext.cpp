@@ -469,7 +469,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "bitWidth", &TypeInfo::getBitWidth )
         .def( "field", &TypeInfo::getField )
         .def( "__getattr__", &TypeInfo::getField )
-        .def( "asMap", &TypeInfo::asMap );
+        .def( "asMap", &TypeInfo::asMap )
+        .def( "deref", &TypeInfo::deref );
 
     python::class_<TypedVar, TypedVarPtr, python::bases<intBase>, boost::noncopyable >("typedVar", 
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", 
@@ -480,8 +481,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Return size of a variable in the target memory" )
         .def("offset", &TypedVar::getOffset,
             "Return offset to parent" )
-        .def("field",  &TypedVar::getField,
+        .def("field", &TypedVar::getField,
             "Return field of structure as an object attribute" )
+        .def("deref", &TypedVar::deref,
+            "Return value by pointer" )
         .def("__getattr__", &TypedVar::getField,
             "Return field of structure as an object attribute" )
         .def( "__str__", &TypedVar::print )

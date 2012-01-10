@@ -37,7 +37,11 @@ public:
         return m_typeInfo;
     }
 
-    virtual TypedVarPtr  getField( const std::string &fieldName ) {
+    virtual TypedVarPtr deref() {
+        throw DbgException("object can not be derefernced" );
+    }
+
+    virtual TypedVarPtr getField( const std::string &fieldName ) {
         throw DbgException("no fields");
     }
 
@@ -106,7 +110,9 @@ public:
         return "PtrTypedVar";
     }
 
-    virtual BaseTypeVariant  getValue();
+    virtual TypedVarPtr deref();
+
+    virtual BaseTypeVariant getValue();
 
 };
 

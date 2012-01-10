@@ -128,7 +128,6 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( target.module.type("enumType").THREE, tv.m_enumField )
         
     def testIndex(self):
-    
         ind  = target.module.typedVar( "g_ucharValue" )
         self.assertEqual( 5, [0,5,10][ind] )
       
@@ -142,5 +141,15 @@ class TypedVarTest( unittest.TestCase ):
         self.assertTrue( ind in { 1 : "1", 4 : "2" } )
         self.assertEqual( "2", { 1 : "1", 4 : "2" }[ind] )
         
-
-
+    def testDeref(self):
+        tv = target.module.typedVar( "g_structTest1" )
+        self.assertEqual( target.module.g_structTest, tv.m_field4.deref().getAddress() )
+        
+        tv = target.module.typedVar( "g_structTest" )
+        self.assertEqual( 0, tv.m_field4.deref().getAddress() )
+        
+        try:
+            tv.m_field1.deref()
+            self.assertTrue(False)
+        except pykd.BaseException: 
+            pass

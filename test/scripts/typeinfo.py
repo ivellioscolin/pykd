@@ -105,3 +105,20 @@ class TypeInfoTest( unittest.TestCase ):
     def testAsMap(self):
         ti = target.module.type("enumType")
         self.assertEqual( { 1 : "ONE", 2 : "TWO", 3 : "THREE" }, ti.asMap() )
+        
+    def testDeref(self):
+        ti = target.module.type("listStruct1")
+        self.assertEqual( "listStruct1", ti.next.deref().name() )
+        
+        ti = target.module.type("listStruct1*")
+        self.assertEqual( "listStruct1", ti.deref().name() )
+        
+        ti = target.module.type("classChild")
+        try:
+            ti.deref()
+            self.assertTrue(False)
+        except pykd.BaseException: 
+            pass
+        
+        
+        

@@ -180,9 +180,22 @@ Module::getTypedVarByType( const TypeInfoPtr &typeInfo, ULONG64 addr )
 TypedVarPtr
 Module::getTypedVarByName( const std::string &symName )
 {
+    HRESULT     hres;
+
     pyDia::SymbolPtr  typeSym = getDia()->getChildByName( symName );
 
-    return TypedVar::getTypedVar( m_client, TypeInfo::getTypeInfo( typeSym->getType() ), typeSym->getRva() + m_base );
+    std::string     fullName = m_name;
+    fullName += '!';
+    fullName += symName;
+
+    ULONG64   offset;
+
+    hres = m_symbols->GetOffsetByName( fullName.c_str(), &offset );
+
+    if ( FAILED( hres ) )
+        throw DbgException("IDebugSymbols::GetOffsetByName failed" );
+
+    return TypedVar::getTypedVar( m_client, TypeInfo::getTypeInfo( typeSym->getType() ), offset );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

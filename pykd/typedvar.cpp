@@ -131,6 +131,20 @@ BaseTypeVariant PtrTypedVar::getValue()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+TypedVarPtr PtrTypedVar::deref()
+{
+    HRESULT     hres;
+    ULONG64     val = 0;
+
+    hres = m_dataSpaces->ReadPointersVirtual( 1, m_offset, &val );
+    if ( FAILED( hres ) )
+        throw MemoryException( m_offset, false );
+
+    return TypedVar::getTypedVar( m_client, m_typeInfo->deref(), val );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 TypedVarPtr
 UdtTypedVar::getField( const std::string &fieldName ) 
 {

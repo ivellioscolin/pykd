@@ -86,6 +86,10 @@ public:
         throw DbgException( "there is no fields" );
     }
 
+    virtual TypeInfoPtr deref() {
+        throw DbgException( "type is not a pointer" );
+    }
+
     ULONG getOffset() {
         return m_offset;
     }
@@ -280,6 +284,10 @@ public:
 
     virtual bool isPointer() {
         return true;
+    }
+
+    virtual TypeInfoPtr deref() {
+        return m_derefType;
     }
 
     TypeInfoPtr getDerefType() {
