@@ -81,17 +81,16 @@ public:
         {
         }
 
-        bool operator == (const ModuleId &rhs) const
-        {
-            return 
-                m_timeDataStamp == rhs.m_timeDataStamp &&
-                m_checkSumm == rhs.m_checkSumm;
-        }
         bool operator < (const ModuleId &rhs) const
         {
+            return makeQword() < rhs.makeQword();
+        }
+
+    private:
+        LONG64 makeQword() const {
             return 
-                m_timeDataStamp < rhs.m_timeDataStamp &&
-                m_checkSumm < rhs.m_checkSumm;
+                static_cast<LONG64>(m_timeDataStamp) | 
+                (static_cast<LONG64>(m_checkSumm) << 32);
         }
     };
 
