@@ -232,8 +232,6 @@ Module::getTypedVarByAddr( ULONG64 addr )
 
     return getTypedVarByName( symbolName );
 
-
-
     //LONG displacement;
     //pyDia::SymbolPtr diaSym = 
     //    getDia()->findByRvaImpl((ULONG)(addr - m_base), SymTagData, displacement);
@@ -247,13 +245,22 @@ Module::getTypedVarByAddr( ULONG64 addr )
 
 ULONG Module::getRvaByName(const std::string &symName)
 {
-    try {
-        pyDia::SymbolPtr sym = getDia()->getChildByName( symName );
-        return sym->getRva();
-    } 
-    catch (const pyDia::Exception &) {
-    }
+    HRESULT     hres;
+    ULONG64     offset;
+
+    hres = m_symbols->GetOffsetByName( symName.c_str(), &offset );
+    if ( SUCCEEDED(hres) )
+        return (ULONG)(offset - m_base);
+
     return (ULONG)m_synSymbols->getRvaByName(m_timeDataStamp, m_checkSumm, symName);
+
+    //try {
+    //    pyDia::SymbolPtr sym = getDia()->getChildByName( symName );
+    //    return sym->getRva();
+    //} 
+    //catch (const pyDia::Exception &) {
+    //}
+    //return (ULONG)m_synSymbols->getRvaByName(m_timeDataStamp, m_checkSumm, symName);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
