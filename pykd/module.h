@@ -28,15 +28,15 @@ public:
         return m_imageName;
     }
 
-    ULONG64  getBase() {
+    ULONG64  getBase() const {
         return m_base;
     }
 
-    ULONG64 getEnd() {
+    ULONG64 getEnd() const {
         return m_base + m_size;
     }
 
-    ULONG  getSize() {
+    ULONG  getSize() const {
         return m_size;
     }
 
@@ -80,16 +80,15 @@ public:
 
     python::list getTypedVarArrayByType( ULONG64 addr, const TypeInfoPtr &typeInfo, ULONG number );
 
-
-private:
-
-    ULONG getRvaByName(const std::string &symName);
-
     pyDia::GlobalScopePtr& getDia() {
         if (!m_dia)
             m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
         return m_dia;
     }
+
+private:
+
+    ULONG getRvaByName(const std::string &symName);
 
     BaseTypeVariant getValue() {
         return BaseTypeVariant(m_base);

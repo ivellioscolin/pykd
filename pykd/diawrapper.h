@@ -55,6 +55,7 @@ private:
 
 class Symbol;
 typedef boost::shared_ptr< Symbol > SymbolPtr;
+typedef std::list< SymbolPtr > SymbolPtrList;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Symbol
@@ -77,16 +78,16 @@ public:
     }
 
 
-    std::list< SymbolPtr > findChildrenImpl(
+    SymbolPtrList findChildrenImpl(
         ULONG symTag,
-        const std::string &name,
-        DWORD nameCmpFlags
+        const std::string &name = "",
+        DWORD nameCmpFlags = 0
     );
 
     python::list findChildrenEx(
         ULONG symTag,
-        const std::string &name,
-        DWORD nameCmpFlags
+        const std::string &name = "",
+        DWORD nameCmpFlags = 0
     )
     {
         return toPyList( findChildrenImpl(symTag, name, nameCmpFlags) );

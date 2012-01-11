@@ -61,6 +61,14 @@ public:
         return getElementByIndex( boost::apply_visitor( VariantToULong(), tv->getValue() ) );
     }
 
+    ULONG getDataKind() const {
+        return m_dataKind;
+    }
+
+    void setDataKind(ULONG dataKind) {
+        m_dataKind = dataKind;
+    }
+
 protected:
 
     TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset );
@@ -74,6 +82,8 @@ protected:
     ULONG64                 m_offset;
 
     ULONG                   m_size;
+
+    ULONG                   m_dataKind;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

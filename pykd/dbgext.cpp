@@ -78,6 +78,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords_, loadSignWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, compareMemory, 3, 4 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( getLocals_, getLocals, 0, 1 );
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadChars, DebugClient::loadChars, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadWChars, DebugClient::loadWChars, 2, 3 );
@@ -90,7 +91,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignWords, DebugClient::
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignDWords, DebugClient::loadSignDWords, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignQWords, DebugClient::loadSignQWords, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_compareMemory, DebugClient::compareMemory, 3, 4 );
-
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_getLocals, DebugClient::getLocals, 0, 1 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( pyDia_Symbol_findChildrenEx, pyDia::Symbol::findChildrenEx, 1, 3 );
 
 #define DEF_PY_CONST_ULONG(x)    \
     python::scope().attr(#x) = ULONG(##x)
@@ -287,6 +289,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Get the page size for the currently executing processor context" )
         .def( "getContext", &DebugClient::getThreadContext,
             "Get context of current thread (register values)" )
+        .def( "getLocals", &DebugClient::getLocals, DebugClient_getLocals( python::args( "ctx" ),
+            "Get list of local variables" ) )
         .def( "addSynSymbol", &DebugClient::addSyntheticSymbol,
             "Add new synthetic symbol for virtual address" )
         .def( "delAllSynSymbols", &DebugClient::delAllSyntheticSymbols, 
@@ -460,6 +464,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Get the page size for the currently executing processor context" );
     python::def( "getContext", &getThreadContext,
         "Get context of current thread (register values)" );
+    python::def( "getLocals", &getLocals, getLocals_( python::args( "ctx" ),
+            "Get list of local variables" ) );
 
     python::class_<TypeInfo, TypeInfoPtr, python::bases<intBase>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
         .def( "name", &TypeInfo::getName )
@@ -483,6 +489,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return offset to parent" )
         .def("field", &TypedVar::getField,
             "Return field of structure as an object attribute" )
+        .def( "dataKind", &TypedVar::getDataKind,
+            "Retrieves the variable classification of a data: DataIsXxx")
         .def("deref", &TypedVar::deref,
             "Return value by pointer" )
         .def("__getattr__", &TypedVar::getField,
@@ -615,12 +623,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Return tuple<ID, VALUE> by index");
 
     python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
-        "Open pdb file for quering debug symbols. Return DiaSymbol of global scope");
+        "Open pdb file for querying debug symbols. Return DiaSymbol of global scope");
 
     python::class_<pyDia::Symbol, pyDia::SymbolPtr>(
         "DiaSymbol", "class wrapper for MS DIA Symbol", python::no_init )
-        .def( "findEx", &pyDia::Symbol::findChildrenEx, 
-            "Retrieves the children of the symbol" )
+        .def( "findEx", &pyDia::Symbol::findChildrenEx, pyDia_Symbol_findChildrenEx( python::args( "symTag", "name", "cmpFlags" ) ,
+            "Retrieves the children of the symbol" ) )
         .def( "find", &pyDia::Symbol::findChildren, 
             "Retrieves the children of the symbol" )
         .def( "size", &pyDia::Symbol::getSize, 

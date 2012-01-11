@@ -240,6 +240,9 @@ public:
         );
     }
 
+    python::dict getLocals(
+        Ctx::ContextPtr ctx = Ctx::ContextPtr( reinterpret_cast<Ctx::Registers *>(0) ) 
+    );
 public:
 
     CComPtr<IDebugClient4>&
@@ -396,6 +399,13 @@ inline ULONG getPageSize() {
 
 inline Ctx::ContextPtr getThreadContext() {
     return g_dbgClient->getThreadContext();
+}
+
+inline python::dict getLocals(
+    Ctx::ContextPtr ctx = Ctx::ContextPtr( reinterpret_cast<Ctx::Registers *>(0) )
+)
+{
+    return g_dbgClient->getLocals(ctx);
 }
 
 /////////////////////////////////////////////////////////////////////////////////

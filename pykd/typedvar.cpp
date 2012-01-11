@@ -57,7 +57,8 @@ TypedVarPtr   TypedVar::getTypedVar( IDebugClient4 *client, const TypeInfoPtr& t
 TypedVar::TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) :
     DbgObject( client ),
     m_typeInfo( typeInfo ),
-    m_offset( offset )
+    m_offset( offset ),
+    m_dataKind( DataIsGlobal )
 {
     m_size = m_typeInfo->getSize();
 }

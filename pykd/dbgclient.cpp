@@ -193,7 +193,7 @@ void DebugClient::startProcess( const std::wstring  &processName )
     if ( FAILED( hres ) )
         throw DbgException( "IDebugControl::SetEngineOptions failed" );
 
-    std::vector< std::wstring::value_type>      cmdLine( processName.size() + 1 );
+    std::vector< std::wstring::value_type >      cmdLine( processName.size() + 1 );
     wcscpy_s( &cmdLine[0], cmdLine.size(), processName.c_str() );
 
     hres = m_client->CreateProcessWide( 0, &cmdLine[0], DEBUG_PROCESS | DETACHED_PROCESS );

@@ -410,6 +410,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\livevar.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\module.cpp"
 				>
 			</File>

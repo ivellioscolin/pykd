@@ -65,7 +65,7 @@ BaseTypeVariant  TypeInfo::getValue()
         return (LONG64)m_constantValue.llVal;
     }
 
-    throw DbgException( "Failed to convert constatnt type" );
+    throw DbgException( "Failed to convert constant type" );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -392,11 +392,11 @@ TypeInfoPtr TypeInfo::getRecurciveComplexType( TypeInfoPtr &lowestType, std::str
 
 python::dict EnumTypeInfo::asMap()
 {
-    python::dict                dct;
+    python::dict            dct;
 
-    std::list< pyDia::SymbolPtr >      symbolsList = m_dia->findChildrenImpl(SymTagData, "", nsfCaseSensitive  );
+    pyDia::SymbolPtrList    symbolsList = m_dia->findChildrenImpl(SymTagData, "", nsfCaseSensitive  );
 
-    for ( std::list< pyDia::SymbolPtr >::iterator  it = symbolsList.begin(); it != symbolsList.end(); it++ )
+    for ( pyDia::SymbolPtrList::iterator  it = symbolsList.begin(); it != symbolsList.end(); it++ )
     {
          CComVariant     val;
 

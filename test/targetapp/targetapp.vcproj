@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="targetapp"
 	ProjectGUID="{C6254E16-AB8E-41EE-887D-31458E93FC68}"
 	RootNamespace="targetapp"
@@ -429,6 +429,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\scripts\localstest.py"
+				>
+			</File>
+			<File
 				RelativePath="..\scripts\memtest.py"
 				>
 			</File>
@@ -450,6 +454,10 @@
 			</File>
 			<File
 				RelativePath="..\scripts\target.py"
+				>
+			</File>
+			<File
+				RelativePath="..\scripts\thrdctxtest.py"
 				>
 			</File>
 			<File

@@ -24,6 +24,8 @@ import memtest
 import intbase
 import synsymtest
 import ehloadtest
+import thrdctxtest
+import localstest
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
@@ -39,7 +41,9 @@ def getTestSuite( singleName = "" ):
                unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
                unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
                unittest.TestLoader().loadTestsFromTestCase( synsymtest.SynSymTest ),
-               unittest.TestLoader().loadTestsFromTestCase( ehloadtest.EhLoadTest )
+               unittest.TestLoader().loadTestsFromTestCase( thrdctxtest.ThreadContextTest ),
+               unittest.TestLoader().loadTestsFromTestCase( ehloadtest.EhLoadTest ),
+               unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest )
            ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )
@@ -48,21 +52,21 @@ def getTestSuite( singleName = "" ):
 if __name__ == "__main__":
 
     target.appPath = sys.argv[1]
-   
+
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
     print "\nTest module: %s" % target.appPath
-  
+
     pykd.startProcess( target.appPath )
 
     target.module = pykd.loadModule( target.moduleName )
     target.module.reload();
-    
+
     pykd.go()
-    
+
     suite = getTestSuite()
     #suite = getTestSuite( "typedvar.TypedVarTest.testBitField" )
     #suite = getTestSuite( "typeinfo.TypeInfoTest.testBitField" )
-   
+
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
 
-    #a = raw_input("\npress return\n")
+    #raw_input("\npress return\n")

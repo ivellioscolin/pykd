@@ -135,6 +135,24 @@ Module::getPdbName()
     if ( FAILED( hres ) )
         throw DbgException( "IDebugAdvanced2::GetSymbolInformation failed" );
 
+    if (!*moduleInfo.LoadedPdbName)
+    {
+        reloadSymbols();
+        hres = m_advanced->GetSymbolInformation(
+            DEBUG_SYMINFO_IMAGEHLP_MODULEW64,
+            m_base,
+            0,
+            &moduleInfo,
+            sizeof(moduleInfo),
+            NULL,
+            NULL,
+            0,
+            NULL );
+
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugAdvanced2::GetSymbolInformation failed" );
+    }
+
     char  pdbName[ 256 ];
     WideCharToMultiByte( CP_ACP, 0, moduleInfo.LoadedPdbName, 256, pdbName, 256, NULL, NULL );
 

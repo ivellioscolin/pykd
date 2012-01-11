@@ -59,7 +59,7 @@ void Exception::exceptionTranslate( const Exception &e )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-std::list< SymbolPtr > Symbol::findChildrenImpl(
+SymbolPtrList Symbol::findChildrenImpl(
     ULONG symTag,
     const std::string &name,
     DWORD nameCmpFlags
@@ -89,7 +89,7 @@ std::list< SymbolPtr > Symbol::findChildrenImpl(
     if (S_OK != hres)
         throw Exception("Call IDiaSymbol::findChildren", hres);
 
-    std::list< SymbolPtr > childList;
+    SymbolPtrList childList;
 
     DiaSymbolPtr child;
     ULONG celt;

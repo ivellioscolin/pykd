@@ -261,17 +261,22 @@ void FuncWithName1(int a)
 
 BOOL CALLBACK EnumWindowsProc(
     HWND hWindow,
-    LPARAM lParam
+    const LPARAM lParam
 )
 {
     DWORD dwProccessId = 0;
     if (hWindow)
         std::cout << lParam;
+
+    if (hWindow)
     {
+        static ULONGLONG staticVar = 0;
         DWORD dwThreadId = ::GetWindowThreadProcessId(hWindow, &dwProccessId);
-        std::cout << dwProccessId << dwThreadId;
+        staticVar = dwProccessId;
+        __debugbreak();
+        std::cout << dwProccessId << dwThreadId << staticVar;
     }
-    return FALSE;
+    return hWindow ? FALSE : TRUE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -309,6 +314,9 @@ int _tmain(int argc, _TCHAR* argv[])
             // run with parameters
             if ( !_tcsicmp(argv[1], _T("-testLoadUnload")) )
                 return doLoadUnload();
+
+            if ( !_tcsicmp(argv[1], _T("-testEnumWindows")) )
+                return ::EnumWindows(&EnumWindowsProc, 6);
         }
 
         __debugbreak();
@@ -316,8 +324,6 @@ int _tmain(int argc, _TCHAR* argv[])
         __debugbreak();
         FuncWithName0();
         FuncWithName1(2);
-
-        EnumWindows(&::EnumWindowsProc, 6);
     }
     catch(std::exception & ex)
     {
