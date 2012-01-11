@@ -69,7 +69,7 @@ SyntheticSymbols::ModuleId SynSymHelper::modByBase(ULONG64 moduleBase)
             0,
             &dbgModuleParameters);
     if ( FAILED( hres ) )
-        throw DbgException(buildExceptDesc("IDebugSymbols3::GetModuleParameters", hres));
+        throw DbgException( "IDebugSymbols3::GetModuleParameters", hres );
 
     return SyntheticSymbols::ModuleId(dbgModuleParameters);
 }
@@ -84,7 +84,7 @@ SyntheticSymbols::ModuleId SynSymHelper::modByOffset(
     HRESULT hres = 
         m_symbols.GetModuleByOffset(moduleOffset, 0, NULL, &moduleBase);
     if ( FAILED( hres ) )
-        throw DbgException(buildExceptDesc("IDebugSymbols3::GetModuleByOffset", hres));
+        throw DbgException( "IDebugSymbols3::GetModuleByOffset", hres );
 
     return modByBase(moduleBase);
 }

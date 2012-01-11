@@ -25,7 +25,7 @@ void Registers::getI386Context(
 
     HRESULT hres = advanced->GetThreadContext(&Context, sizeof(Context));
     if (S_OK != hres)
-        throw Exception( pykd::buildExceptDesc("IDebugAdvanced2::GetThreadContext", hres) );
+        throw Exception( "IDebugAdvanced2::GetThreadContext", hres );
 
     m_regValues[CV_REG_DR0] = Context.Dr0;
     m_regValues[CV_REG_DR1] = Context.Dr1;
@@ -73,7 +73,7 @@ void Registers::getAmd64Context(
 
     HRESULT hres = advanced->GetThreadContext(&Context, sizeof(Context));
     if (S_OK != hres)
-        throw Exception( pykd::buildExceptDesc("IDebugAdvanced2::GetThreadContext", hres) );
+        throw Exception( "IDebugAdvanced2::GetThreadContext", hres);
 
     m_regValues[CV_AMD64_MXCSR] = Context.MxCsr;
 
@@ -122,7 +122,7 @@ Registers::Registers(
 {
     HRESULT hres = control->GetExecutingProcessorType(&m_processorType);
     if (S_OK != hres)
-        throw Exception( pykd::buildExceptDesc("IDebugControl::GetExecutingProcessorType", hres) );
+        throw Exception( "IDebugControl::GetExecutingProcessorType", hres );
 
     switch (m_processorType)
     {

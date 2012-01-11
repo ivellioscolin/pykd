@@ -42,7 +42,7 @@ void SyntheticSymbols::add(
             DEBUG_ADDSYNTHSYM_DEFAULT,
             &dbgModuleAndId);
     if ( FAILED( hres ) )
-        throw DbgException(buildExceptDesc("IDebugSymbols3::AddSyntheticSymbol", hres));
+        throw DbgException("IDebugSymbols3::AddSyntheticSymbol", hres);
 
     // add/update symbol for target module (in internal map)
     SymbolsScopedLock lock(*m_allSymbolsLock);
@@ -93,7 +93,7 @@ ULONG SyntheticSymbols::removeByMask(
             moduleName + "!" + symName,
             dbgSymbols);
     if (FAILED(hres))
-        throw DbgException(buildExceptDesc("IDebugSymbols3::GetSymbolEntriesByName", hres));
+        throw DbgException("IDebugSymbols3::GetSymbolEntriesByName", hres);
 
     if (dbgSymbols.empty())
         return 0;

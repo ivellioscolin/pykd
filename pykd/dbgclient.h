@@ -42,7 +42,7 @@ private:
         T retValue;
         HRESULT hres = (m_control->*method)(&retValue);
         if (S_OK != hres)
-            throw DbgException( buildExceptDesc(methodName, hres) );
+            throw DbgException( methodName, hres);
         return retValue;
     }
     #define getDbgControl(method)  \
