@@ -29,4 +29,4 @@ class LocalVarsTest(unittest.TestCase):
         self.assertNotEqual( 0, locals["staticVar"] )
         self.assertEqual( pykd.DataIsStaticLocal, locals["staticVar"].dataKind() )
 
-        self.assertEqual( locals["dwProccessId"], locals["staticVar"] )
+        self.assertEqual( locals["dwProccessId"] + 1, locals["staticVar"] )
