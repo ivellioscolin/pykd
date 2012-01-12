@@ -259,7 +259,7 @@ void FuncWithName1(int a)
 
 ////////////////////////////////////////////////////////////////////////////////
 #pragma optimize("g", off)
-BOOL CALLBACK EnumWindowsProc(
+BOOL CALLBACK EnumWindowsProc1(
     HWND hWindow,
     const LPARAM lParam
 )
@@ -278,6 +278,15 @@ BOOL CALLBACK EnumWindowsProc(
     }
     return hWindow ? FALSE : TRUE;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+BOOL CALLBACK EnumWindowsProc2(HWND, LPARAM)
+{
+    __debugbreak();
+    return FALSE;
+}
+
 #pragma optimize("g", on)
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -317,7 +326,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
             if ( !_tcsicmp(argv[1], _T("-testEnumWindows")) )
             {
-                ::EnumWindows(&EnumWindowsProc, 6);
+                ::EnumWindows(&EnumWindowsProc1, 6);
+                ::EnumWindows(&EnumWindowsProc2, 7);
                 return ERROR_SUCCESS;
             }
         }

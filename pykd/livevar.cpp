@@ -21,11 +21,14 @@ struct addLocals {
     ULONG m_rva;
     Ctx::ContextPtr m_ctx;
     IDebugClient4 *m_client;
+    ULONG m_formalNameCounter;
 
     void append(pyDia::SymbolPtr symParent);
 
 private:
     void appendVar(pyDia::SymbolPtr symData);
+
+    void generateUniqueName(std::string &varName);
 
     TypedVarPtr getTypeVarByOffset(
         pyDia::SymbolPtr symData,
@@ -81,6 +84,10 @@ void addLocals::appendVar(pyDia::SymbolPtr symData)
 
     std::string varName = symData->getName();
 
+    // check name for unique. f.e. may be may be somewhat parameters
+    // with name "__formal"
+    generateUniqueName(varName);
+
     switch (symData->getLocType())
     {
     case LocIsStatic:
@@ -103,6 +110,22 @@ void addLocals::appendVar(pyDia::SymbolPtr symData)
     }
     typedVar->setDataKind( symData->getDataKind() );
     m_locals[varName] = typedVar;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void addLocals::generateUniqueName(std::string &varName)
+{
+    if ( !m_locals.has_key(varName) )
+        return;
+
+    std::string origVarName = varName;
+    while ( m_locals.has_key(varName) )
+    {
+        std::stringstream sstream;
+        sstream << origVarName << ++m_formalNameCounter;
+        varName = sstream.str();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -176,7 +199,7 @@ python::dict DebugClient::getLocals(Ctx::ContextPtr ctx OPTIONAL)
         return python::dict();  // out of function debug range
 
     python::dict locals;
-    impl::addLocals Locals = { locals, mod, rva, ctx, m_client };
+    impl::addLocals Locals = { locals, mod, rva, ctx, m_client, 0 };
 
     Locals.append(symFunc);
 

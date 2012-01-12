@@ -232,7 +232,7 @@ class DiaTest( unittest.TestCase ):
         try:
             gScope = pykd.diaLoadPdb( str(target.module.pdb()) )
             self.assertEqual( pykd.DataIsGlobal, gScope["g_structTest"].dataKind() )
-            self.assertEqual( pykd.DataIsParam, gScope["EnumWindowsProc"]["hWindow"].dataKind() )
+            self.assertEqual( pykd.DataIsParam, gScope["EnumWindowsProc1"]["hWindow"].dataKind() )
         except pykd.DiaException as diaExcept:
             print diaExcept
             self.assertTrue(False)
