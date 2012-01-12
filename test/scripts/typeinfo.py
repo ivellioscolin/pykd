@@ -77,7 +77,7 @@ class TypeInfoTest( unittest.TestCase ):
         
     def testSize( self ):
         ti1 = target.module.type( "structTest" )
-        self.assertEqual( 20, ti1.size() )
+        self.assertEqual( 16 + pykd.ptrSize(), ti1.size() )
         self.assertEqual( pykd.ptrSize(), target.module.type("structTest**").size() )
         
     def testBitField( self ):

@@ -30,7 +30,7 @@ class TypedVarTest( unittest.TestCase ):
 
     def testGetSize( self ):
         tv1 = target.module.typedVar( "structTest", target.module.g_structTest )
-        self.assertEqual( 20, tv1.sizeof() )
+        self.assertEqual( 16 + pykd.ptrSize(), tv1.sizeof() )
         tv2 = target.module.typedVar( "structTest[2]", target.module.g_testArray )
         self.assertEqual( tv1.sizeof()*2, tv2.sizeof() )
 
