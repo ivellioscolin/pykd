@@ -127,5 +127,25 @@ private:
 
 /////////////////////////////////////////////////////////////////////////////////
 
+class AddSyntheticSymbolException : public DbgException
+{
+public:
+
+    AddSyntheticSymbolException(HRESULT hres)
+        : DbgException( buildDesc(hres) )
+    {
+    }
+
+private:
+    std::string buildDesc(HRESULT hres) {
+        std::stringstream sstream;
+        sstream << "Add synthetic symbol faield\n";
+        sstream << "HRESULT 0x" << std::hex << hres;
+        return sstream.str();
+    }
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+
 }; // namespace pykd
 

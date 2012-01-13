@@ -829,8 +829,12 @@ BOOST_PYTHON_MODULE( pykd )
             .ptr()
             );
 
-    
-
+    // AddSyntheticSymbolException
+    ExceptionTranslator<AddSyntheticSymbolException>::setTypeObject(
+        python::class_<AddSyntheticSymbolException, python::bases<DbgException> >( 
+            "AddSynSymbolException", "Add new synthetic symbol exception", python::no_init)
+            .ptr()
+            );
 
 
 //

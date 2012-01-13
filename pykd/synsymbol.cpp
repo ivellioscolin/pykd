@@ -42,7 +42,7 @@ void SyntheticSymbols::add(
             DEBUG_ADDSYNTHSYM_DEFAULT,
             &dbgModuleAndId);
     if ( FAILED( hres ) )
-        throw DbgException("IDebugSymbols3::AddSyntheticSymbol", hres);
+        throw AddSyntheticSymbolException( hres );
 
     // add/update symbol for target module (in internal map)
     SymbolsScopedLock lock(*m_allSymbolsLock);

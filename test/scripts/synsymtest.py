@@ -66,3 +66,16 @@ class SynSymTest(unittest.TestCase):
         self.assertEqual(
             target.module.offset("FuncWithName0")-5,
             target.module.offset("synSym5"))
+
+    def testAddSynSymbolException(self):
+        """Test of AddSynSymbolException"""
+        pykd.addSynSymbol(
+            target.module.offset("FuncWithName0")-6, 1, "synSym6")
+
+        exceptionOccurred = False
+        try:
+            pykd.addSynSymbol(
+                target.module.offset("FuncWithName0")-6, 1, "synSym7")
+        except pykd.AddSynSymbolException:
+            exceptionOccurred = True
+        self.assertTrue(exceptionOccurred)
