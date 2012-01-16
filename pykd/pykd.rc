@@ -8,6 +8,7 @@
 // Generated from the TEXTINCLUDE 2 resource.
 //
 #include "afxres.h"
+#include "pykdver.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -70,11 +71,11 @@ BEGIN
         BLOCK "041904b0"
         BEGIN
             VALUE "FileDescription", "pykd - python extension for windbg"
-            VALUE "FileVersion", "0, 1, 0, 5"
+            VALUE "FileVersion", PYKD_VERSION_BUILD
             VALUE "InternalName", "pykd"
             VALUE "OriginalFilename", "pykd.dll"
             VALUE "ProductName", "pykd  - python extension for windbg"
-            VALUE "ProductVersion", "0, 1, 0, 5"
+            VALUE "ProductVersion", PYKD_VERSION_BUILD
         END
     END
     BLOCK "VarFileInfo"

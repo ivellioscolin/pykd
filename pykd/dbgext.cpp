@@ -18,8 +18,13 @@
 #include "dbgmem.h"
 #include "intbase.h"
 #include "process.h"
+#include "pykdver.h"
 
 using namespace pykd;
+
+////////////////////////////////////////////////////////////////////////////////
+
+static const std::string pykdVersion = PYKD_VERSION_BUILD;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -99,6 +104,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( pyDia_Symbol_findChildrenEx, pyDia::Symb
 
 BOOST_PYTHON_MODULE( pykd )
 {
+    python::scope().attr("version") = pykdVersion;
+
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )
         .def( "__eq__", &intBase::eq )

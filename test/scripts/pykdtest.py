@@ -51,10 +51,12 @@ def getTestSuite( singleName = "" ):
 
 if __name__ == "__main__":
 
+    print "\nTesting PyKd " + pykd.version
+
     target.appPath = sys.argv[1]
 
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
-    print "\nTest module: %s" % target.appPath
+    print "Test module: %s" % target.appPath
 
     pykd.startProcess( target.appPath )
 
@@ -62,6 +64,8 @@ if __name__ == "__main__":
     target.module.reload();
 
     pykd.go()
+
+    print ""
 
     suite = getTestSuite()
     #suite = getTestSuite( "typedvar.TypedVarTest.testBitField" )

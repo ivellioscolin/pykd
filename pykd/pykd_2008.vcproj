@@ -564,6 +564,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\pykdver.h"
+				>
+			</File>
+			<File
 				RelativePath=".\resource.h"
 				>
 			</File>
