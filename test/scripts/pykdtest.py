@@ -51,7 +51,7 @@ def getTestSuite( singleName = "" ):
 
 if __name__ == "__main__":
 
-    print "\nTesting PyKd " + pykd.version
+    print "\nTesting PyKd ver. " + pykd.version
 
     target.appPath = sys.argv[1]
 
