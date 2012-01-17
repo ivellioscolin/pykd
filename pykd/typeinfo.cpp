@@ -28,7 +28,7 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
         return TypeInfoPtr( new EnumTypeInfo( typeSym ) );
     }
 
-    throw DbgException( "type name invalid" );
+    throw TypeException( typeSym->getName(), "this type is not supported" );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
 BaseTypeVariant  TypeInfo::getValue() 
 {
     if ( !m_constant )
-        throw DbgException( "The type is not a constant and has not a value" );
+        throw TypeException( getName(), "this type is not a constant and has not a value" );
 
     switch( m_constantValue.vt )
     {
@@ -65,7 +65,7 @@ BaseTypeVariant  TypeInfo::getValue()
         return (LONG64)m_constantValue.llVal;
     }
 
-    throw DbgException( "Failed to convert constant type" );
+    throw TypeException( getName(), "Failed to convert constant type to any integer type" );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -337,7 +337,7 @@ TypeInfoPtr TypeInfo::getComplexType( pyDia::SymbolPtr &symScope, const std::str
     boost::cmatch    matchResult;
 
     if ( !boost::regex_match( symName.c_str(), matchResult, typeMatch  ) )
-         DbgException( "type name invalid" );
+         TypeException( symName, "type name is invalid" );
 
     TypeInfoPtr     lowestTypeInfo = getTypeInfo( symScope, std::string( matchResult[1].first, matchResult[1].second ) );
 

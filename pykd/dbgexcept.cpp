@@ -6,12 +6,14 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-PyObject   *ExceptionTranslator<DbgException>::exceptTypeObject = NULL;
-PyObject   *ExceptionTranslator<MemoryException>::exceptTypeObject = NULL;
-PyObject   *ExceptionTranslator<WaitEventException>::exceptTypeObject = NULL;
-PyObject   *ExceptionTranslator<pyDia::Exception>::exceptTypeObject = NULL;
-PyObject   *ExceptionTranslator<AddSyntheticSymbolException>::exceptTypeObject = NULL;
+python::handle<> exceptPyType<python::detail::not_specified>::pyExceptType;
+python::handle<> exceptPyType<DbgException>::pyExceptType;
+python::handle<> exceptPyType<MemoryException>::pyExceptType;
+python::handle<> exceptPyType<WaitEventException>::pyExceptType;
+python::handle<> exceptPyType<SymbolException>::pyExceptType;
+python::handle<> exceptPyType<pyDia::Exception>::pyExceptType;
+python::handle<> exceptPyType<TypeException>::pyExceptType;
+python::handle<> exceptPyType<AddSyntheticSymbolException>::pyExceptType;
 
 ///////////////////////////////////////////////////////////////////////////////////
-
 }; // end namespace pykd

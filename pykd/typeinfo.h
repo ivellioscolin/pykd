@@ -37,7 +37,7 @@ public:
     virtual ULONG getSize() = 0;
 
     virtual TypeInfoPtr getField( const std::string &fieldName ) {
-        throw DbgException( "there is no fields" );
+        throw TypeException( getName(), "type is not a struct" ); 
     }
 
     virtual BaseTypeVariant  getValue();
@@ -67,11 +67,11 @@ public:
     }
 
     virtual ULONG getCount() {
-        throw DbgException( "there is no element" );   
+        throw TypeException( getName(), "type is not an array" );   
     }
 
     virtual TypeInfoPtr getElementType() {
-        throw DbgException( "there is no element" );   
+        throw TypeException( getName(), "type is not an array" );   
     }
 
     virtual ULONG getBitOffset() {
@@ -83,11 +83,11 @@ public:
     }
 
     virtual python::dict asMap() {
-        throw DbgException( "there is no fields" );
+        throw TypeException( getName(), "type cannot be converted to a dict" );
     }
 
     virtual TypeInfoPtr deref() {
-        throw DbgException( "type is not a pointer" );
+        throw TypeException( getName(), "type is not a pointer" );
     }
 
     ULONG getOffset() {
@@ -114,7 +114,7 @@ protected:
     static
     TypeInfoPtr getRecurciveComplexType( TypeInfoPtr &lowestType, std::string &suffix, ULONG ptrSize );
 
-    ULONG   m_offset;
+    ULONG       m_offset;
 
     bool        m_constant;
 
@@ -139,10 +139,6 @@ private:
 
     virtual ULONG getSize() {
         return sizeof(T);
-    }
-
-    virtual TypeInfoPtr getField( const std::string &fieldName ) {
-        throw DbgException( "there is no such field" );
     }
 
     virtual bool isBasicType() {
@@ -278,10 +274,6 @@ public:
 
     virtual ULONG getSize();
 
-    virtual TypeInfoPtr getField( const std::string &fieldName ) {
-        throw DbgException( "there is no such field" );
-    }
-
     virtual bool isPointer() {
         return true;
     }
@@ -319,10 +311,6 @@ public:
     virtual std::string getName();
 
     virtual ULONG getSize();
-
-    virtual TypeInfoPtr getField( const std::string &fieldName ) {
-        throw DbgException( "there is no such field" );
-    }
 
     virtual bool isArray() {
         return true;

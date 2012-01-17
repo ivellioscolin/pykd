@@ -18,16 +18,16 @@ typedef CComPtr< IDiaSession > DiaSessionPtr;
 ////////////////////////////////////////////////////////////////////////////////
 // DIA Exceptions
 ////////////////////////////////////////////////////////////////////////////////
-class Exception : public pykd::DbgException {
+class Exception : public pykd::SymbolException {
 public:
     Exception(const std::string &desc, HRESULT hres)
-        : DbgException( makeFullDesc(desc, hres) )
+        : SymbolException( makeFullDesc(desc, hres) )
         , m_hres(hres)
     {
     }
 
     Exception(const std::string &desc)
-        : DbgException(descPrefix + desc)
+        : SymbolException(descPrefix + desc)
         , m_hres(S_FALSE)
     {
     }
@@ -35,18 +35,9 @@ public:
     HRESULT getRes() const {
         return m_hres;
     }
-
-    static void exceptionTranslate(const Exception &e);
-
-    static void setTypeObject(PyObject *p) {
-        diaExceptTypeObject = p;
-    }
-
 private:
 
     static const std::string descPrefix;
-
-    static PyObject *diaExceptTypeObject;
 
     static std::string makeFullDesc(const std::string &desc, HRESULT hres);
 

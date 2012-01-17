@@ -801,92 +801,19 @@ BOOST_PYTHON_MODULE( pykd )
     python::scope().attr("diaAmd64Regs") = 
         genDict(pyDia::Symbol::amd64RegName, pyDia::Symbol::cntAmd64RegName);
 
-   // exception:
+    // exception:
 
     // wrapper for standart python exceptions
     python::register_exception_translator<PyException>( &PyException::exceptionTranslate );
 
-    // BaseException
-    ExceptionTranslator<DbgException>::setTypeObject( 
-        python::class_<DbgException>( "BaseException", "Pykd base exception class", python::no_init )
-            .def( "__str__", &DbgException::getDesc )
-            .def( "__repr__", &DbgException::getDesc )
-            .ptr()
-            );
-  
-    // DIA exception
-    ExceptionTranslator<pyDia::Exception>::setTypeObject(
-        python::class_<pyDia::Exception, python::bases<DbgException> >( 
-            "DiaException", "Debug interface access exception", python::no_init)
-            .ptr()
-            );
 
-    // Memory exception
-    ExceptionTranslator<MemoryException>::setTypeObject(
-        python::class_<MemoryException, python::bases<DbgException> >(
-            "MemoryException", "Target memory access exception class", python::no_init )
-            .def( "getAddress", &pykd::MemoryException::getAddress, "Return a target address where the exception occurs" )
-            .ptr()
-            );
-
-    // WaitEventException
-    ExceptionTranslator<WaitEventException>::setTypeObject(
-        python::class_<WaitEventException, python::bases<DbgException> >( 
-            "WaitEventException", "Debug interface access exception", python::no_init)
-            .ptr()
-            );
-
-    // AddSyntheticSymbolException
-    ExceptionTranslator<AddSyntheticSymbolException>::setTypeObject(
-        python::class_<AddSyntheticSymbolException, python::bases<DbgException> >( 
-            "AddSynSymbolException", "Add new synthetic symbol exception", python::no_init)
-            .ptr()
-            );
-
-
-//
-//#define _DECL_BASE_EXCEPT_STR   .def( "__repr__", &pykd::DbgException::print )
-//
-//    // base exception
-//    python::class_<pykd::DbgException>  dbgExceptionClass( "BaseException",
-//        "Pykd base exception class",
-//        python::no_init );
-//    dbgExceptionClass
-//        .def( python::init<std::string>( python::args("desc"), "constructor" ) )
-//        .def( "desc", &pykd::DbgException::getDesc,
-//            "Get exception description" )
-//        _DECL_BASE_EXCEPT_STR;
-//    pykd::DbgException::setTypeObject( dbgExceptionClass.ptr() );
-//    python::register_exception_translator<pykd::DbgException>( 
-//        &pykd::DbgException::exceptionTranslate );
-//
-//    // DIA exceptions
-//    python::class_<pyDia::Exception, python::bases<DbgException> > diaException( 
-//        "DiaException", "Debug interface access exception", python::no_init);
-//    diaException
-//        .def( "hres", &pyDia::Exception::getRes )
-//        _DECL_BASE_EXCEPT_STR;
-//    pyDia::Exception::setTypeObject( diaException.ptr() );
-//    python::register_exception_translator<pyDia::Exception>( 
-//        &pyDia::Exception::exceptionTranslate );
-//
-//    // Memory exception
-//    python::class_<pykd::MemoryException, python::bases<DbgException> > memException(
-//        "MemoryException", "Target memory access exception class",
-//        python::no_init );
-//    memException.def( "getAddress", &pykd::MemoryException::getAddress, "Return a target address where the exception occurs" );
-//    pykd::MemoryException::setTypeObject( memException.ptr() );
-//    python::register_exception_translator<pykd::MemoryException>(
-//        &pykd::MemoryException::exceptionTranslate );
-//
-//    // Wait debug event exception
-//    python::class_<WaitEventException, python::bases<DbgException> > waitEventException( 
-//        "WaitEventException", "Debug interface access exception", python::no_init);
-//    waitEventException
-//        _DECL_BASE_EXCEPT_STR;
-//    WaitEventException::setTypeObject( waitEventException.ptr() );
-//    python::register_exception_translator<WaitEventException>( 
-//        &WaitEventException::exceptionTranslate );
+    pykd::exception<DbgException>( "BaseException", "Pykd base exception class" );
+    pykd::exception<MemoryException,DbgException>( "MemoryException", "Target memory access exception class" );
+    pykd::exception<WaitEventException,DbgException>( "WaitEventException", "Debug interface access exception" );
+    pykd::exception<SymbolException,DbgException>( "SymbolException", "Symbol exception" );
+    pykd::exception<pyDia::Exception,SymbolException>( "DiaException", "Debug interface access exception" );
+    pykd::exception<TypeException,SymbolException>( "TypeException", "type exception" );
+    pykd::exception<AddSyntheticSymbolException,DbgException>( "AddSynSymbolException", "synthetic symbol exception" );
 
     DEF_PY_CONST_ULONG( DEBUG_CLASS_UNINITIALIZED );
     DEF_PY_CONST_ULONG( DEBUG_CLASS_KERNEL );

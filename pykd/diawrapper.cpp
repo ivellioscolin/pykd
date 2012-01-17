@@ -8,7 +8,7 @@ namespace pyDia {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-PyObject *Exception::diaExceptTypeObject =  NULL;
+//PyObject *Exception::diaExceptTypeObject =  NULL;
 
 const std::string Exception::descPrefix("pyDia: ");
 
@@ -46,15 +46,6 @@ std::string Exception::makeFullDesc(const std::string &desc, HRESULT hres)
     }
 
     return sstream.str();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-void Exception::exceptionTranslate( const Exception &e )
-{
-    boost::python::object pyExcept(e);
-
-    PyErr_SetObject( diaExceptTypeObject, pyExcept.ptr() );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

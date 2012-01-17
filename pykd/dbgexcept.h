@@ -3,34 +3,65 @@
 #include <exception>
 #include <string>
 
+///////////////////////////////////////////////////////////////////////////////
+
 namespace pykd {
 
-/////////////////////////////////////////////////////////////////////////////////
 
-template<typename TExcept>
-class ExceptionTranslator {
+template< class TExcept >
+struct exceptPyType{
+
+     static python::handle<>     pyExceptType;
+
+};
+
+
+template< class TExcept, class TBaseExcept = python::detail::not_specified >
+class exception  {
+
 
 public:
+
+    exception( const std::string& className, const std::string& classDesc ) 
+    {
+        python::handle<>   basedtype;      
+
+        if ( boost::is_same<TBaseExcept, python::detail::not_specified>::value )
+        {
+            basedtype = python::handle<>(PyExc_Exception);
+        }
+        else
+        {
+            basedtype = exceptPyType<TBaseExcept>::pyExceptType;
+        }
+
+        python::dict       ob_dict;
+       
+        ob_dict["__doc__"] = classDesc;
+
+        python::tuple      ob_bases = python::make_tuple( basedtype );
+
+        python::object     ob = python::object( python::handle<>(Py_TYPE(basedtype.get()) ) )( className, ob_bases, ob_dict );
+
+        python::scope().attr( className.c_str() ) = ob;
+
+        exceptPyType<TExcept>::pyExceptType = python::handle<>( ob.ptr() );
+
+        python::register_exception_translator<TExcept>( &exceptionTranslate );
+    }
 
     static
     void
     exceptionTranslate(const TExcept &e ) {
-        python::object pyExcept(e);
-        PyErr_SetObject( exceptTypeObject, pyExcept.ptr() );
+
+        python::object      exceptObj = python::object( exceptPyType<TExcept>::pyExceptType )( e.what() );
+
+        PyErr_SetObject( exceptPyType<TExcept>::pyExceptType.get(), exceptObj.ptr());
     }
-
-    static void setTypeObject(PyObject *p) {
-        exceptTypeObject = p;
-        python::register_exception_translator<TExcept>( &exceptionTranslate );
-    }
-
-private:
-
-    static PyObject *exceptTypeObject;
 
 };
 
-/////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 class PyException : public std::exception
 {
@@ -84,6 +115,18 @@ private:
 
 /////////////////////////////////////////////////////////////////////////////////
 
+class SymbolException : public DbgException 
+{
+public:
+
+    SymbolException( const std::string  &desc ) :
+        DbgException( desc.c_str() )
+        {}    
+
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+
 class WaitEventException : public DbgException
 {
 public:
@@ -91,6 +134,26 @@ public:
     WaitEventException() 
        : DbgException( "None of the targets could generate events" )
         {}
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+
+class TypeException : public SymbolException
+{
+public:
+
+    TypeException( const std::string &typeName, const std::string  &errorStr )
+        : SymbolException( buildDesc( typeName, errorStr ) )
+        {}
+
+private:
+
+    std::string buildDesc( const std::string &typeName, const std::string  &errorStr )
+    {
+        std::stringstream   sstr;
+        sstr << typeName << " : " << errorStr;
+        return sstr.str();
+    }
 };
 
 /////////////////////////////////////////////////////////////////////////////////
