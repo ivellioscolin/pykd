@@ -164,6 +164,25 @@ struct listStruct1 {
     struct listStruct1     *next;
 };
 
+
+struct SomeBaseClassWithFields {
+    int m_someBaseFiled1;
+    int m_someBaseFiled2;
+};
+
+struct BaseEntryStruct {
+    BaseEntryStruct *m_next;
+};
+
+struct ChildEntryTest : SomeBaseClassWithFields, BaseEntryStruct {
+    int m_childFiled1;
+};
+
+BaseEntryStruct *g_childListHead = NULL;
+ChildEntryTest g_childListEntry1;
+ChildEntryTest g_childListEntry2;
+ChildEntryTest g_childListEntry3;
+
 class classWithDestructor
 {
 public:
@@ -314,6 +333,20 @@ int _tmain(int argc, _TCHAR* argv[])
         g_listHead1 = &g_listItem11;
         g_listItem11.next = &g_listItem12;
         g_listItem12.next = &g_listItem13;
+
+        g_childListEntry1.m_someBaseFiled2 = 1000;
+        g_childListEntry1.m_childFiled1    = 1001;
+
+        g_childListEntry2.m_someBaseFiled2 = 2000;
+        g_childListEntry2.m_childFiled1    = 2001;
+
+        g_childListEntry3.m_someBaseFiled2 = 3000;
+        g_childListEntry3.m_childFiled1    = 3001;
+
+        g_childListHead = &g_childListEntry1;
+        g_childListEntry1.m_next = &g_childListEntry2;
+        g_childListEntry2.m_next = &g_childListEntry3;
+        g_childListEntry3.m_next = NULL;
 
         // Let test scripts to execute
         __debugbreak();

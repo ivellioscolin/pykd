@@ -22,7 +22,7 @@ public:
     TypeInfoPtr  getTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName );
 
     static 
-    TypeInfoPtr  getTypeInfo( pyDia::SymbolPtr &symScope, pyDia::SymbolPtr symChild );
+    TypeInfoPtr  getTypeInfo( pyDia::SymbolPtr &symScope, pyDia::SymbolPtr &symChild );
 
     static 
     TypeInfoPtr  getTypeInfo( pyDia::SymbolPtr &symbol );

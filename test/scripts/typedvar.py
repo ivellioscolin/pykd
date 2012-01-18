@@ -98,19 +98,24 @@ class TypedVarTest( unittest.TestCase ):
         tvl = target.module.typedVarList( target.module.g_listHead, "listStruct", "listEntry" )
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [1,2,3], [ tv.num for tv in tvl ] )
-        
+
         tvl = target.module.typedVarList( target.module.g_listHead, target.module.type("listStruct"), "listEntry" )
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [1,2,3], [ tv.num for tv in tvl ] )
-        
+
         tvl = target.module.typedVarList( target.module.g_listHead1, "listStruct1", "next" )
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [100,200,300], [ tv.num for tv in tvl ] )
-        
+
         tvl = target.module.typedVarList( target.module.g_listHead1, target.module.type("listStruct1"), "next" )
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [100,200,300], [ tv.num for tv in tvl ] )
-        
+
+        tvl = target.module.typedVarList( target.module.g_childListHead, target.module.type("ChildEntryTest"), "m_next" )
+        self.assertEqual( 3, len( tvl ) )
+        self.assertEqual( [1000,2000,3000], [ tv.m_someBaseFiled2 for tv in tvl ] )
+        self.assertEqual( [1001,2001,3001], [ tv.m_childFiled1 for tv in tvl ] )
+
     def testTypedVarArray(self):
         tvl = target.module.typedVarArray( target.module.g_testArray, "structTest", 2 )
         self.assertEqual( 2, len( tvl ) )

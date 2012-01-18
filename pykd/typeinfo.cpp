@@ -88,25 +88,27 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::strin
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, pyDia::SymbolPtr symChild )
+TypeInfoPtr TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, pyDia::SymbolPtr &symChild )
 {
     CComVariant constVal;
-    if ( symChild->getSymTag() == SymTagData )
+
+    pyDia::SymbolPtr symType = symChild;
+    if ( symType->getSymTag() == SymTagData )
     {
-        if ( symChild->getLocType() == LocIsBitField )
+        if ( symType->getLocType() == LocIsBitField )
         {
-            return TypeInfoPtr( new BitFieldTypeInfo(symChild) );
+            return TypeInfoPtr( new BitFieldTypeInfo(symType) );
         }
 
-        if ( symChild->getDataKind() == DataIsConstant )
+        if ( symType->getDataKind() == DataIsConstant )
         {
-            symChild->getValue( constVal );
+            symType->getValue( constVal );
         }
 
-        symChild = symChild->getType();
+        symType = symType->getType();
     }
 
-    TypeInfoPtr ptr = getTypeInfo( symChild );
+    TypeInfoPtr ptr = getTypeInfo( symType );
 
     ptr->setConstant( constVal );
 
