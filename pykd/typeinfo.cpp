@@ -73,7 +73,6 @@ BaseTypeVariant  TypeInfo::getValue()
 TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName )
 {
     size_t pos = symName.find_first_of( "*[" );
-    CComVariant     constVal;
 
     if ( pos == std::string::npos )
     {
@@ -81,31 +80,37 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::strin
         if ( basePtr != 0 )
             return basePtr;
 
-        pyDia::SymbolPtr  typeSym = symScope->getChildByName( symName );
+        return getTypeInfo( symScope, symScope->getChildByName( symName ) );
+    }
 
-        if ( typeSym->getSymTag() == SymTagData )
+    return  getComplexType( symScope, symName );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+TypeInfoPtr TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, pyDia::SymbolPtr symChild )
+{
+    CComVariant constVal;
+    if ( symChild->getSymTag() == SymTagData )
+    {
+        if ( symChild->getLocType() == LocIsBitField )
         {
-            if ( typeSym->getLocType() == LocIsBitField )
-            {
-                return TypeInfoPtr( new BitFieldTypeInfo(typeSym) );
-            }
-
-            if ( typeSym->getDataKind() == DataIsConstant )
-            {
-                typeSym->getValue( constVal );
-            }
-
-            typeSym = typeSym->getType();
+            return TypeInfoPtr( new BitFieldTypeInfo(symChild) );
         }
 
-        TypeInfoPtr ptr = getTypeInfo( typeSym );
+        if ( symChild->getDataKind() == DataIsConstant )
+        {
+            symChild->getValue( constVal );
+        }
 
-        ptr->setConstant( constVal );
-
-        return ptr;
+        symChild = symChild->getType();
     }
-    
-    return  getComplexType( symScope, symName );
+
+    TypeInfoPtr ptr = getTypeInfo( symChild );
+
+    ptr->setConstant( constVal );
+
+    return ptr;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -337,7 +342,7 @@ TypeInfoPtr TypeInfo::getComplexType( pyDia::SymbolPtr &symScope, const std::str
     boost::cmatch    matchResult;
 
     if ( !boost::regex_match( symName.c_str(), matchResult, typeMatch  ) )
-         TypeException( symName, "type name is invalid" );
+        throw TypeException( symName, "type name is invalid" );
 
     TypeInfoPtr     lowestTypeInfo = getTypeInfo( symScope, std::string( matchResult[1].first, matchResult[1].second ) );
 
@@ -386,6 +391,78 @@ TypeInfoPtr TypeInfo::getRecurciveComplexType( TypeInfoPtr &lowestType, std::str
         return getRecurciveComplexType( lowestType, bracketExpr, ptrSize );
 
     return lowestType;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+TypeInfoPtr UdtTypeInfo::getField( const std::string &fieldName )
+{
+    pyDia::SymbolPtr field;
+    LONG addOffset = 0;
+    try
+    {
+        field = m_dia->getChildByName( fieldName );
+    }
+    catch (const pyDia::Exception &)
+    {
+    }
+
+    if ( !field && !getBaseField( m_dia, fieldName, addOffset, field ) )
+        throw TypeException( m_dia->getName(), fieldName + ": field not found" );
+
+    TypeInfoPtr  ti = TypeInfo::getTypeInfo( m_dia, field );
+    ti->setOffset( addOffset + field->getOffset() );
+    return ti;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+bool 
+UdtTypeInfo::getBaseField(
+    pyDia::SymbolPtr symUdt,
+    const std::string &fieldName,
+    LONG &addOffset,
+    pyDia::SymbolPtr &symField,
+    ULONG currLevel /*= 0*/
+)
+{
+    if (currLevel > 16)
+        return false;
+
+    LONG currOffset = 0;
+
+    pyDia::SymbolPtrList lstBases = symUdt->findChildrenImpl(SymTagBaseClass);
+    pyDia::SymbolPtrList::iterator it = lstBases.begin();
+    for (; it != lstBases.end(); ++it)
+    {
+        // find in direct base
+        try
+        {
+            symField = (*it)->getChildByName( fieldName );
+            addOffset += currOffset;
+            return true;
+        }
+        catch (const pyDia::Exception &)
+        {
+        }
+
+        // find in base of base
+        try
+        {
+            if (getBaseField(*it, fieldName, addOffset, symField, currLevel + 1))
+            {
+                addOffset += currOffset;
+                return true;
+            }
+        }
+        catch (const pyDia::Exception &)
+        {
+        }
+
+        // correct offset
+        currOffset += static_cast<ULONG>( (*it)->getSize() );
+    }
+    return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

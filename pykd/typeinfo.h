@@ -22,6 +22,9 @@ public:
     TypeInfoPtr  getTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName );
 
     static 
+    TypeInfoPtr  getTypeInfo( pyDia::SymbolPtr &symScope, pyDia::SymbolPtr symChild );
+
+    static 
     TypeInfoPtr  getTypeInfo( pyDia::SymbolPtr &symbol );
 
     static
@@ -205,16 +208,19 @@ protected:
         return (ULONG)m_dia->getSize();
     }
 
-    virtual TypeInfoPtr getField( const std::string &fieldName ) {
-        pyDia::SymbolPtr  field = m_dia->getChildByName( fieldName );
-        TypeInfoPtr  ti = TypeInfo::getTypeInfo( m_dia, fieldName );
-        ti->setOffset( field->getOffset() );
-        return ti;
-    }
+    virtual TypeInfoPtr getField( const std::string &fieldName );
 
     virtual bool isUserDefined() {
         return true;
     }
+
+    static bool getBaseField(
+        pyDia::SymbolPtr symUdt,
+        const std::string &fieldName,
+        LONG &addOffset,
+        pyDia::SymbolPtr &symField,
+        ULONG currLevel = 0
+    );
 
     pyDia::SymbolPtr    m_dia;
 };

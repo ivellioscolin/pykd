@@ -327,12 +327,12 @@ python::list Module::getTypedVarListByType( ULONG64 listHeadAddress, const TypeI
 
     if ( fieldTypeInfo->getName() == ( typeInfo->getName() + "*" ) )
     {
-        for( entryAddress = ptrPtr( listHeadAddress ); entryAddress != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress + fieldTypeInfo->getOffset() ) )
+        for( entryAddress = ptrPtr( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress + fieldTypeInfo->getOffset() ) )
             lst.append( getTypedVarByType( typeInfo, entryAddress ) );
     }
     else
     {
-        for( entryAddress = ptrPtr( listHeadAddress ); entryAddress != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress ) )
+        for( entryAddress = ptrPtr( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress ) )
             lst.append( containingRecordByType( entryAddress, typeInfo, listEntryName ) );
     }
 
