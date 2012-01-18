@@ -197,6 +197,13 @@ listStruct1  g_listItem11 = { 100 };
 listStruct1  g_listItem12 = { 200 };
 listStruct1  g_listItem13 = { 300 };
 
+struct {
+    struct {
+        int m_fieldNestedStruct;
+    };
+    int m_fieldOfUnNamed;
+}g_unNamedStruct;
+
 #pragma pack( pop )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -257,6 +264,7 @@ void FuncWithName0()
     std::cout << ptrIntMatrix1;
     std::cout << g_bigValue;
     std::cout << g_classChild.m_enumField;
+    std::cout << g_unNamedStruct.m_fieldNestedStruct;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -274,6 +282,7 @@ void FuncWithName1(int a)
     std::cout << _structTest.m_field1;
     std::cout << _struct2.m_struct.m_field1;
     std::cout << g_string;
+    std::cout << g_unNamedStruct.m_fieldOfUnNamed;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -318,6 +327,23 @@ int doLoadUnload()
 
     return 0;
 }
+////////////////////////////////////////////////////////////////////////////////
+
+int doExeptions()
+{
+    __debugbreak();
+
+    PUCHAR _ptr = reinterpret_cast<UCHAR *>(2);
+    __try {
+        *_ptr = 5;
+    } __except(EXCEPTION_EXECUTE_HANDLER) {
+    }
+
+    ++_ptr;
+    *_ptr = 6;
+
+    return 0;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -348,6 +374,9 @@ int _tmain(int argc, _TCHAR* argv[])
         g_childListEntry2.m_next = &g_childListEntry3;
         g_childListEntry3.m_next = NULL;
 
+        g_unNamedStruct.m_fieldNestedStruct = 4;
+        g_unNamedStruct.m_fieldOfUnNamed = 5;
+
         // Let test scripts to execute
         __debugbreak();
 
@@ -363,6 +392,9 @@ int _tmain(int argc, _TCHAR* argv[])
                 ::EnumWindows(&EnumWindowsProc2, 7);
                 return ERROR_SUCCESS;
             }
+
+            if ( !_tcsicmp(argv[1], _T("-testExceptions")) )
+                return doExeptions();
         }
 
         __debugbreak();

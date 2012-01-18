@@ -11,7 +11,7 @@ class TypedVarTest( unittest.TestCase ):
     def testCtor( self ):
         tv = target.module.typedVar( "structTest", target.module.g_structTest )
         tv = target.module.typedVar( "g_structTest" )
-        
+
     def testBaseTypes(self):
         self.assertEqual( 1, target.module.typedVar( "g_ucharValue" ) )
         self.assertEqual( 2, target.module.typedVar( "g_ushortValue" ) )
@@ -21,8 +21,8 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( -2, target.module.typedVar( "g_shortValue" ) )
         self.assertEqual( -4, target.module.typedVar( "g_longValue" ) )
         self.assertEqual( -8, target.module.typedVar( "g_longlongValue" ) )
-        
-    def testConst(self):        
+
+    def testConst(self):
         try:
             self.assertEqual( True, target.module.typedVar( "g_constBoolValue" ) )
         except pykd.BaseException:
@@ -150,16 +150,21 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 4, ind )
         self.assertTrue( ind in { 1 : "1", 4 : "2" } )
         self.assertEqual( "2", { 1 : "1", 4 : "2" }[ind] )
-        
+
     def testDeref(self):
         tv = target.module.typedVar( "g_structTest1" )
         self.assertEqual( target.module.g_structTest, tv.m_field4.deref().getAddress() )
-        
+
         tv = target.module.typedVar( "g_structTest" )
         self.assertEqual( 0, tv.m_field4.deref().getAddress() )
-        
+
         try:
             tv.m_field1.deref()
             self.assertTrue(False)
         except pykd.BaseException: 
             pass
+
+    def testUnNamedStruct(self):
+        tv = target.module.typedVar( "g_unNamedStruct" )
+        self.assertEqual( 4, tv.m_fieldNestedStruct )
+        self.assertEqual( 5, tv.m_fieldOfUnNamed )
