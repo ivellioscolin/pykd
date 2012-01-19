@@ -12,7 +12,7 @@ class TypeInfoTest( unittest.TestCase ):
         """ typeInfo class can not be created direct """
         try: pykd.typeInfo()
         except RuntimeError: pass
-        
+
     def testCreateByName( self ):
         """ creating typeInfo by the type name """
         self.assertEqual( "structTest", target.module.type( "structTest" ).name() )
@@ -20,7 +20,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "Int4B[2][3]", target.module.type("Int4B[2][3]").name() )
         self.assertEqual( "Int4B(*[4])[2][3]", target.module.type("Int4B(*[4])[2][3]").name() )
         self.assertEqual( "Int4B(*)[2][3]", target.module.type("Int4B((*))[2][3]").name() )
-        
+
     def testCreateBySymbol(self):
         """ creating typeInfo by the symbol name """
         self.assertEqual( "structTest[2]", target.module.type("g_testArray").name() )
@@ -41,7 +41,7 @@ class TypeInfoTest( unittest.TestCase ):
         except pykd.BaseException: pass   
 
     def testBaseTypes( self ):
-    
+
         self.assertEqual("Int1B", target.module.type( "Int1B" ).name() )
         self.assertEqual("Int2B", target.module.type( "Int2B" ).name() )
         self.assertEqual("Int4B", target.module.type( "Int4B" ).name() )
@@ -50,30 +50,30 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual("UInt2B", target.module.type( "UInt2B" ).name() )
         self.assertEqual("UInt4B", target.module.type( "UInt4B" ).name() )
         self.assertEqual("UInt8B", target.module.type( "UInt8B" ).name() )
-        
+
         self.assertEqual("Long", target.module.type( "Long" ).name() )
-        self.assertEqual("ULong", target.module.type( "ULong" ).name() )        
+        self.assertEqual("ULong", target.module.type( "ULong" ).name() )
         self.assertEqual("Bool", target.module.type( "Bool" ).name() )
         self.assertEqual("Char", target.module.type("Char").name() )
-        self.assertEqual("WChar", target.module.type("WChar").name() )                
-            
-        self.assertEqual( 1, target.module.type("Int1B").size() )            
-        self.assertEqual( 1, target.module.type("UInt1B").size() )                    
-        self.assertEqual( 2, target.module.type("Int2B").size() )        
-        self.assertEqual( 2, target.module.type("UInt2B").size() )          
-        self.assertEqual( 4, target.module.type("Int4B").size() )        
-        self.assertEqual( 4, target.module.type("UInt4B").size() )          
-        self.assertEqual( 8, target.module.type("Int8B").size() )        
-        self.assertEqual( 8, target.module.type("UInt8B").size() )   
-        
+        self.assertEqual("WChar", target.module.type("WChar").name() )
+
+        self.assertEqual( 1, target.module.type("Int1B").size() )
+        self.assertEqual( 1, target.module.type("UInt1B").size() )
+        self.assertEqual( 2, target.module.type("Int2B").size() )
+        self.assertEqual( 2, target.module.type("UInt2B").size() )
+        self.assertEqual( 4, target.module.type("Int4B").size() )
+        self.assertEqual( 4, target.module.type("UInt4B").size() )
+        self.assertEqual( 8, target.module.type("Int8B").size() )
+        self.assertEqual( 8, target.module.type("UInt8B").size() )
+
         self.assertEqual( 4, target.module.type("Long" ).size() )
-        self.assertEqual( 4, target.module.type("ULong" ).size() )        
-        self.assertEqual( 1, target.module.type("Bool" ).size() )       
+        self.assertEqual( 4, target.module.type("ULong" ).size() )
+        self.assertEqual( 1, target.module.type("Bool" ).size() )
         self.assertEqual( 1, target.module.type("Char").size() )
         self.assertEqual( 2, target.module.type("WChar").size() )
-        
+
         try:
-            self.assertEqual("Int9B", target.module.type( "Int9B" ).name() )         
+            self.assertEqual("Int9B", target.module.type( "Int9B" ).name() )
         except pykd.SymbolException:
             pass
 
@@ -83,7 +83,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "Int4B", ti1.m_childField.name() )
         self.assertEqual( "structTest", ti1.m_childField3.name() )
         self.assertEqual( "structTest", target.module.type("g_structTest").name() )
-        
+
     def testOffset( self ):
         ti1 = target.module.type( "structTest" )
         self.assertEqual( 0, ti1.m_field0.offset() )
@@ -95,7 +95,7 @@ class TypeInfoTest( unittest.TestCase ):
         ti1 = target.module.type( "structTest" )
         self.assertEqual( 16 + pykd.ptrSize(), ti1.size() )
         self.assertEqual( pykd.ptrSize(), target.module.type("structTest**").size() )
-        
+
     def testBitField( self ):
         ti = target.module.type( "g_structWithBits" )
         self.assertEqual( 0, ti.m_bit6_7.offset() )
@@ -103,7 +103,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "ULong:2", ti.m_bit6_7.name() )
         self.assertEqual( 2, ti.m_bit6_7.bitWidth() )
         self.assertEqual( 6, ti.m_bit6_7.bitOffset() )
-        
+
     def testEnum(self):
         ti = target.module.type("enumType")
         self.assertTrue( hasattr( ti, "TWO" ) )
@@ -111,27 +111,31 @@ class TypeInfoTest( unittest.TestCase ):
         
         ti = target.module.type("classChild")
         self.assertEqual( "enumType", ti.m_enumField.name() )
-        
+
     def testUnion(self):
         ti = target.module.type("unionTest")
         self.assertEqual( 0, ti.m_doubleValue.offset() )
         self.assertEqual( 0, ti.m_bits.offset() )
         self.assertEqual( ti.size(), ti.m_doubleValue.size() )
-        
+
     def testAsMap(self):
         ti = target.module.type("enumType")
         self.assertEqual( { 1 : "ONE", 2 : "TWO", 3 : "THREE" }, ti.asMap() )
-        
+
     def testDeref(self):
         ti = target.module.type("listStruct1")
         self.assertEqual( "listStruct1", ti.next.deref().name() )
-        
+
         ti = target.module.type("listStruct1*")
         self.assertEqual( "listStruct1", ti.deref().name() )
-        
+
         ti = target.module.type("classChild")
         self.assertRaises( pykd.BaseException, ti.deref );
-   
-      
-        
-        
+
+    def testNestedStruct( self ):
+        ti = target.module.type("StructWithNested")
+        self.assertTrue( hasattr( ti, "m_field" ) )
+        self.assertFalse( hasattr( ti, "m_nestedFiled" ) )
+
+        ti = target.module.type("StructWithNested::Nested")
+        self.assertTrue( hasattr( ti, "m_nestedFiled" ) )

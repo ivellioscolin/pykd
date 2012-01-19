@@ -204,6 +204,16 @@ struct {
     int m_fieldOfUnNamed;
 }g_unNamedStruct;
 
+struct StructWithNested {
+    struct Nested {
+        int m_nestedFiled;
+    };
+    int m_field;
+};
+
+StructWithNested g_structWithNested;
+StructWithNested::Nested g_structNested;
+
 #pragma pack( pop )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -265,6 +275,7 @@ void FuncWithName0()
     std::cout << g_bigValue;
     std::cout << g_classChild.m_enumField;
     std::cout << g_unNamedStruct.m_fieldNestedStruct;
+    std::cout << g_structNested.m_nestedFiled;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -283,6 +294,7 @@ void FuncWithName1(int a)
     std::cout << _struct2.m_struct.m_field1;
     std::cout << g_string;
     std::cout << g_unNamedStruct.m_fieldOfUnNamed;
+    std::cout << g_structWithNested.m_field;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -376,6 +388,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
         g_unNamedStruct.m_fieldNestedStruct = 4;
         g_unNamedStruct.m_fieldOfUnNamed = 5;
+
+        g_structWithNested.m_field = 34;
+        g_structNested.m_nestedFiled = 46;
 
         // Let test scripts to execute
         __debugbreak();
