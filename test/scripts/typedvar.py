@@ -168,3 +168,13 @@ class TypedVarTest( unittest.TestCase ):
         tv = target.module.typedVar( "g_unNamedStruct" )
         self.assertEqual( 4, tv.m_fieldNestedStruct )
         self.assertEqual( 5, tv.m_fieldOfUnNamed )
+
+    def testPointerToFunction( self ):
+        tv1 = target.module.typedVar( "g_unTypedPtrToFunction" )
+        self.assertEqual( target.module.offset("EnumWindowsProc2"), tv1 )
+
+        tv2 = target.module.typedVar( "g_unTypedPtrToFunction" )
+        self.assertEqual( tv1, tv2 )
+
+        self.assertRaises( pykd.TypeException, tv1.deref )
+        self.assertRaises( pykd.TypeException, tv2.deref )

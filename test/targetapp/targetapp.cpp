@@ -214,6 +214,8 @@ struct StructWithNested {
 StructWithNested g_structWithNested;
 StructWithNested::Nested g_structNested;
 
+WNDENUMPROC g_ptrToFunction;
+void *g_unTypedPtrToFunction;
 #pragma pack( pop )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -276,6 +278,7 @@ void FuncWithName0()
     std::cout << g_classChild.m_enumField;
     std::cout << g_unNamedStruct.m_fieldNestedStruct;
     std::cout << g_structNested.m_nestedFiled;
+    std::cout << g_unTypedPtrToFunction;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -295,6 +298,7 @@ void FuncWithName1(int a)
     std::cout << g_string;
     std::cout << g_unNamedStruct.m_fieldOfUnNamed;
     std::cout << g_structWithNested.m_field;
+    std::cout << g_ptrToFunction;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -391,6 +395,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
         g_structWithNested.m_field = 34;
         g_structNested.m_nestedFiled = 46;
+
+        g_ptrToFunction = &EnumWindowsProc2;
+        g_unTypedPtrToFunction = &EnumWindowsProc2;
 
         // Let test scripts to execute
         __debugbreak();

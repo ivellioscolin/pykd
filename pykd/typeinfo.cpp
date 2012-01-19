@@ -10,7 +10,8 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
 {
     ULONG  tag = typeSym->getSymTag();
 
-    switch( typeSym->getSymTag() )
+    const ULONG symTag = typeSym->getSymTag();
+    switch( symTag )
     {
     case SymTagBaseType:
         return getBaseTypeInfo( typeSym );
@@ -219,7 +220,14 @@ BitFieldTypeInfo::BitFieldTypeInfo(  pyDia::SymbolPtr &symbol )
 
 PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symbol  ) 
 {
-    m_derefType = TypeInfo::getTypeInfo( symbol->getType() );
+    try
+    {
+        m_derefType = TypeInfo::getTypeInfo( symbol->getType() );
+    }
+    catch (const SymbolException &)
+    {
+        m_derefType.swap( TypeInfoPtr() );
+    }
     m_size = (ULONG)symbol->getSize();
 }
 
@@ -227,7 +235,14 @@ PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symbol  )
 
 PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName ) 
 {
-    m_derefType = TypeInfo::getTypeInfo( symScope, symName );
+    try
+    {
+        m_derefType = TypeInfo::getTypeInfo( symScope, symName );
+    }
+    catch (const SymbolException &)
+    {
+        m_derefType.swap( TypeInfoPtr() );
+    }
     m_size = (symScope->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
 }
 

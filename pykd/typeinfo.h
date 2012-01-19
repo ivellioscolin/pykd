@@ -285,10 +285,14 @@ public:
     }
 
     virtual TypeInfoPtr deref() {
+        if (!m_derefType)
+            throw TypeException("<ptr>", "this pointer can not be dereferenced");
         return m_derefType;
     }
 
     TypeInfoPtr getDerefType() {
+        if (!m_derefType)
+            throw TypeException("<ptr>", "this pointer can not be dereferenced");
         return m_derefType;
     }
 
