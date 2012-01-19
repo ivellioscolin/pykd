@@ -8,8 +8,6 @@ namespace pykd {
 
 TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
 {
-    ULONG  tag = typeSym->getSymTag();
-
     const ULONG symTag = typeSym->getSymTag();
     switch( symTag )
     {
