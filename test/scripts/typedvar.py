@@ -171,7 +171,10 @@ class TypedVarTest( unittest.TestCase ):
 
     def testPointerToFunction( self ):
         tv1 = target.module.typedVar( "g_unTypedPtrToFunction" )
-        self.assertEqual( target.module.offset("EnumWindowsProc2"), tv1 )
+
+        # if debug: g_unTypedPtrToFunction point to jmp EnumWindowsProc2 (e9 xxxxxxxx)
+        self.assertTrue( ( target.module.offset("EnumWindowsProc2") == tv1 ) or
+                         ( 0xE9 == pykd.ptrByte( int(tv1) ) ) )
 
         tv2 = target.module.typedVar( "g_unTypedPtrToFunction" )
         self.assertEqual( tv1, tv2 )
