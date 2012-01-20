@@ -1,0 +1,7 @@
+version 0.1.0.6 20/01/2012
+
+[!] fixed : issue #10181 ( exception information (!py) ) 
+[!] fixed : issue #10168 ( pyDia: fields of base class )
+[!] fixed : issue #10149 ( handling pykd exceptions ) 
+
+	

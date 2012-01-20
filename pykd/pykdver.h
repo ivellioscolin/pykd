@@ -3,7 +3,7 @@
 #define __VER_STR1__(x) __VER_STR2__(x)
 
 #define PYKD_VERSION_MAJOR      1
-#define PYKD_VERSION_MINOR      5
+#define PYKD_VERSION_MINOR      6
 
 #define PYKD_VERSION_BUILD      0,PYKD_VERSION_MAJOR,0,PYKD_VERSION_MINOR
 
