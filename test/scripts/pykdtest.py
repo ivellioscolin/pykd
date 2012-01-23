@@ -26,6 +26,7 @@ import synsymtest
 import ehloadtest
 import thrdctxtest
 import localstest
+import ehexcepttest
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
@@ -43,7 +44,8 @@ def getTestSuite( singleName = "" ):
                unittest.TestLoader().loadTestsFromTestCase( synsymtest.SynSymTest ),
                unittest.TestLoader().loadTestsFromTestCase( thrdctxtest.ThreadContextTest ),
                unittest.TestLoader().loadTestsFromTestCase( ehloadtest.EhLoadTest ),
-               unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest )
+               unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
+               unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionBreakpointTest )
            ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )
@@ -73,4 +75,4 @@ if __name__ == "__main__":
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
 
-    #raw_input("\npress return\n")
+    # raw_input("\npress return\n")

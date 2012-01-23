@@ -569,11 +569,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( python::init<>() )
         .def( python::init<DebugClientPtr&>() )
         .def( "onBreakpoint", &pykd::EventHandlerWrap::onBreakpoint,
-            "Triggered breakpoint event. Parameter is dict:\n"
-            "{\"Id\":int, \"BreakType\":int, \"ProcType\":int, \"Flags\":int, \"Offset\":int,"
-            " \"Size\":int, \"AccessType\":int, \"PassCount\":int, \"CurrentPassCount\":int,"
-            " \"MatchThreadId\":int, \"Command\":str, \"OffsetExpression\":str}\n"
-            "Detailed information: http://msdn.microsoft.com/en-us/library/ff539284(VS.85).aspx \n"
+            "Triggered breakpoint event. Parameter is int: ID of breakpoint\n"
             "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" )
         .def( "onException", &pykd::EventHandlerWrap::onException,
             "Exception event. Parameter is dict:\n"
@@ -837,6 +833,30 @@ BOOST_PYTHON_MODULE( pykd )
     DEF_PY_CONST_ULONG( DEBUG_USER_WINDOWS_SMALL_DUMP );
     DEF_PY_CONST_ULONG( DEBUG_USER_WINDOWS_DUMP );
 
+    // exception codes
+    DEF_PY_CONST_ULONG(EXCEPTION_ACCESS_VIOLATION);
+    DEF_PY_CONST_ULONG(EXCEPTION_DATATYPE_MISALIGNMENT);
+    DEF_PY_CONST_ULONG(EXCEPTION_BREAKPOINT);
+    DEF_PY_CONST_ULONG(EXCEPTION_SINGLE_STEP);
+    DEF_PY_CONST_ULONG(EXCEPTION_ARRAY_BOUNDS_EXCEEDED);
+    DEF_PY_CONST_ULONG(EXCEPTION_FLT_DENORMAL_OPERAND);
+    DEF_PY_CONST_ULONG(EXCEPTION_FLT_DIVIDE_BY_ZERO);
+    DEF_PY_CONST_ULONG(EXCEPTION_FLT_INEXACT_RESULT);
+    DEF_PY_CONST_ULONG(EXCEPTION_FLT_INVALID_OPERATION);
+    DEF_PY_CONST_ULONG(EXCEPTION_FLT_OVERFLOW);
+    DEF_PY_CONST_ULONG(EXCEPTION_FLT_STACK_CHECK);
+    DEF_PY_CONST_ULONG(EXCEPTION_FLT_UNDERFLOW);
+    DEF_PY_CONST_ULONG(EXCEPTION_INT_DIVIDE_BY_ZERO);
+    DEF_PY_CONST_ULONG(EXCEPTION_INT_OVERFLOW);
+    DEF_PY_CONST_ULONG(EXCEPTION_PRIV_INSTRUCTION);
+    DEF_PY_CONST_ULONG(EXCEPTION_IN_PAGE_ERROR);
+    DEF_PY_CONST_ULONG(EXCEPTION_ILLEGAL_INSTRUCTION);
+    DEF_PY_CONST_ULONG(EXCEPTION_NONCONTINUABLE_EXCEPTION);
+    DEF_PY_CONST_ULONG(EXCEPTION_STACK_OVERFLOW);
+    DEF_PY_CONST_ULONG(EXCEPTION_INVALID_DISPOSITION);
+    DEF_PY_CONST_ULONG(EXCEPTION_GUARD_PAGE);
+    DEF_PY_CONST_ULONG(EXCEPTION_INVALID_HANDLE);
+
     // debug status
     DEF_PY_CONST_ULONG(DEBUG_STATUS_NO_CHANGE);
     DEF_PY_CONST_ULONG(DEBUG_STATUS_GO);
@@ -859,30 +879,30 @@ BOOST_PYTHON_MODULE( pykd )
 ////////////////////////////////////////////////////////////////////////////////
 
 WindbgGlobalSession::WindbgGlobalSession() {
-                 
+
     PyImport_AppendInittab("pykd", initpykd ); 
 
     PyEval_InitThreads();
 
-    Py_Initialize();    
+    Py_Initialize();
 
     main = boost::python::import("__main__");
-    
+
     python::object   main_namespace = main.attr("__dict__");
 
-    // делаем аналог from pykd import *        
+    // делаем аналог from pykd import *
     python::object   pykd = boost::python::import( "pykd" );
-    
+
     python::dict     pykd_namespace( pykd.attr("__dict__") ); 
-    
+
     python::list     iterkeys( pykd_namespace.iterkeys() );
-    
+
     for (int i = 0; i < boost::python::len(iterkeys); i++)
     {
         std::string     key = boost::python::extract<std::string>(iterkeys[i]);
-               
+
         main_namespace[ key ] = pykd_namespace[ key ];
-    }   
+    }
 
     pyState = PyEval_SaveThread();
 }
@@ -941,23 +961,23 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
         // настраиваем ввод/вывод ( чтобы в скрипте можно было писать print )
 
         python::object       sys = python::import("sys");
-       
+
         sys.attr("stdout") = python::object( dbgClient->dout() );
         sys.attr("stderr") = python::object( dbgClient->dout() );
         sys.attr("stdin") = python::object( dbgClient->din() );
 
         // импортируем модуль обработки исключений ( нужен для вывода traceback а )
         boost::python::object       tracebackModule = python::import("traceback");
-        
+
         // разбор параметров
         typedef  boost::escaped_list_separator<char>    char_separator_t;
         typedef  boost::tokenizer< char_separator_t >   char_tokenizer_t;  
-        
+
         std::string                 argsStr( args );
-        
+
         char_tokenizer_t            token( argsStr , char_separator_t( "", " \t", "\"" ) );
         std::vector<std::string>    argsList;
-        
+
         for ( char_tokenizer_t::iterator   it = token.begin(); it != token.end(); ++it )
         {
             if ( *it != "" )
@@ -971,31 +991,31 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
      
         for ( size_t  i = 0; i < argsList.size(); ++i )
             pythonArgs[i] = const_cast<char*>( argsList[i].c_str() );
-            
+
         PySys_SetArgv( (int)argsList.size(), pythonArgs );
 
-        delete[]  pythonArgs;       
+        delete[]  pythonArgs;
 
        // найти путь к файлу
         std::string     fullScriptName;
-        DbgPythonPath   dbgPythonPath;        
+        DbgPythonPath   dbgPythonPath;
         
         if ( !dbgPythonPath.getFullFileName( argsList[0], fullScriptName ) )
         {
-            dbgClient->eprintln( L"script file not found" );            
+            dbgClient->eprintln( L"script file not found" );
         }
         else
-        try {             
-      
+        try {
+
             python::object       result;
-    
+
             result =  python::exec_file( fullScriptName.c_str(), global, global );
-        }                
+        }
         catch( boost::python::error_already_set const & )
         {
             // ошибка в скрипте
             PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL;
-            
+
             PyErr_Fetch( &errtype, &errvalue, &traceback );
 
             PyErr_NormalizeException( &errtype, &errvalue, &traceback );
@@ -1013,15 +1033,14 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
 
             for ( long i = 0; i < python::len(lst); ++i )
                 sstr << std::wstring( python::extract<std::wstring>(lst[i]) ) << std::endl;
-
             dbgClient->eprintln( sstr.str() );
-        }  
+        }
 
     }
     catch(...)
-    {      
+    {
         dbgClient->eprintln( L"unexpected error" );
-    }    
+    }
 
     Py_EndInterpreter( localInterpreter ); 
     PyThreadState_Swap( globalInterpreter );

@@ -417,6 +417,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\scripts\ehexcepttest.py"
+				>
+			</File>
+			<File
 				RelativePath="..\scripts\ehloadtest.py"
 				>
 			</File>
