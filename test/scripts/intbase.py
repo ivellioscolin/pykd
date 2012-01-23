@@ -165,5 +165,8 @@ class IntBaseTest( unittest.TestCase ):
         self.assertEqual( "-70000000000", "%d" % intBase(-70000000000) )
         self.assertEqual( "FFFFFFFFFFFFFF", "%X" % intBase(0xFFFFFFFFFFFFFF) )
         self.assertEqual( "0", "%d" % intBase(False) )
-    
+        
+    def testConvert( self ):
+        self.assertEqual( "100", "%d" % intBase(100) )
+        self.assertEqual( "64", "%x" % intBase(100) )
             
