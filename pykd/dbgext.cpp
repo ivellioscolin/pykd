@@ -597,7 +597,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "reset", &Disasm::reset, "Reset current offset to begin" );
 
     python::class_<DEBUG_STACK_FRAME>( "stackFrame", 
-         "Class representing a frame of the call satck", python::no_init )
+         "Class representing a frame of the call stack", python::no_init )
         .def_readonly( "instructionOffset", &DEBUG_STACK_FRAME::InstructionOffset,
             "Return a frame's instruction offset" )
         .def_readonly( "returnOffset", &DEBUG_STACK_FRAME::ReturnOffset,
@@ -613,7 +613,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Context", "Context of thread (register values)", python::no_init )
         .def( "ip", &ThreadContext::getIp, 
             "Get instruction pointer register" )
-        .def( "retreg", &ThreadContext::getIp, 
+        .def( "retreg", &ThreadContext::getRetReg, 
             "Get primary return value register" )
         .def( "csp", &ThreadContext::getSp, 
             "Get current stack pointer" )
