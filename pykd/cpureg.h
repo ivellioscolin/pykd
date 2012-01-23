@@ -7,9 +7,37 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-python::object getRegByName( const std::wstring &regName );
+class CpuReg : public intBase, protected DbgObject {
 
-python::object getRegByIndex( ULONG index );
+public:
+
+    CpuReg( IDebugClient4 *client, const std::string &regName );
+
+    CpuReg( IDebugClient4 *client, ULONG index );
+
+    std::string
+    name() const {
+        return m_name;
+    }
+
+    ULONG index() const {
+        return m_index;
+    }
+
+    virtual BaseTypeVariant getValue();
+
+private:
+
+    std::string     m_name;
+
+    ULONG           m_index;
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+
+CpuReg getRegByName( const std::string &regName );
+
+CpuReg getRegByIndex( ULONG index );
 
 ULONG64 loadMSR( ULONG  msr );
 

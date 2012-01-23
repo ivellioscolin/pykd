@@ -19,7 +19,7 @@ struct addLocals {
     python::dict &m_locals;
     const Module &m_module;
     ULONG m_rva;
-    Ctx::ContextPtr m_ctx;
+    ContextPtr m_ctx;
     IDebugClient4 *m_client;
     ULONG m_formalNameCounter;
 
@@ -181,7 +181,7 @@ static bool isOutOfDebugRange(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-python::dict DebugClient::getLocals(Ctx::ContextPtr ctx OPTIONAL)
+python::dict DebugClient::getLocals(ContextPtr ctx OPTIONAL)
 {
     if (!ctx)
         ctx = getThreadContext();

@@ -210,9 +210,9 @@ public:
 
     void setMSR( ULONG msr, ULONG64 value);
     
-    python::object getRegByName( const std::wstring &regName );
+    CpuReg getRegByName( const std::string &regName );
 
-    python::object getRegByIndex( ULONG index );
+    CpuReg getRegByIndex( ULONG index );
 
     void setCurrentProcess( ULONG64 addr );
 
@@ -234,14 +234,12 @@ public:
         return getDbgControl(GetPageSize);
     }
 
-    Ctx::ContextPtr getThreadContext() {
-        return Ctx::ContextPtr(
-            new Ctx::Registers(m_control, m_advanced)
-        );
+    ContextPtr getThreadContext() {
+        return ContextPtr( new ThreadContext(m_client) );
     }
 
     python::dict getLocals(
-        Ctx::ContextPtr ctx = Ctx::ContextPtr( reinterpret_cast<Ctx::Registers *>(0) ) 
+        ContextPtr ctx = ContextPtr( reinterpret_cast<ThreadContext*>(0) ) 
     );
 public:
 
@@ -397,12 +395,12 @@ inline ULONG getPageSize() {
     return g_dbgClient->getPageSize();
 }
 
-inline Ctx::ContextPtr getThreadContext() {
+inline ContextPtr getThreadContext() {
     return g_dbgClient->getThreadContext();
 }
 
 inline python::dict getLocals(
-    Ctx::ContextPtr ctx = Ctx::ContextPtr( reinterpret_cast<Ctx::Registers *>(0) )
+    ContextPtr ctx = ContextPtr()
 )
 {
     return g_dbgClient->getLocals(ctx);

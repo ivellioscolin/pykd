@@ -7,60 +7,114 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-python::object DebugClient::getRegByIndex( ULONG index )
+CpuReg::CpuReg( IDebugClient4 *client, const std::string &regName ) :
+    DbgObject( client )  
 {
-    HRESULT         hres;
+    HRESULT         hres;  
 
-    DEBUG_VALUE    debugValue;            
-    hres = m_registers->GetValue( index, &debugValue );
+    m_name = regName;
+
+    hres = m_registers->GetIndexByName( m_name.c_str(), &m_index );
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugRegister::GetValue  failed" );
-        
-    switch( debugValue.Type )
-    {
-    case DEBUG_VALUE_INT8:
-        return boost::python::long_( debugValue.I8 );
-        break;
-        
-    case DEBUG_VALUE_INT16:
-        return boost::python::long_( debugValue.I16 );
-        break;
-        
-    case DEBUG_VALUE_INT32:
-        return boost::python::long_( debugValue.I32 );
-        break;
-        
-    case DEBUG_VALUE_INT64:
-        return boost::python::long_(debugValue.I64 );
-        break;
-   }
-
-   throw DbgException( "Invalid register value" );  
-}
-
-python::object getRegByIndex( ULONG index )
-{
-    return g_dbgClient->getRegByIndex( index );  
+        throw DbgException( "IDebugRegister::GetIndexByName", hres );    
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-
-python::object DebugClient::getRegByName( const std::wstring &regName )
+CpuReg::CpuReg( IDebugClient4 *client, ULONG index ) :
+    DbgObject( client )  
 {
-    ULONG       registerIndex = 0;
-    HRESULT     hres;
+    HRESULT         hres;  
 
-    hres = m_registers->GetIndexByNameWide( regName.c_str(), &registerIndex );
+    m_index = index;
+
+    ULONG       nameSize = 0;
+
+    hres = 
+       m_registers->GetDescription( 
+            m_index,
+            NULL,
+            0,
+            &nameSize,
+            NULL );
+
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugRegister2::GetIndexByNameWide  failed" );
+        throw DbgException( "IDebugRegister::GetDescription", hres );
 
-    return getRegByIndex( registerIndex );
-}        
+    std::vector<char>   nameBuffer(nameSize);
 
-python::object getRegByName( const std::wstring &regName )
+    hres = 
+        m_registers->GetDescription( 
+            m_index,
+            &nameBuffer[0],
+            nameSize,
+            NULL,
+            NULL );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugRegister::GetDescription", hres );
+
+    m_name = std::string( &nameBuffer[0] );
+    
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+BaseTypeVariant CpuReg::getValue()
 {
-    return g_dbgClient->getRegByName( regName );
+    HRESULT         hres;   
+        
+    DEBUG_VALUE    debugValue;            
+    hres = m_registers->GetValue( m_index, &debugValue );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugRegister::GetValue", hres );
+        
+    switch( debugValue.Type )
+    {
+    case DEBUG_VALUE_INT8:
+        return BaseTypeVariant( (LONG)debugValue.I8 );
+        break;
+        
+    case DEBUG_VALUE_INT16:
+        return BaseTypeVariant( (LONG)debugValue.I16 );
+        break;
+        
+    case DEBUG_VALUE_INT32:
+        return BaseTypeVariant( debugValue.I32 );
+        break;
+        
+    case DEBUG_VALUE_INT64:
+        return BaseTypeVariant( debugValue.I64 );
+        break;
+    } 
+
+    throw DbgException( "Failed to convert register value" );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+CpuReg DebugClient::getRegByName( const std::string &regName )
+{
+     return CpuReg( m_client, regName );  
+}
+
+
+CpuReg getRegByName( const std::string &regName )
+{
+     return g_dbgClient->getRegByName( regName );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+CpuReg DebugClient::getRegByIndex( ULONG index )
+{
+    return CpuReg( m_client, index );
+}
+
+
+CpuReg getRegByIndex( ULONG index )
+{
+    return g_dbgClient->getRegByIndex( index );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +126,7 @@ ULONG64 DebugClient::loadMSR( ULONG  msr )
 
     hres = m_dataSpaces->ReadMsr( msr, &value );
     if ( FAILED( hres ) )
-         throw DbgException( "IDebugDataSpaces::ReadMsr  failed" );
+         throw DbgException( "IDebugDataSpaces::ReadMsr", hres );
 
     return value;
 }
@@ -90,7 +144,7 @@ void DebugClient::setMSR( ULONG msr, ULONG64 value)
 
     hres = m_dataSpaces->WriteMsr(msr, value);
     if ( FAILED( hres ) )
-         throw DbgException( "IDebugDataSpaces::WriteMsr  failed" );
+         throw DbgException( "IDebugDataSpaces::WriteMsr", hres );
 }
 
 void setMSR( ULONG msr, ULONG64 value)

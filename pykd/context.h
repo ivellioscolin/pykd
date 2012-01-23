@@ -1,31 +1,24 @@
+#pragma once
 
 #include <map>
 #include <DbgEng.h>
 #include <CvConst.h>
 
+#include "context.h"
+#include "dbgobj.h"
 #include "dbgexcept.h"
 
-#pragma once
+namespace pykd {
 
-namespace pykd{
-    std::string processorToStr(ULONG processorMode);
-}
-
-namespace Ctx {
+std::string processorToStr(ULONG processorMode);
 
 ////////////////////////////////////////////////////////////////////////////////
 
-typedef pykd::DbgException Exception;
-
-////////////////////////////////////////////////////////////////////////////////
-
-class Registers
+class ThreadContext : private DbgObject
 {
 public:
-    Registers(
-        IDebugControl4 *control,
-        IDebugAdvanced2 *advanced
-    );
+
+    ThreadContext( IDebugClient4 *client );
 
     // get register value by ID
     ULONG64 getValue(ULONG cvRegId) const;
@@ -44,6 +37,7 @@ public:
     ULONG getCount() const {
         return static_cast<ULONG>( m_regValues.size() );
     }
+
     python::object getByIndex(ULONG ind) const;
 
     // get processor type
@@ -53,22 +47,14 @@ public:
 
 private:
 
-    struct IsNotSubRegister : public std::exception {
-        IsNotSubRegister() : std::exception("is not sub-register") { }
-    };
-
     // query i386 registers
-    void getI386Context(
-        IDebugAdvanced2 *advanced
-    );
+    void getI386Context();
 
     // query AMD64 registers
-    void getAmd64Context(
-        IDebugAdvanced2 *advanced
-    );
+    void getAmd64Context();
 
     // try query as "sub-register"
-    ULONG64 getSubValue(ULONG cvRegId) const;
+    bool getSubValue(ULONG cvRegId, ULONG64 &val) const;
 
 private:
     typedef std::map<ULONG, ULONG64> RegValues;
@@ -79,7 +65,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-typedef boost::shared_ptr< Registers > ContextPtr;
+typedef boost::shared_ptr< ThreadContext > ContextPtr;
 
 ////////////////////////////////////////////////////////////////////////////////
 

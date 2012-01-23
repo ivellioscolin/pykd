@@ -185,6 +185,11 @@ public:
         return boost::apply_visitor( VariantToPyobj(), getValue() ) != 0;
     }
 
+    python::object coerce() {
+        __debugbreak();
+        return python::object();
+    }
+
 private:
 
     virtual BaseTypeVariant getValue() {

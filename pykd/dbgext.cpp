@@ -143,7 +143,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__long__", &intBase::long_ )
         .def( "__int__", &intBase::int_ )
         .def( "__index__", &intBase::long_ )
-        .def( "__hash__", &intBase::long_ );
+        .def( "__hash__", &intBase::long_ )
+        .def( "__coerce__", &intBase::coerce );
 
     python::class_<DebugClient, DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
         .def( "addr64", &DebugClient::addr64,
@@ -442,11 +443,11 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "ptrSize", &ptrSize,
         "Return effective pointer size" );
     python::def ( "rdmsr", &DebugClient::loadMSR,
-            "Return MSR value" );
+        "Return MSR value" );
     python::def( "reg", &getRegByName,
         "Return a CPU regsiter value by the register's name" );
     python::def( "reg", &getRegByIndex,
-         "Return a CPU regsiter value by the register's value" );
+        "Return a CPU regsiter value by the register's value" );
     python::def( "setExecutionStatus",  &setExecutionStatus,
         "Requests that the debugger engine enter an executable state" );
     python::def( "setCurrentProcess", &setCurrentProcess, 
@@ -599,7 +600,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "ea", &Disasm::ea, "Return effective address for last disassembled instruction or 0" )
         .def( "reset", &Disasm::reset, "Reset current offset to begin" );
 
-   python::class_<DEBUG_STACK_FRAME>( "stackFrame", 
+    python::class_<DEBUG_STACK_FRAME>( "stackFrame", 
          "Class representing a frame of the call satck", python::no_init )
         .def_readonly( "instructionOffset", &DEBUG_STACK_FRAME::InstructionOffset,
             "Return a frame's instruction offset" )
@@ -612,22 +613,27 @@ BOOST_PYTHON_MODULE( pykd )
         .def_readonly( "frameNumber", &DEBUG_STACK_FRAME::FrameNumber,
             "Return a frame's number" );
 
-   python::class_<Ctx::Registers, Ctx::ContextPtr>(
+    python::class_<ThreadContext, ContextPtr>(
         "Context", "Context of thread (register values)", python::no_init )
-        .def( "ip", &Ctx::Registers::getIp, 
+        .def( "ip", &ThreadContext::getIp, 
             "Get instruction pointer register" )
-        .def( "retreg", &Ctx::Registers::getIp, 
+        .def( "retreg", &ThreadContext::getIp, 
             "Get primary return value register" )
-        .def( "csp", &Ctx::Registers::getSp, 
+        .def( "csp", &ThreadContext::getSp, 
             "Get current stack pointer" )
-        .def( "get", &Ctx::Registers::getValue, 
+        .def( "get", &ThreadContext::getValue, 
             "Get register value by ID (CV_REG_XXX)" )
-        .def( "processorType", &Ctx::Registers::getProcessorType,
-            "Get processor type as string")
-        .def("__len__", &Ctx::Registers::getCount,
+        .def( "processorType", &ThreadContext::getProcessorType,
+            "Get processor ThreadContext as string")
+        .def("__len__", &ThreadContext::getCount,
             "Return count of registers")
-        .def("__getitem__", &Ctx::Registers::getByIndex,
+        .def("__getitem__", &ThreadContext::getByIndex,
             "Return tuple<ID, VALUE> by index");
+
+    python::class_<CpuReg, python::bases<intBase> >( 
+        "cpuReg", "CPU regsiter class", boost::python::no_init )
+            .def( "name", &CpuReg::name, "The name of the regsiter" )
+            .def( "index", &CpuReg::index, "The index of thr register" );
 
     python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
         "Open pdb file for querying debug symbols. Return DiaSymbol of global scope");

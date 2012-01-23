@@ -7,9 +7,9 @@
 
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace Ctx {
-
-/////////////////////////////////////////////////////////////////////////////////
+namespace pykd {
+    
+////////////////////////////////////////////////////////////////////////////////
 
 namespace I386 {
 #include "defctxi386.h"
@@ -17,15 +17,13 @@ namespace I386 {
 
 /////////////////////////////////////////////////////////////////////////////////
 
-void Registers::getI386Context(
-    IDebugAdvanced2 *advanced
-)
+void ThreadContext::getI386Context()
 {
     I386::CONTEXT Context = {0};
 
-    HRESULT hres = advanced->GetThreadContext(&Context, sizeof(Context));
+    HRESULT hres = m_advanced->GetThreadContext(&Context, sizeof(Context));
     if (S_OK != hres)
-        throw Exception( "IDebugAdvanced2::GetThreadContext", hres );
+        throw DbgException( "IDebugAdvanced2::GetThreadContext", hres );
 
     m_regValues[CV_REG_DR0] = Context.Dr0;
     m_regValues[CV_REG_DR1] = Context.Dr1;
@@ -65,15 +63,13 @@ namespace AMD64 {
 
 /////////////////////////////////////////////////////////////////////////////////
 
-void Registers::getAmd64Context(
-    IDebugAdvanced2 *advanced
-)
+void ThreadContext::getAmd64Context()
 {
     AMD64::CONTEXT Context = {0};
 
-    HRESULT hres = advanced->GetThreadContext(&Context, sizeof(Context));
+    HRESULT hres = m_advanced->GetThreadContext(&Context, sizeof(Context));
     if (S_OK != hres)
-        throw Exception( "IDebugAdvanced2::GetThreadContext", hres);
+        throw DbgException( "IDebugAdvanced2::GetThreadContext", hres);
 
     m_regValues[CV_AMD64_MXCSR] = Context.MxCsr;
 
@@ -115,66 +111,48 @@ void Registers::getAmd64Context(
 
 /////////////////////////////////////////////////////////////////////////////////
 
-Registers::Registers(
-    IDebugControl4 *control,
-    IDebugAdvanced2 *advanced
-)
+ThreadContext::ThreadContext( IDebugClient4 *client ) :
+    pykd::DbgObject( client )
 {
-    HRESULT hres = control->GetExecutingProcessorType(&m_processorType);
+    HRESULT hres = m_control->GetExecutingProcessorType(&m_processorType);
     if (S_OK != hres)
-        throw Exception( "IDebugControl::GetExecutingProcessorType", hres );
+        throw DbgException( "IDebugControl::GetExecutingProcessorType", hres );
 
     switch (m_processorType)
     {
     case IMAGE_FILE_MACHINE_I386:
-        getI386Context(advanced);
+        getI386Context();
         return;
 
     case IMAGE_FILE_MACHINE_AMD64:
-        getAmd64Context(advanced);
+        getAmd64Context();
         return;
     }
 
     std::stringstream sstream;
     sstream << __FUNCTION__ << ":\n";
     sstream << "Unsupported processor type: 0x" << std::hex << m_processorType;
-    throw Exception( sstream.str() );
+    throw DbgException( sstream.str() );
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
-ULONG64 Registers::getValue(ULONG cvRegId) const
+ULONG64 ThreadContext::getValue(ULONG cvRegId) const
 {
-    try
-    {
-        return getSubValue(cvRegId);
-    }
-    catch (const IsNotSubRegister &)
-    {
-    }
+    ULONG64  val;
 
-    RegValues::const_iterator it = m_regValues.find(cvRegId);
-    if (it == m_regValues.end())
-        throw Exception(__FUNCTION__ ": Register missing");
-    return it->second;
+    if ( getValueNoThrow( cvRegId, val ) )
+        return val;
+
+    throw DbgException(__FUNCTION__ ": Register missing");
 }
 
-/////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
-bool Registers::getValueNoThrow(ULONG cvRegId, ULONG64 &val) const
+bool ThreadContext::getValueNoThrow(ULONG cvRegId, ULONG64 &val) const
 {
-    try
-    {
-        val = getSubValue(cvRegId);
+    if ( getSubValue(cvRegId, val ) )
         return true;
-    }
-    catch (const IsNotSubRegister &)
-    {
-    }
-    catch (const Exception &)
-    {
-        return false;
-    }
 
     RegValues::const_iterator it = m_regValues.find(cvRegId);
     if (it == m_regValues.end())
@@ -184,9 +162,9 @@ bool Registers::getValueNoThrow(ULONG cvRegId, ULONG64 &val) const
     return true;
 }
 
-/////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
-ULONG64 Registers::getIp() const
+ULONG64 ThreadContext::getIp() const
 {
     return getValue(
         IMAGE_FILE_MACHINE_I386 == m_processorType ? CV_REG_EIP : CV_AMD64_RIP
@@ -195,7 +173,7 @@ ULONG64 Registers::getIp() const
 
 /////////////////////////////////////////////////////////////////////////////////
 
-ULONG64 Registers::getRetReg() const
+ULONG64 ThreadContext::getRetReg() const
 {
     return getValue(
         IMAGE_FILE_MACHINE_I386 == m_processorType ? CV_REG_EAX : CV_AMD64_RAX
@@ -204,7 +182,7 @@ ULONG64 Registers::getRetReg() const
 
 /////////////////////////////////////////////////////////////////////////////////
 
-ULONG64 Registers::getSp() const
+ULONG64 ThreadContext::getSp() const
 {
     return getValue(
         IMAGE_FILE_MACHINE_I386 == m_processorType ? CV_REG_ESP : CV_AMD64_RSP
@@ -213,7 +191,7 @@ ULONG64 Registers::getSp() const
 
 /////////////////////////////////////////////////////////////////////////////////
 
-python::object Registers::getByIndex(ULONG ind) const
+python::object ThreadContext::getByIndex(ULONG ind) const
 {
     RegValues::const_iterator it = m_regValues.begin();
     for (ULONG i = 0; it != m_regValues.end(); ++i, ++it )
@@ -222,10 +200,7 @@ python::object Registers::getByIndex(ULONG ind) const
             return python::make_tuple(it->first, it->second);
     }
 
-    PyErr_SetString(PyExc_IndexError, "Index out of range");
-    python::throw_error_already_set();
-
-    return python::object();
+    throw PyException( PyExc_IndexError, "Index out of range");
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -243,109 +218,110 @@ struct SubRegister {
 
 /////////////////////////////////////////////////////////////////////////////////
 
-static const class SubRegisterMapI386 : public std::map<ULONG, SubRegister> {
-public:
-    SubRegisterMapI386();
-} g_SubRegistersI386;
+
+struct SubRegisterMapI386 {
+
+    std::map<ULONG, SubRegister>        subRegs;
+
+    SubRegisterMapI386()
+    {
+        subRegs[CV_REG_AL].set(CV_REG_EAX, 0x00, 0xff);
+        subRegs[CV_REG_CL].set(CV_REG_ECX, 0x00, 0xff);
+        subRegs[CV_REG_DL].set(CV_REG_EDX, 0x00, 0xff);
+        subRegs[CV_REG_BL].set(CV_REG_EBX, 0x00, 0xff);
+
+        subRegs[CV_REG_AH].set(CV_REG_EAX, 0x08, 0xff);
+        subRegs[CV_REG_CH].set(CV_REG_ECX, 0x08, 0xff);
+        subRegs[CV_REG_DH].set(CV_REG_EDX, 0x08, 0xff);
+        subRegs[CV_REG_BH].set(CV_REG_EBX, 0x08, 0xff);
+
+        subRegs[CV_REG_AX].set(CV_REG_EAX, 0x00, 0xffff);
+        subRegs[CV_REG_CX].set(CV_REG_ECX, 0x00, 0xffff);
+        subRegs[CV_REG_DX].set(CV_REG_EDX, 0x00, 0xffff);
+        subRegs[CV_REG_BX].set(CV_REG_EBX, 0x00, 0xffff);
+
+        subRegs[CV_REG_SP].set(CV_REG_ESP, 0x00, 0xffff);
+        subRegs[CV_REG_BP].set(CV_REG_EBP, 0x00, 0xffff);
+        subRegs[CV_REG_SI].set(CV_REG_ESI, 0x00, 0xffff);
+        subRegs[CV_REG_DI].set(CV_REG_EDI, 0x00, 0xffff);
+    }
+
+};
+
+static const std::map<ULONG, SubRegister>  g_SubRegistersI386 = SubRegisterMapI386().subRegs;
 
 /////////////////////////////////////////////////////////////////////////////////
 
-SubRegisterMapI386::SubRegisterMapI386()
-{
-    (*this)[CV_REG_AL].set(CV_REG_EAX, 0x00, 0xff);
-    (*this)[CV_REG_CL].set(CV_REG_ECX, 0x00, 0xff);
-    (*this)[CV_REG_DL].set(CV_REG_EDX, 0x00, 0xff);
-    (*this)[CV_REG_BL].set(CV_REG_EBX, 0x00, 0xff);
+struct SubRegisterMapAmd64 {
 
-    (*this)[CV_REG_AH].set(CV_REG_EAX, 0x08, 0xff);
-    (*this)[CV_REG_CH].set(CV_REG_ECX, 0x08, 0xff);
-    (*this)[CV_REG_DH].set(CV_REG_EDX, 0x08, 0xff);
-    (*this)[CV_REG_BH].set(CV_REG_EBX, 0x08, 0xff);
+    std::map<ULONG, SubRegister>        subRegs; 
 
-    (*this)[CV_REG_AX].set(CV_REG_EAX, 0x00, 0xffff);
-    (*this)[CV_REG_CX].set(CV_REG_ECX, 0x00, 0xffff);
-    (*this)[CV_REG_DX].set(CV_REG_EDX, 0x00, 0xffff);
-    (*this)[CV_REG_BX].set(CV_REG_EBX, 0x00, 0xffff);
+    SubRegisterMapAmd64()
+    {
+        subRegs[CV_AMD64_AL].set(CV_AMD64_RAX, 0x00, 0xff);
+        subRegs[CV_AMD64_CL].set(CV_AMD64_RCX, 0x00, 0xff);
+        subRegs[CV_AMD64_DL].set(CV_AMD64_RDX, 0x00, 0xff);
+        subRegs[CV_AMD64_BL].set(CV_AMD64_RBX, 0x00, 0xff);
 
-    (*this)[CV_REG_SP].set(CV_REG_ESP, 0x00, 0xffff);
-    (*this)[CV_REG_BP].set(CV_REG_EBP, 0x00, 0xffff);
-    (*this)[CV_REG_SI].set(CV_REG_ESI, 0x00, 0xffff);
-    (*this)[CV_REG_DI].set(CV_REG_EDI, 0x00, 0xffff);
+        subRegs[CV_AMD64_AH].set(CV_AMD64_RAX, 0x08, 0xff);
+        subRegs[CV_AMD64_CH].set(CV_AMD64_RCX, 0x08, 0xff);
+        subRegs[CV_AMD64_DH].set(CV_AMD64_RDX, 0x08, 0xff);
+        subRegs[CV_AMD64_BH].set(CV_AMD64_RBX, 0x08, 0xff);
 
-}
+        subRegs[CV_AMD64_AX].set(CV_AMD64_RAX, 0x00, 0xffff);
+        subRegs[CV_AMD64_CX].set(CV_AMD64_RCX, 0x00, 0xffff);
+        subRegs[CV_AMD64_DX].set(CV_AMD64_RDX, 0x00, 0xffff);
+        subRegs[CV_AMD64_BX].set(CV_AMD64_RBX, 0x00, 0xffff);
 
-/////////////////////////////////////////////////////////////////////////////////
+        subRegs[CV_AMD64_SP].set(CV_AMD64_RSP, 0x00, 0xffff);
+        subRegs[CV_AMD64_BP].set(CV_AMD64_RBP, 0x00, 0xffff);
+        subRegs[CV_AMD64_SI].set(CV_AMD64_RSI, 0x00, 0xffff);
+        subRegs[CV_AMD64_DI].set(CV_AMD64_RDI, 0x00, 0xffff);
 
-static const class SubRegisterMapAmd64 : public std::map<ULONG, SubRegister> {
-public:
-    SubRegisterMapAmd64();
-} g_SubRegistersAmd64;
+        subRegs[CV_AMD64_EAX].set(CV_AMD64_RAX, 0x00, 0xffffffff);
+        subRegs[CV_AMD64_ECX].set(CV_AMD64_RCX, 0x00, 0xffffffff);
+        subRegs[CV_AMD64_EDX].set(CV_AMD64_RDX, 0x00, 0xffffffff);
+        subRegs[CV_AMD64_EBX].set(CV_AMD64_RBX, 0x00, 0xffffffff);
 
-/////////////////////////////////////////////////////////////////////////////////
+        subRegs[CV_AMD64_ESP].set(CV_AMD64_RSP, 0x00, 0xffffffff);
+        subRegs[CV_AMD64_EBP].set(CV_AMD64_RBP, 0x00, 0xffffffff);
+        subRegs[CV_AMD64_ESI].set(CV_AMD64_RSI, 0x00, 0xffffffff);
+        subRegs[CV_AMD64_EDI].set(CV_AMD64_RDI, 0x00, 0xffffffff);
 
-SubRegisterMapAmd64::SubRegisterMapAmd64()
-{
-    (*this)[CV_AMD64_AL].set(CV_AMD64_RAX, 0x00, 0xff);
-    (*this)[CV_AMD64_CL].set(CV_AMD64_RCX, 0x00, 0xff);
-    (*this)[CV_AMD64_DL].set(CV_AMD64_RDX, 0x00, 0xff);
-    (*this)[CV_AMD64_BL].set(CV_AMD64_RBX, 0x00, 0xff);
+        subRegs[CV_AMD64_R8B].set(CV_AMD64_R8, 0x00, 0xff);
+        subRegs[CV_AMD64_R9B].set(CV_AMD64_R9, 0x00, 0xff);
+        subRegs[CV_AMD64_R10B].set(CV_AMD64_R10, 0x00, 0xff);
+        subRegs[CV_AMD64_R11B].set(CV_AMD64_R11, 0x00, 0xff);
+        subRegs[CV_AMD64_R12B].set(CV_AMD64_R12, 0x00, 0xff);
+        subRegs[CV_AMD64_R13B].set(CV_AMD64_R13, 0x00, 0xff);
+        subRegs[CV_AMD64_R14B].set(CV_AMD64_R14, 0x00, 0xff);
+        subRegs[CV_AMD64_R15B].set(CV_AMD64_R15, 0x00, 0xff);
 
-    (*this)[CV_AMD64_AH].set(CV_AMD64_RAX, 0x08, 0xff);
-    (*this)[CV_AMD64_CH].set(CV_AMD64_RCX, 0x08, 0xff);
-    (*this)[CV_AMD64_DH].set(CV_AMD64_RDX, 0x08, 0xff);
-    (*this)[CV_AMD64_BH].set(CV_AMD64_RBX, 0x08, 0xff);
+        subRegs[CV_AMD64_R8W].set(CV_AMD64_R8, 0x00, 0xffff);
+        subRegs[CV_AMD64_R9W].set(CV_AMD64_R9, 0x00, 0xffff);
+        subRegs[CV_AMD64_R10W].set(CV_AMD64_R10, 0x00, 0xffff);
+        subRegs[CV_AMD64_R11W].set(CV_AMD64_R11, 0x00, 0xffff);
+        subRegs[CV_AMD64_R12W].set(CV_AMD64_R12, 0x00, 0xffff);
+        subRegs[CV_AMD64_R13W].set(CV_AMD64_R13, 0x00, 0xffff);
+        subRegs[CV_AMD64_R14W].set(CV_AMD64_R14, 0x00, 0xffff);
+        subRegs[CV_AMD64_R15W].set(CV_AMD64_R15, 0x00, 0xffff);
 
-    (*this)[CV_AMD64_AX].set(CV_AMD64_RAX, 0x00, 0xffff);
-    (*this)[CV_AMD64_CX].set(CV_AMD64_RCX, 0x00, 0xffff);
-    (*this)[CV_AMD64_DX].set(CV_AMD64_RDX, 0x00, 0xffff);
-    (*this)[CV_AMD64_BX].set(CV_AMD64_RBX, 0x00, 0xffff);
+        subRegs[CV_AMD64_R8D].set(CV_AMD64_R8, 0x00, 0xffffffff);
+        subRegs[CV_AMD64_R9D].set(CV_AMD64_R9, 0x00, 0xffffffff);
+        subRegs[CV_AMD64_R10D].set(CV_AMD64_R10, 0x00, 0xffffffff);
+        subRegs[CV_AMD64_R11D].set(CV_AMD64_R11, 0x00, 0xffffffff);
+        subRegs[CV_AMD64_R12D].set(CV_AMD64_R12, 0x00, 0xffffffff);
+        subRegs[CV_AMD64_R13D].set(CV_AMD64_R13, 0x00, 0xffffffff);
+        subRegs[CV_AMD64_R14D].set(CV_AMD64_R14, 0x00, 0xffffffff);
+        subRegs[CV_AMD64_R15D].set(CV_AMD64_R15, 0x00, 0xffffffff);
+    }
+};
 
-    (*this)[CV_AMD64_SP].set(CV_AMD64_RSP, 0x00, 0xffff);
-    (*this)[CV_AMD64_BP].set(CV_AMD64_RBP, 0x00, 0xffff);
-    (*this)[CV_AMD64_SI].set(CV_AMD64_RSI, 0x00, 0xffff);
-    (*this)[CV_AMD64_DI].set(CV_AMD64_RDI, 0x00, 0xffff);
-
-    (*this)[CV_AMD64_EAX].set(CV_AMD64_RAX, 0x00, 0xffffffff);
-    (*this)[CV_AMD64_ECX].set(CV_AMD64_RCX, 0x00, 0xffffffff);
-    (*this)[CV_AMD64_EDX].set(CV_AMD64_RDX, 0x00, 0xffffffff);
-    (*this)[CV_AMD64_EBX].set(CV_AMD64_RBX, 0x00, 0xffffffff);
-
-    (*this)[CV_AMD64_ESP].set(CV_AMD64_RSP, 0x00, 0xffffffff);
-    (*this)[CV_AMD64_EBP].set(CV_AMD64_RBP, 0x00, 0xffffffff);
-    (*this)[CV_AMD64_ESI].set(CV_AMD64_RSI, 0x00, 0xffffffff);
-    (*this)[CV_AMD64_EDI].set(CV_AMD64_RDI, 0x00, 0xffffffff);
-
-    (*this)[CV_AMD64_R8B].set(CV_AMD64_R8, 0x00, 0xff);
-    (*this)[CV_AMD64_R9B].set(CV_AMD64_R9, 0x00, 0xff);
-    (*this)[CV_AMD64_R10B].set(CV_AMD64_R10, 0x00, 0xff);
-    (*this)[CV_AMD64_R11B].set(CV_AMD64_R11, 0x00, 0xff);
-    (*this)[CV_AMD64_R12B].set(CV_AMD64_R12, 0x00, 0xff);
-    (*this)[CV_AMD64_R13B].set(CV_AMD64_R13, 0x00, 0xff);
-    (*this)[CV_AMD64_R14B].set(CV_AMD64_R14, 0x00, 0xff);
-    (*this)[CV_AMD64_R15B].set(CV_AMD64_R15, 0x00, 0xff);
-
-    (*this)[CV_AMD64_R8W].set(CV_AMD64_R8, 0x00, 0xffff);
-    (*this)[CV_AMD64_R9W].set(CV_AMD64_R9, 0x00, 0xffff);
-    (*this)[CV_AMD64_R10W].set(CV_AMD64_R10, 0x00, 0xffff);
-    (*this)[CV_AMD64_R11W].set(CV_AMD64_R11, 0x00, 0xffff);
-    (*this)[CV_AMD64_R12W].set(CV_AMD64_R12, 0x00, 0xffff);
-    (*this)[CV_AMD64_R13W].set(CV_AMD64_R13, 0x00, 0xffff);
-    (*this)[CV_AMD64_R14W].set(CV_AMD64_R14, 0x00, 0xffff);
-    (*this)[CV_AMD64_R15W].set(CV_AMD64_R15, 0x00, 0xffff);
-
-    (*this)[CV_AMD64_R8D].set(CV_AMD64_R8, 0x00, 0xffffffff);
-    (*this)[CV_AMD64_R9D].set(CV_AMD64_R9, 0x00, 0xffffffff);
-    (*this)[CV_AMD64_R10D].set(CV_AMD64_R10, 0x00, 0xffffffff);
-    (*this)[CV_AMD64_R11D].set(CV_AMD64_R11, 0x00, 0xffffffff);
-    (*this)[CV_AMD64_R12D].set(CV_AMD64_R12, 0x00, 0xffffffff);
-    (*this)[CV_AMD64_R13D].set(CV_AMD64_R13, 0x00, 0xffffffff);
-    (*this)[CV_AMD64_R14D].set(CV_AMD64_R14, 0x00, 0xffffffff);
-    (*this)[CV_AMD64_R15D].set(CV_AMD64_R15, 0x00, 0xffffffff);
-}
+static const  std::map<ULONG, SubRegister>   g_SubRegistersAmd64 = SubRegisterMapAmd64().subRegs;
 
 /////////////////////////////////////////////////////////////////////////////////
 
-ULONG64 Registers::getSubValue(ULONG cvRegId) const
+bool ThreadContext::getSubValue(ULONG cvRegId, ULONG64 &val) const
 {
     const std::map<ULONG, SubRegister> *subRegs = NULL;
     if (IMAGE_FILE_MACHINE_I386 == m_processorType)
@@ -356,18 +332,17 @@ ULONG64 Registers::getSubValue(ULONG cvRegId) const
     std::map<ULONG, SubRegister>::const_iterator itSubReg = 
         subRegs->find(cvRegId);
     if (itSubReg == subRegs->end())
-        throw IsNotSubRegister();
+       return false;
 
     RegValues::const_iterator itFullReg = m_regValues.find(itSubReg->second.m_fromReg);
     if (itFullReg == m_regValues.end())
-        throw Exception(__FUNCTION__ ": Register missing");
+        return false;
 
-    return 
-        (itFullReg->second >> itSubReg->second.m_bitsShift) & itSubReg->second.m_bitsMask;
-}
+    val = (itFullReg->second >> itSubReg->second.m_bitsShift) & itSubReg->second.m_bitsMask;
 
-// ----------------------------------------------------------------------------
-
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
+
+}
