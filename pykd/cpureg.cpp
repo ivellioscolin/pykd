@@ -16,7 +16,32 @@ CpuReg::CpuReg( IDebugClient4 *client, const std::string &regName ) :
 
     hres = m_registers->GetIndexByName( m_name.c_str(), &m_index );
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugRegister::GetIndexByName", hres );    
+        throw DbgException( "IDebugRegister::GetIndexByName", hres );
+
+    DEBUG_REGISTER_DESCRIPTION    desc = {};
+
+    hres = 
+        m_registers->GetDescription( 
+            m_index,
+            NULL,
+            0,
+            NULL,
+            &desc );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugRegister::GetDescription", hres );
+
+    switch ( desc.Type )
+    {
+    case DEBUG_VALUE_INT8:
+    case DEBUG_VALUE_INT16:
+    case DEBUG_VALUE_INT32:
+    case DEBUG_VALUE_INT64:
+        break;
+
+    default:
+        throw DbgException( "Unsupported register type ( not integer )" );
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +67,7 @@ CpuReg::CpuReg( IDebugClient4 *client, ULONG index ) :
         throw DbgException( "IDebugRegister::GetDescription", hres );
 
     std::vector<char>   nameBuffer(nameSize);
+    DEBUG_REGISTER_DESCRIPTION    desc = {};
 
     hres = 
         m_registers->GetDescription( 
@@ -49,10 +75,22 @@ CpuReg::CpuReg( IDebugClient4 *client, ULONG index ) :
             &nameBuffer[0],
             nameSize,
             NULL,
-            NULL );
+            &desc );
 
     if ( FAILED( hres ) )
         throw DbgException( "IDebugRegister::GetDescription", hres );
+
+    switch ( desc.Type )
+    {
+    case DEBUG_VALUE_INT8:
+    case DEBUG_VALUE_INT16:
+    case DEBUG_VALUE_INT32:
+    case DEBUG_VALUE_INT64:
+        break;
+
+    default:
+        throw DbgException( "Unsupported register type ( not integer )" );
+    }
 
     m_name = std::string( &nameBuffer[0] );
     
