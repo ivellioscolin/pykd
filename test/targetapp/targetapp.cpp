@@ -343,10 +343,34 @@ int doLoadUnload()
 
     return 0;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+int g_valueForAccessTesting1 = 4;
+int g_valueForAccessTesting2 = 5;
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma optimize("g", off)
+void changeValueForAccessTesting()
+{
+    g_valueForAccessTesting1 = 5;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void readValueForAccessTesting()
+{
+    std::cout << g_valueForAccessTesting1 << g_valueForAccessTesting2;
+}
+#pragma optimize("g", on)
 ////////////////////////////////////////////////////////////////////////////////
 
 int doExeptions()
 {
+    changeValueForAccessTesting();
+
+    readValueForAccessTesting();
+
     __debugbreak();
 
     PUCHAR _ptr = reinterpret_cast<UCHAR *>(2);

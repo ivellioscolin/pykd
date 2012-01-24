@@ -18,6 +18,7 @@
 #include "dbgmem.h"
 #include "intbase.h"
 #include "process.h"
+#include "bpoint.h"
 #include "pykdver.h"
 
 using namespace pykd;
@@ -284,7 +285,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "step", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
             "Change debugger status to DEBUG_STATUS_STEP_OVER" )
         .def( "symbolsPath", &DebugClient::dbgSymPath, 
-            "Return symbol path" )   
+            "Return symbol path" )
         .def( "trace", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
             "Change debugger status to DEBUG_STATUS_STEP_INTO" )
         .def( "waitForEvent", &DebugClient::waitForEvent,
@@ -299,6 +300,16 @@ BOOST_PYTHON_MODULE( pykd )
             "Get context of current thread (register values)" )
         .def( "getLocals", &DebugClient::getLocals, DebugClient_getLocals( python::args( "ctx" ),
             "Get list of local variables" ) )
+        .def( "setBp", &DebugClient::setSoftwareBp,
+            "Set software breakpoint on executiont" )
+        .def( "setBp", &DebugClient::setHardwareBp,
+            "Set hardware breakpoint" )
+        .def( "getAllBp", &DebugClient::getAllBp,
+            "Get all breapoint IDs" )
+        .def( "removeBp", &DebugClient::removeBp,
+            "Remove breapoint by IDs" )
+        .def( "removeBp", &DebugClient::removeAllBp,
+            "Remove all breapoints" )
         .def( "addSynSymbol", &DebugClient::addSyntheticSymbol,
             "Add new synthetic symbol for virtual address" )
         .def( "delAllSynSymbols", &DebugClient::delAllSyntheticSymbols, 
@@ -473,7 +484,17 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "getContext", &getThreadContext,
         "Get context of current thread (register values)" );
     python::def( "getLocals", &getLocals, getLocals_( python::args( "ctx" ),
-            "Get list of local variables" ) );
+        "Get list of local variables" ) );
+    python::def( "setBp", &setSoftwareBp,
+        "Set software breakpoint on executiont" );
+    python::def( "setBp", &setHardwareBp,
+        "Set hardware breakpoint" );
+    python::def( "getAllBp", &getAllBp,
+        "Get all breapoint IDs" );
+    python::def( "removeBp", &removeBp,
+        "Remove breapoint by IDs" );
+    python::def( "removeBp", &removeAllBp,
+        "Remove all breapoints" );
 
     python::class_<TypeInfo, TypeInfoPtr, python::bases<intBase>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
         .def( "name", &TypeInfo::getName )
@@ -872,6 +893,15 @@ BOOST_PYTHON_MODULE( pykd )
     DEF_PY_CONST_ULONG(DEBUG_STATUS_REVERSE_STEP_BRANCH);
     DEF_PY_CONST_ULONG(DEBUG_STATUS_REVERSE_STEP_OVER);
     DEF_PY_CONST_ULONG(DEBUG_STATUS_REVERSE_STEP_INTO);
+
+    // breakpoints constatns
+    DEF_PY_CONST_ULONG(DEBUG_BREAKPOINT_CODE);
+    DEF_PY_CONST_ULONG(DEBUG_BREAKPOINT_DATA);
+
+    DEF_PY_CONST_ULONG(DEBUG_BREAK_READ);
+    DEF_PY_CONST_ULONG(DEBUG_BREAK_WRITE);
+    DEF_PY_CONST_ULONG(DEBUG_BREAK_EXECUTE);
+    DEF_PY_CONST_ULONG(DEBUG_BREAK_IO);
 }
 
 #undef DEF_PY_CONST_ULONG

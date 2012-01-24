@@ -14,6 +14,7 @@ class BreakExceptionHandler(pykd.eventHandler):
         self.wasSecondChance = False
 
         self.wasBreakpoint = False
+        self.wasBreakpointIds = []
 
         self.bpLastModuleName = ""
         self.bpCount = 0
@@ -24,6 +25,7 @@ class BreakExceptionHandler(pykd.eventHandler):
     def onBreakpoint(self, bpId):
         """Breakpoint handler"""
         self.wasBreakpoint = True
+        self.wasBreakpointIds.append( bpId )
         return pykd.DEBUG_STATUS_NO_CHANGE
 
     def onException(self, exceptParams):
@@ -33,7 +35,6 @@ class BreakExceptionHandler(pykd.eventHandler):
 
         if exceptParams["Code"] == pykd.EXCEPTION_ACCESS_VIOLATION:
             if self.wasSecondChance:
-                print exceptParams["Parameters"]
                 self.secondChanceAccessAddresses.append( exceptParams["Parameters"][1] )
             else:
                 self.firstChanceAccessAddresses.append( exceptParams["Parameters"][1] )
@@ -50,7 +51,23 @@ class EhExceptionBreakpointTest(unittest.TestCase):
         testClient = pykd.createDbgClient()
         testClient.startProcess( target.appPath + " -testExceptions" )
 
-        testClient.dbgCommand( ".reload /f; bp targetapp!doExeptions" )
+        targetMod = testClient.loadModule( "targetapp" )
+
+        bpIdSoftware = testClient.setBp( targetMod.offset("changeValueForAccessTesting") )
+
+        bpIdHwExecute = testClient.setBp( targetMod.offset("readValueForAccessTesting"),
+                                          1,
+                                          pykd.DEBUG_BREAK_EXECUTE )
+
+        bpIdHwWrite = testClient.setBp( targetMod.offset("g_valueForAccessTesting1"),
+                                        1,
+                                        pykd.DEBUG_BREAK_WRITE )
+
+        bpIdHwRead = testClient.setBp( targetMod.offset("g_valueForAccessTesting2"),
+                                       1,
+                                       pykd.DEBUG_BREAK_READ )
+
+        self.assertEqual( 4, len( testClient.getAllBp() ) )
 
         breakExceptionHandler = BreakExceptionHandler( testClient )
         while not breakExceptionHandler.wasSecondChance:
@@ -63,3 +80,11 @@ class EhExceptionBreakpointTest(unittest.TestCase):
         self.assertEqual( 2, breakExceptionHandler.bpCount ) # main and doExeptions
 
         self.assertEqual( [3, ], breakExceptionHandler.secondChanceAccessAddresses )
+
+        self.assertTrue( bpIdSoftware in breakExceptionHandler.wasBreakpointIds )
+
+        testClient.removeBp(bpIdHwRead)
+        self.assertEqual( 3, len( testClient.getAllBp() ) )
+
+        testClient.removeBp()
+        self.assertEqual( 0, len( testClient.getAllBp() ) )

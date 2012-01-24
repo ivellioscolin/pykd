@@ -297,6 +297,15 @@ public:
         return m_symSymbols;
     }
 
+    // breakpoints management
+    ULONG setSoftwareBp(ULONG64 addr);
+    ULONG setHardwareBp(ULONG64 addr, ULONG size, ULONG accessType);
+
+    python::list getAllBp();
+
+    void removeBp(ULONG Id);
+    void removeAllBp();
+
 private:
     template<typename T>
     python::list
