@@ -367,6 +367,8 @@ void readValueForAccessTesting()
 
 int doExeptions()
 {
+    __debugbreak();
+
     changeValueForAccessTesting();
 
     readValueForAccessTesting();
