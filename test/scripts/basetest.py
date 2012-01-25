@@ -88,14 +88,13 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'MemoryException') )
         self.assertTrue( hasattr(pykd, 'TypeException') )
         self.assertTrue( hasattr(pykd, 'WaitEventException') )
-        self.assertTrue( hasattr(pykd, 'bp') )
-        self.assertTrue( hasattr(pykd, 'cpuReg') )        
+        self.assertTrue( hasattr(pykd, 'cpuReg') )
         self.assertTrue( hasattr(pykd, 'disasm') )
         self.assertTrue( hasattr(pykd, 'ext') )
         self.assertTrue( hasattr(pykd, 'intBase') )
         self.assertTrue( hasattr(pykd, 'typeInfo') )
         self.assertTrue( hasattr(pykd, 'typedVar') )
-        
+
     def testOldRemovedApi( self ):
         """ Branch test: old API 0.0.x what should be removed """
         self.assertFalse( hasattr(pykd, 'containingRecord') )
@@ -105,12 +104,13 @@ class BaseTest( unittest.TestCase ):
         self.assertFalse( hasattr(pykd, 'findModule') )
         self.assertFalse( hasattr(pykd, 'loadLinkedList') )
         self.assertFalse( hasattr(pykd, 'loadPtrs') )
-        self.assertFalse( hasattr(pykd, 'reloadModule') )   
+        self.assertFalse( hasattr(pykd, 'reloadModule') )
         self.assertFalse( hasattr(pykd, 'typedVarArray') )
-        self.assertFalse( hasattr(pykd, 'typedVarList') )             
+        self.assertFalse( hasattr(pykd, 'typedVarList') )
         self.assertFalse( hasattr(pykd, 'windbgIn') )
         self.assertFalse( hasattr(pykd, 'windbgOut') )
-        
+        self.assertFalse( hasattr(pykd, 'bp') )
+
     def testNewAddededApi( self ):
         """ Branch test: new API 0.1.x what must be available """
         self.assertTrue( hasattr(pykd, 'createDbgClient') )
@@ -124,7 +124,11 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'loadPtrArray') )
         self.assertTrue( hasattr(pykd, 'setExecutionStatus') )
         self.assertTrue( hasattr(pykd, 'waitForEvent') )
-        
+
+        self.assertTrue( hasattr(pykd, 'setBp') )
+        self.assertTrue( hasattr(pykd, 'getAllBp') )
+        self.assertTrue( hasattr(pykd, 'removeBp') )
+
         self.assertTrue( hasattr(pykd, 'DiaException') )
         self.assertTrue( hasattr(pykd, 'DiaScope') )
         self.assertTrue( hasattr(pykd, 'DiaSymbol') )
