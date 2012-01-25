@@ -632,7 +632,9 @@ BOOST_PYTHON_MODULE( pykd )
         .def_readonly( "stackOffset", &DEBUG_STACK_FRAME::StackOffset,
             "Return a frame's stack offset" )
         .def_readonly( "frameNumber", &DEBUG_STACK_FRAME::FrameNumber,
-            "Return a frame's number" );
+            "Return a frame's number" )
+        .def( "__str__", &printStackFrame,
+            "Return stacks frame as string");
 
     python::class_<ThreadContext, ContextPtr>(
         "Context", "Context of thread (register values)", python::no_init )
@@ -646,6 +648,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Get register value by ID (CV_REG_XXX)" )
         .def( "processorType", &ThreadContext::getProcessorType,
             "Get processor ThreadContext as string")
+        .def( "fork", &ThreadContext::forkByStackFrame,
+            "Create new thread context by stackFrame")
         .def("__len__", &ThreadContext::getCount,
             "Return count of registers")
         .def("__getitem__", &ThreadContext::getByIndex,

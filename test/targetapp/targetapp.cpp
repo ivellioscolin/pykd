@@ -303,6 +303,16 @@ void FuncWithName1(int a)
 
 ////////////////////////////////////////////////////////////////////////////////
 #pragma optimize("g", off)
+VOID functionCalledFromEnumWindowsProc1(DWORD dwProcessId)
+{
+    DWORD dwCurrentProcessId = GetCurrentProcessId();
+    if (dwCurrentProcessId != dwProcessId)
+        std::cout << dwCurrentProcessId << dwProcessId;
+    __debugbreak();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 BOOL CALLBACK EnumWindowsProc1(
     HWND hWindow,
     const LPARAM lParam
@@ -318,6 +328,7 @@ BOOL CALLBACK EnumWindowsProc1(
         DWORD dwThreadId = ::GetWindowThreadProcessId(hWindow, &dwProccessId);
         staticVar = dwProccessId + 1;
         __debugbreak();
+        functionCalledFromEnumWindowsProc1(dwProccessId);
         std::cout << dwProccessId << dwThreadId << staticVar;
     }
     return hWindow ? FALSE : TRUE;

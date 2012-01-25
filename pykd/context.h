@@ -10,6 +10,14 @@
 
 namespace pykd {
 
+
+////////////////////////////////////////////////////////////////////////////////
+
+class ThreadContext;
+typedef boost::shared_ptr< ThreadContext > ContextPtr;
+
+////////////////////////////////////////////////////////////////////////////////
+
 std::string processorToStr(ULONG processorMode);
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,7 +25,6 @@ std::string processorToStr(ULONG processorMode);
 class ThreadContext : private DbgObject
 {
 public:
-
     ThreadContext( IDebugClient4 *client );
 
     // get register value by ID
@@ -45,6 +52,8 @@ public:
         return pykd::processorToStr(m_processorType);
     }
 
+    ContextPtr forkByStackFrame(DEBUG_STACK_FRAME &frame) const;
+
 private:
 
     // query i386 registers
@@ -56,6 +65,8 @@ private:
     // try query as "sub-register"
     bool getSubValue(ULONG cvRegId, ULONG64 &val) const;
 
+    void __declspec(noreturn) throwUnsupportedProcessor(PCSTR szFunction) const;
+
 private:
     typedef std::map<ULONG, ULONG64> RegValues;
     RegValues m_regValues;
@@ -65,7 +76,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-typedef boost::shared_ptr< ThreadContext > ContextPtr;
+std::string printStackFrame(DEBUG_STACK_FRAME &frame);
 
 ////////////////////////////////////////////////////////////////////////////////
 

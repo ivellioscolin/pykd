@@ -8,14 +8,14 @@ class LocalVarsTest(unittest.TestCase):
     def testLocalVariable(self):
         """Start new process and test local variables"""
 
-        testClient = pykd.createDbgClient()
-        testClient.startProcess( target.appPath + " -testEnumWindows" )
+        newClnt = pykd.createDbgClient()
+        newClnt.startProcess( target.appPath + " -testEnumWindows" )
 
-        testClient.go() # initial breakpoint -> wmain
-        testClient.go() # wmain -> targetapp!EnumWindowsProc1
-        # pykd.dprint( "\n" + testClient.dbgCommand("u") )
+        newClnt.go() # initial breakpoint -> wmain
+        newClnt.go() # wmain -> targetapp!EnumWindowsProc1
+        # pykd.dprint( "\n" + newClnt.dbgCommand("u") )
 
-        locals = testClient.getLocals()
+        locals = newClnt.getLocals()
 
         self.assertNotEqual( 0, locals["hWindow"] )
         self.assertEqual( pykd.DataIsParam, locals["hWindow"].dataKind() )
@@ -31,9 +31,20 @@ class LocalVarsTest(unittest.TestCase):
 
         self.assertEqual( locals["dwProccessId"] + 1, locals["staticVar"] )
 
-        testClient.go() # targetapp!EnumWindowsProc1 -> targetapp!EnumWindowsProc2
-        locals = testClient.getLocals()
+        newClnt.go() # targetapp!EnumWindowsProc1 -> targetapp!functionCalledFromEnumWindowsProc1
+
+        # get local variables from previous stack frame
+        prevStackThreadCtx = newClnt.getContext().fork( newClnt.getCurrentStack()[1] )
+        prevLocals = newClnt.getLocals( prevStackThreadCtx )
+
+        self.assertEqual( len(prevLocals), len(locals) )
+        for varName in locals.iterkeys():
+            self.assertEqual( prevLocals[varName], locals[varName] )
+
+        newClnt.go() # targetapp!EnumWindowsProc1 -> targetapp!EnumWindowsProc2
+        locals = newClnt.getLocals()
         self.assertEqual( len(locals), 2 )
         locValues = locals.values()
         self.assertTrue( locValues[0] == 7 or locValues[1] == 7 )
+
 

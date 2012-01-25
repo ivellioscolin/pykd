@@ -129,10 +129,7 @@ ThreadContext::ThreadContext( IDebugClient4 *client ) :
         return;
     }
 
-    std::stringstream sstream;
-    sstream << __FUNCTION__ << ":\n";
-    sstream << "Unsupported processor type: 0x" << std::hex << m_processorType;
-    throw DbgException( sstream.str() );
+    throwUnsupportedProcessor(__FUNCTION__);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -187,6 +184,29 @@ ULONG64 ThreadContext::getSp() const
     return getValue(
         IMAGE_FILE_MACHINE_I386 == m_processorType ? CV_REG_ESP : CV_AMD64_RSP
     );
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+ContextPtr ThreadContext::forkByStackFrame(DEBUG_STACK_FRAME &frame) const
+{
+    ContextPtr newContext( new ThreadContext(*this) );
+    switch (m_processorType)
+    {
+    case IMAGE_FILE_MACHINE_I386:
+        newContext->m_regValues[CV_REG_EIP] = frame.InstructionOffset;
+        newContext->m_regValues[CV_REG_EBP] = frame.FrameOffset;
+        newContext->m_regValues[CV_REG_ESP] = frame.StackOffset;
+        return newContext;
+
+    case IMAGE_FILE_MACHINE_AMD64:
+        newContext->m_regValues[CV_AMD64_RIP] = frame.InstructionOffset;
+        newContext->m_regValues[CV_AMD64_RBP] = frame.FrameOffset;
+        newContext->m_regValues[CV_AMD64_RSP] = frame.StackOffset;
+        return newContext;
+    }
+
+    throwUnsupportedProcessor(__FUNCTION__);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -341,6 +361,32 @@ bool ThreadContext::getSubValue(ULONG cvRegId, ULONG64 &val) const
     val = (itFullReg->second >> itSubReg->second.m_bitsShift) & itSubReg->second.m_bitsMask;
 
     return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void ThreadContext::throwUnsupportedProcessor(PCSTR szFunction) const
+{
+    std::stringstream sstream;
+    sstream << szFunction << ":\n";
+    sstream << "Unsupported processor type: 0x" << std::hex << m_processorType;
+    throw DbgException( sstream.str() );
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+std::string printStackFrame(DEBUG_STACK_FRAME &frame)
+{
+    std::stringstream sstream;
+
+    sstream << std::dec << "(" << frame.FrameNumber << ")";
+
+    sstream << " ip= 0x" << std::hex << frame.InstructionOffset;
+    sstream << ", ret= 0x" << std::hex << frame.ReturnOffset;
+    sstream << ", frame= 0x" << std::hex << frame.FrameOffset;
+    sstream << ", stack= 0x" << std::hex << frame.StackOffset;
+
+    return sstream.str();
 }
 
 /////////////////////////////////////////////////////////////////////////////////
