@@ -4,6 +4,7 @@
 #include <boost\python\tuple.hpp>
 
 #include "context.h"
+#include "stkframe.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -188,21 +189,21 @@ ULONG64 ThreadContext::getSp() const
 
 /////////////////////////////////////////////////////////////////////////////////
 
-ContextPtr ThreadContext::forkByStackFrame(DEBUG_STACK_FRAME &frame) const
+ContextPtr ThreadContext::forkByStackFrame(const StackFrame &stkFrmae) const
 {
     ContextPtr newContext( new ThreadContext(*this) );
     switch (m_processorType)
     {
     case IMAGE_FILE_MACHINE_I386:
-        newContext->m_regValues[CV_REG_EIP] = frame.InstructionOffset;
-        newContext->m_regValues[CV_REG_EBP] = frame.FrameOffset;
-        newContext->m_regValues[CV_REG_ESP] = frame.StackOffset;
+        newContext->m_regValues[CV_REG_EIP] = stkFrmae.m_instructionOffset;
+        newContext->m_regValues[CV_REG_EBP] = stkFrmae.m_frameOffset;
+        newContext->m_regValues[CV_REG_ESP] = stkFrmae.m_stackOffset;
         return newContext;
 
     case IMAGE_FILE_MACHINE_AMD64:
-        newContext->m_regValues[CV_AMD64_RIP] = frame.InstructionOffset;
-        newContext->m_regValues[CV_AMD64_RBP] = frame.FrameOffset;
-        newContext->m_regValues[CV_AMD64_RSP] = frame.StackOffset;
+        newContext->m_regValues[CV_AMD64_RIP] = stkFrmae.m_instructionOffset;
+        newContext->m_regValues[CV_AMD64_RBP] = stkFrmae.m_frameOffset;
+        newContext->m_regValues[CV_AMD64_RSP] = stkFrmae.m_stackOffset;
         return newContext;
     }
 
@@ -371,22 +372,6 @@ void ThreadContext::throwUnsupportedProcessor(PCSTR szFunction) const
     sstream << szFunction << ":\n";
     sstream << "Unsupported processor type: 0x" << std::hex << m_processorType;
     throw DbgException( sstream.str() );
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-std::string printStackFrame(DEBUG_STACK_FRAME &frame)
-{
-    std::stringstream sstream;
-
-    sstream << std::dec << "(" << frame.FrameNumber << ")";
-
-    sstream << " ip= 0x" << std::hex << frame.InstructionOffset;
-    sstream << ", ret= 0x" << std::hex << frame.ReturnOffset;
-    sstream << ", frame= 0x" << std::hex << frame.FrameOffset;
-    sstream << ", stack= 0x" << std::hex << frame.StackOffset;
-
-    return sstream.str();
 }
 
 /////////////////////////////////////////////////////////////////////////////////

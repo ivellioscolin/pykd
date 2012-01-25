@@ -16,6 +16,8 @@ namespace pykd {
 class ThreadContext;
 typedef boost::shared_ptr< ThreadContext > ContextPtr;
 
+class StackFrame;
+
 ////////////////////////////////////////////////////////////////////////////////
 
 std::string processorToStr(ULONG processorMode);
@@ -52,7 +54,7 @@ public:
         return pykd::processorToStr(m_processorType);
     }
 
-    ContextPtr forkByStackFrame(DEBUG_STACK_FRAME &frame) const;
+    ContextPtr forkByStackFrame(const StackFrame &stkFrmae) const;
 
 private:
 
@@ -73,10 +75,6 @@ private:
 
     ULONG m_processorType;
 };
-
-////////////////////////////////////////////////////////////////////////////////
-
-std::string printStackFrame(DEBUG_STACK_FRAME &frame);
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -466,6 +466,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\stkframe.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\synsymbol.cpp"
 				>
 			</File>
@@ -581,6 +585,10 @@
 			</File>
 			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\stkframe.h"
 				>
 			</File>
 			<File

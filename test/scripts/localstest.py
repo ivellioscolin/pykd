@@ -34,8 +34,7 @@ class LocalVarsTest(unittest.TestCase):
         newClnt.go() # targetapp!EnumWindowsProc1 -> targetapp!functionCalledFromEnumWindowsProc1
 
         # get local variables from previous stack frame
-        prevStackThreadCtx = newClnt.getContext().fork( newClnt.getCurrentStack()[1] )
-        prevLocals = newClnt.getLocals( prevStackThreadCtx )
+        prevLocals = newClnt.getCurrentStack()[1].getLocals()
 
         self.assertEqual( len(prevLocals), len(locals) )
         for varName in locals.iterkeys():

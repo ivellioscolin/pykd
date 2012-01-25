@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "dbgclient.h"
+#include "stkframe.h"
 
 namespace pykd {
 
@@ -62,10 +63,10 @@ DebugClient::getCurrentStack()
     
     for ( ULONG i = 0; i < filledFrames; ++i )
     {
-        python::object       frameObj( frames[i] ); 
-    
+        python::object       frameObj( StackFrame(shared_from_this(), frames[i]) ); 
+
         frameList.append( frameObj );
-    }         
+    }
 
     return frameList; 
 }

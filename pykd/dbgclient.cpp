@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "dbgclient.h"
-
+#include "stkframe.h"
 
 namespace pykd {
 

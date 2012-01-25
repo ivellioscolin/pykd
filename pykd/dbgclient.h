@@ -5,6 +5,9 @@
 #include <dbghelp.h>
 
 #include <boost\smart_ptr\scoped_ptr.hpp>
+#include <boost\enable_shared_from_this.hpp>
+
+/////////////////////////////////////////////////////////////////////////////////
 
 #include "dbgobj.h"
 #include "dbgexcept.h"
@@ -41,7 +44,8 @@ struct BpCallbackMap {
 
 /////////////////////////////////////////////////////////////////////////////////
 
-class DebugClient : private DbgObject {
+class DebugClient   : private DbgObject
+                    , public boost::enable_shared_from_this<DebugClient> {
 
 private:
     // simple IDebugControl4 call wrapper

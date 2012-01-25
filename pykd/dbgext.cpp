@@ -19,6 +19,7 @@
 #include "intbase.h"
 #include "process.h"
 #include "bpoint.h"
+#include "stkframe.h"
 #include "pykdver.h"
 
 using namespace pykd;
@@ -103,6 +104,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_getLocals, DebugClient::getL
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( pyDia_Symbol_findChildrenEx, pyDia::Symbol::findChildrenEx, 1, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_setSoftwareBp, DebugClient::setSoftwareBp, 1, 2 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_setHardwareBp, DebugClient::setHardwareBp, 3, 4 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( StackFrame_getLocals, StackFrame::getLocals, 0, 1 );
 
 #define DEF_PY_CONST_ULONG(x)    \
     python::scope().attr(#x) = ULONG(##x)
@@ -621,19 +623,21 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "ea", &Disasm::ea, "Return effective address for last disassembled instruction or 0" )
         .def( "reset", &Disasm::reset, "Reset current offset to begin" );
 
-    python::class_<DEBUG_STACK_FRAME>( "stackFrame", 
+    python::class_<StackFrame>( "stackFrame", 
          "Class representing a frame of the call stack", python::no_init )
-        .def_readonly( "instructionOffset", &DEBUG_STACK_FRAME::InstructionOffset,
+        .def_readonly( "instructionOffset", &StackFrame::m_instructionOffset,
             "Return a frame's instruction offset" )
-        .def_readonly( "returnOffset", &DEBUG_STACK_FRAME::ReturnOffset,
+        .def_readonly( "returnOffset", &StackFrame::m_returnOffset,
             "Return a frame's return offset" )
-        .def_readonly( "frameOffset", &DEBUG_STACK_FRAME::FrameOffset,
+        .def_readonly( "frameOffset", &StackFrame::m_frameOffset,
             "Return a frame's offset" )
-        .def_readonly( "stackOffset", &DEBUG_STACK_FRAME::StackOffset,
+        .def_readonly( "stackOffset", &StackFrame::m_stackOffset,
             "Return a frame's stack offset" )
-        .def_readonly( "frameNumber", &DEBUG_STACK_FRAME::FrameNumber,
+        .def_readonly( "frameNumber", &StackFrame::m_frameNumber,
             "Return a frame's number" )
-        .def( "__str__", &printStackFrame,
+        .def( "getLocals", &StackFrame::getLocals, StackFrame_getLocals( python::args( "ctx" ),
+            "Get list of local variables for this stack frame" ) )
+        .def( "__str__", &StackFrame::print,
             "Return stacks frame as string");
 
     python::class_<ThreadContext, ContextPtr>(
