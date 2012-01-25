@@ -29,6 +29,18 @@ typedef boost::shared_ptr<DebugClient>  DebugClientPtr;
 
 /////////////////////////////////////////////////////////////////////////////////
 
+typedef ULONG BPOINT_ID;
+typedef python::object BpCallback;
+typedef std::map<BPOINT_ID, BpCallback> BpCallbackMapIml;
+struct BpCallbackMap {
+    boost::shared_ptr<boost::recursive_mutex> m_lock;
+    BpCallbackMapIml m_map;
+
+    BpCallbackMap() : m_lock(new boost::recursive_mutex) {}
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+
 class DebugClient : private DbgObject {
 
 private:
@@ -298,12 +310,12 @@ public:
     }
 
     // breakpoints management
-    ULONG setSoftwareBp(ULONG64 addr);
-    ULONG setHardwareBp(ULONG64 addr, ULONG size, ULONG accessType);
+    BPOINT_ID setSoftwareBp(ULONG64 addr, BpCallback &callback = BpCallback());
+    BPOINT_ID setHardwareBp(ULONG64 addr, ULONG size, ULONG accessType, BpCallback &callback = BpCallback());
 
     python::list getAllBp();
 
-    void removeBp(ULONG Id);
+    void removeBp(BPOINT_ID Id);
     void removeAllBp();
 
 private:
@@ -313,6 +325,8 @@ private:
 
     //python::list
     //loadArray( ULONG64 offset, ULONG count, bool phyAddr );
+
+    BpCallbackMap m_bpCallbacks;
 
     SynSymbolsPtr m_symSymbols; // DebugClient is creator
     InternalDbgEventHandler m_internalDbgEventHandler;

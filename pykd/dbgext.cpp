@@ -85,6 +85,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, compareMemory, 3, 4 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getLocals_, getLocals, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBp_, setSoftwareBp, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadChars, DebugClient::loadChars, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadWChars, DebugClient::loadWChars, 2, 3 );
@@ -99,6 +101,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignQWords, DebugClient:
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_compareMemory, DebugClient::compareMemory, 3, 4 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_getLocals, DebugClient::getLocals, 0, 1 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( pyDia_Symbol_findChildrenEx, pyDia::Symbol::findChildrenEx, 1, 3 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_setSoftwareBp, DebugClient::setSoftwareBp, 1, 2 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_setHardwareBp, DebugClient::setHardwareBp, 3, 4 );
 
 #define DEF_PY_CONST_ULONG(x)    \
     python::scope().attr(#x) = ULONG(##x)
@@ -300,10 +304,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Get context of current thread (register values)" )
         .def( "getLocals", &DebugClient::getLocals, DebugClient_getLocals( python::args( "ctx" ),
             "Get list of local variables" ) )
-        .def( "setBp", &DebugClient::setSoftwareBp,
-            "Set software breakpoint on executiont" )
-        .def( "setBp", &DebugClient::setHardwareBp,
-            "Set hardware breakpoint" )
+        .def( "setBp", &DebugClient::setSoftwareBp, DebugClient_setSoftwareBp( python::args( "offset", "callback" ),
+            "Set software breakpoint on executiont" ) )
+        .def( "setBp", &DebugClient::setHardwareBp, DebugClient_setHardwareBp( python::args( "offset", "size", "accsessType", "callback" ),
+            "Set hardware breakpoint" ) )
         .def( "getAllBp", &DebugClient::getAllBp,
             "Get all breapoint IDs" )
         .def( "removeBp", &DebugClient::removeBp,
@@ -485,10 +489,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Get context of current thread (register values)" );
     python::def( "getLocals", &getLocals, getLocals_( python::args( "ctx" ),
         "Get list of local variables" ) );
-    python::def( "setBp", &setSoftwareBp,
-        "Set software breakpoint on executiont" );
-    python::def( "setBp", &setHardwareBp,
-        "Set hardware breakpoint" );
+    python::def( "setBp", &setSoftwareBp, setSoftwareBp_( python::args( "offset", "callback" ),
+        "Set software breakpoint on executiont" ) );
+    python::def( "setBp", &setHardwareBp, setHardwareBp_( python::args( "offset", "size", "accsessType", "callback" ) ,
+        "Set hardware breakpoint" ) );
     python::def( "getAllBp", &getAllBp,
         "Get all breapoint IDs" );
     python::def( "removeBp", &removeBp,

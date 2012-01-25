@@ -48,9 +48,9 @@ static IDebugBreakpoint *setBreakPoint(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-static ULONG getBpId(IDebugBreakpoint *bp, IDebugControl4 *control = NULL)
+static BPOINT_ID getBpId(IDebugBreakpoint *bp, IDebugControl4 *control = NULL)
 {
-    ULONG Id;
+    BPOINT_ID Id;
     HRESULT hres = bp->GetId(&Id);
     if (S_OK != hres)
     {
@@ -63,17 +63,25 @@ static ULONG getBpId(IDebugBreakpoint *bp, IDebugControl4 *control = NULL)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ULONG DebugClient::setSoftwareBp(ULONG64 addr)
+BPOINT_ID DebugClient::setSoftwareBp(ULONG64 addr, BpCallback &callback /*= BpCallback()*/)
 {
     addr = addr64(addr);
     IDebugBreakpoint *bp = setBreakPoint(m_control, DEBUG_BREAKPOINT_CODE, addr);
 
-    return getBpId(bp, m_control);
+    const BPOINT_ID Id = getBpId(bp, m_control);
+
+    if (!callback.is_none())
+    {
+        boost::recursive_mutex::scoped_lock mapBpLock(*m_bpCallbacks.m_lock);
+        m_bpCallbacks.m_map[Id] = callback;
+    }
+
+    return Id;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ULONG DebugClient::setHardwareBp(ULONG64 addr, ULONG size, ULONG accessType)
+BPOINT_ID DebugClient::setHardwareBp(ULONG64 addr, ULONG size, ULONG accessType, BpCallback &callback /*= BpCallback()*/)
 {
     addr = addr64(addr);
     IDebugBreakpoint *bp = setBreakPoint(m_control, DEBUG_BREAKPOINT_DATA, addr);
@@ -85,7 +93,15 @@ ULONG DebugClient::setHardwareBp(ULONG64 addr, ULONG size, ULONG accessType)
         throw DbgException("IDebugBreakpoint::SetDataParameters", hres);
     }
 
-    return getBpId(bp, m_control);
+    const BPOINT_ID Id = getBpId(bp, m_control);
+
+    if (!callback.is_none())
+    {
+        boost::recursive_mutex::scoped_lock mapBpLock(*m_bpCallbacks.m_lock);
+        m_bpCallbacks.m_map[Id] = callback;
+    }
+
+    return Id;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +129,7 @@ python::list DebugClient::getAllBp()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void DebugClient::removeBp(ULONG Id)
+void DebugClient::removeBp(BPOINT_ID Id)
 {
     IDebugBreakpoint *bp;
     HRESULT hres = m_control->GetBreakpointById(Id, &bp);

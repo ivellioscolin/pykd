@@ -1,8 +1,7 @@
 
 #include "stdafx.h"
 
-#include "inteventhandler.h"
-#include "dbgexcept.h"
+#include "dbgclient.h"
 
 namespace pykd {
 
@@ -10,12 +9,20 @@ namespace pykd {
 
 InternalDbgEventHandler::InternalDbgEventHandler(
     IDebugClient4 *client,
-    SynSymbolsPtr synSymbols
-)   : m_synSymbols(synSymbols)
+    DebugClient *parentClient,
+    SynSymbolsPtr synSymbols,
+    BpCallbackMap &bpCallbacks
+)   : m_parentClient(parentClient)
+    , m_synSymbols(synSymbols)
+    , m_bpCallbacks(bpCallbacks)
 {
     HRESULT hres = client->CreateClient(&m_client);
     if (FAILED(hres))
         throw DbgException("Call IDebugClient::CreateClient failed");
+
+    hres = m_client->QueryInterface(__uuidof(IDebugControl), (void**)&m_control);
+    if ( FAILED( hres ) )
+        throw DbgException("QueryInterface IDebugControl failed");
 
     m_client->SetEventCallbacks(this);
 }
@@ -34,6 +41,8 @@ HRESULT InternalDbgEventHandler::GetInterestMask(
 )
 {
     *Mask = 
+        DEBUG_EVENT_BREAKPOINT |
+        DEBUG_EVENT_CHANGE_ENGINE_STATE |
         DEBUG_EVENT_CHANGE_SYMBOL_STATE;
 
     return S_OK;
@@ -56,6 +65,46 @@ HRESULT InternalDbgEventHandler::ChangeSymbolState(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+HRESULT InternalDbgEventHandler::ChangeEngineState(
+    __in ULONG Flags,
+    __in ULONG64 Argument
+)
+{
+    HRESULT hres = S_OK;
+
+    if (DEBUG_CES_BREAKPOINTS & Flags)
+        hres = bpChanged(static_cast<BPOINT_ID>(Argument));
+
+    return hres;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+HRESULT InternalDbgEventHandler::Breakpoint(IDebugBreakpoint *bp)
+{
+    BPOINT_ID Id;
+    HRESULT hres = bp->GetId(&Id);
+    if (S_OK == hres)
+    {
+        boost::recursive_mutex::scoped_lock mapBpLock(*m_bpCallbacks.m_lock);
+        BpCallbackMapIml::iterator it = m_bpCallbacks.m_map.find(Id);
+        if (it != m_bpCallbacks.m_map.end())
+        {
+            try {
+                PyThread_StateSave pyThreadSave( m_parentClient->getThreadState() );
+                hres = python::extract<HRESULT>( it->second(Id) );
+                return hres;
+            }
+            catch (const python::error_already_set &) {
+                // TODO: some logging, alerting...
+            }
+        }
+    }
+    return DEBUG_STATUS_NO_CHANGE;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 HRESULT InternalDbgEventHandler::symLoaded(
     __in ULONG64 ModuleAddress
 )
@@ -68,6 +117,25 @@ HRESULT InternalDbgEventHandler::symLoaded(
     }
 
     m_synSymbols->restoreForModule(ModuleAddress);
+    return S_OK;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+HRESULT InternalDbgEventHandler::bpChanged(BPOINT_ID Id)
+{
+    if (DEBUG_ANY_ID == Id)
+        return S_OK;
+
+    IDebugBreakpoint *bp;
+    HRESULT hres = m_control->GetBreakpointById(Id, &bp);
+    if (E_NOINTERFACE == hres)
+    {
+        // breakpoint was removed
+        boost::recursive_mutex::scoped_lock mapBpLock(*m_bpCallbacks.m_lock);
+        m_bpCallbacks.m_map.erase(Id);
+    }
+
     return S_OK;
 }
 

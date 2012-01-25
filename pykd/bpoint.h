@@ -10,14 +10,14 @@ namespace pykd {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-inline ULONG setSoftwareBp(ULONG64 addr) {
-    return g_dbgClient->setSoftwareBp(addr);
+inline BPOINT_ID setSoftwareBp(ULONG64 addr, BpCallback &callback = BpCallback()) {
+    return g_dbgClient->setSoftwareBp(addr, callback);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-inline ULONG setHardwareBp(ULONG64 addr, ULONG size, ULONG accessType) {
-    return g_dbgClient->setHardwareBp(addr, size, accessType);
+inline BPOINT_ID setHardwareBp(ULONG64 addr, ULONG size, ULONG accessType, BpCallback &callback = BpCallback()) {
+    return g_dbgClient->setHardwareBp(addr, size, accessType, callback);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@ inline python::list getAllBp() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-inline void removeBp(ULONG Id) {
+inline void removeBp(BPOINT_ID Id) {
     return g_dbgClient->removeBp(Id);
 }
 

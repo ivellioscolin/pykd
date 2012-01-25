@@ -7,7 +7,6 @@
 #include "dbgexcept.h"
 #include <DbgEng.h>
 #include <map>
-#include <boost\thread\win32\recursive_mutex.hpp>
 
 namespace pykd {
 

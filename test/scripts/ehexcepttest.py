@@ -43,6 +43,24 @@ class BreakExceptionHandler(pykd.eventHandler):
 
         return pykd.DEBUG_STATUS_BREAK
 
+class BpHandlerTestResult:
+    """ Breakpoint handler test results"""
+    def __init__(self):
+        self.wasCodeBp = None
+        self.wasDataBp = None
+
+bpHandlerTestResult = BpHandlerTestResult()
+
+def codeBpHandler(bpId):
+    """ Handler of software breakpoint """
+    bpHandlerTestResult.wasCodeBp = bpId
+    return pykd.DEBUG_STATUS_NO_CHANGE
+
+def dataBpHandler(bpId):
+    """ Handler of hardware breakpoint """
+    bpHandlerTestResult.wasDataBp = bpId
+    return pykd.DEBUG_STATUS_NO_CHANGE
+
 class EhExceptionBreakpointTest(unittest.TestCase):
     """Unit tests of exceptions end breakpoint handling"""
 
@@ -53,7 +71,8 @@ class EhExceptionBreakpointTest(unittest.TestCase):
 
         targetMod = testClient.loadModule( "targetapp" )
 
-        bpIdSoftware = testClient.setBp( targetMod.offset("changeValueForAccessTesting") )
+        bpIdSoftware = testClient.setBp( targetMod.offset("changeValueForAccessTesting"),
+                                         codeBpHandler )
 
         allBp = testClient.getAllBp()
         self.assertEqual( 1, len( allBp ) )
@@ -75,13 +94,18 @@ class EhExceptionBreakpointTest(unittest.TestCase):
                                                   1, pykd.DEBUG_BREAK_EXECUTE )
 
                 bpIdHwWrite = testClient.setBp( targetMod.offset("g_valueForAccessTesting1"),
-                                                1, pykd.DEBUG_BREAK_WRITE )
+                                                1, pykd.DEBUG_BREAK_WRITE, dataBpHandler )
 
                 bpIdHwRead = testClient.setBp( targetMod.offset("g_valueForAccessTesting2"),
                                                1, pykd.DEBUG_BREAK_READ )
 
+                self.assertTrue( bpIdSoftware != bpIdHwExecute and 
+                                 bpIdHwExecute != bpIdHwWrite and
+                                 bpIdHwWrite != bpIdHwRead )
+
                 allBp = testClient.getAllBp()
                 self.assertEqual( 4, len( allBp ) )
+
                 self.assertTrue( bpIdSoftware in allBp )
                 self.assertTrue( bpIdHwExecute in allBp )
                 self.assertTrue( bpIdHwWrite in allBp )
@@ -106,3 +130,6 @@ class EhExceptionBreakpointTest(unittest.TestCase):
 
         testClient.removeBp()
         self.assertEqual( 0, len( testClient.getAllBp() ) )
+
+        self.assertEqual( bpHandlerTestResult.wasCodeBp, bpIdSoftware )
+        self.assertTrue( bpHandlerTestResult.wasDataBp, bpIdHwWrite )
