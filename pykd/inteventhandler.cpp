@@ -31,6 +31,7 @@ InternalDbgEventHandler::InternalDbgEventHandler(
 
 InternalDbgEventHandler::~InternalDbgEventHandler()
 {
+    m_control->Release();
     m_client->Release();
 }
 
