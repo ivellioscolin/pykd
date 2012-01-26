@@ -45,7 +45,7 @@ public:
 
     void
     reloadSymbols();
-   
+
     ULONG64
     getSymbol( const std::string &symbolname ) {
         return m_base + getRvaByName(symbolname);
@@ -95,6 +95,10 @@ public:
     }
 
 private:
+
+    void
+    reloadSymbolsImpl();
+
 
     ULONG getRvaByName(const std::string &symName);
 

@@ -137,7 +137,8 @@ Module::getPdbName()
 
     if (!*moduleInfo.LoadedPdbName)
     {
-        reloadSymbols();
+        reloadSymbolsImpl();
+
         hres = m_advanced->GetSymbolInformation(
             DEBUG_SYMINFO_IMAGEHLP_MODULEW64,
             m_base,
@@ -162,7 +163,7 @@ Module::getPdbName()
 ///////////////////////////////////////////////////////////////////////////////////
 
 void
-Module::reloadSymbols()
+Module::reloadSymbolsImpl()
 {
     HRESULT     hres;
 
@@ -172,6 +173,15 @@ Module::reloadSymbols()
     hres = m_symbols->Reload( param.c_str() );
     if ( FAILED( hres ) )
         throw DbgException("IDebugSymbols::Reload failed" );
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void
+Module::reloadSymbols()
+{
+    reloadSymbolsImpl();
 
     m_dia.reset();
     m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
