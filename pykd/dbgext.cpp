@@ -578,6 +578,10 @@ BOOST_PYTHON_MODULE( pykd )
         .def("containingRecord", &Module::containingRecordByType,
             "Return instance of the typedVar class. It's value are loaded from the target memory."
             "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
+        .def("checksumm",&Module::getCheckSumm,
+            "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
+        .def("timeDataStamp",&Module::getTimeDataStamp,
+            "Return a low 32 bits of the time stamp of the image: IMAGE_FILE_HEADER.TimeDateStamp" )
         .def("__getattr__", &Module::getSymbol,
             "Return address of the symbol" );
 

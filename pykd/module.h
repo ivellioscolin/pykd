@@ -86,6 +86,14 @@ public:
         return m_dia;
     }
 
+    ULONG getCheckSumm() const {
+        return m_checkSumm;
+    }
+
+    ULONG getTimeDataStamp() const {
+        return m_checkSumm;
+    }
+
 private:
 
     ULONG getRvaByName(const std::string &symName);
