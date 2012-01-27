@@ -91,7 +91,7 @@ public:
     }
 
     ULONG getTimeDataStamp() const {
-        return m_checkSumm;
+        return m_timeDataStamp;
     }
 
 private:
