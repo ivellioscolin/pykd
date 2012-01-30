@@ -1,3 +1,11 @@
+version 0.1.0.7 30/01/2012
+
+[+] added : cpuReg class 
+[+] added : getLocals method for the class stackFrame
+[+] added : checksum method for the class module 
+[+] added : timestam method for the class module
+
+
 version 0.1.0.6 20/01/2012
 
 [!] fixed : issue #10181 ( exception information (!py) ) 

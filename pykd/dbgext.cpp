@@ -578,9 +578,9 @@ BOOST_PYTHON_MODULE( pykd )
         .def("containingRecord", &Module::containingRecordByType,
             "Return instance of the typedVar class. It's value are loaded from the target memory."
             "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
-        .def("checksumm",&Module::getCheckSumm,
+        .def("checksum",&Module::getCheckSumm,
             "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
-        .def("timeDataStamp",&Module::getTimeDataStamp,
+        .def("timestamp",&Module::getTimeDataStamp,
             "Return a low 32 bits of the time stamp of the image: IMAGE_FILE_HEADER.TimeDateStamp" )
         .def("__getattr__", &Module::getSymbol,
             "Return address of the symbol" );
@@ -1076,9 +1076,9 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
 
             sstr << std::endl << std::endl;
 
-
             for ( long i = 0; i < python::len(lst); ++i )
                 sstr << std::wstring( python::extract<std::wstring>(lst[i]) ) << std::endl;
+
             dbgClient->eprintln( sstr.str() );
         }
 
