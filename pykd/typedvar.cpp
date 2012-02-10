@@ -2,6 +2,7 @@
 
 #include "typedvar.h"
 #include "dbgclient.h"
+#include "dbgmem.h"
 
 namespace pykd {
 
@@ -67,12 +68,8 @@ TypedVar::TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64
 BaseTypeVariant BasicTypedVar::getValue()
 {
     ULONG64     val = 0;    
-    HRESULT     hres;
 
-    hres = m_dataSpaces->ReadVirtual( m_offset, &val, getSize(), NULL );
-
-    if ( FAILED( hres ) )
-        throw MemoryException( m_offset, false );
+    readMemory( m_dataSpaces, m_offset, &val, getSize(), false );
 
     if ( m_typeInfo->getName() == "Char" )
         return (LONG)*(PCHAR)&val;
@@ -120,12 +117,9 @@ BaseTypeVariant BasicTypedVar::getValue()
 
 BaseTypeVariant PtrTypedVar::getValue()
 {
-    HRESULT     hres;
     ULONG64     val = 0;
 
-    hres = m_dataSpaces->ReadPointersVirtual( 1, m_offset, &val );
-    if ( FAILED( hres ) )
-        throw MemoryException( m_offset, false );
+    readMemoryPtr( m_dataSpaces,  m_offset, &val );
 
     return val;
 }
@@ -134,12 +128,9 @@ BaseTypeVariant PtrTypedVar::getValue()
 
 TypedVarPtr PtrTypedVar::deref()
 {
-    HRESULT     hres;
     ULONG64     val = 0;
 
-    hres = m_dataSpaces->ReadPointersVirtual( 1, m_offset, &val );
-    if ( FAILED( hres ) )
-        throw MemoryException( m_offset, false );
+    readMemoryPtr( m_dataSpaces,  m_offset, &val );
 
     return TypedVar::getTypedVar( m_client, m_typeInfo->deref(), val );
 }
@@ -159,11 +150,8 @@ UdtTypedVar::getField( const std::string &fieldName )
 BaseTypeVariant BitFieldVar::getValue()
 {
     ULONG64     val = 0;
-    HRESULT     hres;
 
-    hres = m_dataSpaces->ReadVirtual( m_offset, &val, m_typeInfo->getSize(), NULL );
-    if ( FAILED( hres ) )
-        throw MemoryException( m_offset, false );
+    readMemory( m_dataSpaces, m_offset, &val, getSize(), false );
 
     val >>= m_typeInfo->getBitOffset();
     val &= m_typeInfo->getBitWidth();
@@ -191,11 +179,8 @@ BaseTypeVariant BitFieldVar::getValue()
 BaseTypeVariant  EnumTypedVar::getValue()
 {
     ULONG       val = 0;
-    HRESULT     hres;
 
-    hres = m_dataSpaces->ReadVirtual( m_offset, &val, m_typeInfo->getSize(), NULL );
-    if ( FAILED( hres ) )
-        throw MemoryException( m_offset, false );
+    readMemory( m_dataSpaces, m_offset, &val, getSize(), false );
 
     return val;
 };

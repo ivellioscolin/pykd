@@ -18,6 +18,9 @@ void
 readMemory( IDebugDataSpaces4*  dbgDataSpace, ULONG64 address, PVOID buffer, ULONG length, bool phyAddr = FALSE );
 
 void
+readMemoryPtr( IDebugDataSpaces4*  dbgDataSpace, ULONG64 address, PULONG64 ptrValue );
+
+void
 writeMemory( IDebugDataSpaces4*  dbgDataSpace, ULONG64 address, PVOID buffer, ULONG length, bool phyAddr = FALSE );
 
 bool 
