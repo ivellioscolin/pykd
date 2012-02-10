@@ -53,6 +53,34 @@ public:
     }
 };
 
+class VariantToULong64 : public boost::static_visitor<ULONG64>
+{
+public:
+    template<typename T>
+    ULONG64 operator()(T i ) const {
+        return  static_cast<ULONG64>( i );
+    }
+};
+
+
+class VariantToLong : public boost::static_visitor<LONG>
+{
+public:
+    template<typename T>
+    LONG operator()(T i ) const {
+        return  static_cast<LONG>( i );
+    }
+};
+
+class VariantToLong64 : public boost::static_visitor<LONG64>
+{
+public:
+    template<typename T>
+    LONG64 operator()(T i ) const {
+        return  static_cast<LONG64>( i );
+    }
+};
+
 
 class intBase {
 
@@ -185,10 +213,22 @@ public:
         return boost::apply_visitor( VariantToPyobj(), getValue() ) != 0;
     }
 
-    python::object coerce() {
-        __debugbreak();
-        return python::object();
+    operator ULONG64() {
+        return boost::apply_visitor( VariantToULong64(), getValue() );
     }
+
+    operator ULONG() {
+        return boost::apply_visitor( VariantToULong(), getValue() );
+    }
+
+    operator LONG64() {
+        return boost::apply_visitor( VariantToLong64(), getValue() );
+    }
+
+    operator LONG() {
+        return boost::apply_visitor( VariantToLong(), getValue() );
+    }
+
 
 private:
 
@@ -223,5 +263,8 @@ private:
 
     BaseTypeVariant     m_variant;
 };
+
+
+
 
 };

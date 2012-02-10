@@ -150,8 +150,10 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__long__", &intBase::long_ )
         .def( "__int__", &intBase::int_ )
         .def( "__index__", &intBase::long_ )
-        .def( "__hash__", &intBase::long_ )
-        .def( "__coerce__", &intBase::coerce );
+        .def( "__hash__", &intBase::long_ );
+
+    python::implicitly_convertible<intBase,ULONG64>();
+    python::implicitly_convertible<intBase,LONG64>();
 
     python::class_<DebugClient, DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
         .def( "addr64", &DebugClient::addr64,

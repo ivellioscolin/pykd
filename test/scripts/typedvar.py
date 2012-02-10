@@ -169,7 +169,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 4, tv.m_fieldNestedStruct )
         self.assertEqual( 5, tv.m_fieldOfUnNamed )
 
-    def testPointerToFunction( self ):
+    def testPointerToFunction(self):
         tv1 = target.module.typedVar( "g_unTypedPtrToFunction" )
 
         # if debug: g_unTypedPtrToFunction point to jmp EnumWindowsProc2 (e9 xxxxxxxx)
@@ -181,3 +181,10 @@ class TypedVarTest( unittest.TestCase ):
 
         self.assertRaises( pykd.TypeException, tv1.deref )
         self.assertRaises( pykd.TypeException, tv2.deref )
+        
+        
+    def testTypeVarArg(self):
+        tv1 = target.module.typedVar( "structTest", target.module.g_structTest )
+        tv2 = target.module.typedVar( "structTest", tv1 )
+        self.assertEqual( tv1, tv2 )  
+        self.assertTrue( tv1 )
