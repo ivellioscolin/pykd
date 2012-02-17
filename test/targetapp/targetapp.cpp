@@ -76,6 +76,7 @@ structTest      g_testArray[2] = { { 0, 500, true, 1 }, { 2, 1500, false, 1 } };
 structTest      *g_structTestPtr = &g_structTest;
 structTest      **g_structTestPtrPtr = &g_structTestPtr;
 
+
 char            helloStr[] = "Hello";
 wchar_t         helloWStr[] = L"Hello";
 
@@ -158,6 +159,8 @@ listStruct  g_listItem3 = { 3 };
 struct listStruct1;
 
 static listStruct1       *g_listHead1 = NULL;
+
+void*  g_voidPtr = g_listHead1;
 
 struct listStruct1 {
     int                     num;
