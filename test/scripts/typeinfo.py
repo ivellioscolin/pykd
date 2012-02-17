@@ -111,6 +111,10 @@ class TypeInfoTest( unittest.TestCase ):
         
         ti = target.module.type("classChild")
         self.assertEqual( "enumType", ti.m_enumField.name() )
+        
+    def testPtr(self):
+        self.assertEqual( "listStruct1*", target.module.type( "g_listHead1" ).name() )
+        self.assertEqual( "Void*",  target.module.type( "g_voidPtr" ).name() )
 
     def testUnion(self):
         ti = target.module.type("unionTest")
