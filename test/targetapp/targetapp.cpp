@@ -160,7 +160,15 @@ struct listStruct1;
 
 static listStruct1       *g_listHead1 = NULL;
 
+listStruct1* g_arrOfListStruct1[] = {
+    g_listHead1, g_listHead1
+};
+
 void*  g_voidPtr = g_listHead1;
+
+void *g_arrOfVoidPtr[] = {
+    g_voidPtr, g_voidPtr, g_voidPtr
+};
 
 struct listStruct1 {
     int                     num;

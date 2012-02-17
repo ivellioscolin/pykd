@@ -297,7 +297,7 @@ public:
     }
 
 private:
-    
+
     TypeInfoPtr     m_derefType;
 
     ULONG           m_size;
