@@ -218,13 +218,32 @@ BitFieldTypeInfo::BitFieldTypeInfo(  pyDia::SymbolPtr &symbol )
 
 PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symbol  ) 
 {
+    pyDia::SymbolPtr pointTo = symbol->getType();
     try
     {
-        m_derefType = TypeInfo::getTypeInfo( symbol->getType() );
+        m_derefType = TypeInfo::getTypeInfo( pointTo );
     }
     catch (const SymbolException &)
     {
         m_derefType.swap( TypeInfoPtr() );
+    }
+    if (!derefPossible())
+    {
+        // special cases:
+        const ULONG symTag = pointTo->getSymTag();
+        switch (symTag)
+        {
+        //  * pointer to function
+        case SymTagFunctionType:
+            m_derefName = "<function>";
+            break;
+
+        case SymTagBaseType:
+            //  * pointer to Void
+            if (btVoid == static_cast<BasicType>(pointTo->getBaseType()))
+                m_derefName = "Void";
+            break;
+        }
     }
     m_size = (ULONG)symbol->getSize();
 }
@@ -295,6 +314,7 @@ std::string TypeInfo::getComplexName()
     std::string       name;
     TypeInfo          *typeInfo = this;
 
+    std::string tiName;
     do {
 
         if ( typeInfo->isArray() )
@@ -326,16 +346,24 @@ std::string TypeInfo::getComplexName()
         {
             name.insert( 0, 1, '*' );
 
-            typeInfo = dynamic_cast<PointerTypeInfo*>(typeInfo)->getDerefType().get();
+            PointerTypeInfo *ptrTypeInfo = dynamic_cast<PointerTypeInfo*>(typeInfo);
+            if (!ptrTypeInfo->derefPossible())
+            {
+                tiName = ptrTypeInfo->getDerefName();
+                break;
+            }
+
+            typeInfo = ptrTypeInfo->getDerefType().get();
 
             continue;
         }
 
+        tiName = typeInfo->getName();
         break;
 
     } while ( true );
 
-    name.insert( 0, typeInfo->getName() );
+    name.insert( 0, tiName );
 
     return name;
 }

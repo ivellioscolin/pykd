@@ -285,9 +285,7 @@ public:
     }
 
     virtual TypeInfoPtr deref() {
-        if (!m_derefType)
-            throw TypeException("<ptr>", "this pointer can not be dereferenced");
-        return m_derefType;
+        return getDerefType();
     }
 
     TypeInfoPtr getDerefType() {
@@ -296,11 +294,21 @@ public:
         return m_derefType;
     }
 
+    bool derefPossible() const {
+        return m_derefType;
+    }
+
+    const std::string getDerefName() const {
+        if (m_derefName.empty())
+            throw TypeException("<ptr>", "this pointer can not be dereferenced");
+        return m_derefName;
+    }
+
 private:
 
     TypeInfoPtr     m_derefType;
-
     ULONG           m_size;
+    std::string     m_derefName;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

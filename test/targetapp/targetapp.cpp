@@ -170,6 +170,12 @@ void *g_arrOfVoidPtr[] = {
     g_voidPtr, g_voidPtr, g_voidPtr
 };
 
+// kd> x targetapp!g_arrOfPtrToFunc
+// xxxxxxxx`xxxxxxxx targetapp!g_arrOfPtrToFunc = <function> *[4]
+WNDPROC g_arrOfPtrToFunc[] = {
+    NULL, NULL, NULL, NULL
+};
+
 struct listStruct1 {
     int                     num;
     struct listStruct1     *next;
@@ -310,6 +316,9 @@ void FuncWithName1(int a)
     std::cout << g_unNamedStruct.m_fieldOfUnNamed;
     std::cout << g_structWithNested.m_field;
     std::cout << g_ptrToFunction;
+
+    std::cout << g_ptrToFunction;
+    std::cout << g_arrOfPtrToFunc[1];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

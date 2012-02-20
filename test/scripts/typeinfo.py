@@ -117,6 +117,8 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "listStruct1*[2]", target.module.type( "g_arrOfListStruct1" ).name())
         self.assertEqual( "Void*",  target.module.type( "g_voidPtr" ).name() )
         self.assertEqual( "Void*[3]", target.module.type( "g_arrOfVoidPtr" ).name())
+        self.assertEqual( "<function>*", target.module.type( "g_ptrToFunction" ).name())
+        self.assertEqual( "<function>*[4]", target.module.type( "g_arrOfPtrToFunc" ).name())
 
     def testUnion(self):
         ti = target.module.type("unionTest")
