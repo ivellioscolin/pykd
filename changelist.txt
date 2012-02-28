@@ -1,4 +1,6 @@
 
+version 0.1.0.8 10/02/2012
+
 [!] fixed : issue #10335 ( VirtualToOffset: not properly sign extended )
 [!] fixed : issue #10336 ( pykd routines can not convert parameters to long )
 

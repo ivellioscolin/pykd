@@ -38,15 +38,19 @@ public:
     }
 
     virtual TypedVarPtr deref() {
-        throw DbgException("object can not be derefernced" );
+        throw TypeException( m_typeInfo->getName(), "object can not be derefernced" );
     }
 
     virtual TypedVarPtr getField( const std::string &fieldName ) {
-        throw DbgException("no fields");
+        throw TypeException( m_typeInfo->getName(), "no fields");
     }
 
     virtual std::string  print() {
-        return "TypedVar";
+        return "";
+    }
+
+    virtual std::string  printValue() {
+        return "";
     }
 
     virtual ULONG getElementCount() {
@@ -61,6 +65,10 @@ public:
         return getElementByIndex( boost::apply_visitor( VariantToULong(), tv->getValue() ) );
     }
 
+    virtual BaseTypeVariant getValue() {
+        return m_offset;
+    }
+
     ULONG getDataKind() const {
         return m_dataKind;
     }
@@ -73,10 +81,6 @@ protected:
 
     TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset );
 
-    virtual BaseTypeVariant getValue() {
-        return m_offset;
-    }
-
     TypeInfoPtr             m_typeInfo;
 
     ULONG64                 m_offset;
@@ -85,6 +89,7 @@ protected:
 
     ULONG                   m_dataKind;
 };
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -95,9 +100,9 @@ public:
     BasicTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
 
 
-    virtual std::string  print() {
-        return intBase::str();
-    }
+    virtual std::string  print();
+
+    virtual std::string  printValue();
 
     virtual BaseTypeVariant  getValue();
 
@@ -111,14 +116,9 @@ public:
 
     PtrTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
 
-    TypedVarPtr
-    virtual getField( const std::string &fieldName ) {
-        throw DbgException("no fields");
-    }
+    virtual std::string print();
 
-    virtual std::string  print() {
-        return "PtrTypedVar";
-    }
+    virtual std::string  printValue();
 
     virtual TypedVarPtr deref();
 
@@ -138,17 +138,11 @@ public:
         return m_typeInfo->getCount();
     }
 
-    virtual TypedVarPtr getElementByIndex( ULONG  index ) 
-    {
-        if ( index >= m_typeInfo->getCount() )
-        {
-            throw PyException( PyExc_IndexError, "Index out of range" );
-        }
+    virtual std::string print();
 
-        TypeInfoPtr     elementType = m_typeInfo->getElementType();
+    virtual std::string  printValue();
 
-        return TypedVar::getTypedVar( m_client, elementType, m_offset + elementType->getSize()*index );
-    }
+    virtual TypedVarPtr getElementByIndex( ULONG  index );
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -159,7 +153,11 @@ public:
 
     UdtTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
 
-    virtual TypedVarPtr  getField( const std::string &fieldName );
+    virtual std::string print();
+
+    virtual std::string  printValue();
+
+    virtual TypedVarPtr getField( const std::string &fieldName );
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -170,9 +168,7 @@ public:
 
     BitFieldVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
 
-    virtual std::string  print() {
-        return intBase::str();
-    }
+    virtual std::string  printValue();
 
     virtual BaseTypeVariant  getValue();
 };
@@ -183,6 +179,10 @@ class EnumTypedVar : public TypedVar {
 public:
 
     EnumTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
+
+    virtual std::string print();
+
+    virtual std::string  printValue();
 
     virtual BaseTypeVariant  getValue();
 };

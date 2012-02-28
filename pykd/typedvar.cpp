@@ -1,5 +1,7 @@
 #include "stdafx.h"    
 
+#include <iomanip>
+
 #include "typedvar.h"
 #include "dbgclient.h"
 #include "dbgmem.h"
@@ -115,6 +117,30 @@ BaseTypeVariant BasicTypedVar::getValue()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+std::string BasicTypedVar::print()
+{
+    std::stringstream       sstr;
+
+    sstr << m_typeInfo->getName() << " at " << std::hex << m_offset;
+    sstr << " Value: " << printValue();
+
+    return sstr.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string  BasicTypedVar::printValue()
+{
+    std::stringstream       sstr;
+    
+    sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );
+    sstr << " (" << boost::apply_visitor( VariantToStr(), getValue() ) << ")";
+
+    return sstr.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 BaseTypeVariant PtrTypedVar::getValue()
 {
     ULONG64     val = 0;
@@ -137,12 +163,96 @@ TypedVarPtr PtrTypedVar::deref()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+std::string PtrTypedVar::print()
+{
+    std::stringstream   sstr;
+
+    sstr << m_typeInfo->getName() << " at 0x" << std::hex << m_offset;
+    sstr << " Value: " << printValue();
+
+    return sstr.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string  PtrTypedVar::printValue()
+{
+    std::stringstream   sstr;    
+
+    sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );      
+
+    return sstr.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string ArrayTypedVar::print()
+{
+    std::stringstream   sstr;
+
+    sstr << m_typeInfo->getName() << " at 0x" << std::hex << m_offset;
+
+    return sstr.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string  ArrayTypedVar::printValue()
+{
+    return "";
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVarPtr ArrayTypedVar::getElementByIndex( ULONG  index ) 
+{
+    if ( index >= m_typeInfo->getCount() )
+        throw PyException( PyExc_IndexError, "Index out of range" );
+
+    TypeInfoPtr     elementType = m_typeInfo->getElementType();
+
+    return TypedVar::getTypedVar( m_client, elementType, m_offset + elementType->getSize()*index );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 TypedVarPtr
 UdtTypedVar::getField( const std::string &fieldName ) 
 {
     TypeInfoPtr fieldType = m_typeInfo->getField( fieldName );
 
     return  TypedVar::getTypedVar( m_client, fieldType, m_offset + fieldType->getOffset() );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string UdtTypedVar::print()
+{
+    std::stringstream  sstr;
+
+    sstr << "struct/class: " << m_typeInfo->getName() << " at 0x" << std::hex << m_offset << std::endl;
+    
+    for ( ULONG i = 0; i < m_typeInfo->getFieldCount(); ++i )
+    {
+        TypeInfoPtr     fieldType = m_typeInfo->getFieldByIndex(i);
+        TypedVarPtr     fieldVar = TypedVar::getTypedVar( m_client, fieldType, m_offset + fieldType->getOffset() );
+
+        sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getOffset();
+        sstr << " " << std::left << std::setw( 20 ) << std::setfill(' ') << m_typeInfo->getFieldNameByIndex(i) << ':';
+        sstr << " " << std::left << fieldType->getName();
+        sstr << "   " << fieldVar->printValue();
+
+        sstr << std::endl;
+    }
+
+    return sstr.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string  UdtTypedVar::printValue()
+{
+    return "";        
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -174,9 +284,22 @@ BaseTypeVariant BitFieldVar::getValue()
     throw DbgException( "failed get value " );
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////////
 
-BaseTypeVariant  EnumTypedVar::getValue()
+std::string  BitFieldVar::printValue()
+{
+    std::stringstream       sstr;
+    
+    sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );
+    sstr << " (" << boost::apply_visitor( VariantToStr(), getValue() ) << ")";
+
+    return sstr.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+BaseTypeVariant EnumTypedVar::getValue()
 {
     ULONG       val = 0;
 
@@ -184,6 +307,45 @@ BaseTypeVariant  EnumTypedVar::getValue()
 
     return val;
 };
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string EnumTypedVar::print()
+{
+    std::stringstream       sstr;
+
+    sstr << "enum: " << m_typeInfo->getName() << " at 0x" << std::hex << m_offset;
+    sstr << " Value: " << printValue();
+
+    return sstr.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string EnumTypedVar::printValue()
+{  
+    std::stringstream   sstr;    
+
+    ULONG       val = boost::apply_visitor( VariantToULong(), getValue() );
+
+    for ( ULONG i = 0; i < m_typeInfo->getFieldCount(); ++i )
+    {
+       ULONG       val1 = boost::apply_visitor( VariantToULong(), m_typeInfo->getFieldByIndex(i)->getValue() );
+
+       if ( val == val1 )
+       {
+           sstr << m_typeInfo->getFieldNameByIndex(i);
+           sstr << "(0x" << std::hex << val << ")";
+
+           return sstr.str();
+       }
+    }
+
+    sstr << "0x" << std::hex << val;
+    sstr << " ( No matching name )";
+
+    return sstr.str();
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 

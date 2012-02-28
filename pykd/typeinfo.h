@@ -43,6 +43,18 @@ public:
         throw TypeException( getName(), "type is not a struct" ); 
     }
 
+    virtual TypeInfoPtr getFieldByIndex( ULONG index ) {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
+    virtual std::string getFieldNameByIndex( ULONG index ) {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
+    virtual ULONG getFieldCount() {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
     virtual BaseTypeVariant  getValue();
 
     virtual bool isBasicType() {
@@ -70,7 +82,7 @@ public:
     }
 
     virtual ULONG getCount() {
-        throw TypeException( getName(), "type is not an array" );   
+        throw TypeException( getName(), "type is not an array" );
     }
 
     virtual TypeInfoPtr getElementType() {
@@ -210,6 +222,12 @@ protected:
 
     virtual TypeInfoPtr getField( const std::string &fieldName );
 
+    virtual TypeInfoPtr getFieldByIndex( ULONG index );
+
+    virtual std::string getFieldNameByIndex( ULONG index );
+
+    virtual ULONG getFieldCount();
+
     virtual bool isUserDefined() {
         return true;
     }
@@ -245,12 +263,13 @@ protected:
         return (ULONG)m_dia->getSize();
     }
 
-    virtual TypeInfoPtr getField( const std::string &fieldName ) {
-        pyDia::SymbolPtr  field = m_dia->getChildByName( fieldName );
-        TypeInfoPtr  ti = TypeInfo::getTypeInfo( m_dia, fieldName );
-        ti->setOffset( 0 );
-        return ti;
-    }
+    virtual TypeInfoPtr getFieldByIndex( ULONG index );
+
+    virtual std::string getFieldNameByIndex( ULONG index );
+
+    virtual ULONG getFieldCount();
+
+    virtual TypeInfoPtr getField( const std::string &fieldName );
 
     virtual python::dict asMap();
 

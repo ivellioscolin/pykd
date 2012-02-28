@@ -460,6 +460,45 @@ TypeInfoPtr UdtTypeInfo::getField( const std::string &fieldName )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+TypeInfoPtr UdtTypeInfo::getFieldByIndex( ULONG index  )
+{
+    if ( index >= m_dia->getChildCount() )
+        throw TypeException( m_dia->getName(), ": field not found" );
+
+    pyDia::SymbolPtr field = m_dia->getChildByIndex(index);
+
+    if ( !field )
+        throw TypeException( m_dia->getName(), ": field not found" );
+
+    TypeInfoPtr  ti = TypeInfo::getTypeInfo( m_dia, field );
+    ti->setOffset( field->getOffset() );
+    return ti;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+std::string UdtTypeInfo::getFieldNameByIndex( ULONG index )
+{
+    if ( index >= m_dia->getChildCount() )
+        throw TypeException( m_dia->getName(), ": field not found" );
+
+    pyDia::SymbolPtr field = m_dia->getChildByIndex(index);
+
+    if ( !field )
+        throw TypeException( m_dia->getName(), ": field not found" );
+
+    return field->getName();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ULONG UdtTypeInfo::getFieldCount()
+{
+    return m_dia->getChildCount();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 bool 
 UdtTypeInfo::getBaseField(
     pyDia::SymbolPtr symUdt,
@@ -506,6 +545,54 @@ UdtTypeInfo::getBaseField(
         currOffset += static_cast<ULONG>( (*it)->getSize() );
     }
     return false;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+TypeInfoPtr EnumTypeInfo::getField( const std::string &fieldName ) {
+    pyDia::SymbolPtr  field = m_dia->getChildByName( fieldName );
+    TypeInfoPtr  ti = TypeInfo::getTypeInfo( m_dia, fieldName );
+    ti->setOffset( 0 );
+    return ti;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+TypeInfoPtr EnumTypeInfo::getFieldByIndex( ULONG index ) 
+{
+    if ( index >= m_dia->getChildCount() )
+        throw TypeException( m_dia->getName(), ": field not found" );
+
+    pyDia::SymbolPtr field = m_dia->getChildByIndex(index);
+
+    if ( !field )
+        throw TypeException( m_dia->getName(), ": field not found" );   
+    
+    TypeInfoPtr  ti = TypeInfo::getTypeInfo( m_dia, field->getName() );
+    ti->setOffset( 0 );
+    return ti;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+std::string EnumTypeInfo::getFieldNameByIndex( ULONG index )
+{
+    if ( index >= m_dia->getChildCount() )
+        throw TypeException( m_dia->getName(), ": field not found" );
+
+    pyDia::SymbolPtr field = m_dia->getChildByIndex(index);
+
+    if ( !field )
+        throw TypeException( m_dia->getName(), ": field not found" );   
+
+    return field->getName();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ULONG EnumTypeInfo::getFieldCount()
+{
+    return m_dia->getChildCount();    
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

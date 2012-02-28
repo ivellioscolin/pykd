@@ -45,7 +45,8 @@ def getTestSuite( singleName = "" ):
                unittest.TestLoader().loadTestsFromTestCase( thrdctxtest.ThreadContextTest ),
                unittest.TestLoader().loadTestsFromTestCase( ehloadtest.EhLoadTest ),
                unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
-               unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionBreakpointTest )
+               unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionBreakpointTest ),
+               unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
            ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )
@@ -70,9 +71,9 @@ if __name__ == "__main__":
     print ""
 
     suite = getTestSuite()
-    #suite = getTestSuite( "typedvar.TypedVarTest.testBitField" )
+    #suite = getTestSuite( "typedvar.TypedVarTest.testTypeVarArg" )
     #suite = getTestSuite( "typeinfo.TypeInfoTest.testBitField" )
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
 
-    # raw_input("\npress return\n")
+    #raw_input("\npress return\n")
