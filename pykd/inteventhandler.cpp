@@ -91,14 +91,28 @@ HRESULT InternalDbgEventHandler::Breakpoint(IDebugBreakpoint *bp)
         BpCallbackMapIml::iterator it = m_bpCallbacks.m_map.find(Id);
         if (it != m_bpCallbacks.m_map.end())
         {
-            try {
+            python::object resObj;
+            {
                 PyThread_StateSave pyThreadSave( m_parentClient->getThreadState() );
-                hres = python::extract<HRESULT>( it->second(Id) );
-                return hres;
+                try {
+                    resObj = it->second(Id);
+
+                    python::extract<HRESULT> getRetCode( resObj );
+                    if (getRetCode.check())
+                        return getRetCode;
+                }
+                catch (const python::error_already_set &) {
+                    // TODO: some logging, alerting...
+                    return DEBUG_STATUS_BREAK;
+                }
             }
-            catch (const python::error_already_set &) {
-                // TODO: some logging, alerting...
-            }
+
+            if (resObj.is_none())
+                return DEBUG_STATUS_NO_CHANGE;
+
+            // TODO: python code return invalid value
+            //       some logging, alerting...
+            return DEBUG_STATUS_BREAK;
         }
     }
     return DEBUG_STATUS_NO_CHANGE;

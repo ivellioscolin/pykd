@@ -54,7 +54,6 @@ bpHandlerTestResult = BpHandlerTestResult()
 def codeBpHandler(bpId):
     """ Handler of software breakpoint """
     bpHandlerTestResult.wasCodeBp = bpId
-    return pykd.DEBUG_STATUS_NO_CHANGE
 
 def dataBpHandler(bpId):
     """ Handler of hardware breakpoint """
@@ -84,6 +83,8 @@ class EhExceptionBreakpointTest(unittest.TestCase):
 # The system resets thread contexts after the process
 # breakpoint so hardware breakpoints cannot be set.
 # Go to the executable's entry point and set it then.
+
+        # raw_input("Press <ENTER>....")
 
         breakExceptionHandler = BreakExceptionHandler( testClient )
         while not breakExceptionHandler.wasSecondChance:
