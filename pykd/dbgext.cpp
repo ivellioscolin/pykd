@@ -89,6 +89,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( getLocals_, getLocals, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBp_, setSoftwareBp, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 
+BOOST_PYTHON_FUNCTION_OVERLOADS( pyDia_GlobalScope_loadExe, pyDia::GlobalScope::loadExe, 1, 2 );
+
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadChars, DebugClient::loadChars, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadWChars, DebugClient::loadWChars, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadBytes, DebugClient::loadBytes, 2, 3 );
@@ -672,6 +674,8 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::def( "diaLoadPdb", &pyDia::GlobalScope::loadPdb, 
         "Open pdb file for querying debug symbols. Return DiaSymbol of global scope");
+    python::def( "diaLoadExe", &pyDia::GlobalScope::loadExe, pyDia_GlobalScope_loadExe( python::args( "fileName", "searchPath" ) ,
+        "Load the debug symbols associated with the executable file. Return DiaSymbol of global scope") );
 
     python::class_<pyDia::Symbol, pyDia::SymbolPtr>(
         "DiaSymbol", "class wrapper for MS DIA Symbol", python::no_init )

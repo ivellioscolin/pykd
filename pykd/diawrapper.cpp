@@ -2,6 +2,7 @@
 #include "stdafx.h"
 
 #include "diawrapper.h"
+#include "diacallback.h"
 #include "utils.h"
 
 namespace pyDia {
@@ -387,6 +388,57 @@ GlobalScope::GlobalScope(
 
 GlobalScopePtr GlobalScope::loadPdb(const std::string &filePath)
 {
+    class CLoaderFromPdb : public IScopeDataLoader {
+    public:
+        CLoaderFromPdb(const std::string &filePath) : m_filePath(filePath) {}
+
+        virtual void loadData(IDiaDataSource *_scope) override {
+            HRESULT hres = _scope->loadDataFromPdb( toWStr(m_filePath) );
+            if ( S_OK != hres )
+                throw Exception("Call IDiaDataSource::loadDataFromPdb", hres);
+        }
+
+    private:
+        const std::string &m_filePath;
+    } loaderFromPdb(filePath);
+
+    return loadImpl(loaderFromPdb);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+GlobalScopePtr GlobalScope::loadExe(const std::string &filePath, PCSTR searchPath /*= NULL*/)
+{
+    if (!searchPath)
+        searchPath = "SRV**\\\\symbols\\symbols";
+
+    class CLoaderForExe : public IScopeDataLoader {
+    public:
+        CLoaderForExe(const std::string &filePath, PCSTR searchPath)
+            : m_filePath(filePath), m_searchPath(searchPath)
+        {
+        }
+
+        virtual void loadData(IDiaDataSource *_scope) override {
+            LoadCallback loadCallback;
+            HRESULT hres = 
+                _scope->loadDataForExe( toWStr(m_filePath), toWStr(m_searchPath), &loadCallback );
+            if ( S_OK != hres )
+                throw Exception("Call IDiaDataSource::loadDataForExe", hres);
+        }
+
+    private:
+        const std::string &m_filePath;
+        const std::string m_searchPath;
+    } loaderForExe(filePath, searchPath);
+
+    return loadImpl(loaderForExe);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+GlobalScopePtr GlobalScope::loadImpl(IScopeDataLoader &ScopeDataLoader)
+{
     DiaDataSourcePtr _scope;
 
     HRESULT hres = 
@@ -394,9 +446,7 @@ GlobalScopePtr GlobalScope::loadPdb(const std::string &filePath)
     if ( S_OK != hres )
         throw Exception("Call ::CoCreateInstance", hres);
 
-    hres = _scope->loadDataFromPdb( toWStr(filePath) );
-    if ( S_OK != hres )
-        throw Exception("Call IDiaDataSource::loadDataFromPdb", hres);
+    ScopeDataLoader.loadData(_scope);
 
     DiaSessionPtr _session;
     hres = _scope->openSession(&_session);

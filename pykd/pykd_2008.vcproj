@@ -544,6 +544,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\diacallback.h"
+				>
+			</File>
+			<File
 				RelativePath=".\diaregs.h"
 				>
 			</File>

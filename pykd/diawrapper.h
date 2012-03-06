@@ -232,6 +232,7 @@ public:
 
     // GlobalScope factory
     static GlobalScopePtr loadPdb(const std::string &filePath);
+    static GlobalScopePtr loadExe(const std::string &filePath, PCSTR searchPath = NULL);
 
     // RVA -> Symbol
     python::tuple findByRva(
@@ -253,6 +254,11 @@ public:
     SymbolPtr getSymbolById(ULONG symId);
 
 private:
+    interface IScopeDataLoader {
+        virtual ~IScopeDataLoader() {}
+        virtual void loadData(IDiaDataSource *_scope) = 0;
+    };
+    static GlobalScopePtr loadImpl(IScopeDataLoader &ScopeDataLoader);
 
     GlobalScope(
         __inout DiaDataSourcePtr &_scope,
