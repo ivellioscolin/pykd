@@ -94,6 +94,7 @@ public:
     ULONGLONG getSize();
 
     std::string getName();
+    std::string getUndecoratedName();
 
     SymbolPtr getType();
 

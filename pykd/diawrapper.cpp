@@ -106,8 +106,13 @@ std::string Symbol::getName()
     return retValue.asStr();
 }
 
-std::string getBasicName();
+////////////////////////////////////////////////////////////////////////////////
 
+std::string Symbol::getUndecoratedName()
+{
+    autoBstr retValue( callSymbol(get_undecoratedName) );
+    return retValue.asStr();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

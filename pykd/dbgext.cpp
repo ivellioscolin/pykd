@@ -547,7 +547,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def("size", &Module::getSize,
               "Return size of the module" )
         .def("name", &Module::getName,
-             "Return name of the module" )      
+             "Return name of the module" )
         .def("image", &Module::getImageName,
              "Return name of the image of the module" )
         .def("pdb", &Module::getPdbName,
@@ -687,6 +687,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrieves the number of bits or bytes of memory used by the object represented by this symbol" )
         .def( "name", &pyDia::Symbol::getName, 
             "Retrieves the name of the symbol" )
+        .def( "undecoratedName", &pyDia::Symbol::getUndecoratedName, 
+            "Retrieves the undecorated name for a C++ decorated, or linkage, name" )
         .def( "type", &pyDia::Symbol::getType, 
             "Retrieves the symbol that represents the type for this symbol" )
         .def( "indexType", &pyDia::Symbol::getIndexType, 
