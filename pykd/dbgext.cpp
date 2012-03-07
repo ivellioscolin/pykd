@@ -725,7 +725,9 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__str__", &pyDia::Symbol::print)
         .def("__getitem__", &pyDia::Symbol::getChildByName)
         .def("__len__", &pyDia::Symbol::getChildCount )
-        .def("__getitem__", &pyDia::Symbol::getChildByIndex);
+        .def("__getitem__", &pyDia::Symbol::getChildByIndex)
+        .def("__eq__", &pyDia::Symbol::eq)
+        .def("__hash__", &pyDia::Symbol::getIndexId);
 
     python::class_<pyDia::GlobalScope, pyDia::GlobalScopePtr, python::bases<pyDia::Symbol> >(
         "DiaScope", "class wrapper for MS DIA Symbol", python::no_init )

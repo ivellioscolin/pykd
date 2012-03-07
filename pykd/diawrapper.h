@@ -140,6 +140,7 @@ public:
 
     std::string print();
 
+    bool eq(Symbol &rhs);
 
 public:
     typedef std::pair<ULONG, const char *> ValueNameEntry;

@@ -378,6 +378,13 @@ std::string Symbol::print()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+bool Symbol::eq(Symbol &rhs)
+{
+    return getIndexId() == rhs.getIndexId();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 GlobalScope::GlobalScope(
     __inout DiaDataSourcePtr &_scope,
     __inout DiaSessionPtr &_session,
