@@ -113,6 +113,9 @@ enum enumType {
 
 const enumType g_constEnumThree = THREE;
 
+const ULONG g_constUlong = 0xffffff;
+const ULONGLONG g_constUlonglong = 0xffffff000000;
+
 class classChild : public classBase {
 public:
     int m_childField;
@@ -296,6 +299,8 @@ void FuncWithName0()
     std::cout << g_bigValue;
     std::cout << g_classChild.m_enumField;
     std::cout << g_constEnumThree;
+    std::cout << g_constUlong;
+    std::cout << g_constUlonglong;
     std::cout << g_unNamedStruct.m_fieldNestedStruct;
     std::cout << g_structNested.m_nestedFiled;
     std::cout << g_unTypedPtrToFunction;

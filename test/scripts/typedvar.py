@@ -26,6 +26,8 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( True, target.module.typedVar( "g_constBoolValue" ) )
         self.assertEqual( 0x5555, target.module.typedVar( "g_constNumValue" ) )
         self.assertEqual( 3, target.module.typedVar( "g_constEnumThree" ) )
+        self.assertEqual( 0xffffff, target.module.typedVar( "g_constUlong" ) )
+        self.assertEqual( 0xffffff000000, target.module.typedVar( "g_constUlonglong" ) )
 
     def testGetAddress( self ):
         tv = target.module.typedVar( "structTest", target.module.g_structTest )
