@@ -111,6 +111,8 @@ enum enumType {
     THREE = 3
 };
 
+const enumType g_constEnumThree = THREE;
+
 class classChild : public classBase {
 public:
     int m_childField;
@@ -293,6 +295,7 @@ void FuncWithName0()
     std::cout << ptrIntMatrix1;
     std::cout << g_bigValue;
     std::cout << g_classChild.m_enumField;
+    std::cout << g_constEnumThree;
     std::cout << g_unNamedStruct.m_fieldNestedStruct;
     std::cout << g_structNested.m_nestedFiled;
     std::cout << g_unTypedPtrToFunction;
