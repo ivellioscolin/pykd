@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <dbgeng.h>
 #include <dbghelp.h>
 
 #include <boost\smart_ptr\scoped_ptr.hpp>

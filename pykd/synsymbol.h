@@ -5,7 +5,6 @@
 #pragma once
 
 #include "dbgexcept.h"
-#include <DbgEng.h>
 #include <map>
 
 namespace pykd {

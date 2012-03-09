@@ -4,6 +4,7 @@
 #include "intbase.h"
 #include "dbgobj.h"
 #include "dbgexcept.h"
+#include "vardata.h"
 
 namespace pykd {
 
@@ -18,10 +19,10 @@ class TypedVar : public intBase, protected DbgObject {
 
 public:
 
-    static TypedVarPtr  getTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset );
+    static TypedVarPtr  getTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData );
 
     ULONG64 getAddress() const {
-        return m_offset;
+        return m_varData->getAddr();
     }
 
     ULONG getSize() const {
@@ -66,7 +67,7 @@ public:
     }
 
     virtual BaseTypeVariant getValue() {
-        return m_offset;
+        return m_varData->getAddr();
     }
 
     ULONG getDataKind() const {
@@ -79,11 +80,11 @@ public:
 
 protected:
 
-    TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset );
+    TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData );
 
     TypeInfoPtr             m_typeInfo;
 
-    ULONG64                 m_offset;
+    VarDataPtr              m_varData;
 
     ULONG                   m_size;
 
@@ -97,7 +98,10 @@ class BasicTypedVar : public TypedVar {
 
 public:
 
-    BasicTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
+    BasicTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData ) 
+        : TypedVar(client, typeInfo, varData)
+    {
+    }
 
 
     virtual std::string  print();
@@ -114,7 +118,10 @@ class PtrTypedVar : public TypedVar {
 
 public:
 
-    PtrTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
+    PtrTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData )
+        : TypedVar(client, typeInfo, varData)
+    {
+    }
 
     virtual std::string print();
 
@@ -132,7 +139,10 @@ class ArrayTypedVar: public TypedVar {
 
 public:
 
-    ArrayTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
+    ArrayTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData )
+        : TypedVar(client, typeInfo, varData)
+    {
+    }
 
     virtual ULONG getElementCount() {
         return m_typeInfo->getCount();
@@ -151,7 +161,10 @@ class UdtTypedVar : public TypedVar {
 
 public:
 
-    UdtTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
+    UdtTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData ) 
+        : TypedVar(client, typeInfo, varData)
+    {
+    }
 
     virtual std::string print();
 
@@ -166,7 +179,10 @@ class BitFieldVar: public TypedVar {
 
 public:
 
-    BitFieldVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
+    BitFieldVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData ) 
+        : TypedVar(client, typeInfo, varData)
+    {
+    }
 
     virtual std::string  printValue();
 
@@ -178,7 +194,10 @@ public:
 class EnumTypedVar : public TypedVar {
 public:
 
-    EnumTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) : TypedVar(client, typeInfo, offset){}
+    EnumTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData ) 
+        : TypedVar(client, typeInfo, varData)
+    {
+    }
 
     virtual std::string print();
 

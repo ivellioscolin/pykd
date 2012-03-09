@@ -6,7 +6,6 @@
 
 #include "stdafx.h"
 
-#include <dbgeng.h>
 #include "dbgobj.h"
 #include "module.h"
 #include "dbgclient.h"

@@ -23,10 +23,8 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( -8, target.module.typedVar( "g_longlongValue" ) )
 
     def testConst(self):
-        try:
-            self.assertEqual( True, target.module.typedVar( "g_constBoolValue" ) )
-        except pykd.BaseException:
-            self.assertFalse( "FIXME: constants without RVA is not supported" )
+        self.assertEqual( True, target.module.typedVar( "g_constBoolValue" ) )
+        self.assertEqual( 0x5555, target.module.typedVar( "g_constNumValue" ) )
 
     def testGetAddress( self ):
         tv = target.module.typedVar( "structTest", target.module.g_structTest )

@@ -22,6 +22,7 @@ struct addLocals {
     ContextPtr m_ctx;
     IDebugClient4 *m_client;
     ULONG m_formalNameCounter;
+    CComPtr< IDebugDataSpaces4 > m_dataSpaces;
 
     void append(pyDia::SymbolPtr symParent);
 
@@ -139,7 +140,7 @@ TypedVarPtr addLocals::getTypeVarByOffset(
 
     TypeInfoPtr typeInfo = TypeInfo::getTypeInfo( symType );
 
-    return TypedVar::getTypedVar( m_client, typeInfo, varOffset );
+    return TypedVar::getTypedVar( m_client, typeInfo, VarDataMemory::factory(m_dataSpaces, varOffset) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -199,7 +200,7 @@ python::dict DebugClient::getLocals(ContextPtr ctx OPTIONAL)
         return python::dict();  // out of function debug range
 
     python::dict locals;
-    impl::addLocals Locals = { locals, mod, rva, ctx, m_client, 0 };
+    impl::addLocals Locals = { locals, mod, rva, ctx, m_client, 0, m_dataSpaces };
 
     Locals.append(symFunc);
 

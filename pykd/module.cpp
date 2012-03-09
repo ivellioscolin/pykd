@@ -192,7 +192,7 @@ Module::reloadSymbols()
 TypedVarPtr
 Module::getTypedVarByTypeName( const std::string &typeName, ULONG64 addr )
 {
-    return TypedVar::getTypedVar( m_client, getTypeByName(typeName), addr );
+    return TypedVar::getTypedVar( m_client, getTypeByName(typeName), VarDataMemory::factory(m_dataSpaces, addr) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -200,7 +200,7 @@ Module::getTypedVarByTypeName( const std::string &typeName, ULONG64 addr )
 TypedVarPtr
 Module::getTypedVarByType( const TypeInfoPtr &typeInfo, ULONG64 addr )
 {
-   return TypedVar::getTypedVar( m_client, typeInfo, addr );
+   return TypedVar::getTypedVar( m_client, typeInfo, VarDataMemory::factory(m_dataSpaces, addr) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -210,7 +210,7 @@ Module::getTypedVarByName( const std::string &symName )
 {
     HRESULT     hres;
 
-    pyDia::SymbolPtr  typeSym = getDia()->getChildByName( symName );
+    pyDia::SymbolPtr  symVar = getDia()->getChildByName( symName );
 
     std::string     fullName = m_name;
     fullName += '!';
@@ -220,10 +220,16 @@ Module::getTypedVarByName( const std::string &symName )
 
     hres = m_symbols->GetOffsetByName( fullName.c_str(), &offset );
 
-    if ( FAILED( hres ) )
-        throw DbgException("IDebugSymbols::GetOffsetByName failed" );
+    TypeInfoPtr typeInfo = TypeInfo::getTypeInfo( symVar->getType() );
 
-    return TypedVar::getTypedVar( m_client, TypeInfo::getTypeInfo( typeSym->getType() ), offset );
+    if ( FAILED( hres ) )
+    {
+        if ( LocIsConstant == symVar->getLocType() )
+            return TypedVar::getTypedVar( m_client, typeInfo, VarDataConst::factory(m_control, symVar) );
+        throw DbgException("IDebugSymbols::GetOffsetByName failed" );
+    }
+
+    return TypedVar::getTypedVar( m_client, typeInfo, VarDataMemory::factory(m_dataSpaces, offset) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -301,7 +307,9 @@ TypedVarPtr Module::containingRecordByName( ULONG64 address, const std::string &
 
     TypeInfoPtr     fieldTypeInfo = typeInfo->getField( fieldName );
 
-    return TypedVar::getTypedVar( m_client, typeInfo, address - fieldTypeInfo->getOffset() );
+    VarDataPtr varData = VarDataMemory::factory( m_dataSpaces, address - fieldTypeInfo->getOffset() );
+
+    return TypedVar::getTypedVar( m_client, typeInfo, varData );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -312,7 +320,9 @@ TypedVarPtr Module::containingRecordByType( ULONG64 address, const TypeInfoPtr &
 
     TypeInfoPtr     fieldTypeInfo = typeInfo->getField( fieldName );
 
-    return TypedVar::getTypedVar( m_client, typeInfo, address - fieldTypeInfo->getOffset() );
+    VarDataPtr varData = VarDataMemory::factory( m_dataSpaces, address - fieldTypeInfo->getOffset() );
+
+    return TypedVar::getTypedVar( m_client, typeInfo, varData );
 }
 
 

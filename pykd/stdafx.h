@@ -33,6 +33,8 @@
 
 #include <dia2.h>
 
+#include <DbgEng.h>
+
 //
 //#ifndef  __field_ecount_opt
 //#define  __field_ecount_opt(x)  

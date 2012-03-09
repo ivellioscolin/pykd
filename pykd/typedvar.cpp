@@ -1,4 +1,4 @@
-#include "stdafx.h"    
+#include "stdafx.h"
 
 #include <iomanip>
 
@@ -10,43 +10,43 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVarPtr   TypedVar::getTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset )
+TypedVarPtr   TypedVar::getTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData )
 {
     TypedVarPtr     tv;
 
     if ( typeInfo->isBasicType() )
     {
-        tv.reset( new BasicTypedVar( client, typeInfo, offset) );
+        tv.reset( new BasicTypedVar( client, typeInfo, varData) );
         return tv;
     }
 
     if ( typeInfo->isPointer() )
     {
-        tv.reset( new PtrTypedVar( client, typeInfo, offset ) );
+        tv.reset( new PtrTypedVar( client, typeInfo, varData ) );
         return tv;
     }
 
     if ( typeInfo->isArray() )
     {
-        tv.reset( new ArrayTypedVar( client, typeInfo, offset  ) );
+        tv.reset( new ArrayTypedVar( client, typeInfo, varData  ) );
         return tv;
     }
 
     if ( typeInfo->isUserDefined() )
     {
-        tv.reset( new UdtTypedVar( client, typeInfo, offset ) );
+        tv.reset( new UdtTypedVar( client, typeInfo, varData ) );
         return tv;
     }
 
     if ( typeInfo->isBitField() )
     {
-        tv.reset( new BitFieldVar( client, typeInfo, offset ) );
+        tv.reset( new BitFieldVar( client, typeInfo, varData ) );
         return tv;
     }
 
     if ( typeInfo->isEnum() )
     {
-        tv.reset( new EnumTypedVar( client, typeInfo, offset ) );
+        tv.reset( new EnumTypedVar( client, typeInfo, varData ) );
         return tv;
     }
 
@@ -57,10 +57,10 @@ TypedVarPtr   TypedVar::getTypedVar( IDebugClient4 *client, const TypeInfoPtr& t
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVar::TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64 offset ) :
+TypedVar::TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData ) :
     DbgObject( client ),
     m_typeInfo( typeInfo ),
-    m_offset( offset ),
+    m_varData( varData ),
     m_dataKind( DataIsGlobal )
 {
     m_size = m_typeInfo->getSize();
@@ -69,9 +69,8 @@ TypedVar::TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, ULONG64
 
 BaseTypeVariant BasicTypedVar::getValue()
 {
-    ULONG64     val = 0;    
-
-    readMemory( m_dataSpaces, m_offset, &val, getSize(), false );
+    ULONG64     val = 0;
+    m_varData->read(&val, getSize());
 
     if ( m_typeInfo->getName() == "Char" )
         return (LONG)*(PCHAR)&val;
@@ -121,7 +120,7 @@ std::string BasicTypedVar::print()
 {
     std::stringstream       sstr;
 
-    sstr << m_typeInfo->getName() << " at " << std::hex << m_offset;
+    sstr << m_typeInfo->getName() << " " << m_varData->asString();
     sstr << " Value: " << printValue();
 
     return sstr.str();
@@ -143,22 +142,15 @@ std::string  BasicTypedVar::printValue()
 
 BaseTypeVariant PtrTypedVar::getValue()
 {
-    ULONG64     val = 0;
-
-    readMemoryPtr( m_dataSpaces,  m_offset, &val );
-
-    return val;
+    return m_varData->readPtr();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 TypedVarPtr PtrTypedVar::deref()
 {
-    ULONG64     val = 0;
-
-    readMemoryPtr( m_dataSpaces,  m_offset, &val );
-
-    return TypedVar::getTypedVar( m_client, m_typeInfo->deref(), val );
+    VarDataPtr varData = VarDataMemory::factory( m_dataSpaces, m_varData->readPtr() );
+    return TypedVar::getTypedVar( m_client, m_typeInfo->deref(), varData );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -167,7 +159,7 @@ std::string PtrTypedVar::print()
 {
     std::stringstream   sstr;
 
-    sstr << m_typeInfo->getName() << " at 0x" << std::hex << m_offset;
+    sstr << m_typeInfo->getName() << " " << m_varData->asString();
     sstr << " Value: " << printValue();
 
     return sstr.str();
@@ -179,7 +171,7 @@ std::string  PtrTypedVar::printValue()
 {
     std::stringstream   sstr;    
 
-    sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );      
+    sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );
 
     return sstr.str();
 }
@@ -190,7 +182,7 @@ std::string ArrayTypedVar::print()
 {
     std::stringstream   sstr;
 
-    sstr << m_typeInfo->getName() << " at 0x" << std::hex << m_offset;
+    sstr << m_typeInfo->getName() << " " << m_varData->asString();
 
     return sstr.str();
 }
@@ -211,7 +203,7 @@ TypedVarPtr ArrayTypedVar::getElementByIndex( ULONG  index )
 
     TypeInfoPtr     elementType = m_typeInfo->getElementType();
 
-    return TypedVar::getTypedVar( m_client, elementType, m_offset + elementType->getSize()*index );
+    return TypedVar::getTypedVar( m_client, elementType, m_varData->fork(elementType->getSize()*index) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -221,7 +213,7 @@ UdtTypedVar::getField( const std::string &fieldName )
 {
     TypeInfoPtr fieldType = m_typeInfo->getField( fieldName );
 
-    return  TypedVar::getTypedVar( m_client, fieldType, m_offset + fieldType->getOffset() );
+    return  TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldType->getOffset()) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -230,12 +222,12 @@ std::string UdtTypedVar::print()
 {
     std::stringstream  sstr;
 
-    sstr << "struct/class: " << m_typeInfo->getName() << " at 0x" << std::hex << m_offset << std::endl;
+    sstr << "struct/class: " << m_typeInfo->getName() << " " << m_varData->asString();
     
     for ( ULONG i = 0; i < m_typeInfo->getFieldCount(); ++i )
     {
         TypeInfoPtr     fieldType = m_typeInfo->getFieldByIndex(i);
-        TypedVarPtr     fieldVar = TypedVar::getTypedVar( m_client, fieldType, m_offset + fieldType->getOffset() );
+        TypedVarPtr     fieldVar = TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldType->getOffset()) );
 
         sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getOffset();
         sstr << " " << std::left << std::setw( 20 ) << std::setfill(' ') << m_typeInfo->getFieldNameByIndex(i) << ':';
@@ -261,7 +253,7 @@ BaseTypeVariant BitFieldVar::getValue()
 {
     ULONG64     val = 0;
 
-    readMemory( m_dataSpaces, m_offset, &val, getSize(), false );
+    m_varData->read( &val, getSize() );
 
     val >>= m_typeInfo->getBitOffset();
     val &= m_typeInfo->getBitWidth();
@@ -303,7 +295,7 @@ BaseTypeVariant EnumTypedVar::getValue()
 {
     ULONG       val = 0;
 
-    readMemory( m_dataSpaces, m_offset, &val, getSize(), false );
+    m_varData->read( &val, getSize() );
 
     return val;
 };
@@ -314,7 +306,7 @@ std::string EnumTypedVar::print()
 {
     std::stringstream       sstr;
 
-    sstr << "enum: " << m_typeInfo->getName() << " at 0x" << std::hex << m_offset;
+    sstr << "enum: " << m_typeInfo->getName() << " " << m_varData->asString();
     sstr << " Value: " << printValue();
 
     return sstr.str();

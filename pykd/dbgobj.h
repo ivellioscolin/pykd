@@ -1,6 +1,5 @@
 #pragma once
 
-#include <dbgeng.h>
 #include "dbgexcept.h"
 #include "synsymbol.h"
 
@@ -49,8 +48,8 @@ protected:
     
     virtual ~DbgObject() {};
 
-    CComPtr<IDebugClient5>          m_client5;     
-    CComPtr<IDebugClient4>          m_client;    
+    CComPtr<IDebugClient5>          m_client5;
+    CComPtr<IDebugClient4>          m_client;
     CComPtr<IDebugControl4>         m_control;
     CComPtr<IDebugSymbols3>         m_symbols;
     CComPtr<IDebugAdvanced2>        m_advanced;
