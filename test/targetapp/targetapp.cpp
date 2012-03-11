@@ -237,7 +237,7 @@ StructWithNested g_structWithNested;
 StructWithNested::Nested g_structNested;
 
 WNDENUMPROC g_ptrToFunction;
-void *g_unTypedPtrToFunction;
+void *g_unTypedPtrToFunction = g_ptrToFunction;
 #pragma pack( pop )
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -102,10 +102,11 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignDWords, DebugClient:
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadSignQWords, DebugClient::loadSignQWords, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_compareMemory, DebugClient::compareMemory, 3, 4 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_getLocals, DebugClient::getLocals, 0, 1 );
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( pyDia_Symbol_findChildrenEx, pyDia::Symbol::findChildrenEx, 1, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_setSoftwareBp, DebugClient::setSoftwareBp, 1, 2 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_setHardwareBp, DebugClient::setHardwareBp, 3, 4 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( StackFrame_getLocals, StackFrame::getLocals, 0, 1 );
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( pyDia_Symbol_findChildrenEx, pyDia::Symbol::findChildrenEx, 1, 3 );
 
 #define DEF_PY_CONST_ULONG(x)    \
     python::scope().attr(#x) = ULONG(##x)
@@ -723,8 +724,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrieves the type of the target CPU: IMAGE_FILE_MACHINE_XXX")
         .def( "__str__", &pyDia::Symbol::print)
         .def("__getitem__", &pyDia::Symbol::getChildByName)
-        .def("__len__", &pyDia::Symbol::getChildCount )
-        .def("__getitem__", &pyDia::Symbol::getChildByIndex)
+        .def("__len__", (ULONG (pyDia::Symbol::*)())&pyDia::Symbol::getChildCount )
+        .def("__getitem__", (pyDia::SymbolPtr(pyDia::Symbol::*)(ULONG) )&pyDia::Symbol::getChildByIndex)
         .def("__eq__", &pyDia::Symbol::eq)
         .def("__hash__", &pyDia::Symbol::getIndexId);
 

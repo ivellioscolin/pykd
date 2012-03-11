@@ -316,12 +316,12 @@ SymbolPtr Symbol::getChildByName(const std::string &_name)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ULONG Symbol::getChildCount()
+ULONG Symbol::getChildCount( ULONG symTag )
 {
     DiaEnumSymbolsPtr symbols;
     HRESULT hres = 
         m_symbol->findChildren(
-            SymTagNull,
+            static_cast<enum SymTagEnum>(symTag),
             NULL,
             nsCaseSensitive,
             &symbols);
@@ -338,12 +338,12 @@ ULONG Symbol::getChildCount()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-SymbolPtr Symbol::getChildByIndex(ULONG _index)
+SymbolPtr Symbol::getChildByIndex(ULONG _index, ULONG symTag )
 {
     DiaEnumSymbolsPtr symbols;
     HRESULT hres = 
         m_symbol->findChildren(
-            SymTagNull,
+             static_cast<enum SymTagEnum>(symTag),
             NULL,
             nsCaseSensitive,
             &symbols);

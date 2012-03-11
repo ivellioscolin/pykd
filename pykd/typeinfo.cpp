@@ -15,6 +15,7 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
         return getBaseTypeInfo( typeSym );
 
     case SymTagUDT:
+    case SymTagBaseClass:
         return TypeInfoPtr( new UdtTypeInfo( typeSym ) );
 
     case SymTagArrayType:
@@ -479,10 +480,10 @@ TypeInfoPtr UdtTypeInfo::getFieldByIndex( ULONG index  )
 
 std::string UdtTypeInfo::getFieldNameByIndex( ULONG index )
 {
-    if ( index >= m_dia->getChildCount() )
+    if ( index >= m_dia->getChildCount( SymTagData ) )
         throw TypeException( m_dia->getName(), ": field not found" );
 
-    pyDia::SymbolPtr field = m_dia->getChildByIndex(index);
+    pyDia::SymbolPtr field = m_dia->getChildByIndex(index, SymTagData);
 
     if ( !field )
         throw TypeException( m_dia->getName(), ": field not found" );
@@ -494,7 +495,7 @@ std::string UdtTypeInfo::getFieldNameByIndex( ULONG index )
 
 ULONG UdtTypeInfo::getFieldCount()
 {
-    return m_dia->getChildCount();
+    return m_dia->getChildCount( SymTagData );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

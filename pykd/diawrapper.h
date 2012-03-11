@@ -133,8 +133,10 @@ public:
     }
 
     SymbolPtr getChildByName(const std::string &_name);
-    ULONG getChildCount();
-    SymbolPtr getChildByIndex(ULONG _index);
+
+    ULONG getChildCount( ULONG symTag = SymTagNull );
+
+    SymbolPtr getChildByIndex(ULONG _index, ULONG symTag = SymTagNull );
 
     bool isConstant();
 
