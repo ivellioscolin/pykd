@@ -222,7 +222,7 @@ std::string UdtTypedVar::print()
 {
     std::stringstream  sstr;
 
-    sstr << "struct/class: " << m_typeInfo->getName() << " " << m_varData->asString();
+    sstr << "struct/class: " << m_typeInfo->getName() << " " << m_varData->asString() << std::endl;
     
     for ( ULONG i = 0; i < m_typeInfo->getFieldCount(); ++i )
     {

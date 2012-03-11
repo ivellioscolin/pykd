@@ -463,10 +463,10 @@ TypeInfoPtr UdtTypeInfo::getField( const std::string &fieldName )
 
 TypeInfoPtr UdtTypeInfo::getFieldByIndex( ULONG index  )
 {
-    if ( index >= m_dia->getChildCount() )
+    if ( index >= m_dia->getChildCount(SymTagData) )
         throw TypeException( m_dia->getName(), ": field not found" );
 
-    pyDia::SymbolPtr field = m_dia->getChildByIndex(index);
+    pyDia::SymbolPtr field = m_dia->getChildByIndex(index, SymTagData);
 
     if ( !field )
         throw TypeException( m_dia->getName(), ": field not found" );
