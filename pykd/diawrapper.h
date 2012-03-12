@@ -134,10 +134,20 @@ public:
 
     SymbolPtr getChildByName(const std::string &_name);
 
-    ULONG getChildCount( ULONG symTag = SymTagNull );
+    template<ULONG symTag>
+    ULONG getChildCount();
 
-    SymbolPtr getChildByIndex(ULONG _index, ULONG symTag = SymTagNull );
+    ULONG getChildCount() {
+        return getChildCount<SymTagNull>();
+    }
 
+    template<ULONG symTag>
+    SymbolPtr getChildByIndex(ULONG _index );
+
+    SymbolPtr getChildByIndex(ULONG _index ) {
+        return getChildByIndex<SymTagNull>( _index );
+    }
+    
     bool isConstant();
 
     std::string print();
@@ -273,6 +283,63 @@ private:
     DiaDataSourcePtr m_source;
     DiaSessionPtr m_session;
 };
+
+////////////////////////////////////////////////////////////////////////////////
+
+template<ULONG symTag>
+ULONG Symbol::getChildCount()
+{
+    DiaEnumSymbolsPtr symbols;
+    HRESULT hres = 
+        m_symbol->findChildren(
+            static_cast<enum SymTagEnum>(symTag),
+            NULL,
+            nsCaseSensitive,
+            &symbols);
+    if (S_OK != hres)
+        throw Exception("Call IDiaSymbol::findChildren", hres);
+
+    LONG count;
+    hres = symbols->get_Count(&count);
+    if (S_OK != hres)
+        throw Exception("Call IDiaEnumSymbols::get_Count", hres);
+
+    return count;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+template<ULONG symTag>
+SymbolPtr Symbol::getChildByIndex(ULONG _index )
+{
+    DiaEnumSymbolsPtr symbols;
+    HRESULT hres = 
+        m_symbol->findChildren(
+             static_cast<enum SymTagEnum>(symTag),
+            NULL,
+            nsCaseSensitive,
+            &symbols);
+    if (S_OK != hres)
+        throw Exception("Call IDiaSymbol::findChildren", hres);
+
+    LONG count;
+    hres = symbols->get_Count(&count);
+    if (S_OK != hres)
+        throw Exception("Call IDiaEnumSymbols::get_Count", hres);
+
+    if (LONG(_index) >= count)
+    {
+        PyErr_SetString(PyExc_IndexError, "Index out of range");
+        boost::python::throw_error_already_set();
+    }
+
+    DiaSymbolPtr child;
+    hres = symbols->Item(_index, &child);
+    if (S_OK != hres)
+        throw Exception("Call IDiaEnumSymbols::Item", hres);
+
+    return SymbolPtr( new Symbol(child, m_machineType) );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

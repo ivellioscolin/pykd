@@ -316,61 +316,6 @@ SymbolPtr Symbol::getChildByName(const std::string &_name)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ULONG Symbol::getChildCount( ULONG symTag )
-{
-    DiaEnumSymbolsPtr symbols;
-    HRESULT hres = 
-        m_symbol->findChildren(
-            static_cast<enum SymTagEnum>(symTag),
-            NULL,
-            nsCaseSensitive,
-            &symbols);
-    if (S_OK != hres)
-        throw Exception("Call IDiaSymbol::findChildren", hres);
-
-    LONG count;
-    hres = symbols->get_Count(&count);
-    if (S_OK != hres)
-        throw Exception("Call IDiaEnumSymbols::get_Count", hres);
-
-    return count;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-SymbolPtr Symbol::getChildByIndex(ULONG _index, ULONG symTag )
-{
-    DiaEnumSymbolsPtr symbols;
-    HRESULT hres = 
-        m_symbol->findChildren(
-             static_cast<enum SymTagEnum>(symTag),
-            NULL,
-            nsCaseSensitive,
-            &symbols);
-    if (S_OK != hres)
-        throw Exception("Call IDiaSymbol::findChildren", hres);
-
-    LONG count;
-    hres = symbols->get_Count(&count);
-    if (S_OK != hres)
-        throw Exception("Call IDiaEnumSymbols::get_Count", hres);
-
-    if (LONG(_index) >= count)
-    {
-        PyErr_SetString(PyExc_IndexError, "Index out of range");
-        boost::python::throw_error_already_set();
-    }
-
-    DiaSymbolPtr child;
-    hres = symbols->Item(_index, &child);
-    if (S_OK != hres)
-        throw Exception("Call IDiaEnumSymbols::Item", hres);
-
-    return SymbolPtr( new Symbol(child, m_machineType) );
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
 std::string Symbol::print()
 {
     return printImpl(m_symbol, m_machineType);
