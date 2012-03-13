@@ -2,7 +2,7 @@
 #define PYKD_VERSION_MAJOR      0
 #define PYKD_VERSION_MINOR      1
 #define PYKD_VERSION_SUBVERSION 0
-#define PYKD_VERSION_BUILDNO    8
+#define PYKD_VERSION_BUILDNO    9
 
 
 #define __VER_STR2__(x) #x

@@ -1,3 +1,11 @@
+version 0.1.0.9 13/04/2012
+
+[+] added : support constant variables without RVA 
+[+] added : DIA: undecorated name getter 
+[+] added : DIA: load symbols for executable file 
+[+] added : ability to return "None" from bp-handler 
+[+] added : typedVar __str__ converter ( base class is not printed ) 
+[!] fiexd : issue #10393 ( Failed to get type name for void* )
 
 version 0.1.0.8 10/02/2012
 
