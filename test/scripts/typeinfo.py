@@ -147,3 +147,25 @@ class TypeInfoTest( unittest.TestCase ):
 
         ti = target.module.type("StructWithNested::Nested")
         self.assertTrue( hasattr( ti, "m_nestedFiled" ) )
+        
+    def testPrint(self):
+        self.assertTrue( str(target.module.type( "g_ucharValue" ) ) )
+        self.assertTrue( str(target.module.type( "g_ushortValue" ) ) )
+        self.assertTrue( str(target.module.type( "g_ulongValue" ) ) )
+        self.assertTrue( str(target.module.type( "g_ulonglongValue" ) ) )
+        self.assertTrue( str(target.module.type( "g_structWithBits" ) ) )
+        self.assertTrue( str(target.module.type( "g_structTest" ) ) )
+        self.assertTrue( str(target.module.type( "g_structTest1" ) ) )
+        self.assertTrue( str(target.module.type( "g_testArray" ) ) )
+        self.assertTrue( str(target.module.type( "g_structTestPtr" ) ) )
+        self.assertTrue( str(target.module.type( "g_structTestPtrPtr" ) ) )
+        self.assertTrue( str(target.module.type( "longlongArray" ) ) )
+        self.assertTrue( str(target.module.type( "intMatrix4" ) ) )
+        self.assertTrue( str(target.module.type( "ptrIntMatrix" ) ) )
+        self.assertTrue( str(target.module.type( "g_classChild" ) ) )
+        self.assertTrue( str(target.module.type( "g_struct3" ) ) )
+        self.assertTrue( str(target.module.type( "g_listHead" ) ) )
+        self.assertTrue( str(target.module.type( "g_voidPtr" ) ) )
+        self.assertTrue( str(target.module.type( "g_arrOfPtrToFunc" ) ) )
+        self.assertTrue( str(target.module.type( "g_unTypedPtrToFunction" ) ) )
+        

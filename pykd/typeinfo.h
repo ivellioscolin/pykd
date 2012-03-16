@@ -35,6 +35,13 @@ public:
 
 public:
 
+    virtual std::string print() {
+        std::stringstream   sstr;
+        sstr << "Type name: " << getName();
+        sstr << "  Size: 0x" << std::hex << getSize() << " (" << std::dec << getSize() << ")";
+        return sstr.str();
+    }
+
     virtual std::string getName() = 0;
 
     virtual ULONG getSize() = 0;

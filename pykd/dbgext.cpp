@@ -513,10 +513,11 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "bitOffset", &TypeInfo::getBitOffset )
         .def( "bitWidth", &TypeInfo::getBitWidth )
         .def( "field", &TypeInfo::getField )
-        .def( "__getattr__", &TypeInfo::getField )
         .def( "asMap", &TypeInfo::asMap )
-        .def( "deref", &TypeInfo::deref );
-
+        .def( "deref", &TypeInfo::deref )
+        .def( "__str__", &TypeInfo::print )
+        .def( "__getattr__", &TypeInfo::getField );
+        
     python::class_<TypedVar, TypedVarPtr, python::bases<intBase>, boost::noncopyable >("typedVar", 
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", 
         python::no_init )
