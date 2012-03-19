@@ -86,8 +86,8 @@ class TypeInfoTest( unittest.TestCase ):
         
     def testVarName( self ):
         self.assertEqual( "structTest", target.module.type( "g_structTest").name() )
-        self.assertEqual( "structTest", target.module.type( "g_testArray[0]").name() )
-        self.assertEqual( "structTest", target.module.type( "*g_structTestPtr").name() )
+        self.assertRaises( pykd.TypeException, target.module.type, "g_testArray[0]" )
+        self.assertRaises( pykd.TypeException, target.module.type, "*g_structTestPtr" )
 
     def testOffset( self ):
         ti1 = target.module.type( "structTest" )

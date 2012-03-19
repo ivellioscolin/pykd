@@ -379,18 +379,46 @@ static const boost::regex ptrMatch("^\\*(.*)$");
 
 static const boost::regex arrayMatch("^(.*)\\[(\\d+)\\]$");
 
+static const boost::regex symbolMatch("^([\\*]*)([^\\(\\)\\*\\[\\]]*)([\\(\\)\\*\\[\\]\\d]*)$");
+
 TypeInfoPtr TypeInfo::getComplexType( pyDia::SymbolPtr &symScope, const std::string &symName )
 {
     ULONG  ptrSize = (symScope->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
 
     boost::cmatch    matchResult;
 
-    if ( !boost::regex_match( symName.c_str(), matchResult, typeMatch  ) )
-        throw TypeException( symName, "type name is invalid" );
+    if ( !boost::regex_match( symName.c_str(), matchResult, symbolMatch ) )
+        throw TypeException( symName, "symbol name is invalid" );
+
+    std::string  innerSymName = std::string( matchResult[2].first, matchResult[2].second );
+
+    TypeInfoPtr    basePtr = getBaseTypeInfo( innerSymName );
+    if ( basePtr != 0 )
+    {
+        return getRecurciveComplexType( basePtr, std::string( matchResult[3].first, matchResult[3].second ), ptrSize );
+    }
+            
+    pyDia::SymbolPtr lowestSymbol = symScope->getChildByName( innerSymName );
+
+    if ( lowestSymbol->getSymTag() == SymTagData )
+    {
+        throw TypeException( symName, "symbol name can not be an expresion" );
+    }
+   
+    return getRecurciveComplexType( getTypeInfo( lowestSymbol ), std::string( matchResult[3].first, matchResult[3].second ), ptrSize );
+
+
+
+    //ULONG  ptrSize = (symScope->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
+
+    //boost::cmatch    matchResult;
+
+    //if ( !boost::regex_match( symName.c_str(), matchResult, typeMatch  ) )
+    //    throw TypeException( symName, "type name is invalid" );
 
     TypeInfoPtr     lowestTypeInfo = getTypeInfo( symScope, std::string( matchResult[1].first, matchResult[1].second ) );
 
-    return getRecurciveComplexType( lowestTypeInfo, std::string( matchResult[2].first, matchResult[2].second ), ptrSize );
+    //return getRecurciveComplexType( lowestTypeInfo, std::string( matchResult[2].first, matchResult[2].second ), ptrSize );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
