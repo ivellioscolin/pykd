@@ -83,6 +83,11 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "Int4B", ti1.m_childField.name() )
         self.assertEqual( "structTest", ti1.m_childField3.name() )
         self.assertEqual( "structTest", target.module.type("g_structTest").name() )
+        
+    def testVarName( self ):
+        self.assertEqual( "structTest", target.module.type( "g_structTest").name() )
+        self.assertEqual( "structTest", target.module.type( "g_testArray[0]").name() )
+        self.assertEqual( "structTest", target.module.type( "*g_structTestPtr").name() )
 
     def testOffset( self ):
         ti1 = target.module.type( "structTest" )
