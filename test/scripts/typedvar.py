@@ -11,6 +11,15 @@ class TypedVarTest( unittest.TestCase ):
     def testCtor( self ):
         tv = target.module.typedVar( "structTest", target.module.g_structTest )
         tv = target.module.typedVar( "g_structTest" )
+        
+        tv = pykd.typedVar( "structTest", target.module.g_structTest )
+        tv = pykd.typedVar( target.moduleName + "!structTest", target.module.g_structTest )
+        
+        structTest = target.module.type( "structTest" )
+        tv = pykd.typedVar( structTest, target.module.g_structTest )
+        
+        tv = pykd.typedVar( "g_structTest" )
+        tv = pykd.typedVar( target.moduleName + "!g_structTest" )
 
     def testBaseTypes(self):
         self.assertEqual( 1, target.module.typedVar( "g_ucharValue" ) )

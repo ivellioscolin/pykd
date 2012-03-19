@@ -57,6 +57,23 @@ TypedVarPtr   TypedVar::getTypedVar( IDebugClient4 *client, const TypeInfoPtr& t
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+TypedVarPtr TypedVar::getTypedVarByName( const std::string &varName )
+{
+    return g_dbgClient->getTypedVarByName( varName );
+}
+
+TypedVarPtr TypedVar::getTypedVarByTypeName( const std::string &typeName, ULONG64 addr )
+{
+    return g_dbgClient->getTypedVarByTypeName( typeName, addr );
+}
+
+TypedVarPtr TypedVar::getTypedVarByTypeInfo( const TypeInfoPtr &typeInfo, ULONG64 addr )
+{
+    return g_dbgClient->getTypedVarByTypeInfo( typeInfo, addr );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 TypedVar::TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData ) :
     DbgObject( client ),
     m_typeInfo( typeInfo ),

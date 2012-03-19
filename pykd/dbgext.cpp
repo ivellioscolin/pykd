@@ -264,6 +264,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Read an signed mashine's word wide integer from the target memory" )
         .def( "ptrPtr", &DebugClient::ptrPtr,
             "Read an pointer value from the target memory" )
+        .def("typedVar",&DebugClient::getTypedVarByName,
+            "Return a typedVar class instance" )
+        .def("typedVar",&DebugClient::getTypedVarByTypeInfo,
+            "Return a typedVar class instance" )
+        .def("typedVar",&DebugClient::getTypedVarByTypeName,
+            "Return a typedVar class instance" )
         .def( "loadExt", &pykd::DebugClient::loadExtension,
             "Load a debuger extension" )
         .def( "loadModule", &pykd::DebugClient::loadModuleByName, 
@@ -519,8 +525,10 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__getattr__", &TypeInfo::getField );
         
     python::class_<TypedVar, TypedVarPtr, python::bases<intBase>, boost::noncopyable >("typedVar", 
-        "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", 
-        python::no_init )
+        "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", python::no_init  )
+        .def("__init__", python::make_constructor(TypedVar::getTypedVarByName) )
+        .def("__init__", python::make_constructor(TypedVar::getTypedVarByTypeName) )
+        .def("__init__", python::make_constructor(TypedVar::getTypedVarByTypeInfo) )
         .def("getAddress", &TypedVar::getAddress, 
             "Return virtual address" )
         .def("sizeof", &TypedVar::getSize,

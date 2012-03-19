@@ -19,7 +19,13 @@ class TypedVar : public intBase, protected DbgObject {
 
 public:
 
-    static TypedVarPtr  getTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData );
+    static TypedVarPtr getTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData );
+
+    static TypedVarPtr getTypedVarByName( const std::string &varName );
+
+    static TypedVarPtr getTypedVarByTypeName( const std::string &typeName, ULONG64 addr );
+
+    static TypedVarPtr getTypedVarByTypeInfo( const TypeInfoPtr &typeInfo, ULONG64 addr );
 
     ULONG64 getAddress() const {
         return m_varData->getAddr();

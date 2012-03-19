@@ -273,6 +273,10 @@ public:
         return m_control;    
     }
 
+    CComPtr< IDebugDataSpaces4>&
+    dataSpace() {
+        return m_dataSpaces;
+    }
 
     PyThreadStateSaver&
     getThreadState() {
@@ -321,6 +325,20 @@ public:
     void removeBp(BPOINT_ID Id);
     void removeAllBp();
 
+    TypedVarPtr getTypedVarByName( const std::string &varName )
+    {
+        throw DbgException( "not implemented" );
+    }
+
+    TypedVarPtr getTypedVarByTypeName( const std::string &typeName, ULONG64 addr )
+    {
+        throw DbgException( "not implemented" );
+    }
+
+    TypedVarPtr getTypedVarByTypeInfo( const TypeInfoPtr &typeInfo, ULONG64 addr ) {
+        return TypedVar::getTypedVar( m_client, typeInfo, VarDataMemory::factory(m_dataSpaces, addr) );
+    }
+ 
 private:
     template<typename T>
     python::list
