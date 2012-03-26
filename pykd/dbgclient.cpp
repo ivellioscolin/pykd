@@ -437,4 +437,83 @@ void terminateProcess()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+static const boost::regex moduleSymMatch("^(?:([^!]*)!)?([^!]+)$"); 
+
+TypedVarPtr DebugClient::getTypedVarByName( const std::string &varName )
+{
+    boost::cmatch    matchResult;
+
+    if ( !boost::regex_match( varName.c_str(), matchResult, moduleSymMatch ) )
+    {
+        std::stringstream   sstr;
+        sstr << "invalid symbol name: " << varName;
+        throw SymbolException( sstr.str() );
+    }
+
+    std::string  symName = std::string( matchResult[2].first, matchResult[2].second );
+
+    if ( matchResult[1].matched )
+    {
+        Module   module = loadModuleByName( std::string( matchResult[1].first, matchResult[1].second ) );
+
+        return module.getTypedVarByName( symName );
+    }
+
+    HRESULT     hres;
+    ULONG64     base;
+
+    hres = m_symbols->GetSymbolModule( ( std::string("!") + symName ).c_str(), &base );
+    if ( FAILED( hres ) )
+    {
+        std::stringstream   sstr;
+        sstr << "failed to find module for symbol: " << symName;
+        throw SymbolException( sstr.str() );
+    }
+
+    Module  module = loadModuleByOffset( base );
+
+    return module.getTypedVarByName( symName );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVarPtr DebugClient::getTypedVarByTypeName( const std::string &typeName, ULONG64 addr )
+{
+    boost::cmatch    matchResult;
+
+    if ( !boost::regex_match( typeName.c_str(), matchResult, moduleSymMatch ) )
+    {
+        std::stringstream   sstr;
+        sstr << "invalid symbol name: " << typeName;
+        throw SymbolException( sstr.str() );
+    }
+
+    std::string  symName = std::string( matchResult[2].first, matchResult[2].second );
+
+    if ( matchResult[1].matched )
+    {
+        Module   module = loadModuleByName( std::string( matchResult[1].first, matchResult[1].second ) );
+
+        return module.getTypedVarByTypeName( symName, addr );
+    }
+
+    HRESULT     hres;
+    ULONG64     base;
+
+    hres = m_symbols->GetSymbolModule( ( std::string("!") + symName ).c_str(), &base );
+    if ( FAILED( hres ) )
+    {
+        std::stringstream   sstr;
+        sstr << "failed to find module for symbol: " << symName;
+        throw SymbolException( sstr.str() );
+    }
+
+    Module  module = loadModuleByOffset( base );
+
+    return module.getTypedVarByTypeName( symName, addr );
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }; // end of namespace pykd
