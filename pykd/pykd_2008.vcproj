@@ -366,6 +366,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgclientpyinit.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgcmd.cpp"
 				>
 			</File>
@@ -427,6 +431,10 @@
 			</File>
 			<File
 				RelativePath=".\pykd.def"
+				>
+			</File>
+			<File
+				RelativePath=".\pymod.cpp"
 				>
 			</File>
 			<File
