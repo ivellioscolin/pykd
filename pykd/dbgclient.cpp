@@ -37,16 +37,18 @@ DebugClientPtr DebugClient::createDbgClient() {
 
 DebugClientPtr DebugClient::createDbgClient( IDebugClient4 *client ) {
 
-    HRESULT                 hres;
-    CComPtr<IDebugClient>   newClient = NULL;
+    //HRESULT                 hres;
+    //CComPtr<IDebugClient>   newClient = NULL;
 
-    hres = client->CreateClient( &newClient );
-    if ( FAILED( hres ) )
-        throw DbgException("DebugCreate failed");
+    //hres = client->CreateClient( &newClient );
+    //if ( FAILED( hres ) )
+    //    throw DbgException("DebugCreate failed");
 
-    CComQIPtr<IDebugClient4>  client4=  newClient;
+    //CComQIPtr<IDebugClient4>  client4=  newClient;
 
-    return DebugClientPtr( new DebugClient(client4) );
+    //return DebugClientPtr( new DebugClient(client4) );
+
+    return DebugClientPtr( new DebugClient(client) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -442,6 +444,8 @@ static const boost::regex moduleSymMatch("^(?:([^!]*)!)?([^!]+)$");
 void DebugClient::splitSymName( const std::string &fullName, std::string &moduleName, std::string &symbolName )
 {
     boost::cmatch    matchResult;
+
+    OutputReader     outputDiscard( m_client );
 
     if ( !boost::regex_match( fullName.c_str(), matchResult, moduleSymMatch ) )
     {
