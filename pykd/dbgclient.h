@@ -352,6 +352,8 @@ public:
 
 
 private:
+    HRESULT safeWaitForEvent(ULONG timeout = INFINITE, ULONG flags = DEBUG_WAIT_DEFAULT);
+
     template<typename T>
     python::list
     loadArray( ULONG64 offset, ULONG count, bool phyAddr );

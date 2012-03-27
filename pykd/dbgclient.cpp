@@ -168,11 +168,10 @@ void DebugClient::loadDump( const std::wstring &fileName )
     hres = m_client->OpenDumpFileWide( fileName.c_str(), NULL );
     if ( FAILED( hres ) )
         throw DbgException( "IDebugClient4::OpenDumpFileWide failed" );
-        
-    hres = m_control->WaitForEvent(DEBUG_WAIT_DEFAULT, INFINITE);
+
+    hres = safeWaitForEvent();
     if ( FAILED( hres ) )
         throw DbgException( "IDebugControl::WaitForEvent failed" );
- 
 }
 
 void loadDump( const std::wstring &fileName ) {
@@ -184,7 +183,7 @@ void loadDump( const std::wstring &fileName ) {
 void DebugClient::startProcess( const std::wstring  &processName )
 {
     HRESULT     hres;
-        
+
     ULONG       opt;
     hres = m_control->GetEngineOptions( &opt );
     if ( FAILED( hres ) )
@@ -202,13 +201,13 @@ void DebugClient::startProcess( const std::wstring  &processName )
     if ( FAILED( hres ) )
         throw DbgException( "IDebugClient4::CreateProcessWide failed" );
 
-    hres = m_control->WaitForEvent(DEBUG_WAIT_DEFAULT, INFINITE);
+    hres = safeWaitForEvent();
     if ( FAILED( hres ) )
         throw DbgException( "IDebugControl::WaitForEvent failed" );
 }
 
 void startProcess( const std::wstring  &processName ) {
-    g_dbgClient->startProcess( processName );    
+    g_dbgClient->startProcess( processName );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -366,7 +365,6 @@ void DebugClient::setExecutionStatus( ULONG status )
 
     if ( FAILED( hres ) )
         throw DbgException( "IDebugControl::SetExecutionStatus failed" );
-
 }
 
 void setExecutionStatus( ULONG status )
@@ -376,15 +374,17 @@ void setExecutionStatus( ULONG status )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+HRESULT DebugClient::safeWaitForEvent(ULONG timeout /*= INFINITE*/, ULONG flags /*= DEBUG_WAIT_DEFAULT*/)
+{
+    PyThread_StateRestore pyThreadRestore( m_pyThreadState );
+    return m_control->WaitForEvent( flags, timeout );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 void DebugClient::waitForEvent()
 {
-    HRESULT     hres;
-
-    do {
-        PyThread_StateRestore pyThreadRestore( m_pyThreadState );
-        hres = m_control->WaitForEvent( 0, INFINITE );
-
-    } while( false );
+    HRESULT hres = safeWaitForEvent();
 
     if ( FAILED( hres ) )
     {
