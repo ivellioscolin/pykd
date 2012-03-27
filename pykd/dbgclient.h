@@ -325,6 +325,8 @@ public:
     void removeBp(BPOINT_ID Id);
     void removeAllBp();
 
+    void splitSymName( const std::string &fullName, std::string &moduleName, std::string &symbolName );
+
     TypedVarPtr getTypedVarByName( const std::string &varName );
 
     TypedVarPtr getTypedVarByTypeName( const std::string &typeName, ULONG64 addr );
@@ -332,7 +334,21 @@ public:
     TypedVarPtr getTypedVarByTypeInfo( const TypeInfoPtr &typeInfo, ULONG64 addr ) {
         return TypedVar::getTypedVar( m_client, typeInfo, VarDataMemory::factory(m_dataSpaces, addr) );
     }
- 
+
+    TypedVarPtr containingRecordByName( ULONG64 addr, const std::string &typeName, const std::string &fieldName );
+
+    TypedVarPtr containingRecordByType( ULONG64 addr, const TypeInfoPtr &typeInfo, const std::string &fieldName );
+
+
+    python::list getTypedVarListByTypeName( ULONG64 listHeadAddres, const std::string  &typeName, const std::string &listEntryName );
+
+    python::list getTypedVarListByType( ULONG64 listHeadAddres, const TypeInfoPtr &typeInfo, const std::string &listEntryName );
+
+    python::list getTypedVarArrayByTypeName( ULONG64 addr, const std::string  &typeName, ULONG number );
+
+    python::list getTypedVarArrayByType( ULONG64 addr, const TypeInfoPtr &typeInfo, ULONG number );
+
+
 private:
     template<typename T>
     python::list
@@ -387,6 +403,18 @@ void setExecutionStatus( ULONG status );
 void terminateProcess();
 
 void waitForEvent();
+
+TypedVarPtr containingRecordByName( ULONG64 addr, const std::string &typeName, const std::string &fieldName );
+
+TypedVarPtr containingRecordByType( ULONG64 addr, const TypeInfoPtr &typeInfo, const std::string &fieldName );
+
+python::list getTypedVarListByTypeName( ULONG64 listHeadAddres, const std::string  &typeName, const std::string &listEntryName );
+
+python::list getTypedVarListByType( ULONG64 listHeadAddres, const TypeInfoPtr &typeInfo, const std::string &listEntryName );
+
+python::list getTypedVarArrayByTypeName( ULONG64 addr, const std::string  &typeName, ULONG number );
+
+python::list getTypedVarArrayByType( ULONG64 addr, const TypeInfoPtr &typeInfo, ULONG number );
 
 /////////////////////////////////////////////////////////////////////////////////
 // Synthetic symbols global finctions:

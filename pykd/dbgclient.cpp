@@ -439,38 +439,68 @@ void terminateProcess()
 
 static const boost::regex moduleSymMatch("^(?:([^!]*)!)?([^!]+)$"); 
 
-TypedVarPtr DebugClient::getTypedVarByName( const std::string &varName )
+void DebugClient::splitSymName( const std::string &fullName, std::string &moduleName, std::string &symbolName )
 {
     boost::cmatch    matchResult;
 
-    if ( !boost::regex_match( varName.c_str(), matchResult, moduleSymMatch ) )
+    if ( !boost::regex_match( fullName.c_str(), matchResult, moduleSymMatch ) )
     {
         std::stringstream   sstr;
-        sstr << "invalid symbol name: " << varName;
+        sstr << "invalid symbol name: " << fullName;
         throw SymbolException( sstr.str() );
     }
 
-    std::string  symName = std::string( matchResult[2].first, matchResult[2].second );
+    symbolName = std::string( matchResult[2].first, matchResult[2].second );
 
     if ( matchResult[1].matched )
     {
-        Module   module = loadModuleByName( std::string( matchResult[1].first, matchResult[1].second ) );
+        moduleName = std::string( matchResult[1].first, matchResult[1].second );
 
-        return module.getTypedVarByName( symName );
+        return;
     }
 
     HRESULT     hres;
     ULONG64     base;
 
-    hres = m_symbols->GetSymbolModule( ( std::string("!") + symName ).c_str(), &base );
+    hres = m_symbols->GetSymbolModule( ( std::string("!") + symbolName ).c_str(), &base );
     if ( FAILED( hres ) )
     {
         std::stringstream   sstr;
-        sstr << "failed to find module for symbol: " << symName;
+        sstr << "failed to find module for symbol: " << symbolName;
         throw SymbolException( sstr.str() );
     }
 
-    Module  module = loadModuleByOffset( base );
+    char       nameBuffer[0x100];
+
+    hres = 
+        m_symbols->GetModuleNameString(
+            DEBUG_MODNAME_MODULE,
+            DEBUG_ANY_ID,
+            base,
+            nameBuffer,
+            sizeof(nameBuffer),
+            NULL );
+
+    if ( FAILED( hres ) )
+    {
+        std::stringstream   sstr;
+        sstr << "failed to find module for symbol: " << symbolName;
+        throw SymbolException( sstr.str() );
+    }
+
+    moduleName = std::string( nameBuffer );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVarPtr DebugClient::getTypedVarByName( const std::string &varName )
+{
+    std::string     moduleName;
+    std::string     symName;
+
+    splitSymName( varName, moduleName, symName );
+
+    Module   module = loadModuleByName( moduleName );
 
     return module.getTypedVarByName( symName );
 }
@@ -479,39 +509,143 @@ TypedVarPtr DebugClient::getTypedVarByName( const std::string &varName )
 
 TypedVarPtr DebugClient::getTypedVarByTypeName( const std::string &typeName, ULONG64 addr )
 {
-    boost::cmatch    matchResult;
+    addr = addr64( addr );
 
-    if ( !boost::regex_match( typeName.c_str(), matchResult, moduleSymMatch ) )
-    {
-        std::stringstream   sstr;
-        sstr << "invalid symbol name: " << typeName;
-        throw SymbolException( sstr.str() );
-    }
+    std::string     moduleName;
+    std::string     symName;
 
-    std::string  symName = std::string( matchResult[2].first, matchResult[2].second );
+    splitSymName( typeName, moduleName, symName );
 
-    if ( matchResult[1].matched )
-    {
-        Module   module = loadModuleByName( std::string( matchResult[1].first, matchResult[1].second ) );
-
-        return module.getTypedVarByTypeName( symName, addr );
-    }
-
-    HRESULT     hres;
-    ULONG64     base;
-
-    hres = m_symbols->GetSymbolModule( ( std::string("!") + symName ).c_str(), &base );
-    if ( FAILED( hres ) )
-    {
-        std::stringstream   sstr;
-        sstr << "failed to find module for symbol: " << symName;
-        throw SymbolException( sstr.str() );
-    }
-
-    Module  module = loadModuleByOffset( base );
+    Module   module = loadModuleByName( moduleName );
 
     return module.getTypedVarByTypeName( symName, addr );
+}
 
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVarPtr DebugClient::containingRecordByName( ULONG64 addr, const std::string &typeName, const std::string &fieldName )
+{
+    addr = addr64( addr );
+
+    std::string     moduleName;
+    std::string     symName;
+
+    splitSymName( typeName, moduleName, symName );
+
+    Module   module = loadModuleByName( moduleName );
+
+    return module.containingRecordByName( addr, symName, fieldName );
+}
+
+TypedVarPtr containingRecordByName( ULONG64 addr, const std::string &typeName, const std::string &fieldName )
+{
+    return g_dbgClient->containingRecordByName( addr, typeName, fieldName );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVarPtr DebugClient::containingRecordByType( ULONG64 addr, const TypeInfoPtr &typeInfo, const std::string &fieldName )
+{
+    addr = addr64(addr); 
+
+    TypeInfoPtr     fieldTypeInfo = typeInfo->getField( fieldName );
+
+    VarDataPtr varData = VarDataMemory::factory( m_dataSpaces, addr - fieldTypeInfo->getOffset() );
+
+    return TypedVar::getTypedVar( m_client, typeInfo, varData );
+}
+
+TypedVarPtr containingRecordByType( ULONG64 addr, const TypeInfoPtr &typeInfo, const std::string &fieldName )
+{
+    return g_dbgClient->containingRecordByType( addr, typeInfo, fieldName );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+python::list DebugClient::getTypedVarListByType( ULONG64 listHeadAddress, const TypeInfoPtr &typeInfo, const std::string &listEntryName )\
+{
+    python::list    lst;
+
+    listHeadAddress = addr64( listHeadAddress );
+
+    ULONG64                 entryAddress = 0;
+
+    TypeInfoPtr             fieldTypeInfo = typeInfo->getField( listEntryName );
+
+    if ( fieldTypeInfo->getName() == ( typeInfo->getName() + "*" ) )
+    {
+        for( entryAddress = ptrPtr( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress + fieldTypeInfo->getOffset() ) )
+            lst.append( getTypedVarByTypeInfo( typeInfo, entryAddress ) );
+    }
+    else
+    {
+        for( entryAddress = ptrPtr( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress ) )
+            lst.append( containingRecordByType( entryAddress, typeInfo, listEntryName ) );
+    }
+
+    return lst;
+}
+
+python::list getTypedVarListByType( ULONG64 listHeadAddress, const TypeInfoPtr &typeInfo, const std::string &listEntryName )
+{
+    return g_dbgClient->getTypedVarListByType( listHeadAddress, typeInfo, listEntryName );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+python::list DebugClient::getTypedVarListByTypeName( ULONG64 listHeadAddress, const std::string &typeName, const std::string &listEntryName )
+{
+    std::string     moduleName;
+    std::string     symName;
+
+    splitSymName( typeName, moduleName, symName );
+
+    Module   module = loadModuleByName( moduleName );
+
+    return module.getTypedVarListByTypeName( listHeadAddress, symName, listEntryName );
+}
+
+python::list getTypedVarListByTypeName( ULONG64 listHeadAddress, const std::string &typeName, const std::string &listEntryName )
+{
+    return g_dbgClient->getTypedVarListByTypeName( listHeadAddress, typeName, listEntryName );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+python::list DebugClient::getTypedVarArrayByType( ULONG64 address, const TypeInfoPtr &typeInfo, ULONG number )
+{
+    address = addr64(address); 
+       
+    python::list     lst;
+    
+    for( ULONG i = 0; i < number; ++i )
+        lst.append( getTypedVarByTypeInfo( typeInfo, address + i * typeInfo->getSize() ) );
+   
+    return lst;
+}
+
+python::list getTypedVarArrayByType( ULONG64 address, const TypeInfoPtr &typeInfo, ULONG number )
+{
+    return g_dbgClient->getTypedVarArrayByType( address, typeInfo, number );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+python::list DebugClient::getTypedVarArrayByTypeName( ULONG64 addr, const std::string  &typeName, ULONG number )
+{
+    std::string     moduleName;
+    std::string     symName;
+
+    splitSymName( typeName, moduleName, symName );
+
+    Module   module = loadModuleByName( moduleName );
+
+    return module.getTypedVarArrayByTypeName( addr, symName, number );
+}
+
+python::list getTypedVarArrayByTypeName( ULONG64 addr, const std::string  &typeName, ULONG number )
+{
+    return g_dbgClient->getTypedVarArrayByTypeName( addr, typeName, number );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

@@ -304,6 +304,20 @@ BOOST_PYTHON_MODULE( pykd )
             "Return symbol path" )
         .def( "trace", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
             "Change debugger status to DEBUG_STATUS_STEP_INTO" )
+        .def("typedVarList", &DebugClient::getTypedVarListByTypeName,
+            "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
+        .def("typedVarList", &DebugClient::getTypedVarListByType,
+            "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
+        .def("typedVarArray", &DebugClient::getTypedVarArrayByTypeName,
+            "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
+        .def("typedVarArray", &DebugClient::getTypedVarArrayByType,
+            "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
+        .def("containingRecord", &DebugClient::containingRecordByName,
+            "Return instance of the typedVar class. It's value are loaded from the target memory."
+            "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
+        .def("containingRecord", &DebugClient::containingRecordByType,
+            "Return instance of the typedVar class. It's value are loaded from the target memory."
+            "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
         .def( "waitForEvent", &DebugClient::waitForEvent,
             "Wait for events that breaks into the debugger" )
         .def( "wrmsr", &DebugClient::setMSR,
@@ -491,6 +505,20 @@ BOOST_PYTHON_MODULE( pykd )
         "Set MSR value" );
     python::def( "trace", &changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
         "Change debugger status to DEBUG_STATUS_STEP_INTO" );
+    python::def("typedVarList", &getTypedVarListByTypeName,
+        "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" );
+    python::def("typedVarList", &getTypedVarListByType,
+        "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" );
+    python::def("typedVarArray", &getTypedVarArrayByTypeName,
+        "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" );
+    python::def("typedVarArray", &getTypedVarArrayByType,
+        "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" );
+    python::def("containingRecord", &containingRecordByName,
+        "Return instance of the typedVar class. It's value are loaded from the target memory."
+        "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
+    python::def("containingRecord", &containingRecordByType,
+        "Return instance of the typedVar class. It's value are loaded from the target memory."
+        "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
     python::def( "waitForEvent", &waitForEvent,
         "Wait for events that breaks into the debugger" );
     python::def( "getNumberProcessors", &getNumberProcessors,

@@ -17,6 +17,7 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'addr64') )
         self.assertTrue( hasattr(pykd, 'breakin') )
         self.assertTrue( hasattr(pykd, 'compareMemory') )
+        self.assertTrue( hasattr(pykd, 'containingRecord') )
         self.assertTrue( hasattr(pykd, 'dbgCommand') )
         self.assertTrue( hasattr(pykd, 'dprint') )
         self.assertTrue( hasattr(pykd, 'dprintln') )
@@ -76,6 +77,8 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'startProcess') )
         self.assertTrue( hasattr(pykd, 'step') )
         self.assertTrue( hasattr(pykd, 'symbolsPath') )
+        self.assertTrue( hasattr(pykd, 'typedVarArray') )
+        self.assertTrue( hasattr(pykd, 'typedVarList') )
         self.assertTrue( hasattr(pykd, 'trace') )
         self.assertTrue( hasattr(pykd, 'wrmsr') )
 
@@ -95,7 +98,6 @@ class BaseTest( unittest.TestCase ):
 
     def testOldRemovedApi( self ):
         """ Branch test: old API 0.0.x what should be removed """
-        self.assertFalse( hasattr(pykd, 'containingRecord') )
         self.assertFalse( hasattr(pykd, 'dbgModuleClass') )
         self.assertFalse( hasattr(pykd, 'dbgStackFrameClass') )
         self.assertFalse( hasattr(pykd, 'debugEvent') )
@@ -104,8 +106,6 @@ class BaseTest( unittest.TestCase ):
         self.assertFalse( hasattr(pykd, 'loadPtrs') )
         self.assertFalse( hasattr(pykd, 'reloadModule') )
         self.assertFalse( hasattr(pykd, 'sizeof') )        
-        self.assertFalse( hasattr(pykd, 'typedVarArray') )
-        self.assertFalse( hasattr(pykd, 'typedVarList') )
         self.assertFalse( hasattr(pykd, 'windbgIn') )
         self.assertFalse( hasattr(pykd, 'windbgOut') )
         self.assertFalse( hasattr(pykd, 'bp') )
