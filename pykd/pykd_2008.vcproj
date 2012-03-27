@@ -47,6 +47,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/bigobj"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(DIA_SDK_ROOT)\include&quot;;&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x86\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS"
@@ -127,6 +128,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/bigobj"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(DIA_SDK_ROOT)\include&quot;;&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x64\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS"
@@ -208,6 +210,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/bigobj"
 				AdditionalIncludeDirectories="&quot;$(DIA_SDK_ROOT)\include&quot;;&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x86\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS"
 				RuntimeLibrary="2"
@@ -287,6 +290,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/bigobj"
 				AdditionalIncludeDirectories="&quot;$(DIA_SDK_ROOT)\include&quot;;&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x64\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS"
 				RuntimeLibrary="2"
@@ -363,10 +367,6 @@
 			</File>
 			<File
 				RelativePath=".\dbgclient.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgclientpyinit.cpp"
 				>
 			</File>
 			<File
