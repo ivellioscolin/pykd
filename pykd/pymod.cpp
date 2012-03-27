@@ -520,6 +520,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Remove all breapoints" );
 
     python::class_<TypeInfo, TypeInfoPtr, python::bases<intBase>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
+        .def("__init__", python::make_constructor(TypeInfo::getTypeInfoByName ) )
         .def( "name", &TypeInfo::getName )
         .def( "size", &TypeInfo::getSize )
         .def( "offset", &TypeInfo::getOffset )

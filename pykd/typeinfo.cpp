@@ -1,8 +1,16 @@
 #include "stdafx.h"
 
 #include "typeinfo.h"
+#include "dbgclient.h"
 
 namespace pykd {
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+TypeInfoPtr  TypeInfo::getTypeInfoByName( const std::string &typeName )
+{
+    return g_dbgClient->getTypeInfoByName( typeName );
+}
 
 /////////////////////////////////////////////////////////////////////////////////////
 

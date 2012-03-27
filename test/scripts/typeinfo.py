@@ -9,10 +9,11 @@ import pykd
 class TypeInfoTest( unittest.TestCase ):
 
     def testCtor( self ):
-        """ typeInfo class can not be created direct """
-        try: pykd.typeInfo()
-        except RuntimeError: pass
-
+        self.assertEqual( "structTest", pykd.typeInfo( "structTest" ).name() )
+        self.assertEqual( "structTest", pykd.typeInfo( target.moduleName + "!structTest" ).name() )
+        self.assertEqual( "structTest", pykd.typeInfo( "g_structTest" ).name() )
+        self.assertEqual( "structTest", pykd.typeInfo( target.moduleName + "!g_structTest" ).name() )
+ 
     def testCreateByName( self ):
         """ creating typeInfo by the type name """
         self.assertEqual( "structTest", target.module.type( "structTest" ).name() )

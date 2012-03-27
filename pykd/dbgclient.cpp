@@ -493,6 +493,20 @@ void DebugClient::splitSymName( const std::string &fullName, std::string &module
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+TypeInfoPtr DebugClient::getTypeInfoByName( const std::string &typeName )
+{
+    std::string     moduleName;
+    std::string     symName;
+
+    splitSymName( typeName, moduleName, symName );
+
+    Module   module = loadModuleByName( moduleName );   
+
+    return module.getTypeByName( symName );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 TypedVarPtr DebugClient::getTypedVarByName( const std::string &varName )
 {
     std::string     moduleName;

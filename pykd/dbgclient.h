@@ -327,6 +327,8 @@ public:
 
     void splitSymName( const std::string &fullName, std::string &moduleName, std::string &symbolName );
 
+    TypeInfoPtr getTypeInfoByName( const std::string &typeName );
+
     TypedVarPtr getTypedVarByName( const std::string &varName );
 
     TypedVarPtr getTypedVarByTypeName( const std::string &typeName, ULONG64 addr );

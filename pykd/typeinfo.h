@@ -18,6 +18,9 @@ class TypeInfo : boost::noncopyable, public intBase {
 
 public:
 
+    static
+    TypeInfoPtr  getTypeInfoByName( const std::string &symName );
+
     static 
     TypeInfoPtr  getTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName );
 
