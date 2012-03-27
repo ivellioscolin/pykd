@@ -137,8 +137,10 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::implicitly_convertible<intBase,ULONG64>();
     python::implicitly_convertible<intBase,LONG64>();
+    python::implicitly_convertible<intBase,ULONG>();
+    python::implicitly_convertible<intBase,LONG>();
 
-        python::class_<DebugClient, DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
+    python::class_<DebugClient, DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
         .def( "addr64", &DebugClient::addr64,
             "Extend address to 64 bits formats" )
         .def( "breakin", &DebugClient::breakin,

@@ -176,7 +176,7 @@ std::string PtrTypedVar::print()
 {
     std::stringstream   sstr;
 
-    sstr << m_typeInfo->getName() << " " << m_varData->asString();
+    sstr << "Ptr " << m_typeInfo->getName() << " " << m_varData->asString();
     sstr << " Value: " << printValue();
 
     return sstr.str();
