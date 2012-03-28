@@ -1,4 +1,12 @@
-version 0.1.0.9 13/04/2012
+version 0.1.0.10 28/03/2012
+
+[+] added : direct constructor for typeInfo
+[+] added : direct constructor for typedVar
+[+] added : typedVarList, typedVarArray, containingRecord routines
+[!] fixed : issue #10521 ( typeInfo returns invalid type name for array's element ) 
+[!] fixed : issue #10338 ( print typeInfo raises TypeException ) 
+
+version 0.1.0.9 13/03/2012
 
 [+] added : support constant variables without RVA 
 [+] added : DIA: undecorated name getter 
