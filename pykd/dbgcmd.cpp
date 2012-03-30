@@ -59,7 +59,7 @@ std::string DbgExtension::call( const std::wstring &command, const std::wstring 
 
     PyThreadState   *pystate = PyEval_SaveThread();
 
-    hres = m_control->CallExtensionWide( m_handle, command.c_str(), NULL );
+    hres = m_control->CallExtensionWide( m_handle, command.c_str(), params.c_str() );
 
     PyEval_RestoreThread( pystate );
 
