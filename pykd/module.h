@@ -12,7 +12,20 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+class Module;
+typedef boost::shared_ptr<Module>  ModulePtr;
+
+///////////////////////////////////////////////////////////////////////////////////
+
 class Module :  public intBase, private DbgObject {
+
+public:
+
+    static
+    ModulePtr loadModuleByName( const std::string &name );
+
+    static
+    ModulePtr loadModuleByOffset( ULONG64 offset );
 
 public:
     
@@ -118,12 +131,6 @@ private:
     ULONG                   m_checkSumm;
     SynSymbolsPtr           m_synSymbols;
 };
-
-///////////////////////////////////////////////////////////////////////////////////
-
-Module loadModuleByName( const std::string  &moduleName ) ;
-
-Module loadModuleByOffset( ULONG64  offset );
 
 ///////////////////////////////////////////////////////////////////////////////////
 

@@ -452,9 +452,9 @@ BOOST_PYTHON_MODULE( pykd )
         "Delete synthetic symbols by mask of module and symbol name");
     python::def( "loadExt", &pykd::loadExtension,
         "Load a debuger extension" );
-    python::def( "loadModule", &loadModuleByName,
+    python::def( "loadModule", &Module::loadModuleByName,
         "Return instance of Module class"  );
-    python::def( "loadModule", &loadModuleByOffset,
+    python::def( "loadModule", &Module::loadModuleByOffset,
         "Return instance of the Module class which posseses specified address" );
     python::def( "dbgCommand", &pykd::dbgCommand,
         "Run a debugger's command and return it's result as a string" ),
@@ -558,7 +558,9 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__getitem__", &TypedVar::getElementByIndex )
         .def("__getitem__", &TypedVar::getElementByIndexPtr );
 
-    python::class_<Module, python::bases<intBase> >("module", "Class representing executable module", python::no_init )
+    python::class_<Module, ModulePtr, python::bases<intBase> >("module", "Class representing executable module", python::no_init )
+        .def("__init__", python::make_constructor(Module::loadModuleByName) )
+        .def("__init__", python::make_constructor(Module::loadModuleByOffset) )
         .def("begin", &Module::getBase,
              "Return start address of the module" )
         .def("end", &Module::getEnd,

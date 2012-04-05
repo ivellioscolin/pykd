@@ -17,7 +17,7 @@ namespace impl {
 
 struct addLocals {
     python::dict &m_locals;
-    const Module &m_module;
+    const ModulePtr m_module;
     ULONG m_rva;
     ContextPtr m_ctx;
     IDebugClient4 *m_client;
@@ -95,7 +95,7 @@ void addLocals::appendVar(pyDia::SymbolPtr symData)
         typedVar = 
             getTypeVarByOffset(
                 symData,
-                m_module.getBase() + symData->getRva() );
+                m_module->getBase() + symData->getRva() );
         break;
 
     case LocIsRegRel:
@@ -189,10 +189,10 @@ python::dict DebugClient::getLocals(ContextPtr ctx OPTIONAL)
 
     const ULONG64 instrPtr = ctx->getIp();
 
-    Module mod = loadModuleByOffset( instrPtr );
-    const ULONG rva = static_cast<ULONG>( instrPtr - mod.getBase() );
+    ModulePtr mod = loadModuleByOffset( instrPtr );
+    const ULONG rva = static_cast<ULONG>( instrPtr - mod->getBase() );
 
-    pyDia::GlobalScopePtr globScope = mod.getDia();
+    pyDia::GlobalScopePtr globScope = mod->getDia();
     LONG funcDispl;
     pyDia::SymbolPtr symFunc = 
         globScope->findByRvaImpl(rva, SymTagFunction, funcDispl);

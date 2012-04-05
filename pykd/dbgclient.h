@@ -153,12 +153,12 @@ public:
 
     void loadDump( const std::wstring &fileName );
 
-    Module loadModuleByName( const std::string  &moduleName ) {
-        return Module( m_client, m_symSymbols, moduleName );
+    ModulePtr loadModuleByName( const std::string  &moduleName ) {
+        return  ModulePtr( new Module( m_client, m_symSymbols, moduleName ) );
     }
 
-    Module loadModuleByOffset( ULONG64  offset ) {
-        return Module( m_client, m_symSymbols, offset ); 
+    ModulePtr loadModuleByOffset( ULONG64  offset ) {
+        return  ModulePtr( new Module( m_client, m_symSymbols, offset ) );
     }
 
     DbgExtensionPtr loadExtension( const std::wstring &extPath ) {

@@ -72,7 +72,7 @@ protected:
 
     virtual ULONG onException(const python::dict &/*exceptData*/) = 0;
 
-    virtual ULONG onLoadModule(const Module &/* module */)  = 0;
+    virtual ULONG onLoadModule(const ModulePtr &/* module */)  = 0;
 
     virtual ULONG onUnloadModule(ULONG64 /*modBase*/)  = 0;
     
@@ -108,8 +108,8 @@ public:
         return handler<const python::dict&>("onException", exceptData);
     }
 
-    ULONG onLoadModule(const Module &module) {
-        return handler<const Module&>("onLoadModule", module );
+    ULONG onLoadModule(const ModulePtr &module) {
+        return handler<const ModulePtr&>("onLoadModule", module );
     }
 
     ULONG onUnloadModule(ULONG64 modBase) {

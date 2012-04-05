@@ -504,9 +504,9 @@ TypeInfoPtr DebugClient::getTypeInfoByName( const std::string &typeName )
 
     splitSymName( typeName, moduleName, symName );
 
-    Module   module = loadModuleByName( moduleName );   
+    ModulePtr   module = loadModuleByName( moduleName );   
 
-    return module.getTypeByName( symName );
+    return module->getTypeByName( symName );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -518,9 +518,9 @@ TypedVarPtr DebugClient::getTypedVarByName( const std::string &varName )
 
     splitSymName( varName, moduleName, symName );
 
-    Module   module = loadModuleByName( moduleName );
+    ModulePtr   module = loadModuleByName( moduleName );
 
-    return module.getTypedVarByName( symName );
+    return module->getTypedVarByName( symName );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -534,9 +534,9 @@ TypedVarPtr DebugClient::getTypedVarByTypeName( const std::string &typeName, ULO
 
     splitSymName( typeName, moduleName, symName );
 
-    Module   module = loadModuleByName( moduleName );
+    ModulePtr   module = loadModuleByName( moduleName );
 
-    return module.getTypedVarByTypeName( symName, addr );
+    return module->getTypedVarByTypeName( symName, addr );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -550,9 +550,9 @@ TypedVarPtr DebugClient::containingRecordByName( ULONG64 addr, const std::string
 
     splitSymName( typeName, moduleName, symName );
 
-    Module   module = loadModuleByName( moduleName );
+    ModulePtr   module = loadModuleByName( moduleName );
 
-    return module.containingRecordByName( addr, symName, fieldName );
+    return module->containingRecordByName( addr, symName, fieldName );
 }
 
 TypedVarPtr containingRecordByName( ULONG64 addr, const std::string &typeName, const std::string &fieldName )
@@ -618,9 +618,9 @@ python::list DebugClient::getTypedVarListByTypeName( ULONG64 listHeadAddress, co
 
     splitSymName( typeName, moduleName, symName );
 
-    Module   module = loadModuleByName( moduleName );
+    ModulePtr   module = loadModuleByName( moduleName );
 
-    return module.getTypedVarListByTypeName( listHeadAddress, symName, listEntryName );
+    return module->getTypedVarListByTypeName( listHeadAddress, symName, listEntryName );
 }
 
 python::list getTypedVarListByTypeName( ULONG64 listHeadAddress, const std::string &typeName, const std::string &listEntryName )
@@ -656,9 +656,9 @@ python::list DebugClient::getTypedVarArrayByTypeName( ULONG64 addr, const std::s
 
     splitSymName( typeName, moduleName, symName );
 
-    Module   module = loadModuleByName( moduleName );
+    ModulePtr   module = loadModuleByName( moduleName );
 
-    return module.getTypedVarArrayByTypeName( addr, symName, number );
+    return module->getTypedVarArrayByTypeName( addr, symName, number );
 }
 
 python::list getTypedVarArrayByTypeName( ULONG64 addr, const std::string  &typeName, ULONG number )

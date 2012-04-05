@@ -9,9 +9,8 @@ import pykd
 class ModuleTest( unittest.TestCase ):
     
     def testCtor( self ):
-        " module class can not be created direct """
-        try: pykd.module()
-        except RuntimeError: pass         
+		self.assertEqual( target.module.name(), pykd.module(target.module.begin() ).name() )
+		self.assertEqual( target.module.name(), pykd.module(target.module.name() ).name() )
          
     def testName( self ):
         self.assertEqual( target.moduleName, target.module.name() )
