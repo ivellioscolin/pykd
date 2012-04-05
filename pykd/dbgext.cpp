@@ -125,7 +125,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
         sys.attr("stdin") = python::object( dbgClient->din() );
 
         // импортируем модуль обработки исключений ( нужен для вывода traceback а )
-        boost::python::object       tracebackModule = python::import("traceback");
+        python::object       tracebackModule = python::import("traceback");
 
         // разбор параметров
         typedef  boost::escaped_list_separator<char>    char_separator_t;
@@ -216,8 +216,11 @@ HRESULT
 CALLBACK
 pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 {
-    DebugClientPtr      dbgClient = DebugClient::createDbgClient( client );
-    DebugClientPtr      oldClient = DebugClient::setDbgClientCurrent( dbgClient );
+    if ( g_dbgClient->client() != client )
+    {
+        DebugClientPtr      dbgClient = DebugClient::createDbgClient( client );
+        DebugClient::setDbgClientCurrent( dbgClient );
+    }
 
     WindbgGlobalSession::RestorePyState();
     
@@ -241,17 +244,19 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
             WindbgGlobalSession::global().ptr(),
             WindbgGlobalSession::global().ptr()
             );
+
+        // выход из интерпретатора происходит через исключение raise SystemExit(code)
+        // которое потом может помешать исполнению callback ов
+        PyErr_Clear();
     }
     catch(...)
     {      
-        dbgClient->eprintln( L"unexpected error" );
+        //dbgClient->eprintln( L"unexpected error" );
     }    
 
     client->SetOutputMask( mask );
 
     WindbgGlobalSession::SavePyState();
-
-    DebugClient::setDbgClientCurrent( oldClient );
 
     return S_OK;
 }

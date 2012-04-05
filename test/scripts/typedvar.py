@@ -103,6 +103,8 @@ class TypedVarTest( unittest.TestCase ):
     def testBitField(self):
         tv = target.module.typedVar("g_structWithBits")
         self.assertEqual( 4, tv.m_bit0_4 )
+        self.assertEqual( 1, tv.m_bit5 )
+        self.assertEqual( 3, tv.m_bit6_7 )
 
     def testTypedVarList(self):
         tvl = target.module.typedVarList( target.module.g_listHead, "listStruct", "listEntry" )
