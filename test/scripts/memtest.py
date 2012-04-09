@@ -92,7 +92,7 @@ class MemoryTest( unittest.TestCase ):
         self.assertEqual( 3, len( lst ) )
         
     def testPtrArray( self ):
-        lst = pykd.loadPtrArray( target.module.arrIntMatrixPtrs, 3 )
+        lst = pykd.loadPtrs( target.module.arrIntMatrixPtrs, 3 )
         self.assertEqual( 3, len( lst ) )
         
     def testInvalidAddr( self ):

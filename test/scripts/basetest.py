@@ -49,6 +49,7 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'loadDump') )
         self.assertTrue( hasattr(pykd, 'loadModule') )
         self.assertTrue( hasattr(pykd, 'loadQWords') )
+        self.assertTrue( hasattr(pykd, 'loadPtrs') )
         self.assertTrue( hasattr(pykd, 'loadSignBytes') )
         self.assertTrue( hasattr(pykd, 'loadSignDWords') )
         self.assertTrue( hasattr(pykd, 'loadSignQWords') )
@@ -103,7 +104,6 @@ class BaseTest( unittest.TestCase ):
         self.assertFalse( hasattr(pykd, 'debugEvent') )
         self.assertFalse( hasattr(pykd, 'findModule') )
         self.assertFalse( hasattr(pykd, 'loadLinkedList') )
-        self.assertFalse( hasattr(pykd, 'loadPtrs') )
         self.assertFalse( hasattr(pykd, 'reloadModule') )
         self.assertFalse( hasattr(pykd, 'sizeof') )        
         self.assertFalse( hasattr(pykd, 'windbgIn') )
@@ -121,7 +121,6 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'killProcess') )
         self.assertTrue( hasattr(pykd, 'loadExt') )
         self.assertTrue( hasattr(pykd, 'loadPtrList') )
-        self.assertTrue( hasattr(pykd, 'loadPtrArray') )
         self.assertTrue( hasattr(pykd, 'setExecutionStatus') )
         self.assertTrue( hasattr(pykd, 'waitForEvent') )
 
