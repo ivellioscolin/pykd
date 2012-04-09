@@ -66,13 +66,15 @@ def buildDoc( ioStream, formatter, apiInfo ):
     for func in apiInfo.funcs:
         ioStream.write( formatter.anchor( func.__name__ ) )
         ioStream.write( formatter.header3( func.__name__ ) )
-        ioStream.write( formatter.escapeMarkup( func.__doc__) + formatter.endl() )
+        if func.__doc__ != None:
+            ioStream.write( formatter.escapeMarkup( func.__doc__) + formatter.endl() )
 
 
     for cls in apiInfo.classes:
         ioStream.write( formatter.anchor( cls.__name__ ) )
         ioStream.write( formatter.header3( cls.__name__ ) )	
-        ioStream.write( formatter.escapeMarkup( cls.__doc__)  + formatter.endl() )
+        if cls.__doc__ != None:
+            ioStream.write( formatter.escapeMarkup( cls.__doc__)  + formatter.endl() )
 
         for m in cls.methods:
             if m.__doc__ != None:

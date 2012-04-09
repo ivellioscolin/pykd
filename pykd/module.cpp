@@ -37,7 +37,7 @@ Module::Module( IDebugClient4 *client, SynSymbolsPtr synSymbols, const std::stri
 
     m_size = moduleParam.Size;
     m_timeDataStamp = moduleParam.TimeDateStamp;
-    m_checkSumm = moduleParam.Checksum;
+    m_checkSum = moduleParam.Checksum;
 
     char imageName[0x100];
 
@@ -107,7 +107,7 @@ Module::Module( IDebugClient4 *client, SynSymbolsPtr synSymbols, ULONG64 offset 
 
     m_size = moduleParam.Size;
     m_timeDataStamp = moduleParam.TimeDateStamp;
-    m_checkSumm = moduleParam.Checksum;
+    m_checkSum = moduleParam.Checksum;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -284,7 +284,7 @@ ULONG Module::getRvaByName(const std::string &symName)
     if ( SUCCEEDED(hres) )
         return (ULONG)(offset - m_base);
 
-    return (ULONG)m_synSymbols->getRvaByName(m_timeDataStamp, m_checkSumm, symName);
+    return (ULONG)m_synSymbols->getRvaByName(m_timeDataStamp, m_checkSum, symName);
 
     //try {
     //    pyDia::SymbolPtr sym = getDia()->getChildByName( symName );
@@ -376,6 +376,22 @@ python::list Module::getTypedVarArrayByType( ULONG64 address, const TypeInfoPtr 
         lst.append( getTypedVarByType( typeInfo, address + i * typeInfo->getSize() ) );
    
     return lst;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string Module::print()
+{
+    std::stringstream   sstr;
+
+    sstr << "Module: " << m_name <<  std::endl;
+    sstr << "Start: " << std::hex << m_base << " End: " << getEnd() << " Size: " << m_size << std::endl;
+    sstr << "Image: " << m_imageName << std::endl;
+    sstr << "Pdb: " << getPdbName() << std::endl;
+    sstr << "Timestamp: " << m_timeDataStamp << std::endl;
+    sstr << "Check Sum: " << m_checkSum << std::endl;
+
+    return sstr.str();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

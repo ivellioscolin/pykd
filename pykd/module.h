@@ -99,13 +99,15 @@ public:
         return m_dia;
     }
 
-    ULONG getCheckSumm() const {
-        return m_checkSumm;
+    ULONG getCheckSum() const {
+        return m_checkSum;
     }
 
     ULONG getTimeDataStamp() const {
         return m_timeDataStamp;
     }
+
+    std::string print();
 
 private:
 
@@ -128,7 +130,7 @@ private:
     pyDia::GlobalScopePtr   m_dia;
 
     ULONG                   m_timeDataStamp;
-    ULONG                   m_checkSumm;
+    ULONG                   m_checkSum;
     SynSymbolsPtr           m_synSymbols;
 };
 
