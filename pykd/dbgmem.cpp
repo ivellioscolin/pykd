@@ -454,7 +454,7 @@ ULONG64 ptrPtr( ULONG64 offset, IDebugDataSpaces4*  dbgDataSpace )
 
 ULONG64 DebugClient::ptrPtr( ULONG64 offset )
 {
-    return pykd::ptrPtr( offset, m_dataSpaces );
+    return addr64( pykd::ptrPtr( offset, m_dataSpaces ) );
 }
 
 ULONG64 ptrPtr( ULONG64 offset )
@@ -651,6 +651,8 @@ std::string loadAnsiStr( ULONG64 address )
 
 python::list DebugClient::loadPtrList( ULONG64 address )
 {
+    address = addr64( address );
+
     ULONG64     entryAddress = 0;
    
     python::list    lst;
@@ -670,7 +672,14 @@ python::list loadPtrList( ULONG64 address )
 
 python::list DebugClient::loadPtrArray( ULONG64 address, ULONG  number )
 {
-    return ptrSize() == 8 ? loadQWords( address, number ) : loadDWords( address, number );
+    address = addr64( address );
+
+    python::list    lst;
+
+    for ( ULONG i = 0; i < number; ++i )
+        lst.append( ptrPtr( address + i*ptrSize() ) );
+
+    return lst;        
 }
 
 python::list loadPtrArray( ULONG64 address, ULONG  number )
