@@ -70,11 +70,11 @@ if __name__ == "__main__":
 
     print ""
 
-    #suite = getTestSuite()
+    suite = getTestSuite()
     #suite = getTestSuite( "diatest.DiaTest.testFind" )
     #suite = getTestSuite( "typedvar.TypedVarTest.testTypeVarArg" )
     #suite = getTestSuite( "typeinfo.TypeInfoTest.testCreateByName" )
-    suite = getTestSuite( "typedvar.TypedVarTest.testBitField" )
+    #suite = getTestSuite( "typedvar.TypedVarTest.testBitField" )
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
 
