@@ -240,6 +240,10 @@ WNDENUMPROC g_ptrToFunction;
 void *g_unTypedPtrToFunction = g_ptrToFunction;
 #pragma pack( pop )
 
+typedef struct structTest       structTestTypeDef;
+
+structTestTypeDef               g_structTypeDef = { 0 };
+
 ////////////////////////////////////////////////////////////////////////////////
 
 #define InitializeListHead(ListHead) (\
@@ -304,6 +308,8 @@ void FuncWithName0()
     std::cout << g_unNamedStruct.m_fieldNestedStruct;
     std::cout << g_structNested.m_nestedFiled;
     std::cout << g_unTypedPtrToFunction;
+
+    std::cout << g_structTypeDef.m_field0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

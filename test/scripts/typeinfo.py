@@ -175,3 +175,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertTrue( str(target.module.type( "g_arrOfPtrToFunc" ) ) )
         self.assertTrue( str(target.module.type( "g_unTypedPtrToFunction" ) ) )
         
+    def testTypedef(self):
+        self.assertEqual( "structTest", pykd.typeInfo( "g_structTypeDef" ).name() )
+        self.assertEqual( "structTest", pykd.typeInfo( "structTestTypeDef" ).name() )
+

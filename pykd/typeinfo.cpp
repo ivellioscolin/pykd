@@ -36,6 +36,9 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
 
     case SymTagEnum:
         return TypeInfoPtr( new EnumTypeInfo( typeSym ) );
+
+    case SymTagTypedef:
+        return getTypeInfo( typeSym->getType() );
     }
 
     throw TypeException( typeSym->getName(), "this type is not supported" );
