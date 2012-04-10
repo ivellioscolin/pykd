@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <iomanip>
+
 #include "typeinfo.h"
 #include "dbgclient.h"
 
@@ -536,6 +538,29 @@ ULONG UdtTypeInfo::getFieldCount()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+std::string UdtTypeInfo::print()
+{
+    std::stringstream  sstr;
+
+    sstr << "struct/class: " << getName() << "Size: 0x" << std::hex << getSize() << " (" << std::dec << getSize() << ")" << std::endl;
+    
+    ULONG       fieldCount = getFieldCount();
+
+    for ( ULONG i = 0; i < fieldCount; ++i )
+    {
+        TypeInfoPtr     fieldType = getFieldByIndex(i);
+
+        sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getOffset();
+        sstr << " " << std::left << std::setw( 20 ) << std::setfill(' ') << getFieldNameByIndex(i) << ':';
+        sstr << " " << std::left << fieldType->getName();
+        sstr << std::endl;
+    }
+
+    return sstr.str();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 bool 
 UdtTypeInfo::getBaseField(
     pyDia::SymbolPtr symUdt,
@@ -652,6 +677,28 @@ python::dict EnumTypeInfo::asMap()
     return dct;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////
+
+std::string EnumTypeInfo::print()
+{
+    std::stringstream  sstr;
+
+    sstr << "enum: " << getName() << std::endl;
+
+    pyDia::SymbolPtrList    symbolsList = m_dia->findChildrenImpl(SymTagData, "", nsfCaseSensitive  );
+
+    for ( pyDia::SymbolPtrList::iterator  it = symbolsList.begin(); it != symbolsList.end(); it++ )
+    {
+         CComVariant     val;
+         (*it)->getValue( val );
+
+         sstr << "   " << (*it)->getName();
+         sstr << " = " << std::hex << val.ulVal << " (" << std::dec << val.ulVal << ')';
+         sstr << std::endl;
+    }
+
+    return sstr.str();
+}
 
 /////////////////////////////////////////////////////////////////////////////////////
 

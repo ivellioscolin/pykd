@@ -242,6 +242,8 @@ protected:
         return true;
     }
 
+    virtual std::string print();
+
     static bool getBaseField(
         pyDia::SymbolPtr symUdt,
         const std::string &fieldName,
@@ -286,6 +288,8 @@ protected:
     virtual bool isEnum() {
         return true;
     }
+
+    virtual std::string print();
 
     pyDia::SymbolPtr    m_dia;
 };
