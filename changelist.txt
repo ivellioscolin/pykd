@@ -1,3 +1,13 @@
+version 0.1.0.11 10/04/2012
+
+[+] added : module class can be created directly ( added two constructors ) 
+[~] updated : rename loadPtrArray to loadPtrs ( as it was on 0.0.x ) 
+[!] fixed : issue #10532 ( breakpoint callback is not called after quit from !pycmd ) 
+[!] fixed : issue #10591 ( bit field returns wrong value ) 
+[!] fixed : issue #10581 ( loadModule("xxxx") output insufficient information ) 
+[!] fixed : issue #10621 ( failed to compare value from ptrPtr and typedVar ) 
+[!] fixed : issue #10627 ( print typeInfo() output insufficient information ) 
+
 version 0.1.0.10 28/03/2012
 
 [+] added : direct constructor for typeInfo
