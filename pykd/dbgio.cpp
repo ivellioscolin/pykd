@@ -25,7 +25,8 @@ void DebugClient::dprint( const std::wstring &str, bool dml )
     }
     else
     {
-        std::wcout << str;
+        python::object       sys = python::import("sys");
+        sys.attr("stdout").attr("write")( str );
     }
 }
 
@@ -64,7 +65,8 @@ void DebugClient::eprint( const std::wstring &str )
     }
     else
     {
-        std::wcerr << str;
+        python::object       sys = python::import("sys");
+        sys.attr("stderr").attr("write")( str );
     }    
 }
 
@@ -104,7 +106,8 @@ DbgOut::write( const std::wstring  &str )
     }
     else
     {
-        std::wcerr << str;
+        python::object       sys = python::import("sys");
+        sys.attr("stderr").attr("write")( str );
     }  
 }
 
