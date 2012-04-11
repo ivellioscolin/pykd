@@ -117,6 +117,11 @@ const ULONG g_constUlong = 0xffffff;
 const ULONGLONG g_constUlonglong = 0xffffff000000;
 
 class classChild : public classBase {
+
+public:
+
+    static const int  m_staticField = 100;
+
 public:
     int m_childField;
     int m_childField2;
