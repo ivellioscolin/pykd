@@ -752,11 +752,16 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__hash__", &pyDia::Symbol::getIndexId);
     
     python::class_<pyDia::GlobalScope, pyDia::GlobalScopePtr, python::bases<pyDia::Symbol> >(
-        "DiaScope", "class wrapper for MS DIA Symbol", python::no_init )
+        "DiaScope", "class wrapper for MS DIA global scope", python::no_init )
         .def("findByRva", &pyDia::GlobalScope::findByRva, 
             "Find symbol by RVA. Return tuple: (DiaSymbol, offset)")
         .def("symbolById", &pyDia::GlobalScope::getSymbolById, 
-            "Retrieves a symbol by its unique identifier: DiaSymbol::indexId()");
+            "Retrieves a symbol by its unique identifier: DiaSymbol::indexId()")
+        .def("loadAddress", &pyDia::GlobalScope::getLoadAddress, 
+            "Retrieves the load address for the executable file that corresponds to the symbols in this symbol store")
+        .def("setLoadAddress", &pyDia::GlobalScope::setLoadAddress, 
+            "Sets the load address for the executable file that corresponds to the symbols in this symbol store");
+
 
     // CPU type:
     DEF_PY_CONST_ULONG(IMAGE_FILE_MACHINE_I386);

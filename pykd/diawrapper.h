@@ -267,20 +267,24 @@ public:
     // get symbol by unique index
     SymbolPtr getSymbolById(ULONG symId);
 
+    // get/set load address
+    ULONGLONG getLoadAddress();
+    void setLoadAddress(ULONGLONG loadAddress);
+
 private:
     interface IScopeDataLoader {
         virtual ~IScopeDataLoader() {}
-        virtual void loadData(IDiaDataSource *_scope) = 0;
+        virtual void loadData(IDiaDataSource *dataSource) = 0;
     };
     static GlobalScopePtr loadImpl(IScopeDataLoader &ScopeDataLoader);
 
     GlobalScope(
-        __inout DiaDataSourcePtr &_scope,
+        __inout DiaDataSourcePtr &dataSource,
         __inout DiaSessionPtr &_session,
         __inout DiaSymbolPtr &_globalScope
     );
 
-    DiaDataSourcePtr m_source;
+    DiaDataSourcePtr m_dataSource;
     DiaSessionPtr m_session;
 };
 

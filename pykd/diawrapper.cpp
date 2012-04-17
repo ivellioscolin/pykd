@@ -331,11 +331,11 @@ bool Symbol::eq(Symbol &rhs)
 ////////////////////////////////////////////////////////////////////////////////
 
 GlobalScope::GlobalScope(
-    __inout DiaDataSourcePtr &_scope,
+    __inout DiaDataSourcePtr &dataSource,
     __inout DiaSessionPtr &_session,
     __inout DiaSymbolPtr &_globalScope
 )   : Symbol(_globalScope, CV_CFL_80386)
-    , m_source( _scope.Detach() )
+    , m_dataSource( dataSource.Detach() )
     , m_session( _session.Detach() )
 {
     m_symbol->get_machineType(&m_machineType);
@@ -349,8 +349,8 @@ GlobalScopePtr GlobalScope::loadPdb(const std::string &filePath)
     public:
         CLoaderFromPdb(const std::string &filePath) : m_filePath(filePath) {}
 
-        virtual void loadData(IDiaDataSource *_scope) override {
-            HRESULT hres = _scope->loadDataFromPdb( toWStr(m_filePath) );
+        virtual void loadData(IDiaDataSource *dataSource) override {
+            HRESULT hres = dataSource->loadDataFromPdb( toWStr(m_filePath) );
             if ( S_OK != hres )
                 throw Exception("Call IDiaDataSource::loadDataFromPdb", hres);
         }
@@ -376,10 +376,10 @@ GlobalScopePtr GlobalScope::loadExe(const std::string &filePath, PCSTR searchPat
         {
         }
 
-        virtual void loadData(IDiaDataSource *_scope) override {
+        virtual void loadData(IDiaDataSource *dataSource) override {
             LoadCallback loadCallback;
             HRESULT hres = 
-                _scope->loadDataForExe( toWStr(m_filePath), toWStr(m_searchPath), &loadCallback );
+                dataSource->loadDataForExe( toWStr(m_filePath), toWStr(m_searchPath), &loadCallback );
             if ( S_OK != hres )
                 throw Exception("Call IDiaDataSource::loadDataForExe", hres);
         }
@@ -396,17 +396,17 @@ GlobalScopePtr GlobalScope::loadExe(const std::string &filePath, PCSTR searchPat
 
 GlobalScopePtr GlobalScope::loadImpl(IScopeDataLoader &ScopeDataLoader)
 {
-    DiaDataSourcePtr _scope;
+    DiaDataSourcePtr dataSource;
 
     HRESULT hres = 
-        _scope.CoCreateInstance(__uuidof(DiaSource), NULL, CLSCTX_INPROC_SERVER);
+        dataSource.CoCreateInstance(__uuidof(DiaSource), NULL, CLSCTX_INPROC_SERVER);
     if ( S_OK != hres )
         throw Exception("Call ::CoCreateInstance", hres);
 
-    ScopeDataLoader.loadData(_scope);
+    ScopeDataLoader.loadData(dataSource);
 
     DiaSessionPtr _session;
-    hres = _scope->openSession(&_session);
+    hres = dataSource->openSession(&_session);
     if ( S_OK != hres )
         throw Exception("Call IDiaDataSource::openSession", hres);
 
@@ -415,7 +415,7 @@ GlobalScopePtr GlobalScope::loadImpl(IScopeDataLoader &ScopeDataLoader)
     if ( S_OK != hres )
         throw Exception("Call IDiaSymbol::get_globalScope", hres);
 
-    return GlobalScopePtr( new GlobalScope(_scope, _session, _globalScope) );
+    return GlobalScopePtr( new GlobalScope(dataSource, _session, _globalScope) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -453,6 +453,26 @@ SymbolPtr GlobalScope::getSymbolById(ULONG symId)
         throw Exception("Call IDiaSession::findSymbolByRVAEx", E_UNEXPECTED);
 
     return SymbolPtr( new Symbol(_symbol, m_machineType) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONGLONG GlobalScope::getLoadAddress()
+{
+    ULONGLONG loadAddress;
+    HRESULT hres = m_session->get_loadAddress(&loadAddress);
+    if (S_OK != hres)
+        throw Exception("Call IDiaSession::get_loadAddress", hres);
+    return loadAddress;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void GlobalScope::setLoadAddress(ULONGLONG loadAddress)
+{
+    HRESULT hres = m_session->put_loadAddress(loadAddress);
+    if (S_OK != hres)
+        throw Exception("Call IDiaSession::put_loadAddress", hres);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
