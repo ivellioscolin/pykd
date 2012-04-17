@@ -103,6 +103,7 @@ public:
     ULONG getSymTag();
 
     ULONG getRva();
+    ULONGLONG getVa();
 
     ULONG getLocType();
 

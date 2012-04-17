@@ -717,6 +717,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrieves a reference to the class parent of the symbol" )
         .def( "rva", &pyDia::Symbol::getRva,
             "Retrieves the relative virtual address (RVA) of the location")
+        .def( "va", &pyDia::Symbol::getVa,
+            "Retrieves the virtual address (VA) of the location")
         .def( "symTag", &pyDia::Symbol::getSymTag, 
             "Retrieves the symbol type classifier: SymTagXxx" )
         .def( "locType", &pyDia::Symbol::getLocType, 
