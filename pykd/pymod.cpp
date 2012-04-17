@@ -757,13 +757,14 @@ BOOST_PYTHON_MODULE( pykd )
         "DiaScope", "class wrapper for MS DIA global scope", python::no_init )
         .def("findByRva", &pyDia::GlobalScope::findByRva, 
             "Find symbol by RVA. Return tuple: (DiaSymbol, offset)")
+        .def("findByVa", &pyDia::GlobalScope::findByVa, 
+            "Find symbol by VA. Return tuple: (DiaSymbol, offset)")
         .def("symbolById", &pyDia::GlobalScope::getSymbolById, 
             "Retrieves a symbol by its unique identifier: DiaSymbol::indexId()")
         .def("loadAddress", &pyDia::GlobalScope::getLoadAddress, 
             "Retrieves the load address for the executable file that corresponds to the symbols in this symbol store")
         .def("setLoadAddress", &pyDia::GlobalScope::setLoadAddress, 
             "Sets the load address for the executable file that corresponds to the symbols in this symbol store");
-
 
     // CPU type:
     DEF_PY_CONST_ULONG(IMAGE_FILE_MACHINE_I386);

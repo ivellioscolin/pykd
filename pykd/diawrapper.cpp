@@ -450,6 +450,29 @@ SymbolPtr GlobalScope::findByRvaImpl(
 
 ////////////////////////////////////////////////////////////////////////////////
 
+SymbolPtr GlobalScope::findByVaImpl(
+    __in ULONGLONG va,
+    __in ULONG symTag,
+    __out LONG &displacement
+)
+{
+    DiaSymbolPtr child;
+    HRESULT hres = 
+        m_session->findSymbolByVAEx(
+            va,
+            static_cast<enum SymTagEnum>(symTag),
+            &child,
+            &displacement);
+    if (S_OK != hres)
+        throw Exception("Call IDiaSession::findSymbolByVAEx", hres);
+    if (!child)
+        throw Exception("Call IDiaSession::findSymbolByVAEx", E_UNEXPECTED);
+
+    return SymbolPtr( new Symbol(child, m_machineType) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 SymbolPtr GlobalScope::getSymbolById(ULONG symId)
 {
     DiaSymbolPtr _symbol;

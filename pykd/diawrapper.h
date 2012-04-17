@@ -265,6 +265,22 @@ public:
         __out LONG &displacement
     );
 
+    // VA -> Symbol
+    python::tuple findByVa(
+        ULONG va,
+        ULONG symTag
+    )
+    {
+        LONG displacement;
+        SymbolPtr child = findByVaImpl(va, symTag, displacement);
+        return python::make_tuple(child, displacement);
+    }
+    SymbolPtr findByVaImpl(
+        __in ULONGLONG va,
+        __in ULONG symTag,
+        __out LONG &displacement
+    );
+
     // get symbol by unique index
     SymbolPtr getSymbolById(ULONG symId);
 
