@@ -14,6 +14,7 @@ python::handle<> exceptPyType<SymbolException>::pyExceptType;
 python::handle<> exceptPyType<pyDia::Exception>::pyExceptType;
 python::handle<> exceptPyType<TypeException>::pyExceptType;
 python::handle<> exceptPyType<AddSyntheticSymbolException>::pyExceptType;
+python::handle<> exceptPyType<ImplementException>::pyExceptType;
 
 ///////////////////////////////////////////////////////////////////////////////////
 }; // end namespace pykd

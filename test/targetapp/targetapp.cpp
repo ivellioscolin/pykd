@@ -58,6 +58,15 @@ public:
     virtual void virtFunc2() =  0;
 };
 
+class anotherBase {
+    static std::string   m_stdstr;
+    ULONG   m_count;
+public:
+    anotherBase() : m_count( 1234 ){}
+};
+std::string   anotherBase::m_stdstr = "hello";
+
+
 struct structTest {
     ULONG m_field0;
     ULONGLONG m_field1;
@@ -116,11 +125,13 @@ const enumType g_constEnumThree = THREE;
 const ULONG g_constUlong = 0xffffff;
 const ULONGLONG g_constUlonglong = 0xffffff000000;
 
-class classChild : public classBase {
+class classChild : public classBase, public anotherBase {
 
 public:
 
-    static const int  m_staticField = 100;
+    static const int  m_staticConst = 100;
+
+    static int  m_staticField;
 
 public:
     int m_childField;
@@ -135,6 +146,8 @@ public:
         m_enumField( THREE )
         {}
 };
+
+int classChild::m_staticField = 200;
 
 classChild      g_classChild;
 
@@ -307,6 +320,7 @@ void FuncWithName0()
     std::cout << ptrIntMatrix1;
     std::cout << g_bigValue;
     std::cout << g_classChild.m_enumField;
+    std::cout << g_classChild.m_staticConst;
     std::cout << g_constEnumThree;
     std::cout << g_constUlong;
     std::cout << g_constUlonglong;

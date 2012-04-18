@@ -178,4 +178,9 @@ class TypeInfoTest( unittest.TestCase ):
     def testTypedef(self):
         self.assertEqual( "structTest", pykd.typeInfo( "g_structTypeDef" ).name() )
         self.assertEqual( "structTest", pykd.typeInfo( "structTestTypeDef" ).name() )
-
+        
+    def testStaticField(self):
+        ti = pykd.typeInfo( "g_classChild" )
+        self.assertNotEqual( 0, ti.m_staticField.offset() )
+        self.assertNotEqual( 0, ti.m_staticConst.offset() )
+        self.assertNotEqual( 0, ti.m_stdstr.offset() )

@@ -38,6 +38,16 @@ public:
 
 public:
 
+    TypeInfo() :
+        m_offset( 0 ),
+        m_staticOffset( 0 ),
+        m_constant( false ),
+        m_staticMember( false )
+        {
+            m_constantValue.vt = VT_EMPTY;
+        }
+
+
     virtual std::string print() {
         std::stringstream   sstr;
         sstr << "Type name: " << getName();
@@ -115,8 +125,8 @@ public:
         throw TypeException( getName(), "type is not a pointer" );
     }
 
-    ULONG getOffset() {
-        return m_offset;
+    ULONG getOffset() const {
+        return (ULONG)m_offset;
     }
 
     void setOffset( ULONG offset ) {
@@ -128,6 +138,30 @@ public:
         m_constant = true;
         m_constantValue = var;
     }
+
+    bool isConstant() const
+    {
+       return  m_constant == true;
+    }
+
+    bool isStaticMember() const
+    {
+       return  m_staticMember == true;
+    }
+
+    void setStaticOffset( ULONG64 offset ) {
+        m_staticOffset = offset;     
+        m_staticMember = true;
+    }
+
+    ULONG64 getStaticOffset() const {
+        return m_staticOffset;
+    }
+
+    ULONG64 getTypeOffset() const {
+        return m_staticMember ? m_staticOffset : m_offset;
+    }
+
 
 protected:
 
@@ -141,7 +175,11 @@ protected:
 
     ULONG       m_offset;
 
+    ULONG64     m_staticOffset;
+
     bool        m_constant;
+
+    bool        m_staticMember;
 
     VARIANT     m_constantValue;
 };

@@ -35,7 +35,7 @@ public:
         return m_size;
     }
 
-    ULONG getOffset() {
+    ULONG64 getOffset() {
         return m_typeInfo->getOffset();
     }
 

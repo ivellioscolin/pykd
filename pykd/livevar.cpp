@@ -107,7 +107,7 @@ void addLocals::appendVar(pyDia::SymbolPtr symData)
 
     case LocIsEnregistered: // FIXME
     default:
-        throw Exception();
+        throw ImplementException(__FILE__,__LINE__,"Fix ME");
     }
     typedVar->setDataKind( symData->getDataKind() );
     m_locals[varName] = typedVar;

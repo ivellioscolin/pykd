@@ -210,5 +210,26 @@ private:
 
 /////////////////////////////////////////////////////////////////////////////////
 
+class ImplementException : public DbgException
+{
+public:
+
+    ImplementException( const std::string &file, int line, const std::string &msg ) :
+         DbgException( buildDesc(file,line, msg) )    
+         {}
+
+private:
+
+    std::string buildDesc( const std::string &file, int line, const std::string &msg )
+    {
+        std::stringstream sstream;
+        sstream << "File: " << file << " Line: " << line << "  " << msg;
+        return sstream.str();
+    }
+
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+
 }; // namespace pykd
 

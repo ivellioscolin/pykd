@@ -525,7 +525,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__init__", python::make_constructor(TypeInfo::getTypeInfoByName ) )
         .def( "name", &TypeInfo::getName )
         .def( "size", &TypeInfo::getSize )
-        .def( "offset", &TypeInfo::getOffset )
+        .def( "offset", &TypeInfo::getTypeOffset )
         .def( "bitOffset", &TypeInfo::getBitOffset )
         .def( "bitWidth", &TypeInfo::getBitWidth )
         .def( "field", &TypeInfo::getField )
@@ -893,6 +893,7 @@ BOOST_PYTHON_MODULE( pykd )
     pykd::exception<pyDia::Exception,SymbolException>( "DiaException", "Debug interface access exception" );
     pykd::exception<TypeException,SymbolException>( "TypeException", "type exception" );
     pykd::exception<AddSyntheticSymbolException,DbgException>( "AddSynSymbolException", "synthetic symbol exception" );
+    pykd::exception<ImplementException,DbgException>( "ImplementException", "implementation exception" );
 
     DEF_PY_CONST_ULONG( DEBUG_CLASS_UNINITIALIZED );
     DEF_PY_CONST_ULONG( DEBUG_CLASS_KERNEL );

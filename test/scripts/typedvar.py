@@ -215,7 +215,6 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( tv1, tv2 )  
         self.assertTrue( tv1 )
 
-
     def testPrint(self):
         self.assertTrue( str(target.module.typedVar( "g_ucharValue" ) ) )
         self.assertTrue( str(target.module.typedVar( "g_ushortValue" ) ) )
@@ -236,3 +235,8 @@ class TypedVarTest( unittest.TestCase ):
         self.assertTrue( str(target.module.typedVar( "g_voidPtr" ) ) )
         self.assertTrue( str(target.module.typedVar( "g_arrOfPtrToFunc" ) ) )
         self.assertTrue( str(target.module.typedVar( "g_unTypedPtrToFunction" ) ) )
+        
+    def testStaticField(self):
+        ti = pykd.typedVar( "g_classChild" )
+        self.assertEqual( 200, ti.m_staticField )
+        self.assertEqual( 100, ti.m_staticConst )

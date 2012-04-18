@@ -123,7 +123,8 @@ TypeInfoPtr TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, pyDia::SymbolPtr 
 
     TypeInfoPtr ptr = getTypeInfo( symType );
 
-    ptr->setConstant( constVal );
+    if ( constVal.vt != VT_EMPTY )
+        ptr->setConstant( constVal );
 
     return ptr;
 }
@@ -419,19 +420,6 @@ TypeInfoPtr TypeInfo::getComplexType( pyDia::SymbolPtr &symScope, const std::str
     }
    
     return getRecurciveComplexType( getTypeInfo( lowestSymbol ), std::string( matchResult[3].first, matchResult[3].second ), ptrSize );
-
-
-
-    //ULONG  ptrSize = (symScope->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
-
-    //boost::cmatch    matchResult;
-
-    //if ( !boost::regex_match( symName.c_str(), matchResult, typeMatch  ) )
-    //    throw TypeException( symName, "type name is invalid" );
-
-    TypeInfoPtr     lowestTypeInfo = getTypeInfo( symScope, std::string( matchResult[1].first, matchResult[1].second ) );
-
-    //return getRecurciveComplexType( lowestTypeInfo, std::string( matchResult[2].first, matchResult[2].second ), ptrSize );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -496,47 +484,77 @@ TypeInfoPtr UdtTypeInfo::getField( const std::string &fieldName )
         throw TypeException( m_dia->getName(), fieldName + ": field not found" );
 
     TypeInfoPtr  ti = TypeInfo::getTypeInfo( m_dia, field );
-    ti->setOffset( addOffset + field->getOffset() );
+
+    switch( field->getDataKind() )
+    {
+    case DataIsMember:
+        ti->setOffset( addOffset + field->getOffset() );
+        break;
+
+    case DataIsStaticMember:
+        ti->setStaticOffset( field->getVa() );
+        break;
+
+    default:
+        throw TypeException(m_dia->getName(), fieldName + ": unknown field type" );
+    }
+
     return ti;
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 
 TypeInfoPtr UdtTypeInfo::getFieldByIndex( ULONG index  )
 {
-    if ( index >= m_dia->getChildCount<SymTagData>() )
-        throw TypeException( m_dia->getName(), ": field not found" );
+    std::string   name = getFieldNameByIndex( index );
 
-    pyDia::SymbolPtr field = m_dia->getChildByIndex<SymTagData>(index);
-
-    if ( !field )
-        throw TypeException( m_dia->getName(), ": field not found" );
-
-    TypeInfoPtr  ti = TypeInfo::getTypeInfo( m_dia, field );
-    ti->setOffset( field->getOffset() );
-    return ti;
+    return getField( name );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
 std::string UdtTypeInfo::getFieldNameByIndex( ULONG index )
 {
-    if ( index >= m_dia->getChildCount<SymTagData>() )
-        throw TypeException( m_dia->getName(), ": field not found" );
+    ULONG   baseClassCount = m_dia->getChildCount<SymTagBaseClass>();
 
-    pyDia::SymbolPtr field = m_dia->getChildByIndex<SymTagData>(index);
+    for ( ULONG i = 0; i < baseClassCount; ++i )
+    {
+        pyDia::SymbolPtr  baseSym = m_dia->getChildByIndex<SymTagBaseClass>( i );
 
-    if ( !field )
-        throw TypeException( m_dia->getName(), ": field not found" );
+        TypeInfoPtr  baseType = TypeInfo::getTypeInfo( baseSym );
 
-    return field->getName();
+        ULONG   baseFieldCount = baseType->getFieldCount();
+
+        if ( baseFieldCount > index )
+        {
+            return baseType->getFieldNameByIndex( index );
+        }
+
+        index -= baseFieldCount;
+    }
+    
+    return m_dia->getChildByIndex<SymTagData>( index )->getName();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
 ULONG UdtTypeInfo::getFieldCount()
 {
-    return m_dia->getChildCount<SymTagData>();
+    ULONG   fieldCount = m_dia->getChildCount<SymTagData>();
+
+    ULONG   baseClassCount = m_dia->getChildCount<SymTagBaseClass>();
+
+    for ( ULONG i = 0; i < baseClassCount; ++i )
+    {
+        pyDia::SymbolPtr  baseSym = m_dia->getChildByIndex<SymTagBaseClass>( i );
+
+        TypeInfoPtr  baseType = TypeInfo::getTypeInfo( baseSym );
+
+        fieldCount += baseType->getFieldCount();
+    }
+    
+    return fieldCount;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -545,15 +563,23 @@ std::string UdtTypeInfo::print()
 {
     std::stringstream  sstr;
 
-    sstr << "struct/class: " << getName() << "Size: 0x" << std::hex << getSize() << " (" << std::dec << getSize() << ")" << std::endl;
+    sstr << "struct/class: " << getName() << " Size: 0x" << std::hex << getSize() << " (" << std::dec << getSize() << ")" << std::endl;
     
     ULONG       fieldCount = getFieldCount();
 
     for ( ULONG i = 0; i < fieldCount; ++i )
-    {
+    { 
         TypeInfoPtr     fieldType = getFieldByIndex(i);
 
-        sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getOffset();
+        if ( fieldType->isStaticMember() )
+        {   
+            sstr << "   =" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getStaticOffset();
+        }
+        else
+        {
+            sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getOffset();
+        }
+
         sstr << " " << std::left << std::setw( 20 ) << std::setfill(' ') << getFieldNameByIndex(i) << ':';
         sstr << " " << std::left << fieldType->getName();
         sstr << std::endl;

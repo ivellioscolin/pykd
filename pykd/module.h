@@ -95,7 +95,14 @@ public:
 
     pyDia::GlobalScopePtr& getDia() {
         if (!m_dia)
+        {
             m_dia = pyDia::GlobalScope::loadPdb( getPdbName() );
+            if ( m_dia )
+            {
+                m_dia->setLoadAddress( m_base ); 
+            }
+        }    
+
         return m_dia;
     }
 
