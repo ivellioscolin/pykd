@@ -196,12 +196,12 @@ std::string Symbol::printImpl(
         if ((S_OK == _symbol->get_udtKind(&dwValue)) && (dwValue < cntUdtKindName))
             sstream << ": " << udtKindName[dwValue].second;
 
-        if (S_OK == _symbol->get_count(&dwValue))
-            sstream << ", Count: " << std::dec << dwValue;
-
         bFuncDebugRange = 
             (SymTagFuncDebugStart == symTagName[dwValue].first) ||
             (SymTagFuncDebugEnd == symTagName[dwValue].first);
+
+        if (S_OK == _symbol->get_count(&dwValue))
+            sstream << ", Count: " << std::dec << dwValue;
 
         hres = _symbol->get_dataKind(&dwValue);
         if ((S_OK == hres) && (DataIsUnknown != dwValue))
