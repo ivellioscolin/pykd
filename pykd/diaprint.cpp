@@ -95,6 +95,10 @@ std::string Symbol::printImpl(
     ULONGLONG ullValue;
     HRESULT hres;
 
+    hres = _symbol->get_symIndexId(&dwValue);
+    if (hres == S_OK)
+        sstream << "ID " << std::hex << dwValue << " ";
+
     DWORD locType = LocIsNull;
     hres = _symbol->get_locationType(&locType);
     bool bLocation = (S_OK == hres);
