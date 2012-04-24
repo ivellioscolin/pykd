@@ -256,10 +256,9 @@ std::string UdtTypedVar::print()
 
         if ( fieldType->isStaticMember() )
         {
-            if ( fieldType->getStaticOffset() == 0 )
-                throw ImplementException( __FILE__, __LINE__, "Fix ME");
+            if ( fieldType->getStaticOffset() != 0 )
+               fieldVar = TypedVar::getTypedVar( m_client, fieldType, VarDataMemory::factory(m_dataSpaces, fieldType->getStaticOffset() ) );
 
-            fieldVar = TypedVar::getTypedVar( m_client, fieldType, VarDataMemory::factory(m_dataSpaces, fieldType->getStaticOffset() ) );
             sstr << "   =" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getStaticOffset();
         }
         else
@@ -267,9 +266,14 @@ std::string UdtTypedVar::print()
             fieldVar = TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldType->getOffset()) );
             sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getOffset();
         }
+
         sstr << " " << std::left << std::setw( 20 ) << std::setfill(' ') << m_typeInfo->getFieldNameByIndex(i) << ':';
         sstr << " " << std::left << fieldType->getName();
-        sstr << "   " << fieldVar->printValue();
+
+        if ( fieldVar )
+            sstr << "   " << fieldVar->printValue();
+        else
+            sstr << "   failed to get value";
 
         sstr << std::endl;
     }
