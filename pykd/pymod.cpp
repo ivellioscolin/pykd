@@ -464,7 +464,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
     python::def( "ptrSize", &ptrSize,
         "Return effective pointer size" );
-    python::def ( "rdmsr", &DebugClient::loadMSR,
+    python::def ( "rdmsr", &loadMSR,
         "Return MSR value" );
     python::def( "reg", &getRegByName,
         "Return a CPU regsiter value by the register's name" );
