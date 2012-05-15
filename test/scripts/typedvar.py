@@ -235,8 +235,13 @@ class TypedVarTest( unittest.TestCase ):
         self.assertTrue( str(target.module.typedVar( "g_voidPtr" ) ) )
         self.assertTrue( str(target.module.typedVar( "g_arrOfPtrToFunc" ) ) )
         self.assertTrue( str(target.module.typedVar( "g_unTypedPtrToFunction" ) ) )
-        
+
     def testStaticField(self):
         ti = pykd.typedVar( "g_classChild" )
         self.assertEqual( 200, ti.m_staticField )
         self.assertEqual( 100, ti.m_staticConst )
+
+    def testAmbiguousFieldAccess(self):
+        derivedFiledVal = pykd.loadCStr( pykd.typedVar( "g_fieldSameNameStruct" ).m_field )
+        self.assertEqual( derivedFiledVal, "toaster" )
+        print target.module.type("fieldSameNameStruct")

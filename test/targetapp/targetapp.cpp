@@ -262,6 +262,57 @@ struct StructWithNested {
 StructWithNested g_structWithNested;
 StructWithNested::Nested g_structNested;
 
+////////////////////////////////////////////////////////////////////////////////
+
+struct baseStruct1
+{
+    int m_field;
+};
+
+struct intermediateStruct : baseStruct1
+{
+};
+
+struct baseStruct2
+{
+    char m_field;
+};
+
+struct fieldSameNameStruct  : intermediateStruct
+                            , baseStruct2
+{
+    char *m_field;
+};
+fieldSameNameStruct g_fieldSameNameStruct;
+
+// kd> ?? g_fieldSameNameStruct
+// struct fieldSameNameStruct
+//    +0x000 m_field          : 0x400
+//    +0x004 m_field          : 12 ''
+//    +0x008 m_field          : 0x00000001`3f7bc928  "toaster"
+
+// kd> dt fieldSameNameStruct @@C++(&g_fieldSameNameStruct)
+// targetapp!fieldSameNameStruct
+//    +0x000 m_field          : 0x400
+//    +0x004 m_field          : 12 ''
+//    +0x008 m_field          : 0x00000001`3f7bc928  "toaster"
+
+// kd> dt fieldSameNameStruct
+// targetapp!fieldSameNameStruct
+//    +0x000 m_field          : Int4B
+//    +0x004 m_field          : Char
+//    +0x008 m_field          : Ptr64 Char
+
+// kd> ?? g_fieldSameNameStruct.m_field
+// char * 0x00000001`3f04c928
+//  "toaster"
+// kd> ?? g_fieldSameNameStruct.intermediateStruct::baseStruct1::m_field
+// Type does not have given member error at 'intermediateStruct::baseStruct1::m_field'
+// kd> g_fieldSameNameStruct.baseStruct2::m_field
+// Type does not have given member error at 'baseStruct2::m_field'
+
+////////////////////////////////////////////////////////////////////////////////
+
 WNDENUMPROC g_ptrToFunction;
 void *g_unTypedPtrToFunction = g_ptrToFunction;
 #pragma pack( pop )
@@ -335,6 +386,11 @@ void FuncWithName0()
     std::cout << g_unNamedStruct.m_fieldNestedStruct;
     std::cout << g_structNested.m_nestedFiled;
     std::cout << g_unTypedPtrToFunction;
+
+    std::cout << g_fieldSameNameStruct.m_field;
+    std::cout << g_fieldSameNameStruct.intermediateStruct::baseStruct1::m_field;
+    std::cout << g_fieldSameNameStruct.intermediateStruct::m_field;
+    std::cout << g_fieldSameNameStruct.baseStruct2::m_field;
 
     std::cout << g_structTypeDef.m_field0;
 }
@@ -493,6 +549,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
         g_structWithNested.m_field = 34;
         g_structNested.m_nestedFiled = 46;
+
+        g_fieldSameNameStruct.m_field = "toaster";
+        g_fieldSameNameStruct.intermediateStruct::baseStruct1::m_field = 1024;
+        g_fieldSameNameStruct.baseStruct2::m_field = 0xc;
 
         g_ptrToFunction = &EnumWindowsProc2;
         g_unTypedPtrToFunction = &EnumWindowsProc2;
