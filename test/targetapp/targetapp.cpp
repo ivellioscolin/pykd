@@ -56,13 +56,21 @@ public:
     void baseMethod() const {}
     virtual void virtFunc() =  0;
     virtual void virtFunc2() =  0;
+
+    classBase() :
+        m_baseField( -100 )
+        {}
 };
 
 class anotherBase {
     static std::string   m_stdstr;
     ULONG   m_count;
+    int m_baseField;
 public:
-    anotherBase() : m_count( 1234 ){}
+    anotherBase() : 
+        m_count( 1234 ),
+        m_baseField( 100 )
+        {}
 };
 std::string   anotherBase::m_stdstr = "hello";
 
