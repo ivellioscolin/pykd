@@ -313,6 +313,38 @@ fieldSameNameStruct g_fieldSameNameStruct;
 
 ////////////////////////////////////////////////////////////////////////////////
 
+class VirtualBaseClass1 : public virtual classBase
+{
+    int     m_member;
+
+public:
+    VirtualBaseClass1() : m_member(123){}
+
+    virtual void virtFunc() {}
+    virtual void virtFunc2() {}
+};
+
+class VirtualBaseClass2 : public virtual classBase
+{
+    int     m_member;
+
+public:
+    VirtualBaseClass2() : m_member(345){}
+
+    virtual void virtFunc() {}
+    virtual void virtFunc2() {}
+};
+
+class VirtualChildClass : public VirtualBaseClass1, public  VirtualBaseClass2
+{
+    void virtFunc() {}
+    void virtFunc2() {}
+};
+
+VirtualChildClass       g_virtChild;
+
+////////////////////////////////////////////////////////////////////////////////
+
 WNDENUMPROC g_ptrToFunction;
 void *g_unTypedPtrToFunction = g_ptrToFunction;
 #pragma pack( pop )
@@ -393,6 +425,8 @@ void FuncWithName0()
     std::cout << g_fieldSameNameStruct.baseStruct2::m_field;
 
     std::cout << g_structTypeDef.m_field0;
+
+    std::cout << g_virtChild.VirtualBaseClass1::m_baseField;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
