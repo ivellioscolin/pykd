@@ -282,15 +282,15 @@ protected:
 
     virtual std::string print();
 
-    static bool getBaseField(
-        pyDia::SymbolPtr symUdt,
-        const std::string &fieldName,
-        LONG &addOffset,
-        pyDia::SymbolPtr &symField,
-        ULONG currLevel = 0
-    );
-
     pyDia::SymbolPtr    m_dia;
+
+    typedef std::pair< std::string, TypeInfoPtr >   FieldType;
+
+    typedef std::vector< FieldType >   FieldList;
+    
+    FieldList           m_fields;
+
+    void getFields( pyDia::SymbolPtr &rootSym, ULONG startOffset = 0 );
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

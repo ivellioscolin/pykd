@@ -32,6 +32,7 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
         return TypeInfoPtr( new ArrayTypeInfo( typeSym ) );
 
     case SymTagPointerType:
+    case SymTagVTable:        
         return TypeInfoPtr( new PointerTypeInfo( typeSym ) );
 
     case SymTagEnum:
@@ -258,6 +259,10 @@ PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symbol  )
             if (btVoid == static_cast<BasicType>(pointTo->getBaseType()))
                 m_derefName = "Void";
             break;
+
+        case SymTagVTableShape:
+            m_derefName = "VTable";   
+            break;
         }
     }
     m_size = (ULONG)symbol->getSize();
@@ -470,91 +475,84 @@ TypeInfoPtr TypeInfo::getRecurciveComplexType( TypeInfoPtr &lowestType, std::str
 
 TypeInfoPtr UdtTypeInfo::getField( const std::string &fieldName )
 {
-    pyDia::SymbolPtr field;
-    LONG addOffset = 0;
-    try
-    {
-        field = m_dia->getChildByName( fieldName );
-    }
-    catch (const pyDia::Exception &)
-    {
-    }
+    if ( m_fields.empty() )
+        getFields( m_dia );
 
-    if ( !field && !getBaseField( m_dia, fieldName, addOffset, field ) )
-        throw TypeException( m_dia->getName(), fieldName + ": field not found" );
+    FieldList::iterator      it;
+        
+    it = std::find_if( m_fields.begin(), m_fields.end(), boost::bind( &FieldType::first, _1) == fieldName );
 
-    TypeInfoPtr  ti = TypeInfo::getTypeInfo( m_dia, field );
+    if ( it == m_fields.end() )
+        throw TypeException( m_dia->getName(), fieldName + ": unknown field type" );
 
-    switch( field->getDataKind() )
-    {
-    case DataIsMember:
-        ti->setOffset( addOffset + field->getOffset() );
-        break;
-
-    case DataIsStaticMember:
-        ti->setStaticOffset( field->getVa() );
-        break;
-
-    default:
-        throw TypeException(m_dia->getName(), fieldName + ": unknown field type" );
-    }
-
-    return ti;
+    return it->second;
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr UdtTypeInfo::getFieldByIndex( ULONG index  )
+TypeInfoPtr UdtTypeInfo::getFieldByIndex( ULONG index )
 {
-    std::string   name = getFieldNameByIndex( index );
+    if ( m_fields.empty() )
+        getFields( m_dia );
 
-    return getField( name );
+    return m_fields[ index ].second;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
 std::string UdtTypeInfo::getFieldNameByIndex( ULONG index )
 {
-    ULONG   baseClassCount = m_dia->getChildCount<SymTagBaseClass>();
+    if ( m_fields.empty() )
+        getFields( m_dia);
 
-    for ( ULONG i = 0; i < baseClassCount; ++i )
-    {
-        pyDia::SymbolPtr  baseSym = m_dia->getChildByIndex<SymTagBaseClass>( i );
-
-        TypeInfoPtr  baseType = TypeInfo::getTypeInfo( baseSym );
-
-        ULONG   baseFieldCount = baseType->getFieldCount();
-
-        if ( baseFieldCount > index )
-        {
-            return baseType->getFieldNameByIndex( index );
-        }
-
-        index -= baseFieldCount;
-    }
-    
-    return m_dia->getChildByIndex<SymTagData>( index )->getName();
+    return m_fields[ index ].first;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
 ULONG UdtTypeInfo::getFieldCount()
 {
-    ULONG   fieldCount = m_dia->getChildCount<SymTagData>();
+    if ( m_fields.empty() )
+        getFields( m_dia );
 
-    ULONG   baseClassCount = m_dia->getChildCount<SymTagBaseClass>();
+    return (ULONG)m_fields.size();
+}
 
-    for ( ULONG i = 0; i < baseClassCount; ++i )
+/////////////////////////////////////////////////////////////////////////////////////
+
+void UdtTypeInfo::getFields( pyDia::SymbolPtr &rootSym, ULONG startOffset )
+{
+    ULONG   childCount = rootSym->getChildCount();  
+
+    for ( ULONG i = 0; i < childCount; ++i )
     {
-        pyDia::SymbolPtr  baseSym = m_dia->getChildByIndex<SymTagBaseClass>( i );
+        pyDia::SymbolPtr  childSym = rootSym->getChildByIndex( i );
 
-        TypeInfoPtr  baseType = TypeInfo::getTypeInfo( baseSym );
+        ULONG  symTag = childSym->getSymTag();
 
-        fieldCount += baseType->getFieldCount();
-    }
-    
-    return fieldCount;
+        if ( symTag == SymTagBaseClass )
+        {
+            getFields( childSym, startOffset + childSym->getOffset() );
+        }
+        else
+        if ( symTag == SymTagData )
+        {
+            TypeInfoPtr     ti = TypeInfo::getTypeInfo( m_dia, childSym );
+
+            switch ( childSym->getDataKind() )
+            {
+            case DataIsMember:
+                ti->setOffset( startOffset + childSym->getOffset() );
+                break;
+
+            case DataIsStaticMember:
+                ti->setStaticOffset( childSym->getVa() );
+                break;                
+            }
+
+            m_fields.push_back( std::make_pair( childSym->getName(), ti ) );
+        }
+    }  
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -586,56 +584,6 @@ std::string UdtTypeInfo::print()
     }
 
     return sstr.str();
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-bool 
-UdtTypeInfo::getBaseField(
-    pyDia::SymbolPtr symUdt,
-    const std::string &fieldName,
-    LONG &addOffset,
-    pyDia::SymbolPtr &symField,
-    ULONG currLevel /*= 0*/
-)
-{
-    if (currLevel > 16)
-        return false;
-
-    LONG currOffset = 0;
-
-    pyDia::SymbolPtrList lstBases = symUdt->findChildrenImpl(SymTagBaseClass);
-    pyDia::SymbolPtrList::iterator it = lstBases.begin();
-    for (; it != lstBases.end(); ++it)
-    {
-        // find in direct base
-        try
-        {
-            symField = (*it)->getChildByName( fieldName );
-            addOffset += currOffset;
-            return true;
-        }
-        catch (const pyDia::Exception &)
-        {
-        }
-
-        // find in base of base
-        try
-        {
-            if (getBaseField(*it, fieldName, addOffset, symField, currLevel + 1))
-            {
-                addOffset += currOffset;
-                return true;
-            }
-        }
-        catch (const pyDia::Exception &)
-        {
-        }
-
-        // correct offset
-        currOffset += static_cast<ULONG>( (*it)->getSize() );
-    }
-    return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
