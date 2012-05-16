@@ -259,15 +259,16 @@ std::string UdtTypedVar::print()
             if ( fieldType->getStaticOffset() != 0 )
                fieldVar = TypedVar::getTypedVar( m_client, fieldType, VarDataMemory::factory(m_dataSpaces, fieldType->getStaticOffset() ) );
 
-            sstr << "   =" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getStaticOffset();
+            sstr << "   =" << std::right << std::setw(10) << std::setfill('0') << std::hex << fieldType->getStaticOffset();
+            sstr << " " << std::left << std::setw(18) << std::setfill(' ') << m_typeInfo->getFieldNameByIndex(i) << ':';
         }
         else
         {
             fieldVar = TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldType->getOffset()) );
             sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getOffset();
+            sstr << " " << std::left << std::setw(24) << std::setfill(' ') << m_typeInfo->getFieldNameByIndex(i) << ':';
         }
 
-        sstr << " " << std::left << std::setw( 20 ) << std::setfill(' ') << m_typeInfo->getFieldNameByIndex(i) << ':';
         sstr << " " << std::left << fieldType->getName();
 
         if ( fieldVar )

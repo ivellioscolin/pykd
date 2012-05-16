@@ -31,9 +31,11 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
     case SymTagArrayType:
         return TypeInfoPtr( new ArrayTypeInfo( typeSym ) );
 
-    case SymTagPointerType:
-    case SymTagVTable:        
+    case SymTagPointerType:   
         return TypeInfoPtr( new PointerTypeInfo( typeSym ) );
+
+    case SymTagVTable:
+        return TypeInfoPtr( new PointerTypeInfo( typeSym->getType() ) );
 
     case SymTagEnum:
         return TypeInfoPtr( new EnumTypeInfo( typeSym ) );
@@ -230,7 +232,7 @@ BitFieldTypeInfo::BitFieldTypeInfo(  pyDia::SymbolPtr &symbol )
     m_name = sstr.str();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
 PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symbol  ) 
 {
@@ -261,7 +263,7 @@ PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symbol  )
             break;
 
         case SymTagVTableShape:
-            m_derefName = "VTable";   
+            m_derefName = "VTable";
             break;
         }
     }
@@ -478,11 +480,11 @@ TypeInfoPtr UdtTypeInfo::getField( const std::string &fieldName )
     if ( m_fields.empty() )
         getFields( m_dia );
 
-    FieldList::iterator      it;
+    FieldList::reverse_iterator  it;
         
-    it = std::find_if( m_fields.begin(), m_fields.end(), boost::bind( &FieldType::first, _1) == fieldName );
+    it = std::find_if( m_fields.rbegin(), m_fields.rend(), boost::bind( &FieldType::first, _1) == fieldName );
 
-    if ( it == m_fields.end() )
+    if ( it == m_fields.rend() )
         throw TypeException( m_dia->getName(), fieldName + ": unknown field type" );
 
     return it->second;
@@ -552,6 +554,13 @@ void UdtTypeInfo::getFields( pyDia::SymbolPtr &rootSym, ULONG startOffset )
 
             m_fields.push_back( std::make_pair( childSym->getName(), ti ) );
         }
+        else
+        if ( symTag == SymTagVTable )
+        {
+            TypeInfoPtr     ti = TypeInfo::getTypeInfo( m_dia, childSym );
+
+            m_fields.push_back( std::make_pair( "__VFN_table", ti ) );            
+        }
     }  
 }
 
@@ -571,14 +580,15 @@ std::string UdtTypeInfo::print()
 
         if ( fieldType->isStaticMember() )
         {   
-            sstr << "   =" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getStaticOffset();
+            sstr << "   =" << std::right << std::setw(10) << std::setfill('0') << std::hex << fieldType->getStaticOffset();
+            sstr << " " << std::left << std::setw(18) << std::setfill(' ') << getFieldNameByIndex(i) << ':';
         }
         else
         {
             sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getOffset();
+            sstr << " " << std::left << std::setw(24) << std::setfill(' ') << getFieldNameByIndex(i) << ':';
         }
 
-        sstr << " " << std::left << std::setw( 20 ) << std::setfill(' ') << getFieldNameByIndex(i) << ':';
         sstr << " " << std::left << fieldType->getName();
         sstr << std::endl;
     }
