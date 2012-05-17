@@ -534,7 +534,10 @@ void UdtTypeInfo::getFields( pyDia::SymbolPtr &rootSym, ULONG startOffset )
 
         if ( symTag == SymTagBaseClass )
         {
-            getFields( childSym, startOffset + childSym->getOffset() );
+            if ( !childSym->isVirtualBaseClass() )
+            {
+                getFields( childSym, startOffset + childSym->getOffset() );
+            }
         }
         else
         if ( symTag == SymTagData )

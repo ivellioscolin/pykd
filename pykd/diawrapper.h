@@ -117,6 +117,10 @@ public:
 
     bool isBasicType();
 
+    bool isVirtualBaseClass();
+
+    bool isIndirectVirtualBaseClass();
+
     ULONG getBaseType();
 
     ULONG getBitPosition();
@@ -154,6 +158,8 @@ public:
     std::string print();
 
     bool eq(Symbol &rhs);
+
+    int getVirtualBasePointerOffset();
 
 public:
     typedef std::pair<ULONG, const char *> ValueNameEntry;

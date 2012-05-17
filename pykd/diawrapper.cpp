@@ -171,6 +171,13 @@ ULONG Symbol::getCount()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+int Symbol::getVirtualBasePointerOffset()
+{
+    return callSymbol( get_virtualBasePointerOffset);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Symbol::getValueImpl(IDiaSymbol *_symbol, VARIANT &vtValue)
 {
     HRESULT hres = _symbol->get_value(&vtValue);
@@ -237,6 +244,20 @@ bool Symbol::isBasicType()
     return 
         SUCCEEDED( m_symbol->get_baseType(&baseType) ) && 
         (btNoType != baseType);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+bool Symbol::isVirtualBaseClass()
+{
+    return !!callSymbol(get_virtualBaseClass);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+bool Symbol::isIndirectVirtualBaseClass()
+{
+    return !!callSymbol(get_indirectVirtualBaseClass);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
