@@ -335,7 +335,7 @@ public:
     virtual void virtFunc2() {}
 };
 
-class VirtualChildClass : public VirtualBaseClass1, public  VirtualBaseClass2
+class VirtualChildClass : public VirtualBaseClass1, public  VirtualBaseClass2, public virtual classBase
 {
     void virtFunc() {}
     void virtFunc2() {}

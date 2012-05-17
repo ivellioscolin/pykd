@@ -184,3 +184,4 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertNotEqual( 0, ti.m_staticField.offset() )
         self.assertNotEqual( 0, ti.m_staticConst.offset() )
         self.assertNotEqual( 0, ti.m_stdstr.offset() )
+        

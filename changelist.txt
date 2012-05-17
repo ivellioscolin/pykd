@@ -1,3 +1,9 @@
+version 0.1.0.13 17/05/2012
+
+[!] fixed : issue #10722 ( rdmsr raises exception )
+[!] fixed : issue #10763 ( member derived from different base classes )
+[!] fixed : issue #10764 ( typedVar for class does not contain field for vtable )
+
 version 0.1.0.12 24/04/2012
 
 [+] added : get/set load address for DIA global scope 
