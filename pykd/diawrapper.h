@@ -1,5 +1,6 @@
 
 #pragma once
+#include <set>
 
 #include <boost\smart_ptr\scoped_ptr.hpp>
 
@@ -190,29 +191,22 @@ protected:
     class checkSymLoop
     {
     public:
-        checkSymLoop(checkSymLoop *prev, IDiaSymbol *_symbol) 
-            : m_prev(prev)
-            , m_symIndexId(0)
+        checkSymLoop(checkSymLoop *prev)
+            : m_symSetPtr( prev ? prev->m_symSetPtr : symSetPtr(new symSet) )
         {
-            _symbol->get_symIndexId(&m_symIndexId);
         }
 
-        bool check() const
+        bool check(IDiaSymbol *_symbol)
         {
-            const checkSymLoop *prev = m_prev;
-            while (prev)
-            {
-                if (prev->m_symIndexId == m_symIndexId)
-                    return true;
-                prev = prev->m_prev;
-            }
-
-            return false;
+            DWORD symIndexId = 0;
+            _symbol->get_symIndexId(&symIndexId);
+            return !m_symSetPtr->insert(symIndexId).second;
         }
 
     private:
-        const checkSymLoop *m_prev;
-        DWORD m_symIndexId;
+        typedef std::set<DWORD> symSet;
+        typedef boost::shared_ptr<symSet> symSetPtr;
+        symSetPtr m_symSetPtr;
     };
 
     static std::string printImpl(

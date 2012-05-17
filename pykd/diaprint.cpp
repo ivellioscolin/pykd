@@ -64,6 +64,18 @@ static void printVariant(
 
 ////////////////////////////////////////////////////////////////////////////////
 
+static void printSignedOffset(
+    std::stringstream &sstream,
+    LONG lValue
+)
+{
+    const bool bNegOffset = lValue < 0;
+    lValue = bNegOffset ? -1 * lValue : lValue;
+    sstream << (bNegOffset ? "-" : "+") << "0x" << std::hex << lValue;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 std::string Symbol::printImpl(
     IDiaSymbol *_symbol,
     DWORD machineType,
@@ -80,17 +92,10 @@ std::string Symbol::printImpl(
     if (prefix)
         sstream << prefix;
 
-    checkSymLoop _loop(checkLoopPrev, _symbol);
-    if (_loop.check())
-    {
-        sstream << "<...see above...>";
-        return sstream.str();
-    }
-
     DWORD dwValue;
     autoBstr bstrValue;
     VARIANT vtValue = { VT_EMPTY };
-    bool bValue;
+    BOOL bValue;
     LONG lValue;
     ULONGLONG ullValue;
     HRESULT hres;
@@ -99,21 +104,26 @@ std::string Symbol::printImpl(
     if (hres == S_OK)
         sstream << "ID " << std::hex << dwValue << " ";
 
+    checkSymLoop _loop(checkLoopPrev);
+    if (_loop.check(_symbol))
+    {
+        sstream << "<...already printed...>";
+        return sstream.str();
+    }
+
     DWORD locType = LocIsNull;
     hres = _symbol->get_locationType(&locType);
     bool bLocation = (S_OK == hres);
     if (bLocation)
     {
         hres = _symbol->get_offset(&lValue);
-        const bool bNegOffset = lValue < 0;
-        lValue = bNegOffset ? -1 * lValue : lValue;
 
         switch (locType)
         {
         case LocIsBitField:
         case LocIsThisRel:
             assert(S_OK == hres);
-            sstream << (bNegOffset ? "-" : "+") << "0x" << std::hex << lValue;
+            printSignedOffset(sstream, lValue);
             if (LocIsBitField == locType)
             {
                 hres = _symbol->get_bitPosition(&dwValue);
@@ -163,7 +173,7 @@ std::string Symbol::printImpl(
                     else
                     {
                         sstream << "[" << regName;
-                        sstream << (bNegOffset ? "-" : "+") << "0x" << std::hex << lValue;
+                        printSignedOffset(sstream, lValue);
                         sstream << "]";
                     }
                 }
@@ -182,7 +192,7 @@ std::string Symbol::printImpl(
             if (S_OK == hres)
             {
                 sstream << ", Offset: ";
-                sstream << (bNegOffset ? "-" : "+") << "0x" << std::hex << lValue;
+                printSignedOffset(sstream, lValue);
             }
             break;
         }
@@ -277,7 +287,7 @@ std::string Symbol::printImpl(
             &symbols);
     if (S_OK == hres)
     {
-        if (indent <= 2)
+        if (indent <= 5)
         {
             DiaSymbolPtr child;
             ULONG celt;
