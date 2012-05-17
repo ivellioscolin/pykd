@@ -67,13 +67,15 @@ def printDrvMajorTable( drvName ):
     for i in range( len(drvObj.MajorFunction) ):
         dprintln( "MajorFunction[%d] = %s" % ( i, findSymbol( drvObj.MajorFunction[i] ) ) )
 
-
-
-if __name__ == "__main__":
-
-   if not isWindbgExt():
-      loadDump( sys.argv[1] )
-
+def run():
    loadSymbols();
 
    printDrvMajorTable( "afd" )
+
+if __name__ == "__main__":
+
+    if not isWindbgExt():
+       loadDump( sys.argv[1] )
+
+    run()
+

@@ -2,7 +2,6 @@
 import sys
 from pykd import *
 
-
 def processInfo():
 
     nt = module( "nt" )
@@ -12,6 +11,8 @@ def processInfo():
     for process in processList:
         print "".join( [chr(i) for i in process.ImageFileName if i != 0] )
 
+def run():
+   processInfo()
 
 def main():
 

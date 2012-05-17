@@ -43,10 +43,11 @@ def checkSSDT():
        for i in range( 0, serviceCount ):
           dprintln( "[%u] " % i + findSymbol( serviceTable[i] ) )       
 
+def run():
+    checkSSDT()
         
 
 if __name__ == "__main__":
-
 
     while True:
 
@@ -58,8 +59,7 @@ if __name__ == "__main__":
         if not isKernelDebugging():
             dprintln( "not a kernel debugging" )
             break 
-                 
-        checkSSDT()
-        break      
+        
+        run()         
 
-	
+        break
