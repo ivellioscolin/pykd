@@ -27,7 +27,7 @@ SetCompressor LZMA
 
 !define PRODUCT_SHORT_NAME "pykd"
 !define PRODUCT_FULL_NAME  "Python extension for WinDbg"
-!define PRODUCT_VERSION "0.1.0.3"
+!define PRODUCT_VERSION "0.1.0.13"
 !define PRODUCT_URL  "http://pykd.codeplex.com/"
 !define PRODUCT_NAME_AND_VERSION "${PRODUCT_FULL_NAME} ${PRODUCT_ARCH} ${PRODUCT_VERSION}"
 !define PRODUCT_MANUFACTURER "PyKd Team"
@@ -191,9 +191,9 @@ Section "${PRODUCT_SHORT_NAME} ${PRODUCT_ARCH}" sec_pykd
     SetOutPath "$INSTDIR"
 
     !if ${PRODUCT_ARCH} == "x64"
-        File "..\x64\Release\pykd.pyd"
+        File ".\binaries\x64\pykd.pyd"
     !else
-        File "..\Release\pykd.pyd"
+        File ".\binaries\x86\pykd.pyd"
     !endif
 SectionEnd
 
@@ -202,8 +202,17 @@ Section "Snippets" sec_snippets
     SetOverwrite on
 
     DetailPrint "Extracting snippets..."
-    SetOutPath "$DOCUMENTS\${PRODUCT_SHORT_NAME}"
-    File "..\Snippets\*.py"
+    SetOutPath "$DOCUMENTS\${PRODUCT_SHORT_NAME}\Snippets"
+    File "..\branch\0.1.x\snippets\*.py"
+SectionEnd
+
+Section "Samples" sec_samples
+    # Set Section properties
+    SetOverwrite on
+
+    DetailPrint "Extracting samples..."
+    SetOutPath "$DOCUMENTS\${PRODUCT_SHORT_NAME}\Samples"
+    File /r "..\branch\0.1.x\samples\*.py"
 SectionEnd
 
 Section "Python ${PYTHON_VERSION} ${PRODUCT_ARCH}" sec_python
@@ -233,9 +242,9 @@ Section "Visual C++ 2008 SP1 (${PRODUCT_ARCH}) runtime" sec_vcruntime
 
     SetOutPath "$TEMP"
     !if ${PRODUCT_ARCH} == "x64"
-        File "..\x64\Release\vcredist_${PRODUCT_ARCH}.exe"
+        File ".\binaries\x64\vcredist_${PRODUCT_ARCH}.exe"
     !else
-        File "..\Release\vcredist_${PRODUCT_ARCH}.exe"
+        File ".\binaries\x86\vcredist_${PRODUCT_ARCH}.exe"
     !endif
     
     ExecWait "$TEMP\vcredist_${PRODUCT_ARCH}.exe"
@@ -278,7 +287,7 @@ Section -FinishSection
     WriteRegStr HKLM "Software\${PRODUCT_SHORT_NAME}" "InstallPath" "$INSTDIR"
     
     DetailPrint "Adding extension dir and snippets dir to PYTHONPATH..."
-    WriteRegStr HKLM "Software\Python\PythonCore\${PYTHON_VERSION}\PythonPath\${PRODUCT_SHORT_NAME}" "" "$INSTDIR;$DOCUMENTS\${PRODUCT_SHORT_NAME}"
+    WriteRegStr HKLM "Software\Python\PythonCore\${PYTHON_VERSION}\PythonPath\${PRODUCT_SHORT_NAME}" "" "$INSTDIR;$DOCUMENTS\${PRODUCT_SHORT_NAME}\Snippets;$DOCUMENTS\${PRODUCT_SHORT_NAME}\Samples"
     
     DetailPrint "Registering uninstaller..."
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_SHORT_NAME}" "DisplayName" "${PRODUCT_FULL_NAME} (${PRODUCT_ARCH})"
@@ -342,7 +351,8 @@ FunctionEnd
 #------------------------------------------------------------------------------
 
 LangString DESC_sec_pykd      ${LANG_ENGLISH} "${PRODUCT_FULL_NAME}"
-LangString DESC_sec_snippets  ${LANG_ENGLISH} "Useful code snippets. Will be installed in $DOCUMENTS\${PRODUCT_SHORT_NAME}"
+LangString DESC_sec_snippets  ${LANG_ENGLISH} "Useful code snippets. Will be installed in $DOCUMENTS\${PRODUCT_SHORT_NAME}\Snippets"
+LangString DESC_sec_samples   ${LANG_ENGLISH} "Code samples. Will be installed in $DOCUMENTS\${PRODUCT_SHORT_NAME}\Samples"
 LangString DESC_sec_python    ${LANG_ENGLISH} "Let installer download and setup Python ${PYTHON_VERSION} ${PRODUCT_ARCH}"
 LangString DESC_sec_vcruntime ${LANG_ENGLISH} "Let installer download and setup Microsoft Visual C++ 2008 SP1 (${PRODUCT_ARCH}) runtime library"
 LangString DESC_sec_msdia     ${LANG_ENGLISH} "Let installer register Debug Interface Access (${PRODUCT_ARCH}) library"
@@ -350,6 +360,7 @@ LangString DESC_sec_msdia     ${LANG_ENGLISH} "Let installer register Debug Inte
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${sec_pykd}      $(DESC_sec_pykd)
     !insertmacro MUI_DESCRIPTION_TEXT ${sec_snippets}  $(DESC_sec_snippets)
+    !insertmacro MUI_DESCRIPTION_TEXT ${sec_samples}   $(DESC_sec_samples)
     !insertmacro MUI_DESCRIPTION_TEXT ${sec_python}    $(DESC_sec_python)
     !insertmacro MUI_DESCRIPTION_TEXT ${sec_vcruntime} $(DESC_sec_vcruntime)
     !insertmacro MUI_DESCRIPTION_TEXT ${sec_msdia}     $(DESC_sec_msdia)
@@ -435,7 +446,7 @@ Function un.onInit
 
     ${If} ${Errors}
     ${OrIf} $R0 == 0
-    ${OrIfNot} ${IsPythonInstalled}
+    #${OrIfNot} ${IsPythonInstalled}
         !insertmacro UnselectSection ${unsec_python}
         SectionSetText ${unsec_python} ""
     ${EndIf}
@@ -446,7 +457,7 @@ Function un.onInit
     
     ${If} ${Errors}
     ${OrIf} $R0 == 0
-    ${OrIfNot} ${IsDiaRegistered}
+    #${OrIfNot} ${IsDiaRegistered}
         !insertmacro UnselectSection ${unsec_msdia}
         SectionSetText ${unsec_msdia} ""
     ${EndIf}
@@ -457,7 +468,7 @@ Function un.onInit
 
     ${If} ${Errors}
     ${OrIf} $R0 == 0
-    ${OrIfNot} ${IsVcRuntimeInstalled}
+    #${OrIfNot} ${IsVcRuntimeInstalled}
         !insertmacro UnselectSection ${unsec_vcruntime}
         SectionSetText ${unsec_vcruntime} ""
     ${EndIf}
