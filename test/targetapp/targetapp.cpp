@@ -551,10 +551,16 @@ int doExeptions()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <map>
+
+std::map<int, bool> g_map;
+
 int _tmain(int argc, _TCHAR* argv[])
 {
     try
     {
+        g_map.insert(std::pair<int, bool>(100, true));
+
         InitializeListHead( &g_listHead );
         InsertTailList( &g_listHead, &g_listItem1.listEntry );
         InsertTailList( &g_listHead, &g_listItem2.listEntry );

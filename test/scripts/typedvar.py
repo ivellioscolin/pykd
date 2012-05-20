@@ -250,3 +250,8 @@ class TypedVarTest( unittest.TestCase ):
         tv = pykd.typedVar( "g_virtChild" )
         print tv
         self.assertEqual( -100, tv.m_baseField )
+    
+    def testDinkumwareMap(self):
+        g_map = target.module.typedVar( "g_map" )
+        self.assertEqual( 1, g_map._Mysize )
+    
