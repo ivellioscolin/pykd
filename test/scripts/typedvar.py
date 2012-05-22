@@ -253,4 +253,11 @@ class TypedVarTest( unittest.TestCase ):
     def testDinkumwareMap(self):
         g_map = target.module.typedVar( "g_map" )
         self.assertEqual( 1, g_map._Mysize )
-    
+        
+        
+    def testUdtSubscribe(self):
+        tv = pykd.typedVar( "g_virtChild" )
+        self.assertEqual( 5, len(tv) )
+        self.assertEqual( tv[4], tv.m_baseField )
+        for field in tv:
+             str( field )

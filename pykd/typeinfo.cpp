@@ -529,6 +529,9 @@ TypeInfoPtr UdtTypeInfo::getFieldByIndex( ULONG index )
         getVirtualFields();
     }
 
+    if ( index >= m_fields.size() )
+         throw PyException( PyExc_IndexError, "Index out of range");
+
     return m_fields[ index ].second;
 }
 
@@ -541,6 +544,9 @@ std::string UdtTypeInfo::getFieldNameByIndex( ULONG index )
         getFields( m_dia, pyDia::SymbolPtr() );
         getVirtualFields();
     }
+
+    if ( index >= m_fields.size() )
+         throw PyException( PyExc_IndexError, "Index out of range");
 
     return m_fields[ index ].first;
 }

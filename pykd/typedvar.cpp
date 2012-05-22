@@ -252,6 +252,31 @@ UdtTypedVar::getField( const std::string &fieldName )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+TypedVarPtr 
+UdtTypedVar::getElementByIndex( ULONG  index )
+{
+    TypeInfoPtr     fieldType = m_typeInfo->getFieldByIndex(index);
+
+    if ( fieldType->isStaticMember() )
+    {
+        if ( fieldType->getStaticOffset() == 0 )
+            throw ImplementException( __FILE__, __LINE__, "Fix ME");
+
+        return  TypedVar::getTypedVar( m_client, fieldType, VarDataMemory::factory(m_dataSpaces, fieldType->getStaticOffset() ) );
+    }
+
+    ULONG   fieldOffset = fieldType->getOffset();
+
+    if ( fieldType->isVirtualMember() )
+    {
+        fieldOffset += getVirtualBaseDisplacement( fieldType );
+    }
+
+    return TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldOffset) );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 LONG UdtTypedVar::getVirtualBaseDisplacement( TypeInfoPtr& typeInfo )
 {
     ULONG virtualBasePtr, virtualDispIndex, virtualDispSize;

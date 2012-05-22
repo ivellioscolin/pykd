@@ -68,7 +68,7 @@ public:
         throw PyException( PyExc_TypeError, "object is unsubscriptable");  
     }
 
-    virtual TypedVarPtr getElementByIndexPtr( const TypedVarPtr& tv ) {
+    TypedVarPtr getElementByIndexPtr( const TypedVarPtr& tv ) {
         return getElementByIndex( boost::apply_visitor( VariantToULong(), tv->getValue() ) );
     }
 
@@ -172,11 +172,19 @@ public:
     {
     }
 
+protected:
+
     virtual std::string print();
 
     virtual std::string  printValue();
 
     virtual TypedVarPtr getField( const std::string &fieldName );
+
+    virtual ULONG getElementCount() {
+        return m_typeInfo->getFieldCount();                
+    }
+
+    virtual TypedVarPtr getElementByIndex( ULONG  index );
 
     LONG getVirtualBaseDisplacement( TypeInfoPtr& typeInfo );
 };
