@@ -1,3 +1,10 @@
+version 0.1.0.14 22/05/2012
+ 
+[+] added : "subscription" for UDT typeInfo ( len(typeInfo), typeInfo[index] )
+[+] added : "subscription" for UDT typedVar ( len(typedVar), typedVar[index] )
+[!] fixed : issue #10767 ( supported virtual base classes )
+
+
 version 0.1.0.13 17/05/2012
 
 [!] fixed : issue #10722 ( rdmsr raises exception )
