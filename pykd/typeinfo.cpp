@@ -615,12 +615,21 @@ void UdtTypeInfo::getFields(
         else
         if ( symTag == SymTagVTable )
         {
-            if ( !baseVirtualSym )
-            {
-                TypeInfoPtr     ti = TypeInfo::getTypeInfo( rootSym, childSym );
+            TypeInfoPtr     ti = TypeInfo::getTypeInfo( rootSym, childSym );
 
-                m_fields.push_back( std::make_pair( "__VFN_table", ti ) ); 
+            if ( baseVirtualSym )
+            {
+                ti->setVirtualBase( 
+                    TypeInfo::getTypeInfo(baseVirtualSym),
+                    virtualBasePtr,
+                    virtualDispIndex, 
+                    virtualDispSize );    
+               
             }
+
+            ti->setOffset( startOffset + childSym->getOffset() );
+
+            m_fields.push_back( std::make_pair( "__VFN_table", ti ) ); 
         }
     }  
 }
