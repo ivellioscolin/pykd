@@ -64,11 +64,11 @@ public:
         throw PyException( PyExc_TypeError, "object has no len()" );
     }
 
-    virtual TypedVarPtr getElementByIndex( ULONG  index ) {
+    virtual python::object getElementByIndex( ULONG  index ) {
         throw PyException( PyExc_TypeError, "object is unsubscriptable");  
     }
 
-    TypedVarPtr getElementByIndexPtr( const TypedVarPtr& tv ) {
+    python::object getElementByIndexPtr( const TypedVarPtr& tv ) {
         return getElementByIndex( boost::apply_visitor( VariantToULong(), tv->getValue() ) );
     }
 
@@ -158,7 +158,7 @@ public:
 
     virtual std::string  printValue();
 
-    virtual TypedVarPtr getElementByIndex( ULONG  index );
+    virtual python::object getElementByIndex( ULONG  index );
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +184,7 @@ protected:
         return m_typeInfo->getFieldCount();                
     }
 
-    virtual TypedVarPtr getElementByIndex( ULONG  index );
+    virtual python::object getElementByIndex( ULONG  index );
 
     LONG getVirtualBaseDisplacement( TypeInfoPtr& typeInfo );
 };

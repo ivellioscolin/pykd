@@ -128,6 +128,14 @@ public:
         throw TypeException( getName(), "type is not a pointer" );
     }
 
+    virtual ULONG getElementCount() {
+        throw PyException( PyExc_TypeError, "object has no len()" );
+    }
+
+    virtual python::tuple getElementByIndex( ULONG index ) {
+        throw PyException( PyExc_TypeError, "object is unsubscriptable");  
+    }
+
     void setOffset( ULONG offset ) {
         m_offset = offset;
     }
@@ -307,6 +315,14 @@ protected:
 
     virtual bool isUserDefined() {
         return true;
+    }
+
+    virtual ULONG getElementCount() {
+        return getFieldCount();
+    }
+
+    virtual python::tuple getElementByIndex( ULONG index ) {
+        return python::make_tuple( getFieldNameByIndex(index), getFieldByIndex(index) );
     }
 
     virtual std::string print();

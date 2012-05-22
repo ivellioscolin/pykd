@@ -185,3 +185,9 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertNotEqual( 0, ti.m_staticConst.offset() )
         self.assertNotEqual( 0, ti.m_stdstr.offset() )
         
+    def testUdtSubscribe(self):
+        tv = pykd.typeInfo( "g_virtChild" )
+        self.assertEqual( 5, len(tv) )
+        for field in tv:
+             str( field )
+

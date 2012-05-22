@@ -258,6 +258,8 @@ class TypedVarTest( unittest.TestCase ):
     def testUdtSubscribe(self):
         tv = pykd.typedVar( "g_virtChild" )
         self.assertEqual( 5, len(tv) )
-        self.assertEqual( tv[4], tv.m_baseField )
+        fieldName, fieldVal = tv[4]
+        self.assertEqual( fieldName, "m_baseField" )
+        self.assertEqual( fieldVal, tv.m_baseField )
         for field in tv:
              str( field )

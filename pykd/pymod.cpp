@@ -532,7 +532,9 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "asMap", &TypeInfo::asMap )
         .def( "deref", &TypeInfo::deref )
         .def( "__str__", &TypeInfo::print )
-        .def( "__getattr__", &TypeInfo::getField );
+        .def( "__getattr__", &TypeInfo::getField )
+        .def("__len__", &TypeInfo::getElementCount )
+        .def("__getitem__", &TypeInfo::getElementByIndex );
         
     python::class_<TypedVar, TypedVarPtr, python::bases<intBase>, boost::noncopyable >("typedVar", 
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", python::no_init  )

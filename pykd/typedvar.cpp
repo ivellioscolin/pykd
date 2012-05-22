@@ -213,14 +213,14 @@ std::string  ArrayTypedVar::printValue()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVarPtr ArrayTypedVar::getElementByIndex( ULONG  index ) 
+python::object ArrayTypedVar::getElementByIndex( ULONG  index ) 
 {
     if ( index >= m_typeInfo->getCount() )
         throw PyException( PyExc_IndexError, "Index out of range" );
 
     TypeInfoPtr     elementType = m_typeInfo->getElementType();
 
-    return TypedVar::getTypedVar( m_client, elementType, m_varData->fork(elementType->getSize()*index) );
+    return python::object( TypedVar::getTypedVar( m_client, elementType, m_varData->fork(elementType->getSize()*index) ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -252,7 +252,7 @@ UdtTypedVar::getField( const std::string &fieldName )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVarPtr 
+python::object
 UdtTypedVar::getElementByIndex( ULONG  index )
 {
     TypeInfoPtr     fieldType = m_typeInfo->getFieldByIndex(index);
@@ -262,7 +262,9 @@ UdtTypedVar::getElementByIndex( ULONG  index )
         if ( fieldType->getStaticOffset() == 0 )
             throw ImplementException( __FILE__, __LINE__, "Fix ME");
 
-        return  TypedVar::getTypedVar( m_client, fieldType, VarDataMemory::factory(m_dataSpaces, fieldType->getStaticOffset() ) );
+        return python::make_tuple(
+            m_typeInfo->getFieldNameByIndex(index), 
+            TypedVar::getTypedVar( m_client, fieldType, VarDataMemory::factory(m_dataSpaces, fieldType->getStaticOffset() ) ) );
     }
 
     ULONG   fieldOffset = fieldType->getOffset();
@@ -272,7 +274,9 @@ UdtTypedVar::getElementByIndex( ULONG  index )
         fieldOffset += getVirtualBaseDisplacement( fieldType );
     }
 
-    return TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldOffset) );
+    return python::make_tuple( 
+            m_typeInfo->getFieldNameByIndex(index), 
+            TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldOffset) ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
