@@ -553,6 +553,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrieves the variable classification of a data: DataIsXxx")
         .def("deref", &TypedVar::deref,
             "Return value by pointer" )
+        .def("type", &TypedVar::getType,
+            "Return typeInfo instance" )
         .def("__getattr__", &TypedVar::getField,
             "Return field of structure as an object attribute" )
         .def( "__str__", &TypedVar::print )
