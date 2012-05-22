@@ -238,7 +238,34 @@ UdtTypedVar::getField( const std::string &fieldName )
         return  TypedVar::getTypedVar( m_client, fieldType, VarDataMemory::factory(m_dataSpaces, fieldType->getStaticOffset() ) );
     }
 
-    return  TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldType->getOffset()) );
+    ULONG   fieldOffset = 0;
+
+    fieldOffset = fieldType->getOffset();
+
+    if ( fieldType->isVirtualMember() )
+    {
+        fieldOffset += getVirtualBaseDisplacement( fieldType );
+    }
+
+    return  TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldOffset) );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+LONG UdtTypedVar::getVirtualBaseDisplacement( TypeInfoPtr& typeInfo )
+{
+    ULONG virtualBasePtr, virtualDispIndex, virtualDispSize;
+    typeInfo->getVirtualDisplacement( virtualBasePtr, virtualDispIndex, virtualDispSize );
+
+    ULONG64     vbtableOffset = m_varData->fork( virtualBasePtr )->readPtr();
+
+    VarDataPtr   vbtable = VarDataMemory::factory(m_dataSpaces, vbtableOffset);
+
+    LONG   displacement = 0;
+
+    vbtable->read( &displacement, sizeof(displacement), virtualDispIndex*virtualDispSize );
+
+    return virtualBasePtr + displacement;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -264,8 +291,15 @@ std::string UdtTypedVar::print()
         }
         else
         {
-            fieldVar = TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldType->getOffset()) );
-            sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getOffset();
+            ULONG   fieldOffset = fieldType->getOffset();
+
+            if ( fieldType->isVirtualMember() )
+            {
+                fieldOffset += getVirtualBaseDisplacement( fieldType );
+            }
+
+            fieldVar = TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldOffset) );
+            sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldOffset;
             sstr << " " << std::left << std::setw(24) << std::setfill(' ') << m_typeInfo->getFieldNameByIndex(i) << ':';
         }
 

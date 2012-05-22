@@ -475,10 +475,39 @@ TypeInfoPtr TypeInfo::getRecurciveComplexType( TypeInfoPtr &lowestType, std::str
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+ULONG64 TypeInfo::getStaticOffset() {
+    if ( !m_staticMember )
+        throw TypeException( getName(), "This is not a static member" );
+
+    return m_staticOffset;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ULONG TypeInfo::getOffset() {
+
+   if ( m_staticOffset )
+       throw TypeException( getName(), "This is a static member" );
+
+    return m_offset;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ULONG64 TypeInfo::getTypeOffset()
+{
+   return m_staticMember ? m_staticOffset : m_offset;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 TypeInfoPtr UdtTypeInfo::getField( const std::string &fieldName )
 {
     if ( m_fields.empty() )
-        getFields( m_dia );
+    {
+        getFields( m_dia, pyDia::SymbolPtr() );
+        getVirtualFields();
+    }
 
     FieldList::reverse_iterator  it;
         
@@ -495,7 +524,10 @@ TypeInfoPtr UdtTypeInfo::getField( const std::string &fieldName )
 TypeInfoPtr UdtTypeInfo::getFieldByIndex( ULONG index )
 {
     if ( m_fields.empty() )
-        getFields( m_dia );
+    {
+        getFields( m_dia, pyDia::SymbolPtr() );
+        getVirtualFields();
+    }
 
     return m_fields[ index ].second;
 }
@@ -505,7 +537,10 @@ TypeInfoPtr UdtTypeInfo::getFieldByIndex( ULONG index )
 std::string UdtTypeInfo::getFieldNameByIndex( ULONG index )
 {
     if ( m_fields.empty() )
-        getFields( m_dia);
+    {
+        getFields( m_dia, pyDia::SymbolPtr() );
+        getVirtualFields();
+    }
 
     return m_fields[ index ].first;
 }
@@ -515,14 +550,23 @@ std::string UdtTypeInfo::getFieldNameByIndex( ULONG index )
 ULONG UdtTypeInfo::getFieldCount()
 {
     if ( m_fields.empty() )
-        getFields( m_dia );
+    {
+        getFields( m_dia, pyDia::SymbolPtr() );
+        getVirtualFields();
+    }
 
     return (ULONG)m_fields.size();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void UdtTypeInfo::getFields( pyDia::SymbolPtr &rootSym, ULONG startOffset )
+void UdtTypeInfo::getFields( 
+        pyDia::SymbolPtr &rootSym, 
+        pyDia::SymbolPtr &baseVirtualSym,
+        ULONG startOffset,        
+        LONG virtualBasePtr,
+        ULONG virtualDispIndex,
+        ULONG virtualDispSize )
 {
     ULONG   childCount = rootSym->getChildCount();  
 
@@ -536,18 +580,29 @@ void UdtTypeInfo::getFields( pyDia::SymbolPtr &rootSym, ULONG startOffset )
         {
             if ( !childSym->isVirtualBaseClass() )
             {
-                getFields( childSym, startOffset + childSym->getOffset() );
+                getFields( childSym, pyDia::SymbolPtr(), startOffset + childSym->getOffset() );
             }
         }
         else
         if ( symTag == SymTagData )
         {
-            TypeInfoPtr     ti = TypeInfo::getTypeInfo( m_dia, childSym );
+            TypeInfoPtr     ti = TypeInfo::getTypeInfo( rootSym, childSym );
 
             switch ( childSym->getDataKind() )
             {
             case DataIsMember:
+
+                if ( baseVirtualSym  )
+                {
+                    ti->setVirtualBase( 
+                        TypeInfo::getTypeInfo(baseVirtualSym),
+                        virtualBasePtr,
+                        virtualDispIndex, 
+                        virtualDispSize );
+                }
+
                 ti->setOffset( startOffset + childSym->getOffset() );
+
                 break;
 
             case DataIsStaticMember:
@@ -560,11 +615,37 @@ void UdtTypeInfo::getFields( pyDia::SymbolPtr &rootSym, ULONG startOffset )
         else
         if ( symTag == SymTagVTable )
         {
-            TypeInfoPtr     ti = TypeInfo::getTypeInfo( m_dia, childSym );
+            if ( !baseVirtualSym )
+            {
+                TypeInfoPtr     ti = TypeInfo::getTypeInfo( rootSym, childSym );
 
-            m_fields.push_back( std::make_pair( "__VFN_table", ti ) );            
+                m_fields.push_back( std::make_pair( "__VFN_table", ti ) ); 
+            }
         }
     }  
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+void UdtTypeInfo::getVirtualFields()
+{
+    ULONG   childCount = m_dia->getChildCount<SymTagBaseClass>();  
+
+    for ( ULONG i = 0; i < childCount; ++i )
+    {
+        pyDia::SymbolPtr  childSym = m_dia->getChildByIndex( i );
+
+        if ( !childSym->isVirtualBaseClass() )
+            continue;
+
+        getFields( 
+            childSym,
+            childSym,
+            0,
+            childSym->getVirtualBasePointerOffset(),
+            childSym->getVirtualBaseDispIndex(),
+            childSym->getVirtualBaseDispSize() );
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -585,6 +666,16 @@ std::string UdtTypeInfo::print()
         {   
             sstr << "   =" << std::right << std::setw(10) << std::setfill('0') << std::hex << fieldType->getStaticOffset();
             sstr << " " << std::left << std::setw(18) << std::setfill(' ') << getFieldNameByIndex(i) << ':';
+        }
+        else
+        if ( fieldType->isVirtualMember() )
+        {           
+            ULONG virtualBasePtr, virtualDispIndex, virtualDispSize;
+            fieldType->getVirtualDisplacement( virtualBasePtr, virtualDispIndex, virtualDispSize );
+
+            sstr << "   virtual base " <<  fieldType->getVirtualBase()->getName();
+            sstr << " +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getOffset();
+            sstr << " " << getFieldNameByIndex(i) << ':';
         }
         else
         {
@@ -644,7 +735,7 @@ std::string EnumTypeInfo::getFieldNameByIndex( ULONG index )
 
 ULONG EnumTypeInfo::getFieldCount()
 {
-    return m_dia->getChildCount();    
+    return m_dia->getChildCount();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

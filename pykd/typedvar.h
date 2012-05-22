@@ -177,6 +177,8 @@ public:
     virtual std::string  printValue();
 
     virtual TypedVarPtr getField( const std::string &fieldName );
+
+    LONG getVirtualBaseDisplacement( TypeInfoPtr& typeInfo );
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

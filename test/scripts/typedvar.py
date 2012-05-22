@@ -248,7 +248,6 @@ class TypedVarTest( unittest.TestCase ):
         
     def testDiamondVirtualInherit(self):
         tv = pykd.typedVar( "g_virtChild" )
-        print tv
         self.assertEqual( -100, tv.m_baseField )
     
     def testDinkumwareMap(self):

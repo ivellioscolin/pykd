@@ -335,10 +335,12 @@ public:
     virtual void virtFunc2() {}
 };
 
-class VirtualChildClass : public VirtualBaseClass1, public  VirtualBaseClass2, public virtual classBase
+class VirtualChildClass : public VirtualBaseClass1, public  VirtualBaseClass2
 {
     void virtFunc() {}
     void virtFunc2() {}
+
+    void virtual virtFunc3() {}
 };
 
 VirtualChildClass       g_virtChild;
@@ -426,7 +428,7 @@ void FuncWithName0()
 
     std::cout << g_structTypeDef.m_field0;
 
-    std::cout << g_virtChild.VirtualBaseClass1::m_baseField;
+    //std::cout << g_virtChild.VirtualBaseClass1::m_baseField;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

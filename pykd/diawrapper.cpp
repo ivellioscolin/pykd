@@ -174,10 +174,27 @@ ULONG Symbol::getCount()
 
 int Symbol::getVirtualBasePointerOffset()
 {
-    return callSymbol( get_virtualBasePointerOffset);
+    return callSymbol(get_virtualBasePointerOffset);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+ULONG Symbol::getVirtualBaseDispIndex()
+{
+    return callSymbol(get_virtualBaseDispIndex);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONG Symbol::getVirtualBaseDispSize()
+{
+   SymbolPtr   baseTableType = SymbolPtr( new Symbol( callSymbol(get_virtualBaseTableType), m_machineType ) );
+
+   return (ULONG)baseTableType->getType()->getSize();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 void Symbol::getValueImpl(IDiaSymbol *_symbol, VARIANT &vtValue)
 {
     HRESULT hres = _symbol->get_value(&vtValue);

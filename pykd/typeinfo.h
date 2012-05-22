@@ -42,11 +42,14 @@ public:
         m_offset( 0 ),
         m_staticOffset( 0 ),
         m_constant( false ),
-        m_staticMember( false )
+        m_staticMember( false ),
+        m_virtualMember( false ),
+        m_virtualBasePtr( 0 ),
+        m_virtualDispIndex( 0 ),
+        m_virtualDispSize( 0 )
         {
             m_constantValue.vt = VT_EMPTY;
         }
-
 
     virtual std::string print() {
         std::stringstream   sstr;
@@ -125,10 +128,6 @@ public:
         throw TypeException( getName(), "type is not a pointer" );
     }
 
-    ULONG getOffset() const {
-        return (ULONG)m_offset;
-    }
-
     void setOffset( ULONG offset ) {
         m_offset = offset;
     }
@@ -138,7 +137,6 @@ public:
         m_constant = true;
         m_constantValue = var;
     }
-
     bool isConstant() const
     {
        return  m_constant == true;
@@ -149,19 +147,40 @@ public:
        return  m_staticMember == true;
     }
 
+    bool isVirtualMember() const 
+    {
+        return m_virtualMember == true;
+    }
+
     void setStaticOffset( ULONG64 offset ) {
-        m_staticOffset = offset;     
+        m_staticOffset = offset; 
         m_staticMember = true;
     }
 
-    ULONG64 getStaticOffset() const {
-        return m_staticOffset;
+    void setVirtualBase( TypeInfoPtr virtualBase, LONG virtualBasePtr, ULONG virtualDispIndex, ULONG virtualDispSize )
+    {
+        m_virtualMember = true;
+        m_virtualBaseType = virtualBase;
+        m_virtualBasePtr = virtualBasePtr;
+        m_virtualDispIndex = virtualDispIndex;
+        m_virtualDispSize = virtualDispSize;
     }
 
-    ULONG64 getTypeOffset() const {
-        return m_staticMember ? m_staticOffset : m_offset;
-    }
+    ULONG64 getTypeOffset();
 
+    ULONG getOffset();
+
+    ULONG64 getStaticOffset();
+
+    void getVirtualDisplacement( ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize ) {
+        virtualBasePtr = m_virtualBasePtr;
+        virtualDispIndex = m_virtualDispIndex;
+        virtualDispSize = m_virtualDispSize;
+    };
+
+    TypeInfoPtr getVirtualBase() {
+        return m_virtualBaseType;
+    }
 
 protected:
 
@@ -181,7 +200,17 @@ protected:
 
     bool        m_staticMember;
 
+    bool        m_virtualMember;
+
     VARIANT     m_constantValue;
+
+    LONG        m_virtualBasePtr;
+
+    ULONG       m_virtualDispIndex;
+
+    ULONG       m_virtualDispSize;
+
+    TypeInfoPtr m_virtualBaseType;    
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -290,7 +319,16 @@ protected:
     
     FieldList           m_fields;
 
-    void getFields( pyDia::SymbolPtr &rootSym, ULONG startOffset = 0 );
+    void getFields( 
+        pyDia::SymbolPtr &rootSym, 
+        pyDia::SymbolPtr &baseVirtualSym,
+        ULONG startOffset = 0,
+        LONG virtualBasePtr = 0,
+        ULONG virtualDispIndex = 0,
+        ULONG m_virtualDispSize = 0 );
+
+
+    void getVirtualFields();
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

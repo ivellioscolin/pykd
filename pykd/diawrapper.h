@@ -162,6 +162,10 @@ public:
 
     int getVirtualBasePointerOffset();
 
+    ULONG getVirtualBaseDispIndex();
+
+    ULONG getVirtualBaseDispSize();
+
 public:
     typedef std::pair<ULONG, const char *> ValueNameEntry;
 
