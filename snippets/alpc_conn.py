@@ -26,7 +26,7 @@ def main():
   """
   argc_ = len(sys.argv)
   if (1 == argc_):
-    portTypeAddr = getOffset("nt", "AlpcPortObjectType")
+    portTypeAddr = getOffset("nt!AlpcPortObjectType")
     if (0 != portTypeAddr):
       objTable = typedVar("nt!_EPROCESS", getCurrentProcess()).ObjectTable
       lstAlpcPorts = ntobj.getListByHandleTable(objTable, ptrPtr(portTypeAddr))
