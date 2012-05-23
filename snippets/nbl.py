@@ -487,6 +487,7 @@ def usage():
 def main():
 
     if len(sys.argv) < 2:
+        usage()   
         return
    
     if not isKernelDebugging():
