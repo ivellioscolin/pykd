@@ -10,9 +10,9 @@ def printConnPort(portAddr):
   """
   Print connection port by port address
   """
-  port = typedVar("nt", "_ALPC_PORT", portAddr)
+  port = typedVar("nt!_ALPC_PORT", portAddr)
   if (port != None):
-    portCommInfo = typedVar("nt", "_ALPC_COMMUNICATION_INFO", port.CommunicationInfo)
+    portCommInfo = typedVar("nt!_ALPC_COMMUNICATION_INFO", port.CommunicationInfo)
     dprintln( dbgCommand("!object %x" % portCommInfo.ConnectionPort) )
   else:
     dprintln("Error: query port object by address failed")
@@ -28,7 +28,7 @@ def main():
   if (1 == argc_):
     portTypeAddr = getOffset("nt", "AlpcPortObjectType")
     if (0 != portTypeAddr):
-      objTable = typedVar("nt", "_EPROCESS", getCurrentProcess()).ObjectTable
+      objTable = typedVar("nt!_EPROCESS", getCurrentProcess()).ObjectTable
       lstAlpcPorts = ntobj.getListByHandleTable(objTable, ptrPtr(portTypeAddr))
       for port in lstAlpcPorts:
         dprintln("Port object %x" % port + ", conection port:")

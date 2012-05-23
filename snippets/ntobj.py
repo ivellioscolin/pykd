@@ -47,7 +47,7 @@ def getTypeLegacy(p):
 
 # Select platform-specific function for getting object header
 # Select key body type: nt!CmpKeyObjectType or nt!CmKeyObjectType
-if (ptrWord(getOffset("nt", "NtBuildNumber")) >= 7600):
+if (ptrWord(getOffset("nt!NtBuildNumber")) >= 7600):
   getType = getTypeWin7
   # _kcbObjectType = expr("poi(nt!CmKeyObjectType)")
 else:
@@ -62,7 +62,7 @@ def getObjectNameInfoFromHeader(p):
   objHeader = containingRecord(p, "nt", "_OBJECT_HEADER", "Body")
   if (0 == objHeader.NameInfoOffset):
     return None
-  return typedVar("nt", "_OBJECT_HEADER_NAME_INFO", objHeader.getAddress() - objHeader.NameInfoOffset)
+  return typedVar("nt!_OBJECT_HEADER_NAME_INFO", objHeader.getAddress() - objHeader.NameInfoOffset)
 
 def getObjectNameInfoFromInfoMask(p):
   """
@@ -74,13 +74,13 @@ def getObjectNameInfoFromInfoMask(p):
   offsetNameInfo = ptrByte( getOffset("nt", "ObpInfoMaskToOffset") + (objHeader.InfoMask & 3) )
   if (0 == offsetNameInfo):
     return None
-  return typedVar("nt", "_OBJECT_HEADER_NAME_INFO", objHeader.getAddress() - offsetNameInfo)
+  return typedVar("nt!_OBJECT_HEADER_NAME_INFO", objHeader.getAddress() - offsetNameInfo)
 
 
 # Select platform-specific function for getting name of object
 getObjectNameInfo = None
 try:
-  typeInfo("nt", "_OBJECT_HEADER").NameInfoOffset
+  typeInfo("nt!_OBJECT_HEADER").NameInfoOffset
   getObjectNameInfo = getObjectNameInfoFromHeader
 except TypeException:
   getObjectNameInfo = getObjectNameInfoFromInfoMask
@@ -150,7 +150,7 @@ def getListByHandleTable(tableHandles=None, objTypeAddr=0, containHeaders=True):
     if (0 == entryHandle):
       return 0
   
-    HandleEntry = typedVar("nt", "_HANDLE_TABLE_ENTRY", entryHandle)
+    HandleEntry = typedVar("nt!_HANDLE_TABLE_ENTRY", entryHandle)
     if (0xFFFFFFFE == HandleEntry.NextFreeTableEntry):
       return 0
 
@@ -159,7 +159,7 @@ def getListByHandleTable(tableHandles=None, objTypeAddr=0, containHeaders=True):
       return 0
 
     if (containHeader):
-      objHeader = typedVar("nt", "_OBJECT_HEADER", p)
+      objHeader = typedVar("nt!_OBJECT_HEADER", p)
       p = objHeader.Body.getAddress()
     return p
 
@@ -210,13 +210,13 @@ def getListByHandleTable(tableHandles=None, objTypeAddr=0, containHeaders=True):
     return lstObjects
 
   if (None == tableHandles):
-    currProcess = typedVar("nt", "_EPROCESS", getCurrentProcess())
+    currProcess = typedVar("nt!_EPROCESS", getCurrentProcess())
     if (None == currProcess):
       dprintln("Get current process failed")
       return
     tableHandles = currProcess.ObjectTable
 
-  tableHandles = typedVar("nt", "_HANDLE_TABLE", tableHandles)
+  tableHandles = typedVar("nt!_HANDLE_TABLE", tableHandles)
   nMaxHandleIndex = tableHandles.NextHandleNeedingPool & 0xFFFFFFFF
   nTableLevel = (tableHandles.TableCode & 3)
   pTableContent = tableHandles.TableCode - nTableLevel
@@ -249,7 +249,7 @@ def getListByDirectoryObject(p, objTypeAddr=0):
   for i in range(0, NUMBER_HASH_BUCKETS):
     bucket = ptrPtr( p + (i * ptrSize()) )
     while bucket:
-      bucketVar = typedVar("nt", "_OBJECT_DIRECTORY_ENTRY", bucket)
+      bucketVar = typedVar("nt!_OBJECT_DIRECTORY_ENTRY", bucket)
       if objTypeAddr and (getType(bucketVar.Object) ==  objTypeAddr):
         result.append(bucketVar.Object)
       elif (not objTypeAddr):
@@ -410,7 +410,7 @@ def main():
     objectName = buildObjectName(object)
     if len(objectName):
       dprintln( ", name=`" + objectName + "'" )
-    elif typedVar("nt", "_OBJECT_TYPE", getType(object)).TypeInfo.QueryNameProcedure:
+    elif typedVar("nt!_OBJECT_TYPE", getType(object)).TypeInfo.QueryNameProcedure:
       dprintln(", <i>custom</i> name", True)
     else:
       dprintln(" , <_unnamed_>")
