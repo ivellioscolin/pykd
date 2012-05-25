@@ -204,20 +204,33 @@ std::wstring loadWChars( ULONG64 address, ULONG  number, bool phyAddr )
 
 std::string DebugClient::loadCStr( ULONG64 address )
 {
-    const   size_t              maxLength = 0x1000;
- 
+    const size_t    maxLength = 0x10000;
+
     address = addr64( address );
 
-    std::vector<char>   buffer(maxLength);
-        
+    ULONG   strLength = 0;
+
     HRESULT     hres = 
         m_dataSpaces->ReadMultiByteStringVirtual(
             address,
             maxLength,
+            NULL,
+            0,
+            &strLength );
+
+    if ( FAILED( hres ) )
+        throw MemoryException( address );
+
+    std::vector<char>   buffer(strLength);
+
+    hres = 
+        m_dataSpaces->ReadMultiByteStringVirtual(
+            address,
+            strLength,
             &buffer[0],
-            maxLength,
+            strLength,
             NULL );
-    
+
     if ( FAILED( hres ) )
         throw MemoryException( address );
                            
@@ -233,24 +246,34 @@ std::string loadCStr( ULONG64 offset )
 
 std::wstring DebugClient::loadWStr( ULONG64 address )
 {
-    const   size_t              maxLength = 0x2000;
+    const size_t    maxLength = 0x10000;
  
     address = addr64( address );
 
-    std::vector<char>   buffer(maxLength);
-        
+    ULONG   strLength = 0;
+
     HRESULT     hres = 
-        m_dataSpaces->ReadMultiByteStringVirtual(
+        m_dataSpaces->ReadUnicodeStringVirtualWide(
             address,
             maxLength,
+            NULL,
+            0,
+            &strLength );
+
+    std::vector<wchar_t>        buffer(strLength);
+        
+    hres = 
+        m_dataSpaces->ReadUnicodeStringVirtualWide(
+            address,
+            strLength,
             &buffer[0],
-            maxLength,
+            strLength,
             NULL );
     
     if ( FAILED( hres ) )
         throw MemoryException( address );
                            
-    return std::wstring( (wchar_t*)&buffer[0] );
+    return std::wstring( &buffer[0] );
 }
 
 std::wstring loadWStr( ULONG64 offset )

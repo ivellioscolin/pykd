@@ -82,6 +82,10 @@ class MemoryTest( unittest.TestCase ):
         self.assertEqual( 'Hello', pykd.loadCStr( target.module.helloStr ) )
         self.assertEqual( u'Hello', pykd.loadWStr( target.module.helloWStr ) )
         
+    def testBigCStr( self ):        
+        self.assertEqual( 0x2000, len( pykd.loadCStr( pykd.ptrPtr( target.module.bigCStr ) ) ) )
+        self.assertEqual( 0x2000, len( pykd.loadWStr( pykd.ptrPtr( target.module.bigWStr ) ) ) )
+        
     def testVaValid( self ):
         self.assertTrue( pykd.isValid( target.module.begin() ) )
         self.assertFalse( pykd.isValid( 0 ) )

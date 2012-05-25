@@ -347,6 +347,11 @@ VirtualChildClass       g_virtChild;
 
 ////////////////////////////////////////////////////////////////////////////////
 
+char*  bigCStr = NULL;
+wchar_t* bigWStr = NULL;
+
+////////////////////////////////////////////////////////////////////////////////
+
 WNDENUMPROC g_ptrToFunction;
 void *g_unTypedPtrToFunction = g_ptrToFunction;
 #pragma pack( pop )
@@ -598,6 +603,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
         g_ptrToFunction = &EnumWindowsProc2;
         g_unTypedPtrToFunction = &EnumWindowsProc2;
+
+        bigCStr = new char[0x2000 + 1];
+        memset( bigCStr, 'a', 0x2000 );
+        bigCStr[0x2000] = 0;
+
+        bigWStr = new wchar_t[0x2000 + 1];
+        wmemset( bigWStr, L'a', 0x2000 );
+        bigWStr[0x2000] = 0;
 
         // Let test scripts to execute
         __debugbreak();
