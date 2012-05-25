@@ -6,6 +6,29 @@ def loadSymbols():
    global nt
    nt = loadModule( "nt" )
 
+def getObjNameFromObjHeader( objHeader ):
+
+    if hasattr( objHeader, "NameInfoOffset"):
+        objName = typedVar( "nt!_OBJECT_HEADER_NAME_INFO",  objHeader.getAddress() - objHeader.NameInfoOffset )
+    else:
+        if (0 == (objHeader.InfoMask & 2)):
+           return ""
+      
+        offsetNameInfo = ptrByte( nt.ObpInfoMaskToOffset + (objHeader.InfoMask & 3) )
+
+        if (0 == offsetNameInfo):
+            return ""
+
+        objName = nt.typedVar("_OBJECT_HEADER_NAME_INFO", objHeader.getAddress() - offsetNameInfo)
+
+    return loadUnicodeString( objName.Name.getAddress() )        
+
+def getObjTypeFromObjHeader( objHeader ):
+
+    if hasattr( objHeader, "Type"):
+        return objHeader.Type
+
+    return ptrPtr( nt.ObTypeIndexTable + ptrSize() * objHeader.TypeIndex )
 
 def getObjectInDir( dirObj, objName ):
 
@@ -21,22 +44,21 @@ def getObjectInDir( dirObj, objName ):
 
           while dirEntry != 0:
 
-              objHeader = containingRecord( dirEntry.Object, "nt!_OBJECT_HEADER", "Body" )
+            objHeader = containingRecord( dirEntry.Object, "nt!_OBJECT_HEADER", "Body" )
 
-              objName = typedVar( "nt!_OBJECT_HEADER_NAME_INFO",  objHeader.getAddress() - objHeader.NameInfoOffset )
-              name = loadUnicodeString( objName.Name.getAddress() )
+            objName = getObjNameFromObjHeader( objHeader )
 
-              if name.lower() == dirSubName.lower():
+            if objName.lower() == dirSubName.lower():
 
-                if objHeader.Type == ptrPtr( nt.ObpDirectoryObjectType ):
+                if getObjTypeFromObjHeader( objHeader ) == ptrPtr( nt.ObpDirectoryObjectType ):
                     return getObjectInDir( typedVar( "nt!_OBJECT_DIRECTORY", dirEntry.Object), objSubName )
                 else:
-                    return  dirEntry.Object
+                    return dirEntry.Object
 
-              if dirEntry.ChainLink != 0:
-                  dirEntry = typedVar( "nt!_OBJECT_DIRECTORY_ENTRY", dirEntry.ChainLink )
-              else:
-                  dirEntry = 0    
+            if dirEntry.ChainLink != 0:
+                dirEntry = typedVar( "nt!_OBJECT_DIRECTORY_ENTRY", dirEntry.ChainLink )
+            else:
+                dirEntry = 0    
 
 
 def getObjectByName( objName ):
