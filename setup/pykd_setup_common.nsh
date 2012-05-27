@@ -203,7 +203,7 @@ Section "Snippets" sec_snippets
 
     DetailPrint "Extracting snippets..."
     SetOutPath "$DOCUMENTS\${PRODUCT_SHORT_NAME}\Snippets"
-    File "..\branch\0.1.x\snippets\*.py"
+    File "..\snippets\*.py"
 SectionEnd
 
 Section "Samples" sec_samples
@@ -212,7 +212,7 @@ Section "Samples" sec_samples
 
     DetailPrint "Extracting samples..."
     SetOutPath "$DOCUMENTS\${PRODUCT_SHORT_NAME}\Samples"
-    File /r "..\branch\0.1.x\samples\*.py"
+    File /r "..\samples\*.py"
 SectionEnd
 
 Section "Python ${PYTHON_VERSION} ${PRODUCT_ARCH}" sec_python
