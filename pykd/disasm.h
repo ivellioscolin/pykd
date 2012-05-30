@@ -21,11 +21,16 @@ public:
         return s;
     }
 
-    std::string  reset() {
+    std::string  jump(ULONG64 offset) {
+        m_currentOffset = offset;
+        doDisasm();
+        return disassemble();
+    }
 
+    std::string  reset() {
         m_currentOffset = m_beginOffset;
         doDisasm();
-        return m_disasm;
+        return disassemble();
     }
 
     std::string
