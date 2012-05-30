@@ -6,7 +6,7 @@ import sys
 
 
 def usage():
-    print "python pytowiki.py module_name"
+    print "python pytowiki.py module_name output_file"
 
 
 class CodeplexFormatter:
@@ -65,41 +65,42 @@ def buildDoc( ioStream, formatter, apiInfo ):
 
     for func in apiInfo.funcs:
         ioStream.write( formatter.anchor( func.__name__ ) )
-        ioStream.write( formatter.header3( func.__name__ ) )
+        ioStream.write( formatter.header3( "Function " +  func.__name__ ) )
         if func.__doc__ != None:
             ioStream.write( formatter.escapeMarkup( func.__doc__) + formatter.endl() )
 
 
     for cls in apiInfo.classes:
         ioStream.write( formatter.anchor( cls.__name__ ) )
-        ioStream.write( formatter.header3( cls.__name__ ) )	
+        ioStream.write( formatter.header3( "Class " + cls.__name__ ) )
         if cls.__doc__ != None:
             ioStream.write( formatter.escapeMarkup( cls.__doc__)  + formatter.endl() )
 
         for m in cls.methods:
             if m.__doc__ != None:
-                ioStream.write( formatter.bulletItem( formatter.escapeMarkup( m.__name__ ) ) )
-
+                ioStream.write( formatter.bulletItem( formatter.link( m.__name__,  cls.__name__ + "." + m.__name__) ) )
 
         for m in cls.methods:
             if m.__doc__ != None:
-                ioStream.write( formatter.header4( formatter.escapeMarkup( m.__name__ ) ) )
+                ioStream.write( formatter.anchor( cls.__name__ + "." + m.__name__ ) )
+                ioStream.write( formatter.header4( formatter.escapeMarkup( cls.__name__  + "."  + m.__name__ ) ) )
                 ioStream.write( formatter.escapeMarkup( m.__doc__ ) + formatter.endl() )
 
 
 def main():
 
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         usage()
         return
 
     moduleName = sys.argv[1]
+    fileName = sys.argv[2]
 
     try:
 
         module = __import__( moduleName )
 
-        with file( "wiki.txt", "w" ) as wikiIo:
+        with file( fileName, "w" ) as wikiIo:
 
             apiInfo = ModuleInfo( module )
 
@@ -110,7 +111,7 @@ def main():
     except ImportWarning:
 
         print "failed to import module " + moduleName
-	
+
 
 if __name__ == "__main__":
     main()
