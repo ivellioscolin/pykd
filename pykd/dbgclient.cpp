@@ -668,4 +668,50 @@ python::list getTypedVarArrayByTypeName( ULONG64 addr, const std::string  &typeN
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+python::tuple DebugClient::getSourceLine( ULONG64 offset )
+{
+    HRESULT     hres;
+
+    if ( offset == 0 )
+    {
+        hres = m_registers->GetInstructionOffset( &offset );
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugRegisters::GetInstructionOffset failed" );
+    }
+
+    ULONG       fileNameLength = 0;
+
+    m_symbols->GetLineByOffset(
+        offset,
+        NULL,
+        NULL,
+        0,
+        &fileNameLength,
+        NULL );
+
+    if ( fileNameLength == 0 )
+        throw DbgException( "Failed to find source file" );
+
+    std::vector<CHAR>   fileNameBuf( fileNameLength );
+
+    ULONG       lineNo;
+    ULONG64     displacement;
+
+    hres = 
+        m_symbols->GetLineByOffset(
+            offset,
+            &lineNo,
+            &fileNameBuf[0],
+            fileNameLength,
+            NULL,
+            &displacement );
+    
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol::GetLineByOffset method failed" );
+
+    return python::make_tuple( std::string( &fileNameBuf[0] ), lineNo, displacement );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }; // end of namespace pykd

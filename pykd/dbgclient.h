@@ -138,6 +138,8 @@ public:
 
     std::string dbgSymPath();
 
+    python::tuple getSourceLine( ULONG64 offset = 0);
+
     python::list getThreadList();
 
     template<ULONG status>
@@ -505,7 +507,10 @@ void changeDebuggerStatus()
     g_dbgClient->changeDebuggerStatus<status>();
 }
 
-
+inline python::tuple getSourceLine( ULONG64 offset = 0 )
+{
+    return g_dbgClient->getSourceLine(offset);
+}
 /////////////////////////////////////////////////////////////////////////////////
 
 

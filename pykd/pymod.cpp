@@ -68,6 +68,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( getLocals_, getLocals, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBp_, setSoftwareBp, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( pyDia_GlobalScope_loadExe, pyDia::GlobalScope::loadExe, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, getSourceLine, 0, 1 );
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadChars, DebugClient::loadChars, 2, 3 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_loadWChars, DebugClient::loadWChars, 2, 3 );
@@ -83,8 +84,10 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_compareMemory, DebugClient::
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_getLocals, DebugClient::getLocals, 0, 1 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_setSoftwareBp, DebugClient::setSoftwareBp, 1, 2 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_setHardwareBp, DebugClient::setHardwareBp, 3, 4 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( DebugClient_getSourceLine, DebugClient::getSourceLine, 0, 1 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( StackFrame_getLocals, StackFrame::getLocals, 0, 1 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( pyDia_Symbol_findChildrenEx, pyDia::Symbol::findChildrenEx, 1, 3 );
+
 
 #define DEF_PY_CONST_ULONG(x)    \
     python::scope().attr(#x) = ULONG(##x)
@@ -179,6 +182,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return current processor mode as string: X86, ARM, IA64 or X64" )
         .def( "getProcessorType", &DebugClient::getProcessorType,
             "Return type of physical processor: X86, ARM, IA64 or X64" )
+        .def( "getSourceLine", &DebugClient::getSourceLine, DebugClient_getSourceLine( python::args( "offset"),
+            "Return source file name, lin and displacement by the specified offset" ) )
         .def( "getThreadList", &DebugClient::getThreadList, 
             "Return list of threads (each item is numeric identifier of thread)" )
         .def( "go", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_GO>,
@@ -374,6 +379,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return current processor mode as string: X86, ARM, IA64 or X64" );
     python::def( "getProcessorType", &getProcessorType,
         "Return type of physical processor: X86, ARM, IA64 or X64" );
+    python::def( "getSourceLine", &getSourceLine, getSourceLine_( python::args( "offset"),
+        "Return source file name, line and displacement by the specified offset" ) );
     python::def( "getThreadList", &getThreadList, 
         "Return list of threads (each item is numeric identifier of thread)" );
     python::def( "is64bitSystem", &is64bitSystem,
