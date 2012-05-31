@@ -34,8 +34,7 @@ def getTypeWin7(p):
   Implementation for Win7+
   """
   objHeader = nt.containingRecord(p, "_OBJECT_HEADER", "Body")
-  tableTypeIndex = getOffset("nt", "ObTypeIndexTable")
-  return ptrPtr(tableTypeIndex + (ptrSize() * objHeader.TypeIndex))
+  return ptrPtr( nt.ObTypeIndexTable + (ptrSize() * objHeader.TypeIndex))
 
 def getTypeLegacy(p):
   """
@@ -71,7 +70,7 @@ def getObjectNameInfoFromInfoMask(p):
   objHeader = nt.containingRecord(p, "_OBJECT_HEADER", "Body")
   if (0 == (objHeader.InfoMask & 2)):
     return None
-  offsetNameInfo = ptrByte( getOffset("nt", "ObpInfoMaskToOffset") + (objHeader.InfoMask & 3) )
+  offsetNameInfo = ptrByte( nt.ObpInfoMaskToOffset + (objHeader.InfoMask & 3) )
   if (0 == offsetNameInfo):
     return None
   return nt.typedVar("_OBJECT_HEADER_NAME_INFO", objHeader.getAddress() - offsetNameInfo)
