@@ -34,7 +34,8 @@ def getTypeWin7(p):
   Implementation for Win7+
   """
   objHeader = nt.containingRecord(p, "_OBJECT_HEADER", "Body")
-  return ptrPtr( nt.ObTypeIndexTable + (ptrSize() * objHeader.TypeIndex))
+  tableTypeIndex = nt.ObTypeIndexTable
+  return ptrPtr(tableTypeIndex + (ptrSize() * objHeader.TypeIndex))
 
 def getTypeLegacy(p):
   """
@@ -46,7 +47,7 @@ def getTypeLegacy(p):
 
 # Select platform-specific function for getting object header
 # Select key body type: nt!CmpKeyObjectType or nt!CmKeyObjectType
-if (ptrWord(getOffset("nt!NtBuildNumber")) >= 7600):
+if (ptrWord( nt.NtBuildNumber ) >= 7600):
   getType = getTypeWin7
   # _kcbObjectType = expr("poi(nt!CmKeyObjectType)")
 else:
@@ -240,7 +241,7 @@ def getListByDirectoryObject(p, objTypeAddr=0):
   otherwise get object of all types
   """
 
-  if getType(p) != ptrPtr( getOffset("nt", "ObpDirectoryObjectType") ):
+  if getType(p) != ptrPtr( nt.ObpDirectoryObjectType ):
     return None
 
   result = list()
@@ -271,7 +272,7 @@ def getObjectByName(name, caseSensitive=False):
   if name[0] != '\\':
     return None
 
-  object = ptrPtr( getOffset("nt", "ObpRootDirectoryObject") )
+  object = ptrPtr( nt.ObpRootDirectoryObject )
 
   cmpFunc = cmpNoCase
   if caseSensitive:
