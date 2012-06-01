@@ -2,6 +2,7 @@
 #include "stdafx.h"
 
 #include <boost\python\tuple.hpp>
+#include <boost\algorithm\string\case_conv.hpp>
 
 #include "context.h"
 #include "stkframe.h"
@@ -145,6 +146,32 @@ ULONG64 ThreadContext::getValue(ULONG cvRegId) const
     throw DbgException(__FUNCTION__ ": Register missing");
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+
+ULONG64 ThreadContext::getValueByName( const std::string  &regName ) const
+{
+    std::string     upcaseName = boost::to_upper_copy( regName );
+
+    if ( IMAGE_FILE_MACHINE_I386 == m_processorType )
+    {
+        for ( ULONG i = 0; i < pyDia::Symbol::cntI386RegName; ++i )
+        {
+            if ( upcaseName == pyDia::Symbol::i386RegName[i].second )
+                return getValue( pyDia::Symbol::i386RegName[i].first );
+        }
+    }
+    else
+    {
+        for ( ULONG i = 0; i < pyDia::Symbol::cntAmd64RegName; ++i )
+        {
+            if ( upcaseName == pyDia::Symbol::amd64RegName[i].second )
+                return getValue( pyDia::Symbol::amd64RegName[i].first );
+        }
+    }
+
+    throwUnsupportedProcessor(__FUNCTION__);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 bool ThreadContext::getValueNoThrow(ULONG cvRegId, ULONG64 &val) const
@@ -218,7 +245,27 @@ python::object ThreadContext::getByIndex(ULONG ind) const
     for (ULONG i = 0; it != m_regValues.end(); ++i, ++it )
     {
         if (i == ind)
-            return python::make_tuple(it->first, it->second);
+        {
+            switch (m_processorType)
+            {
+            case IMAGE_FILE_MACHINE_I386:
+
+                for ( ULONG j = 0; j < pyDia::Symbol::cntI386RegName; ++j )
+                    if ( pyDia::Symbol::i386RegName[j].first == it->first )
+                        return python::make_tuple( it->first, pyDia::Symbol::i386RegName[j].second, it->second);
+              
+                break;
+
+
+            case IMAGE_FILE_MACHINE_AMD64:
+
+                for ( ULONG j = 0; j < pyDia::Symbol::cntAmd64RegName; ++j )
+                    if ( pyDia::Symbol::amd64RegName[j].first == it->first )
+                        return python::make_tuple( it->first, pyDia::Symbol::amd64RegName[j].second, it->second);
+              
+                break;
+            }
+        }            
     }
 
     throw PyException( PyExc_IndexError, "Index out of range");
@@ -372,6 +419,40 @@ void ThreadContext::throwUnsupportedProcessor(PCSTR szFunction) const
     sstream << szFunction << ":\n";
     sstream << "Unsupported processor type: 0x" << std::hex << m_processorType;
     throw DbgException( sstream.str() );
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+std::string ThreadContext::print() const 
+{
+    std::stringstream    sstr;
+
+    RegValues::const_iterator it = m_regValues.begin();
+    for (; it != m_regValues.end(); ++it )
+    {
+        switch (m_processorType)
+        {
+        case IMAGE_FILE_MACHINE_I386:
+
+            for ( ULONG j = 0; j < pyDia::Symbol::cntI386RegName; ++j )
+                if ( pyDia::Symbol::i386RegName[j].first == it->first )
+                    sstr << pyDia::Symbol::i386RegName[j].second << '=' << std::hex << it->second << std::endl;              
+          
+            break;
+
+
+        case IMAGE_FILE_MACHINE_AMD64:
+
+            for ( ULONG j = 0; j < pyDia::Symbol::cntAmd64RegName; ++j )
+                if ( pyDia::Symbol::amd64RegName[j].first == it->first )
+                    sstr << pyDia::Symbol::amd64RegName[j].second << '=' << std::hex << it->second << std::endl;     
+
+            break;
+        }
+
+    }
+
+    return sstr.str();
 }
 
 /////////////////////////////////////////////////////////////////////////////////

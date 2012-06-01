@@ -30,6 +30,7 @@ public:
 
     // get register value by ID
     ULONG64 getValue(ULONG cvRegId) const;
+    ULONG64 getValueByName( const std::string &regName ) const;
     bool getValueNoThrow(ULONG cvRegId, ULONG64 &val) const;
 
     // get @$ip pseudo register
@@ -46,7 +47,7 @@ public:
         return static_cast<ULONG>( m_regValues.size() );
     }
 
-    python::object getByIndex(ULONG ind) const;
+    python::object getByIndex(ULONG ind) const;  
 
     // get processor type
     std::string getProcessorType() const {
@@ -54,6 +55,8 @@ public:
     }
 
     ContextPtr forkByStackFrame(const StackFrame &stkFrmae) const;
+
+    std::string print() const;
 
 private:
 

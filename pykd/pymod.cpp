@@ -680,7 +680,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "getLocals", &StackFrame::getLocals, StackFrame_getLocals( python::args( "ctx" ),
             "Get list of local variables for this stack frame" ) )
         .def( "__str__", &StackFrame::print,
-            "Return stacks frame as string");
+            "Return stacks frame as a string");
 
     python::class_<ThreadContext, ContextPtr>(
         "Context", "Context of thread (register values)", python::no_init )
@@ -692,6 +692,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Get current stack pointer" )
         .def( "get", &ThreadContext::getValue, 
             "Get register value by ID (CV_REG_XXX)" )
+        .def( "get", &ThreadContext::getValueByName,
+            "Get register value by name" )
         .def( "processorType", &ThreadContext::getProcessorType,
             "Get processor ThreadContext as string")
         .def( "fork", &ThreadContext::forkByStackFrame,
@@ -699,7 +701,14 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__len__", &ThreadContext::getCount,
             "Return count of registers")
         .def("__getitem__", &ThreadContext::getByIndex,
-            "Return tuple<ID, VALUE> by index");
+            "Return tuple<ID, NAME, VALUE> by index")
+        .def("__getitem__", &ThreadContext::getValueByName,
+            "Return register value by name" )
+        .def("__getattr__", &ThreadContext::getValueByName,
+            "Return register value as a attribute of the Context" )
+        .def("__str__", &ThreadContext::print,
+            "Return context as a string" );
+
 
     python::class_<CpuReg, python::bases<intBase> >( 
         "cpuReg", "CPU regsiter class", boost::python::no_init )
