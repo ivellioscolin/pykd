@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <boost\algorithm\string\case_conv.hpp>
+
 #include "cpureg.h"
 #include "dbgclient.h"
 
@@ -14,7 +16,7 @@ CpuReg::CpuReg( IDebugClient4 *client, const std::string &regName ) :
 
     m_name = regName;
 
-    hres = m_registers->GetIndexByName( m_name.c_str(), &m_index );
+    hres = m_registers->GetIndexByName( boost::to_lower_copy(m_name).c_str(), &m_index );
     if ( FAILED( hres ) )
         throw DbgException( "IDebugRegister::GetIndexByName", hres );
 
