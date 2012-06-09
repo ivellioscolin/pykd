@@ -1,3 +1,13 @@
+version 0.1.0.15 09/06/2012
+
+[+] added : disasm::disasm method with offset parameter ( continue disassembling from the specified offset )
+[+] added : method type() for typedVar class ( return a typeInfo of the typedVar )
+[+] added : gerSourceLine function ( return source file name and line number for the specified offset )
+[+] added : __getitem__, __getattr__, __str__ methods of the Context class
+
+[!] fixed : issue #10541 ( loadWStr: string truncated to 128 chars )
+[!] fixed : issue #10852 ( reg("REGISTER_NAME") raises exception if a register name is upcased )
+
 version 0.1.0.14 22/05/2012
  
 [+] added : "subscription" for UDT typeInfo ( len(typeInfo), typeInfo[index] )
