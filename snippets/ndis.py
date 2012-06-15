@@ -68,9 +68,9 @@ def printNdisObj():
 
             while opn != 0:
 
-                openBlock = typedVar( "ndis", "_NDIS_OPEN_BLOCK", opn )
+                openBlock = typedVar( "ndis!_NDIS_OPEN_BLOCK", opn )
 
-                proto = typedVar( "ndis", "_NDIS_PROTOCOL_BLOCK", openBlock.ProtocolHandle )
+                proto = typedVar( "ndis!_NDIS_PROTOCOL_BLOCK", openBlock.ProtocolHandle )
                                                                                             
                 dprint( "%s \t<link cmd=\"dt ndis!_NDIS_OPEN_BLOCK %x\">NDIS_OPEN_BLOCK( %x )</link>" % ( loadUnicodeString( proto.ProtocolCharacteristics.Name.getAddress() ), openBlock.getAddress(), openBlock.getAddress() ), True ) 
                 dprintln( "\t<link cmd=\"dt ndis!_NDIS_PROTOCOL_BLOCK %x\">NDIS_PROTOCOL_BLOCK( %x )</link>" % ( proto.getAddress(), proto.getAddress() ), True ) 
