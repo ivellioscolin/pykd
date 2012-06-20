@@ -290,6 +290,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Set implicit thread for current process" )
         .def( "setProcessorMode", &DebugClient::setProcessorMode, 
             "Set current processor mode by string (X86, ARM, IA64 or X64)" )
+        .def( "sizeof", &DebugClient::getSymbolSize,
+            "Return a size of the type or variable" )
         .def( "step", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
             "Change debugger status to DEBUG_STATUS_STEP_OVER" )
         .def( "symbolsPath", &DebugClient::dbgSymPath, 
@@ -489,6 +491,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Set implicit thread for current process" );
     python::def( "setProcessorMode", &setProcessorMode, 
         "Set current processor mode by string (X86, ARM, IA64 or X64)" );
+    python::def( "sizeof", &getSymbolSize,
+        "Return a size of the type or variable" );
     python::def( "step", &changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
         "Change debugger status to DEBUG_STATUS_STEP_OVER" );
     python::def( "symbolsPath", &dbgSymPath, 
@@ -594,6 +598,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return offset of the symbol" )
         .def("rva", &Module::getSymbolRva,
             "Return rva of the symbol" )
+        .def( "sizeof", &Module::getSymbolSize,
+            "Return a size of the type or variable" )
         .def("type", &Module::getTypeByName,
             "Return typeInfo class by type name" )
         .def("typedVar", &Module::getTypedVarByAddr,

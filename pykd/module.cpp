@@ -203,6 +203,25 @@ Module::getTypedVarByType( const TypeInfoPtr &typeInfo, ULONG64 addr )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+ULONG64 
+Module::getSymbolSize( const std::string &symName )
+{
+    try {
+
+        pyDia::SymbolPtr  symVar = getDia()->getChildByName( symName );
+
+        if ( symVar->getSymTag() == SymTagData )
+            return symVar->getSize();
+
+    } catch( const SymbolException& )
+    {
+    }
+
+    return getTypeByName(symName)->getSize();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 TypedVarPtr
 Module::getTypedVarByName( const std::string &symName )
 {

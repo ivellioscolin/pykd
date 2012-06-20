@@ -497,6 +497,25 @@ void DebugClient::splitSymName( const std::string &fullName, std::string &module
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+ULONG64 DebugClient::getSymbolSize( const std::string &fullName )
+{
+    std::string     moduleName;
+    std::string     symName;
+
+    splitSymName( fullName, moduleName, symName );
+
+    ModulePtr   module = loadModuleByName( moduleName );   
+
+    return module->getSymbolSize(symName);
+}
+
+ULONG64 getSymbolSize( const std::string &symName )
+{
+    return g_dbgClient->getSymbolSize(symName);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 TypeInfoPtr DebugClient::getTypeInfoByName( const std::string &typeName )
 {
     std::string     moduleName;

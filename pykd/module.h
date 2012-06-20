@@ -93,6 +93,8 @@ public:
 
     python::list getTypedVarArrayByType( ULONG64 addr, const TypeInfoPtr &typeInfo, ULONG number );
 
+    ULONG64 getSymbolSize( const std::string &symName );
+
     pyDia::GlobalScopePtr& getDia() {
         if (!m_dia)
         {

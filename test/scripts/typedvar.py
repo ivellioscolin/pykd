@@ -47,6 +47,10 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 16 + pykd.ptrSize(), tv1.sizeof() )
         tv2 = target.module.typedVar( "structTest[2]", target.module.g_testArray )
         self.assertEqual( tv1.sizeof()*2, tv2.sizeof() )
+        
+        self.assertEqual( pykd.sizeof("g_structTest"), tv1.sizeof() )
+        self.assertEqual( pykd.sizeof("g_testArray"), tv2.sizeof() )
+        self.assertEqual( pykd.sizeof("g_ucharValue"), 1 )        
 
     def testByAddress( self ):
         tv1 = target.module.typedVar( "structTest", target.module.g_structTest )
@@ -263,3 +267,4 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( fieldVal, tv.m_baseField )
         for field in tv:
              str( field )
+      

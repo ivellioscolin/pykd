@@ -12,7 +12,8 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "structTest", pykd.typeInfo( "structTest" ).name() )
         self.assertEqual( "structTest", pykd.typeInfo( target.moduleName + "!structTest" ).name() )
         self.assertEqual( "structTest", pykd.typeInfo( "g_structTest" ).name() )
-        self.assertEqual( "structTest", pykd.typeInfo( target.moduleName + "!g_structTest" ).name() )
+        self.assertEqual( "structTest", pykd.typeInfo( target.moduleName + "!g_structTest" ).name() )     
+        self.assertEqual( "Int1B", pykd.typeInfo( "Int1B" ) )	
  
     def testCreateByName( self ):
         """ creating typeInfo by the type name """
@@ -100,7 +101,11 @@ class TypeInfoTest( unittest.TestCase ):
     def testSize( self ):
         ti1 = target.module.type( "structTest" )
         self.assertEqual( 16 + pykd.ptrSize(), ti1.size() )
-        self.assertEqual( pykd.ptrSize(), target.module.type("structTest**").size() )
+        self.assertEqual( pykd.ptrSize(), target.module.type("structTest**").size() )     
+        self.assertEqual( pykd.sizeof("structTest"), target.module.type("structTest").size() )
+        self.assertEqual( pykd.sizeof("structTest**"), target.module.type("structTest**").size() )
+        self.assertEqual( pykd.sizeof("Int1B"), target.module.type("Int1B").size() )            
+        
 
     def testBitField( self ):
         ti = target.module.type( "g_structWithBits" )
@@ -190,4 +195,3 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( 5, len(tv) )
         for field in tv:
              str( field )
-

@@ -352,6 +352,8 @@ public:
 
     python::list getTypedVarArrayByType( ULONG64 addr, const TypeInfoPtr &typeInfo, ULONG number );
 
+    ULONG64 getSymbolSize( const std::string &symName );
+
 
 private:
     HRESULT safeWaitForEvent(ULONG timeout = INFINITE, ULONG flags = DEBUG_WAIT_DEFAULT);
@@ -421,6 +423,8 @@ python::list getTypedVarListByType( ULONG64 listHeadAddres, const TypeInfoPtr &t
 python::list getTypedVarArrayByTypeName( ULONG64 addr, const std::string  &typeName, ULONG number );
 
 python::list getTypedVarArrayByType( ULONG64 addr, const TypeInfoPtr &typeInfo, ULONG number );
+
+ULONG64 getSymbolSize( const std::string &symName );
 
 /////////////////////////////////////////////////////////////////////////////////
 // Synthetic symbols global finctions:
