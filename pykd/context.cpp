@@ -116,9 +116,9 @@ void ThreadContext::getAmd64Context()
 ThreadContext::ThreadContext( IDebugClient4 *client ) :
     pykd::DbgObject( client )
 {
-    HRESULT hres = m_control->GetExecutingProcessorType(&m_processorType);
+    HRESULT hres = m_control->GetEffectiveProcessorType(&m_processorType);
     if (S_OK != hres)
-        throw DbgException( "IDebugControl::GetExecutingProcessorType", hres );
+        throw DbgException( "IDebugControl::GetEffectiveProcessorType", hres );
 
     switch (m_processorType)
     {
