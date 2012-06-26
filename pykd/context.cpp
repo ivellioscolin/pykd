@@ -10,7 +10,46 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 namespace pykd {
-    
+
+////////////////////////////////////////////////////////////////////////////////
+// Fill 32-bit register context
+////////////////////////////////////////////////////////////////////////////////
+template <typename TContext>
+void FillRegistersFromContext32(
+    ThreadContext::RegValues &regValues,
+    const TContext &Context
+)
+{
+    regValues[CV_REG_DR0] = Context.Dr0;
+    regValues[CV_REG_DR1] = Context.Dr1;
+    regValues[CV_REG_DR2] = Context.Dr2;
+    regValues[CV_REG_DR3] = Context.Dr3;
+    regValues[CV_REG_DR6] = Context.Dr6;
+    regValues[CV_REG_DR7] = Context.Dr7;
+
+    regValues[CV_REG_GS] = Context.SegGs;
+    regValues[CV_REG_FS] = Context.SegFs;
+    regValues[CV_REG_ES] = Context.SegEs;
+    regValues[CV_REG_DS] = Context.SegDs;
+
+    regValues[CV_REG_EDI] = Context.Edi;
+    regValues[CV_REG_ESI] = Context.Esi;
+    regValues[CV_REG_EBX] = Context.Ebx;
+    regValues[CV_REG_EDX] = Context.Edx;
+    regValues[CV_REG_ECX] = Context.Ecx;
+    regValues[CV_REG_EAX] = Context.Eax;
+
+    regValues[CV_REG_EBP] = Context.Ebp;
+
+    regValues[CV_REG_ESP] = Context.Esp;
+    regValues[CV_REG_SS] = Context.SegSs;
+
+    regValues[CV_REG_EIP] = Context.Eip;
+    regValues[CV_REG_CS] = Context.SegCs;
+
+    regValues[CV_REG_EFLAGS] = Context.EFlags;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace I386 {
@@ -27,34 +66,7 @@ void ThreadContext::getI386Context()
     if (S_OK != hres)
         throw DbgException( "IDebugAdvanced2::GetThreadContext", hres );
 
-    m_regValues[CV_REG_DR0] = Context.Dr0;
-    m_regValues[CV_REG_DR1] = Context.Dr1;
-    m_regValues[CV_REG_DR2] = Context.Dr2;
-    m_regValues[CV_REG_DR3] = Context.Dr3;
-    m_regValues[CV_REG_DR6] = Context.Dr6;
-    m_regValues[CV_REG_DR7] = Context.Dr7;
-
-    m_regValues[CV_REG_GS] = Context.SegGs;
-    m_regValues[CV_REG_FS] = Context.SegFs;
-    m_regValues[CV_REG_ES] = Context.SegEs;
-    m_regValues[CV_REG_DS] = Context.SegDs;
-
-    m_regValues[CV_REG_EDI] = Context.Edi;
-    m_regValues[CV_REG_ESI] = Context.Esi;
-    m_regValues[CV_REG_EBX] = Context.Ebx;
-    m_regValues[CV_REG_EDX] = Context.Edx;
-    m_regValues[CV_REG_ECX] = Context.Ecx;
-    m_regValues[CV_REG_EAX] = Context.Eax;
-
-    m_regValues[CV_REG_EBP] = Context.Ebp;
-
-    m_regValues[CV_REG_ESP] = Context.Esp;
-    m_regValues[CV_REG_SS] = Context.SegSs;
-
-    m_regValues[CV_REG_EIP] = Context.Eip;
-    m_regValues[CV_REG_CS] = Context.SegCs;
-
-    m_regValues[CV_REG_EFLAGS] = Context.EFlags;
+    FillRegistersFromContext32(m_regValues, Context);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -132,6 +144,81 @@ ThreadContext::ThreadContext( IDebugClient4 *client ) :
     }
 
     throwUnsupportedProcessor(__FUNCTION__);
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+ThreadContext::ThreadContext( 
+    IDebugClient4 *client,
+    ULONG processorType
+)   : pykd::DbgObject(client)
+    , m_processorType(processorType)
+{
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+ContextPtr ThreadContext::getWow64Context( IDebugClient4 *client )
+{
+    ContextPtr ptrContext( new ThreadContext(client, IMAGE_FILE_MACHINE_I386) );
+
+    ULONG processorType;
+    HRESULT hres = ptrContext->m_control->GetEffectiveProcessorType(&processorType);
+    if (S_OK != hres)
+        throw DbgException( "IDebugControl::GetEffectiveProcessorType", hres );
+    if (IMAGE_FILE_MACHINE_I386 != processorType)
+        throw DbgException( "Only for WOW64 processor mode" );
+
+    hres = ptrContext->m_control->GetActualProcessorType(&processorType);
+    if (S_OK != hres)
+        throw DbgException( "IDebugControl::GetActualProcessorType", hres );
+    if (IMAGE_FILE_MACHINE_AMD64 != processorType)
+        throw DbgException( "Only for WOW64 processor mode" );
+
+    // 
+    //  *** undoc ***
+    // !wow64exts.r
+    // http://www.woodmann.com/forum/archive/index.php/t-11162.html
+    // http://www.nynaeve.net/Code/GetThreadWow64Context.cpp
+    // 
+
+    ULONG64 teb64Address;
+    hres = ptrContext->m_system->GetCurrentThreadTeb(&teb64Address);
+    if (S_OK != hres)
+        throw DbgException( "IDebugSystemObjects::GetCurrentThreadTeb", hres);
+
+    // ? @@C++(#FIELD_OFFSET(nt!_TEB64, TlsSlots))
+    // hardcoded in !wow64exts.r (6.2.8250.0)
+    static const ULONG teb64ToTlsOffset = 0x01480;
+    static const ULONG WOW64_TLS_CPURESERVED = 1;
+    ULONG64 cpuAreaAddress;
+    ULONG readedBytes;
+    hres = 
+        ptrContext->m_dataSpaces->ReadVirtual(
+            teb64Address + teb64ToTlsOffset + (sizeof(ULONG64) * WOW64_TLS_CPURESERVED),
+            &cpuAreaAddress,
+            sizeof(cpuAreaAddress),
+            &readedBytes);
+    if (S_OK != hres || readedBytes != sizeof(cpuAreaAddress))
+        throw DbgException( "IDebugDataSpaces::ReadVirtual", hres);
+
+    // CPU Area is:
+    // +00 unknown ULONG
+    // +04 WOW64_CONTEXT struct
+    static const ULONG cpuAreaToWow64ContextOffset = sizeof(ULONG);
+    WOW64_CONTEXT Context = {0};
+    hres = 
+        ptrContext->m_dataSpaces->ReadVirtual(
+            cpuAreaAddress + cpuAreaToWow64ContextOffset,
+            &Context,
+            sizeof(Context),
+            &readedBytes);
+    if (S_OK != hres || readedBytes != sizeof(Context))
+        throw DbgException( "IDebugDataSpaces::ReadVirtual", hres);
+
+    FillRegistersFromContext32(ptrContext->m_regValues, Context);
+
+    return ptrContext;
 }
 
 /////////////////////////////////////////////////////////////////////////////////

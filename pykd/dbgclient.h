@@ -254,6 +254,9 @@ public:
     ContextPtr getThreadContext() {
         return ContextPtr( new ThreadContext(m_client) );
     }
+    ContextPtr getThreadWow64Context() {
+        return ThreadContext::getWow64Context(m_client);
+    }
 
     python::dict getLocals(
         ContextPtr ctx = ContextPtr( reinterpret_cast<ThreadContext*>(0) ) 
@@ -470,6 +473,10 @@ inline ULONG getPageSize() {
 
 inline ContextPtr getThreadContext() {
     return g_dbgClient->getThreadContext();
+}
+
+inline ContextPtr getThreadWow64Context() {
+    return g_dbgClient->getThreadWow64Context();
 }
 
 inline python::dict getLocals(

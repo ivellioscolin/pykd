@@ -26,7 +26,10 @@ std::string processorToStr(ULONG processorMode);
 class ThreadContext : private DbgObject
 {
 public:
+    typedef std::map<ULONG, ULONG64> RegValues;
+
     ThreadContext( IDebugClient4 *client );
+    static ContextPtr getWow64Context( IDebugClient4 *client );
 
     // get register value by ID
     ULONG64 getValue(ULONG cvRegId) const;
@@ -58,7 +61,11 @@ public:
 
     std::string print() const;
 
-private:
+protected:
+    ThreadContext( 
+        IDebugClient4 *client,
+        ULONG processorType
+    );
 
     // query i386 registers
     void getI386Context();
@@ -72,7 +79,6 @@ private:
     void __declspec(noreturn) throwUnsupportedProcessor(PCSTR szFunction) const;
 
 private:
-    typedef std::map<ULONG, ULONG64> RegValues;
     RegValues m_regValues;
 
     ULONG m_processorType;

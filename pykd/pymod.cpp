@@ -322,6 +322,9 @@ BOOST_PYTHON_MODULE( pykd )
             "Get the page size for the currently executing processor context" )
         .def( "getContext", &DebugClient::getThreadContext,
             "Get context of current thread (register values)" )
+        .def( "getWow64Context", &DebugClient::getThreadWow64Context,
+            "Get WOW64-context of current thread (register values)\n"
+            "!wow64exts.r analog")
         .def( "getLocals", &DebugClient::getLocals, DebugClient_getLocals( python::args( "ctx" ),
             "Get list of local variables" ) )
         .def( "setBp", &DebugClient::setSoftwareBp, DebugClient_setSoftwareBp( python::args( "offset", "callback" ),
@@ -523,6 +526,9 @@ BOOST_PYTHON_MODULE( pykd )
         "Get the page size for the currently executing processor context" );
     python::def( "getContext", &getThreadContext,
         "Get context of current thread (register values)" );
+    python::def( "getWow64Context", &getThreadWow64Context,
+        "Get WOW64-context of current thread (register values)\n"
+        "!wow64exts.r analog" );
     python::def( "getLocals", &getLocals, getLocals_( python::args( "ctx" ),
         "Get list of local variables" ) );
     python::def( "setBp", &setSoftwareBp, setSoftwareBp_( python::args( "offset", "callback" ),
@@ -718,7 +724,6 @@ BOOST_PYTHON_MODULE( pykd )
             "Return register value as a attribute of the Context" )
         .def("__str__", &ThreadContext::print,
             "Return context as a string" );
-
 
     python::class_<CpuReg, python::bases<intBase> >( 
         "cpuReg", "CPU regsiter class", boost::python::no_init )
