@@ -11,6 +11,7 @@
 
 namespace pykd {
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // Fill 32-bit register context
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,77 +51,61 @@ void FillRegistersFromContext32(
     regValues[CV_REG_EFLAGS] = Context.EFlags;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
-namespace I386 {
-#include "defctxi386.h"
-}
+struct CvRegName
+{
+    CvRegName(CV_HREG_e cvValue, const std::string &name) 
+        : m_cvValue( cvValue ), m_name( boost::to_lower_copy(name) )
+    {
+    }
+    CV_HREG_e m_cvValue;
+    std::string m_name;
+};
+#define _REG_NAME(prefix, regName) CvRegName(CV_##prefix##regName, #regName)
+
+/////////////////////////////////////////////////////////////////////////////////
+#define _REG_X86(regName) _REG_NAME(REG_, regName)
+static const CvRegName g_x86Registers[] = {
+    _REG_X86(DR0), _REG_X86(DR1), _REG_X86(DR2), _REG_X86(DR3), _REG_X86(DR6), _REG_X86(DR7),
+    _REG_X86(GS), _REG_X86(FS), _REG_X86(ES), _REG_X86(DS),
+    _REG_X86(EDI), _REG_X86(EBX), _REG_X86(EDX), _REG_X86(ECX), _REG_X86(EAX),
+    _REG_X86(EBP), _REG_X86(ESP), _REG_X86(SS),
+    _REG_X86(EIP), _REG_X86(CS),
+    CvRegName(CV_REG_EFLAGS, "efl")
+};
+#undef  _REG_X86
+
+/////////////////////////////////////////////////////////////////////////////////
+#define _REG_X64(regName) _REG_NAME(AMD64_, regName)
+static const CvRegName g_x64Registers[] = {
+    _REG_X64(MXCSR),
+    _REG_X64(CS), _REG_X64(DS), _REG_X64(ES), _REG_X64(FS), _REG_X64(GS), _REG_X64(SS),
+
+    _REG_X64(DR0), _REG_X64(DR1), _REG_X64(DR2), _REG_X64(DR3), _REG_X64(DR6), _REG_X64(DR7),
+
+    _REG_X64(RAX), _REG_X64(RCX), _REG_X64(RDX), _REG_X64(RBX), _REG_X64(RSP), _REG_X64(RBP), _REG_X64(RSI), _REG_X64(RDI), 
+    _REG_X64(R8), _REG_X64(R9), _REG_X64(R10), _REG_X64(R11), _REG_X64(R12), _REG_X64(R13), _REG_X64(R14), _REG_X64(R15), 
+
+    _REG_X64(RIP),
+    CvRegName(CV_AMD64_EFLAGS, "efl")
+};
+#undef  _REG_X64
+
+#undef  _REG_NAME
 
 /////////////////////////////////////////////////////////////////////////////////
 
 void ThreadContext::getI386Context()
 {
-    I386::CONTEXT Context = {0};
-
-    HRESULT hres = m_advanced->GetThreadContext(&Context, sizeof(Context));
-    if (S_OK != hres)
-        throw DbgException( "IDebugAdvanced2::GetThreadContext", hres );
-
-    FillRegistersFromContext32(m_regValues, Context);
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-namespace AMD64 {
-#include "defctxamd64.h"
+    queryRegisters(g_x86Registers, _countof(g_x86Registers));
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
 void ThreadContext::getAmd64Context()
 {
-    AMD64::CONTEXT Context = {0};
-
-    HRESULT hres = m_advanced->GetThreadContext(&Context, sizeof(Context));
-    if (S_OK != hres)
-        throw DbgException( "IDebugAdvanced2::GetThreadContext", hres);
-
-    m_regValues[CV_AMD64_MXCSR] = Context.MxCsr;
-
-    m_regValues[CV_AMD64_CS] = Context.SegCs;
-    m_regValues[CV_AMD64_DS] = Context.SegDs;
-    m_regValues[CV_AMD64_ES] = Context.SegEs;
-    m_regValues[CV_AMD64_FS] = Context.SegFs;
-    m_regValues[CV_AMD64_GS] = Context.SegGs;
-    m_regValues[CV_AMD64_SS] = Context.SegSs;
-
-    m_regValues[CV_AMD64_EFLAGS] = Context.EFlags;
-
-    m_regValues[CV_AMD64_DR0] = Context.Dr0;
-    m_regValues[CV_AMD64_DR1] = Context.Dr1;
-    m_regValues[CV_AMD64_DR2] = Context.Dr2;
-    m_regValues[CV_AMD64_DR3] = Context.Dr3;
-    m_regValues[CV_AMD64_DR6] = Context.Dr6;
-    m_regValues[CV_AMD64_DR7] = Context.Dr7;
-
-    m_regValues[CV_AMD64_RAX] = Context.Rax;
-    m_regValues[CV_AMD64_RCX] = Context.Rcx;
-    m_regValues[CV_AMD64_RDX] = Context.Rdx;
-    m_regValues[CV_AMD64_RBX] = Context.Rbx;
-    m_regValues[CV_AMD64_RSP] = Context.Rsp;
-    m_regValues[CV_AMD64_RBP] = Context.Rbp;
-    m_regValues[CV_AMD64_RSI] = Context.Rdi;
-    m_regValues[CV_AMD64_RDI] = Context.Rdi;
-    m_regValues[CV_AMD64_R8] = Context.R8;
-    m_regValues[CV_AMD64_R9] = Context.R9;
-    m_regValues[CV_AMD64_R10] = Context.R10;
-    m_regValues[CV_AMD64_R11] = Context.R11;
-    m_regValues[CV_AMD64_R12] = Context.R12;
-    m_regValues[CV_AMD64_R13] = Context.R13;
-    m_regValues[CV_AMD64_R14] = Context.R14;
-    m_regValues[CV_AMD64_R15] = Context.R15;
-
-    m_regValues[CV_AMD64_RIP] = Context.Rip;
+    queryRegisters(g_x64Registers, _countof(g_x64Registers));
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -154,6 +139,55 @@ ThreadContext::ThreadContext(
 )   : pykd::DbgObject(client)
     , m_processorType(processorType)
 {
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void ThreadContext::queryRegisters(
+    const CvRegName *regs,
+    ULONG countOfRegs
+)
+{
+    HRESULT hres;
+
+    std::vector<ULONG> regIndices( countOfRegs );
+
+    for (ULONG i = 0; i < countOfRegs; ++i)
+    {
+        hres = m_registers->GetIndexByName(regs[i].m_name.c_str(), &regIndices[i]);
+        if (S_OK != hres)
+            throw DbgException( "IDebugRegisters::GetIndexByName", hres);
+    }
+
+    std::vector<DEBUG_VALUE> regValues( countOfRegs );
+    hres = 
+        m_registers->GetValues(
+            static_cast<ULONG>(countOfRegs),
+            &regIndices[0],
+            0,
+            &regValues[0]);
+    if (S_OK != hres)
+        throw DbgException( "IDebugRegisters::GetValues", hres);
+
+    for (ULONG i = 0; i < countOfRegs; ++i)
+    {
+        const DEBUG_VALUE &regValue = regValues[i];
+        switch (regValue.Type)
+        {
+        case DEBUG_VALUE_INT8:
+            m_regValues[regs[i].m_cvValue] = regValue.I8;
+            break;
+        case DEBUG_VALUE_INT16:
+            m_regValues[regs[i].m_cvValue] = regValue.I16;
+            break;
+        case DEBUG_VALUE_INT32:
+            m_regValues[regs[i].m_cvValue] = regValue.I32;
+            break;
+        case DEBUG_VALUE_INT64:
+            m_regValues[regs[i].m_cvValue] = regValue.I64;
+            break;
+        }
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////

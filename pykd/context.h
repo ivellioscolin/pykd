@@ -16,6 +16,7 @@ class ThreadContext;
 typedef boost::shared_ptr< ThreadContext > ContextPtr;
 
 class StackFrame;
+struct CvRegName;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -65,6 +66,11 @@ protected:
     ThreadContext( 
         IDebugClient4 *client,
         ULONG processorType
+    );
+
+    void queryRegisters(
+        const CvRegName *regs,
+        ULONG countOfRegs
     );
 
     // query i386 registers
