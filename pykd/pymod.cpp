@@ -770,7 +770,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "baseType", &pyDia::Symbol::getBaseType,
             "Retrieves the base type for this symbol")
         .def( "bitPos", &pyDia::Symbol::getBitPosition,
-            "Retrieves the base type for this symbol")
+            "Retrieves the bit position of location")
         .def( "indexId", &pyDia::Symbol::getIndexId,
             "Retrieves the unique symbol identifier")
         .def( "udtKind", &pyDia::Symbol::getUdtKind,
