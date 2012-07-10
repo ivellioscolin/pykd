@@ -6,6 +6,7 @@
 
 #include "context.h"
 #include "stkframe.h"
+#include "dbgmem.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -228,7 +229,8 @@ ContextPtr ThreadContext::getWow64Context( IDebugClient4 *client )
     ULONG64 cpuAreaAddress;
     ULONG readedBytes;
     hres = 
-        ptrContext->m_dataSpaces->ReadVirtual(
+        readVirtual(
+            ptrContext->m_dataSpaces,
             teb64Address + teb64ToTlsOffset + (sizeof(ULONG64) * WOW64_TLS_CPURESERVED),
             &cpuAreaAddress,
             sizeof(cpuAreaAddress),
@@ -242,7 +244,8 @@ ContextPtr ThreadContext::getWow64Context( IDebugClient4 *client )
     static const ULONG cpuAreaToWow64ContextOffset = sizeof(ULONG);
     WOW64_CONTEXT Context = {0};
     hres = 
-        ptrContext->m_dataSpaces->ReadVirtual(
+        readVirtual(
+            ptrContext->m_dataSpaces,
             cpuAreaAddress + cpuAreaToWow64ContextOffset,
             &Context,
             sizeof(Context),

@@ -12,6 +12,16 @@ isVaValid( ULONG64 addr );
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+HRESULT readVirtual(
+    IDebugDataSpaces4 *dbgDataSpace,
+    ULONG64 address,
+    PVOID buffer,
+    ULONG length,
+    PULONG readed
+);
+
+///////////////////////////////////////////////////////////////////////////////////
+
 void
 readMemory( IDebugDataSpaces4*  dbgDataSpace, ULONG64 address, PVOID buffer, ULONG length, bool phyAddr = FALSE );
 

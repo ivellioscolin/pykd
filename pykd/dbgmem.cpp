@@ -107,22 +107,51 @@ bool isVaValid( ULONG64 addr )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+HRESULT readVirtual(
+    IDebugDataSpaces4 *dbgDataSpace,
+    ULONG64 address,
+    PVOID buffer,
+    ULONG length,
+    PULONG readed
+)
+{
+    HRESULT hres;
+
+    CComQIPtr<IDebugControl4>   dbgControl(dbgDataSpace);
+
+    address = addr64( dbgControl, address);
+
+    {
+        // workitem/10473 workaround
+        ULONG64 nextAddress;
+        hres = 
+            dbgDataSpace->GetNextDifferentlyValidOffsetVirtual(
+                address,
+                &nextAddress);
+        DBG_UNREFERENCED_LOCAL_VARIABLE(nextAddress);
+    }
+
+    hres = dbgDataSpace->ReadVirtual( address, buffer, length, readed );
+
+    return hres;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 void
 readMemory( IDebugDataSpaces4*  dbgDataSpace, ULONG64 address, PVOID buffer, ULONG length, bool phyAddr = FALSE )
 {
     HRESULT     hres;
 
-    CComQIPtr<IDebugControl4>   dbgControl(dbgDataSpace);
-
     if ( phyAddr == false )
     {
-        hres = dbgDataSpace->ReadVirtual( addr64( dbgControl, address), buffer, length, NULL );
-    }        
+        hres = readVirtual( dbgDataSpace, address, buffer, length, NULL );
+    }
     else
     {
         hres = dbgDataSpace->ReadPhysical( address, buffer, length, NULL );
-    }               
-    
+    }
+
     if ( FAILED( hres ) )
         throw MemoryException( address, phyAddr );
 }
