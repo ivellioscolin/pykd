@@ -1,3 +1,9 @@
+version 0.1.0.16 12/07/2012
+
+[+] added : sizeof() routine ( return size of type or variable )
+[!] fixed : issue #10850 ( getContext() raises exception )
+[!] fixed : issue #10473 (  read virtual memory (target - PE, loaded as dump ) )
+
 version 0.1.0.15 09/06/2012
 
 [+] added : disasm::disasm method with offset parameter ( continue disassembling from the specified offset )
