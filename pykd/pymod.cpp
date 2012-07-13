@@ -782,6 +782,8 @@ BOOST_PYTHON_MODULE( pykd )
             "CV_REG_XXX (for IMAGE_FILE_MACHINE_I386) or CV_AMD64_XXX (for IMAGE_FILE_MACHINE_AMD64)")
         .def("machineType", &pyDia::Symbol::getMachineType, 
             "Retrieves the type of the target CPU: IMAGE_FILE_MACHINE_XXX")
+        .def("section", &pyDia::Symbol::getSection,
+            "Retrieves the address section of a thunk target")
         .def( "__str__", &pyDia::Symbol::print)
         .def("__getitem__", &pyDia::Symbol::getChildByName)
         .def("__len__", &pyDia::Symbol::getChildCount )

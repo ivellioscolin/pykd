@@ -241,6 +241,10 @@ std::string Symbol::printImpl(
     if (S_OK == hres)
         sstream << ", Length: 0x" << std::hex << ullValue;
 
+    hres = _symbol->get_targetSection(&dwValue);
+    if (S_OK == hres)
+        sstream << ", Section: " << std::dec << ullValue;
+
     bValue = false;
     try
     {

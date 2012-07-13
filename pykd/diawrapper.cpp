@@ -195,6 +195,13 @@ ULONG Symbol::getVirtualBaseDispSize()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+ULONG Symbol::getSection()
+{
+    return callSymbol(get_targetSection);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 void Symbol::getValueImpl(IDiaSymbol *_symbol, VARIANT &vtValue)
 {
     HRESULT hres = _symbol->get_value(&vtValue);

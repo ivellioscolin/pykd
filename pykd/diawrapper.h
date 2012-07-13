@@ -166,6 +166,8 @@ public:
 
     ULONG getVirtualBaseDispSize();
 
+    ULONG getSection();
+
 public:
     typedef std::pair<ULONG, const char *> ValueNameEntry;
 
