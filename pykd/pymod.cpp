@@ -147,204 +147,204 @@ BOOST_PYTHON_MODULE( pykd )
     python::implicitly_convertible<intBase,ULONG>();
     python::implicitly_convertible<intBase,LONG>();
 
-    python::class_<DebugClient, DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
-        .def( "addr64", &DebugClient::addr64,
-            "Extend address to 64 bits formats" )
-        .def( "breakin", &DebugClient::breakin,
-            "Break into debugger" )
-        .def( "compareMemory", &DebugClient::compareMemory, DebugClient_compareMemory( python::args( "offset1", "offset2", "length", "phyAddr" ),
-            "Compare two memory buffers by virtual or physical addresses" ) )
-        .def( "loadDump", &DebugClient::loadDump,
-            "Load crash dump" )
-        .def( "startProcess", &DebugClient::startProcess, 
-            "Start process for debugging" )
-        .def( "attachProcess", &DebugClient::attachProcess,
-            "Attach debugger to a exsisting process" )
-        .def( "attachKernel", &DebugClient::attachKernel, 
-            "Attach debugger to a target's kernel" )
-        .def( "detachProcess", &DebugClient::detachProcess,
-            "Detach debugger from the current process" )
-        .def( "expr", &DebugClient::evaluate,
-            "Evaluate windbg expression" )
-        .def( "findSymbol", &DebugClient::findSymbol,
-            "Find symbol by the target virtual memory offset" )
-        .def( "getCurrentProcess", &DebugClient::getCurrentProcess,
-            "Return pointer to current process's block" )
-        .def( "getCurrentStack", &DebugClient::getCurrentStack,
-            "Return a current stack as a list of stackFrame objects" )
-        .def( "getDebuggeeType", &DebugClient::getDebuggeeType,
-            "Return type of the debuggee" )
-        .def( "getImplicitThread", &DebugClient::getImplicitThread, 
-            "Return implicit thread for current process" )
-        .def( "getExecutionStatus", &DebugClient::getExecutionStatus,
-            "Return information about the execution status of the debugger" )
-        .def( "getOffset", &DebugClient::getOffset,
-            "Return traget virtual address for specified symbol" )
-        .def( "getPdbFile", &DebugClient::getPdbFile, 
-            "Return full path to PDB (Program DataBase, debug information) file" )
-        .def( "getProcessorMode", &DebugClient::getProcessorMode, 
-            "Return current processor mode as string: X86, ARM, IA64 or X64" )
-        .def( "getProcessorType", &DebugClient::getProcessorType,
-            "Return type of physical processor: X86, ARM, IA64 or X64" )
-        .def( "getSourceLine", &DebugClient::getSourceLine, DebugClient_getSourceLine( python::args( "offset"),
-            "Return source file name, lin and displacement by the specified offset" ) )
-        .def( "getThreadList", &DebugClient::getThreadList, 
-            "Return list of threads (each item is numeric identifier of thread)" )
-        .def( "go", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_GO>,
-            "Change debugger status to DEBUG_STATUS_GO"  )
-        .def( "is64bitSystem", &DebugClient::is64bitSystem,
-            "Check if target system has 64 address space" )
-        .def( "isDumpAnalyzing", &DebugClient::isDumpAnalyzing,
-            "Check if it is a dump analyzing ( not living debuggee )" )
-        .def( "isKernelDebugging", &DebugClient::isKernelDebugging,
-            "Check if kernel dubugging is running" )
-        .def( "isValid", &DebugClient::isVaValid,
-            "Check if the virtual address is valid" )
-        .def( "killProcess", &DebugClient::terminateProcess,
-            "Stop debugging and terminate current process" )
-        .def( "loadBytes", &DebugClient::loadBytes, DebugClient_loadBytes( python::args( "offset", "count", "phyAddr" ),
-            "Read the block of the target's memory and return it as list of unsigned bytes" ) )
-        .def( "loadWords", &DebugClient::loadWords, DebugClient_loadWords( python::args( "offset", "count", "phyAddr" ),
-            "Read the block of the target's memory and return it as list of unsigned shorts" ) )
-        .def( "loadDWords", &DebugClient::loadDWords, DebugClient_loadDWords( python::args( "offset", "count", "phyAddr" ),
-            "Read the block of the target's memory and return it as list of unsigned long ( double word )" ) )
-        .def( "loadQWords", &DebugClient::loadQWords, DebugClient_loadQWords( python::args( "offset", "count", "phyAddr" ),
-            "Read the block of the target's memory and return it as list of unsigned long long ( quad word )" ) )
-        .def( "loadSignBytes", &DebugClient::loadSignBytes, DebugClient_loadSignBytes( python::args( "offset", "count", "phyAddr" ),
-            "Read the block of the target's memory and return it as list of signed bytes" ) )
-        .def( "loadSignWords", &DebugClient::loadSignWords, DebugClient_loadSignWords( python::args( "offset", "count", "phyAddr" ),
-            "Read the block of the target's memory and return it as list of signed shorts" ) )
-        .def( "loadSignDWords", &DebugClient::loadSignDWords, DebugClient_loadSignDWords( python::args( "offset", "count", "phyAddr" ),
-            "Read the block of the target's memory and return it as list of signed longs" ) )
-        .def( "loadSignQWords", &DebugClient::loadSignQWords, DebugClient_loadSignQWords( python::args( "offset", "count", "phyAddr" ),
-            "Read the block of the target's memory and return it as list of signed long longs" ) )
-        .def( "loadChars", &DebugClient::loadChars, DebugClient_loadChars( python::args( "offset", "count", "phyAddr" ),
-            "Load string from target memory" ) )
-        .def( "loadWChars", &DebugClient::loadWChars, DebugClient_loadWChars( python::args( "offset", "count", "phyAddr" ),
-            "Load string from target memory" ) )
-        .def( "loadCStr", &DebugClient::loadCStr,
-            "Load string from the target buffer containing 0-terminated ansi-string" )
-        .def( "loadWStr", &DebugClient::loadWStr,
-            "Load string from the target buffer containing 0-terminated unicode-string" )
-        .def( "loadUnicodeString", &DebugClient::loadUnicodeStr,
-            "Return string represention of windows UNICODE_STRING type" )
-        .def( "loadAnsiString", &DebugClient::loadAnsiStr,
-            "Return string represention of windows ANSI_STRING type" )
-        .def( "loadPtrList", &DebugClient::loadPtrList,
-            "Return list of pointers, each points to next" )
-        .def( "loadPtrs", &DebugClient::loadPtrArray,
-            "Read the block of the target's memory and return it as a list of pointers" )
-        .def( "ptrByte", &DebugClient::ptrByte,
-            "Read an unsigned 1-byte integer from the target memory" )
-        .def( "ptrWord", &DebugClient::ptrWord,
-            "Read an unsigned 2-byte integer from the target memory" )
-        .def( "ptrDWord", &DebugClient::ptrDWord,
-            "Read an unsigned 4-byte integer from the target memory" )
-        .def( "ptrQWord", &DebugClient::ptrQWord,
-            "Read an unsigned 8-byte integer from the target memory" )
-        .def( "ptrMWord", &DebugClient::ptrMWord,
-            "Read an unsigned mashine's word wide integer from the target memory" )
-        .def( "ptrSignByte", &DebugClient::ptrSignByte,
-            "Read an signed 1-byte integer from the target memory" )
-        .def( "ptrSignWord", &DebugClient::ptrSignWord,
-            "Read an signed 2-byte integer from the target memory" )
-        .def( "ptrSignDWord", &DebugClient::ptrSignDWord,
-            "Read an signed 4-byte integer from the target memory" )
-        .def( "ptrSignQWord", &DebugClient::ptrSignQWord,
-            "Read an signed 8-byte integer from the target memory" )
-        .def( "ptrSignMWord", &DebugClient::ptrSignMWord,
-            "Read an signed mashine's word wide integer from the target memory" )
-        .def( "ptrPtr", &DebugClient::ptrPtr,
-            "Read an pointer value from the target memory" )
-        .def("typedVar",&DebugClient::getTypedVarByName,
-            "Return a typedVar class instance" )
-        .def("typedVar",&DebugClient::getTypedVarByTypeInfo,
-            "Return a typedVar class instance" )
-        .def("typedVar",&DebugClient::getTypedVarByTypeName,
-            "Return a typedVar class instance" )
-        .def( "loadExt", &pykd::DebugClient::loadExtension,
-            "Load a debuger extension" )
-        .def( "loadModule", &pykd::DebugClient::loadModuleByName, 
-            "Return instance of Module class" )
-        .def( "loadModule", &pykd::DebugClient::loadModuleByOffset, 
-            "Return instance of the Module class which posseses specified address" )
-        .def( "dbgCommand", &pykd::DebugClient::dbgCommand,
-             "Run a debugger's command and return it's result as a string" )
-        .def( "dprint", &pykd::DebugClient::dprint,
-            "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" )
-        .def( "dprintln", &pykd::DebugClient::dprintln,
-            "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" )
-        .def( "ptrSize", &DebugClient::ptrSize,
-            "Return effective pointer size" )
-         .def ( "rdmsr", &DebugClient::loadMSR,
-            "Return MSR value" )
-        .def( "reg", &DebugClient::getRegByName,
-            "Return a CPU regsiter value by the register's name" )
-        .def( "reg", &DebugClient::getRegByIndex,
-            "Return a CPU regsiter value by the register's value" )
-        .def( "setCurrentProcess", &DebugClient::setCurrentProcess, 
-            "Set current process by address" )
-        .def( "setExecutionStatus", &DebugClient::setExecutionStatus,
-            "Requests that the debugger engine enter an executable state" )
-        .def( "setImplicitThread", &DebugClient::setImplicitThread, 
-            "Set implicit thread for current process" )
-        .def( "setProcessorMode", &DebugClient::setProcessorMode, 
-            "Set current processor mode by string (X86, ARM, IA64 or X64)" )
-        .def( "sizeof", &DebugClient::getSymbolSize,
-            "Return a size of the type or variable" )
-        .def( "step", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
-            "Change debugger status to DEBUG_STATUS_STEP_OVER" )
-        .def( "symbolsPath", &DebugClient::dbgSymPath, 
-            "Return symbol path" )
-        .def( "trace", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
-            "Change debugger status to DEBUG_STATUS_STEP_INTO" )
-        .def("typedVarList", &DebugClient::getTypedVarListByTypeName,
-            "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
-        .def("typedVarList", &DebugClient::getTypedVarListByType,
-            "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
-        .def("typedVarArray", &DebugClient::getTypedVarArrayByTypeName,
-            "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
-        .def("typedVarArray", &DebugClient::getTypedVarArrayByType,
-            "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
-        .def("containingRecord", &DebugClient::containingRecordByName,
-            "Return instance of the typedVar class. It's value are loaded from the target memory."
-            "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
-        .def("containingRecord", &DebugClient::containingRecordByType,
-            "Return instance of the typedVar class. It's value are loaded from the target memory."
-            "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
-        .def( "waitForEvent", &DebugClient::waitForEvent,
-            "Wait for events that breaks into the debugger" )
-        .def( "wrmsr", &DebugClient::setMSR,
-            "Set MSR value" )
-        .def( "getNumberProcessors", &DebugClient::getNumberProcessors,
-            "Get the number of actual processors in the machine" )
-        .def( "getPageSize", &DebugClient::getPageSize,
-            "Get the page size for the currently executing processor context" )
-        .def( "getContext", &DebugClient::getThreadContext,
-            "Get context of current thread (register values)" )
-        .def( "getWow64Context", &DebugClient::getThreadWow64Context,
-            "Get WOW64-context of current thread (register values)\n"
-            "!wow64exts.r analog")
-        .def( "getLocals", &DebugClient::getLocals, DebugClient_getLocals( python::args( "ctx" ),
-            "Get list of local variables" ) )
-        .def( "setBp", &DebugClient::setSoftwareBp, DebugClient_setSoftwareBp( python::args( "offset", "callback" ),
-            "Set software breakpoint on executiont" ) )
-        .def( "setBp", &DebugClient::setHardwareBp, DebugClient_setHardwareBp( python::args( "offset", "size", "accsessType", "callback" ),
-            "Set hardware breakpoint" ) )
-        .def( "getAllBp", &DebugClient::getAllBp,
-            "Get all breapoint IDs" )
-        .def( "removeBp", &DebugClient::removeBp,
-            "Remove breapoint by IDs" )
-        .def( "removeBp", &DebugClient::removeAllBp,
-            "Remove all breapoints" )
-        .def( "addSynSymbol", &DebugClient::addSyntheticSymbol,
-            "Add new synthetic symbol for virtual address" )
-        .def( "delAllSynSymbols", &DebugClient::delAllSyntheticSymbols, 
-            "Delete all synthetic symbol for all modules")
-        .def( "delSynSymbol", &DebugClient::delSyntheticSymbol, 
-            "Delete synthetic symbols by virtual address" )
-        .def( "delSynSymbolsMask", &DebugClient::delSyntheticSymbolsMask, 
-            "Delete synthetic symbols by mask of module and symbol name");
+    //python::class_<DebugClient, DebugClientPtr>("dbgClient", "Class representing a debugging session", python::no_init  )
+    //    .def( "addr64", &DebugClient::addr64,
+    //        "Extend address to 64 bits formats" )
+    //    .def( "breakin", &DebugClient::breakin,
+    //        "Break into debugger" )
+    //    .def( "compareMemory", &DebugClient::compareMemory, DebugClient_compareMemory( python::args( "offset1", "offset2", "length", "phyAddr" ),
+    //        "Compare two memory buffers by virtual or physical addresses" ) )
+    //    .def( "loadDump", &DebugClient::loadDump,
+    //        "Load crash dump" )
+    //    .def( "startProcess", &DebugClient::startProcess, 
+    //        "Start process for debugging" )
+    //    .def( "attachProcess", &DebugClient::attachProcess,
+    //        "Attach debugger to a exsisting process" )
+    //    .def( "attachKernel", &DebugClient::attachKernel, 
+    //        "Attach debugger to a target's kernel" )
+    //    .def( "detachProcess", &DebugClient::detachProcess,
+    //        "Detach debugger from the current process" )
+    //    .def( "expr", &DebugClient::evaluate,
+    //        "Evaluate windbg expression" )
+    //    .def( "findSymbol", &DebugClient::findSymbol,
+    //        "Find symbol by the target virtual memory offset" )
+    //    .def( "getCurrentProcess", &DebugClient::getCurrentProcess,
+    //        "Return pointer to current process's block" )
+    //    .def( "getCurrentStack", &DebugClient::getCurrentStack,
+    //        "Return a current stack as a list of stackFrame objects" )
+    //    .def( "getDebuggeeType", &DebugClient::getDebuggeeType,
+    //        "Return type of the debuggee" )
+    //    .def( "getImplicitThread", &DebugClient::getImplicitThread, 
+    //        "Return implicit thread for current process" )
+    //    .def( "getExecutionStatus", &DebugClient::getExecutionStatus,
+    //        "Return information about the execution status of the debugger" )
+    //    .def( "getOffset", &DebugClient::getOffset,
+    //        "Return traget virtual address for specified symbol" )
+    //    .def( "getPdbFile", &DebugClient::getPdbFile, 
+    //        "Return full path to PDB (Program DataBase, debug information) file" )
+    //    .def( "getProcessorMode", &DebugClient::getProcessorMode, 
+    //        "Return current processor mode as string: X86, ARM, IA64 or X64" )
+    //    .def( "getProcessorType", &DebugClient::getProcessorType,
+    //        "Return type of physical processor: X86, ARM, IA64 or X64" )
+    //    .def( "getSourceLine", &DebugClient::getSourceLine, DebugClient_getSourceLine( python::args( "offset"),
+    //        "Return source file name, lin and displacement by the specified offset" ) )
+    //    .def( "getThreadList", &DebugClient::getThreadList, 
+    //        "Return list of threads (each item is numeric identifier of thread)" )
+    //    .def( "go", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_GO>,
+    //        "Change debugger status to DEBUG_STATUS_GO"  )
+    //    .def( "is64bitSystem", &DebugClient::is64bitSystem,
+    //        "Check if target system has 64 address space" )
+    //    .def( "isDumpAnalyzing", &DebugClient::isDumpAnalyzing,
+    //        "Check if it is a dump analyzing ( not living debuggee )" )
+    //    .def( "isKernelDebugging", &DebugClient::isKernelDebugging,
+    //        "Check if kernel dubugging is running" )
+    //    .def( "isValid", &DebugClient::isVaValid,
+    //        "Check if the virtual address is valid" )
+    //    .def( "killProcess", &DebugClient::terminateProcess,
+    //        "Stop debugging and terminate current process" )
+    //    .def( "loadBytes", &DebugClient::loadBytes, DebugClient_loadBytes( python::args( "offset", "count", "phyAddr" ),
+    //        "Read the block of the target's memory and return it as list of unsigned bytes" ) )
+    //    .def( "loadWords", &DebugClient::loadWords, DebugClient_loadWords( python::args( "offset", "count", "phyAddr" ),
+    //        "Read the block of the target's memory and return it as list of unsigned shorts" ) )
+    //    .def( "loadDWords", &DebugClient::loadDWords, DebugClient_loadDWords( python::args( "offset", "count", "phyAddr" ),
+    //        "Read the block of the target's memory and return it as list of unsigned long ( double word )" ) )
+    //    .def( "loadQWords", &DebugClient::loadQWords, DebugClient_loadQWords( python::args( "offset", "count", "phyAddr" ),
+    //        "Read the block of the target's memory and return it as list of unsigned long long ( quad word )" ) )
+    //    .def( "loadSignBytes", &DebugClient::loadSignBytes, DebugClient_loadSignBytes( python::args( "offset", "count", "phyAddr" ),
+    //        "Read the block of the target's memory and return it as list of signed bytes" ) )
+    //    .def( "loadSignWords", &DebugClient::loadSignWords, DebugClient_loadSignWords( python::args( "offset", "count", "phyAddr" ),
+    //        "Read the block of the target's memory and return it as list of signed shorts" ) )
+    //    .def( "loadSignDWords", &DebugClient::loadSignDWords, DebugClient_loadSignDWords( python::args( "offset", "count", "phyAddr" ),
+    //        "Read the block of the target's memory and return it as list of signed longs" ) )
+    //    .def( "loadSignQWords", &DebugClient::loadSignQWords, DebugClient_loadSignQWords( python::args( "offset", "count", "phyAddr" ),
+    //        "Read the block of the target's memory and return it as list of signed long longs" ) )
+    //    .def( "loadChars", &DebugClient::loadChars, DebugClient_loadChars( python::args( "offset", "count", "phyAddr" ),
+    //        "Load string from target memory" ) )
+    //    .def( "loadWChars", &DebugClient::loadWChars, DebugClient_loadWChars( python::args( "offset", "count", "phyAddr" ),
+    //        "Load string from target memory" ) )
+    //    .def( "loadCStr", &DebugClient::loadCStr,
+    //        "Load string from the target buffer containing 0-terminated ansi-string" )
+    //    .def( "loadWStr", &DebugClient::loadWStr,
+    //        "Load string from the target buffer containing 0-terminated unicode-string" )
+    //    .def( "loadUnicodeString", &DebugClient::loadUnicodeStr,
+    //        "Return string represention of windows UNICODE_STRING type" )
+    //    .def( "loadAnsiString", &DebugClient::loadAnsiStr,
+    //        "Return string represention of windows ANSI_STRING type" )
+    //    .def( "loadPtrList", &DebugClient::loadPtrList,
+    //        "Return list of pointers, each points to next" )
+    //    .def( "loadPtrs", &DebugClient::loadPtrArray,
+    //        "Read the block of the target's memory and return it as a list of pointers" )
+    //    .def( "ptrByte", &DebugClient::ptrByte,
+    //        "Read an unsigned 1-byte integer from the target memory" )
+    //    .def( "ptrWord", &DebugClient::ptrWord,
+    //        "Read an unsigned 2-byte integer from the target memory" )
+    //    .def( "ptrDWord", &DebugClient::ptrDWord,
+    //        "Read an unsigned 4-byte integer from the target memory" )
+    //    .def( "ptrQWord", &DebugClient::ptrQWord,
+    //        "Read an unsigned 8-byte integer from the target memory" )
+    //    .def( "ptrMWord", &DebugClient::ptrMWord,
+    //        "Read an unsigned mashine's word wide integer from the target memory" )
+    //    .def( "ptrSignByte", &DebugClient::ptrSignByte,
+    //        "Read an signed 1-byte integer from the target memory" )
+    //    .def( "ptrSignWord", &DebugClient::ptrSignWord,
+    //        "Read an signed 2-byte integer from the target memory" )
+    //    .def( "ptrSignDWord", &DebugClient::ptrSignDWord,
+    //        "Read an signed 4-byte integer from the target memory" )
+    //    .def( "ptrSignQWord", &DebugClient::ptrSignQWord,
+    //        "Read an signed 8-byte integer from the target memory" )
+    //    .def( "ptrSignMWord", &DebugClient::ptrSignMWord,
+    //        "Read an signed mashine's word wide integer from the target memory" )
+    //    .def( "ptrPtr", &DebugClient::ptrPtr,
+    //        "Read an pointer value from the target memory" )
+    //    .def("typedVar",&DebugClient::getTypedVarByName,
+    //        "Return a typedVar class instance" )
+    //    .def("typedVar",&DebugClient::getTypedVarByTypeInfo,
+    //        "Return a typedVar class instance" )
+    //    .def("typedVar",&DebugClient::getTypedVarByTypeName,
+    //        "Return a typedVar class instance" )
+    //    .def( "loadExt", &pykd::DebugClient::loadExtension,
+    //        "Load a debuger extension" )
+    //    .def( "loadModule", &pykd::DebugClient::loadModuleByName, 
+    //        "Return instance of Module class" )
+    //    .def( "loadModule", &pykd::DebugClient::loadModuleByOffset, 
+    //        "Return instance of the Module class which posseses specified address" )
+    //    .def( "dbgCommand", &pykd::DebugClient::dbgCommand,
+    //         "Run a debugger's command and return it's result as a string" )
+    //    .def( "dprint", &pykd::DebugClient::dprint,
+    //        "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" )
+    //    .def( "dprintln", &pykd::DebugClient::dprintln,
+    //        "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" )
+    //    .def( "ptrSize", &DebugClient::ptrSize,
+    //        "Return effective pointer size" )
+    //     .def ( "rdmsr", &DebugClient::loadMSR,
+    //        "Return MSR value" )
+    //    .def( "reg", &DebugClient::getRegByName,
+    //        "Return a CPU regsiter value by the register's name" )
+    //    .def( "reg", &DebugClient::getRegByIndex,
+    //        "Return a CPU regsiter value by the register's value" )
+    //    .def( "setCurrentProcess", &DebugClient::setCurrentProcess, 
+    //        "Set current process by address" )
+    //    .def( "setExecutionStatus", &DebugClient::setExecutionStatus,
+    //        "Requests that the debugger engine enter an executable state" )
+    //    .def( "setImplicitThread", &DebugClient::setImplicitThread, 
+    //        "Set implicit thread for current process" )
+    //    .def( "setProcessorMode", &DebugClient::setProcessorMode, 
+    //        "Set current processor mode by string (X86, ARM, IA64 or X64)" )
+    //    .def( "sizeof", &DebugClient::getSymbolSize,
+    //        "Return a size of the type or variable" )
+    //    .def( "step", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_OVER>, 
+    //        "Change debugger status to DEBUG_STATUS_STEP_OVER" )
+    //    .def( "symbolsPath", &DebugClient::dbgSymPath, 
+    //        "Return symbol path" )
+    //    .def( "trace", &DebugClient::changeDebuggerStatus<DEBUG_STATUS_STEP_INTO>, 
+    //        "Change debugger status to DEBUG_STATUS_STEP_INTO" )
+    //    .def("typedVarList", &DebugClient::getTypedVarListByTypeName,
+    //        "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
+    //    .def("typedVarList", &DebugClient::getTypedVarListByType,
+    //        "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
+    //    .def("typedVarArray", &DebugClient::getTypedVarArrayByTypeName,
+    //        "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
+    //    .def("typedVarArray", &DebugClient::getTypedVarArrayByType,
+    //        "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
+    //    .def("containingRecord", &DebugClient::containingRecordByName,
+    //        "Return instance of the typedVar class. It's value are loaded from the target memory."
+    //        "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
+    //    .def("containingRecord", &DebugClient::containingRecordByType,
+    //        "Return instance of the typedVar class. It's value are loaded from the target memory."
+    //        "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
+    //    .def( "waitForEvent", &DebugClient::waitForEvent,
+    //        "Wait for events that breaks into the debugger" )
+    //    .def( "wrmsr", &DebugClient::setMSR,
+    //        "Set MSR value" )
+    //    .def( "getNumberProcessors", &DebugClient::getNumberProcessors,
+    //        "Get the number of actual processors in the machine" )
+    //    .def( "getPageSize", &DebugClient::getPageSize,
+    //        "Get the page size for the currently executing processor context" )
+    //    .def( "getContext", &DebugClient::getThreadContext,
+    //        "Get context of current thread (register values)" )
+    //    .def( "getWow64Context", &DebugClient::getThreadWow64Context,
+    //        "Get WOW64-context of current thread (register values)\n"
+    //        "!wow64exts.r analog")
+    //    .def( "getLocals", &DebugClient::getLocals, DebugClient_getLocals( python::args( "ctx" ),
+    //        "Get list of local variables" ) )
+    //    .def( "setBp", &DebugClient::setSoftwareBp, DebugClient_setSoftwareBp( python::args( "offset", "callback" ),
+    //        "Set software breakpoint on executiont" ) )
+    //    .def( "setBp", &DebugClient::setHardwareBp, DebugClient_setHardwareBp( python::args( "offset", "size", "accsessType", "callback" ),
+    //        "Set hardware breakpoint" ) )
+    //    .def( "getAllBp", &DebugClient::getAllBp,
+    //        "Get all breapoint IDs" )
+    //    .def( "removeBp", &DebugClient::removeBp,
+    //        "Remove breapoint by IDs" )
+    //    .def( "removeBp", &DebugClient::removeAllBp,
+    //        "Remove all breapoints" )
+    //    .def( "addSynSymbol", &DebugClient::addSyntheticSymbol,
+    //        "Add new synthetic symbol for virtual address" )
+    //    .def( "delAllSynSymbols", &DebugClient::delAllSyntheticSymbols, 
+    //        "Delete all synthetic symbol for all modules")
+    //    .def( "delSynSymbol", &DebugClient::delSyntheticSymbol, 
+    //        "Delete synthetic symbols by virtual address" )
+    //    .def( "delSynSymbolsMask", &DebugClient::delSyntheticSymbolsMask, 
+    //        "Delete synthetic symbols by mask of module and symbol name");
 
     python::def( "addr64", &addr64,
         "Extend address to 64 bits formats" );
@@ -352,8 +352,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Break into debugger" );
     python::def( "compareMemory", &compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
         "Compare two memory buffers by virtual or physical addresses" ) );
-    python::def( "createDbgClient", (DebugClientPtr(*)())&DebugClient::createDbgClient, 
-        "create a new instance of the dbgClient class" );
+    //python::def( "createDbgClient", (DebugClientPtr(*)())&DebugClient::createDbgClient, 
+    //    "create a new instance of the dbgClient class" );
     python::def( "loadDump", &loadDump,
         "Load crash dump (only for console)");
     python::def( "startProcess", &startProcess,
