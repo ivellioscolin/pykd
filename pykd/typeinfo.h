@@ -36,6 +36,9 @@ public:
     static
     TypeInfoPtr  getBaseTypeInfo( pyDia::SymbolPtr &symbol ); 
 
+	static
+	bool isBaseType( const std::string &name );
+
 public:
 
     TypeInfo() :

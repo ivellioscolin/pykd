@@ -13,7 +13,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "structTest", pykd.typeInfo( target.moduleName + "!structTest" ).name() )
         self.assertEqual( "structTest", pykd.typeInfo( "g_structTest" ).name() )
         self.assertEqual( "structTest", pykd.typeInfo( target.moduleName + "!g_structTest" ).name() )     
-        self.assertEqual( "Int1B", pykd.typeInfo( "Int1B" ) )	
+        self.assertEqual( "Int1B", pykd.typeInfo( "Int1B" ).name() )	
  
     def testCreateByName( self ):
         """ creating typeInfo by the type name """

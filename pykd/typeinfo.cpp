@@ -136,6 +136,14 @@ TypeInfoPtr TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, pyDia::SymbolPtr 
 
 static const boost::regex baseMatch("^(Char)|(WChar)|(Int1B)|(UInt1B)|(Int2B)|(UInt2B)|(Int4B)|(UInt4B)|(Int8B)|(UInt8B)|(Long)|(ULong)|(Float)|(Bool)|(Double)$" );
 
+bool 
+TypeInfo::isBaseType( const std::string &symName )
+{
+    boost::cmatch    baseMatchResult;
+
+    return boost::regex_match( symName.c_str(), baseMatchResult, baseMatch );
+}
+
 TypeInfoPtr 
 TypeInfo::getBaseTypeInfo( const std::string &symName )
 {

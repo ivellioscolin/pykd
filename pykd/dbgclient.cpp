@@ -502,6 +502,9 @@ ULONG64 DebugClient::getSymbolSize( const std::string &fullName )
     std::string     moduleName;
     std::string     symName;
 
+	if ( TypeInfo::isBaseType( fullName ) )
+		return  TypeInfo::getBaseTypeInfo( fullName )->getSize();
+
     splitSymName( fullName, moduleName, symName );
 
     ModulePtr   module = loadModuleByName( moduleName );   
@@ -520,6 +523,9 @@ TypeInfoPtr DebugClient::getTypeInfoByName( const std::string &typeName )
 {
     std::string     moduleName;
     std::string     symName;
+
+	if ( TypeInfo::isBaseType( typeName ) )
+		return TypeInfo::getBaseTypeInfo( typeName );
 
     splitSymName( typeName, moduleName, symName );
 
