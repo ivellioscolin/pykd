@@ -568,7 +568,9 @@ void UdtTypeInfo::getFields(
                
             }
 
-            m_fields.push_back( UdtUtils::Field( childSym->getOffset(), "__VFN_table", ti ) ); 
+            m_fields.push_back( 
+                UdtUtils::Field( startOffset + childSym->getOffset(), "__VFN_table", ti )
+            ); 
         }
     }  
 }
