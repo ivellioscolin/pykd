@@ -2,6 +2,9 @@
 
 #include <string>
 
+#include <boost\enable_shared_from_this.hpp>
+
+#include "udtutils.h"
 #include "diawrapper.h"
 #include "intbase.h"
 
@@ -14,7 +17,7 @@ typedef boost::shared_ptr<TypeInfo>  TypeInfoPtr;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class TypeInfo : boost::noncopyable, public intBase {
+class TypeInfo : boost::noncopyable, public intBase, public boost::enable_shared_from_this<TypeInfo> {
 
 public:
 
@@ -42,7 +45,6 @@ public:
 public:
 
     TypeInfo() :
-        m_offset( 0 ),
         m_staticOffset( 0 ),
         m_constant( false ),
         m_staticMember( false ),
@@ -74,6 +76,17 @@ public:
     }
 
     virtual std::string getFieldNameByIndex( ULONG index ) {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
+    virtual ULONG getFieldOffsetByNameRecirsive( const std::string &fieldName ) {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+    virtual ULONG getFieldOffsetByNameNotRecursively( const std::string &fieldName ) {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
+    virtual ULONG getFieldOffsetByIndex( ULONG index ) {
         throw TypeException( getName(), "type is not a struct" ); 
     }
 
@@ -139,10 +152,6 @@ public:
         throw PyException( PyExc_TypeError, "object is unsubscriptable");  
     }
 
-    void setOffset( ULONG offset ) {
-        m_offset = offset;
-    }
-
     void setConstant( const VARIANT& var )
     {
         m_constant = true;
@@ -177,10 +186,6 @@ public:
         m_virtualDispSize = virtualDispSize;
     }
 
-    ULONG64 getTypeOffset();
-
-    ULONG getOffset();
-
     ULONG64 getStaticOffset();
 
     void getVirtualDisplacement( ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize ) {
@@ -203,8 +208,6 @@ protected:
     static
     TypeInfoPtr getRecurciveComplexType( TypeInfoPtr &lowestType, std::string &suffix, ULONG ptrSize );
 
-    ULONG       m_offset;
-
     ULONG64     m_staticOffset;
 
     bool        m_constant;
@@ -221,7 +224,7 @@ protected:
 
     ULONG       m_virtualDispSize;
 
-    TypeInfoPtr m_virtualBaseType;    
+    TypeInfoPtr m_virtualBaseType;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -295,8 +298,10 @@ class UdtTypeInfo : public TypeInfo
 public:
 
     UdtTypeInfo ( pyDia::SymbolPtr &symbol ) :
-      m_dia( symbol )
-      {}
+        m_dia( symbol ),
+        m_fields( symbol->getName() )
+    {
+    }
 
 protected:
 
@@ -308,11 +313,28 @@ protected:
         return (ULONG)m_dia->getSize();
     }
 
-    virtual TypeInfoPtr getField( const std::string &fieldName );
+    virtual TypeInfoPtr getField( const std::string &fieldName ) {
+        return lookupField(fieldName).m_type;
+    }
 
-    virtual TypeInfoPtr getFieldByIndex( ULONG index );
+    virtual TypeInfoPtr getFieldByIndex( ULONG index ) {
+        return lookupField(index).m_type;
+    }
 
-    virtual std::string getFieldNameByIndex( ULONG index );
+    virtual std::string getFieldNameByIndex( ULONG index ) {
+        return lookupField(index).m_name;
+    }
+
+    virtual ULONG getFieldOffsetByNameRecirsive( const std::string &fieldName ) {
+        return UdtUtils::getFiledOffsetRecirsive( shared_from_this(), fieldName );
+    }
+    virtual ULONG getFieldOffsetByNameNotRecursively( const std::string &fieldName ) {
+        return lookupField(fieldName).m_offset;
+    }
+
+    virtual ULONG getFieldOffsetByIndex( ULONG index ) {
+        return lookupField(index).m_offset;
+    }
 
     virtual ULONG getFieldCount();
 
@@ -332,11 +354,7 @@ protected:
 
     pyDia::SymbolPtr    m_dia;
 
-    typedef std::pair< std::string, TypeInfoPtr >   FieldType;
-
-    typedef std::vector< FieldType >   FieldList;
-    
-    FieldList           m_fields;
+    UdtUtils::FieldCollection  m_fields;
 
     void getFields( 
         pyDia::SymbolPtr &rootSym, 
@@ -348,6 +366,15 @@ protected:
 
 
     void getVirtualFields();
+
+private:
+    void refreshFields();
+
+    template <typename T>
+    const UdtUtils::Field &lookupField( T index) {
+        refreshFields();
+        return m_fields.lookup(index);
+    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

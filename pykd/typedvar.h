@@ -35,8 +35,8 @@ public:
         return m_size;
     }
 
-    ULONG64 getOffset() {
-        return m_typeInfo->getOffset();
+    ULONG getFieldOffsetByNameRecirsive(const std::string &fieldName) {
+        return m_typeInfo->getFieldOffsetByNameRecirsive(fieldName);
     }
 
     TypeInfoPtr

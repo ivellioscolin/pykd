@@ -240,7 +240,7 @@ UdtTypedVar::getField( const std::string &fieldName )
 
     ULONG   fieldOffset = 0;
 
-    fieldOffset = fieldType->getOffset();
+    fieldOffset = m_typeInfo->getFieldOffsetByNameRecirsive(fieldName);
 
     if ( fieldType->isVirtualMember() )
     {
@@ -267,7 +267,7 @@ UdtTypedVar::getElementByIndex( ULONG  index )
             TypedVar::getTypedVar( m_client, fieldType, VarDataMemory::factory(m_dataSpaces, fieldType->getStaticOffset() ) ) );
     }
 
-    ULONG   fieldOffset = fieldType->getOffset();
+    ULONG   fieldOffset = m_typeInfo->getFieldOffsetByIndex(index);
 
     if ( fieldType->isVirtualMember() )
     {
@@ -320,7 +320,7 @@ std::string UdtTypedVar::print()
         }
         else
         {
-            ULONG   fieldOffset = fieldType->getOffset();
+            ULONG   fieldOffset = m_typeInfo->getFieldOffsetByIndex(i);
 
             if ( fieldType->isVirtualMember() )
             {

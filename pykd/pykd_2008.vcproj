@@ -494,6 +494,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\udtutils.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\vardata.cpp"
 				>
 			</File>
@@ -613,6 +617,10 @@
 			</File>
 			<File
 				RelativePath=".\typeinfo.h"
+				>
+			</File>
+			<File
+				RelativePath=".\udtutils.h"
 				>
 			</File>
 			<File

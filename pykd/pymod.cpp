@@ -546,7 +546,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__init__", python::make_constructor(TypeInfo::getTypeInfoByName ) )
         .def( "name", &TypeInfo::getName )
         .def( "size", &TypeInfo::getSize )
-        .def( "offset", &TypeInfo::getTypeOffset )
+        .def( "staticOffset", &TypeInfo::getStaticOffset )
+        .def( "fieldOffset", &TypeInfo::getFieldOffsetByNameRecirsive )
         .def( "bitOffset", &TypeInfo::getBitOffset )
         .def( "bitWidth", &TypeInfo::getBitWidth )
         .def( "field", &TypeInfo::getField )
@@ -566,8 +567,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return virtual address" )
         .def("sizeof", &TypedVar::getSize,
             "Return size of a variable in the target memory" )
-        .def("offset", &TypedVar::getOffset,
-            "Return offset to parent" )
+        .def("fieldOffset", &TypedVar::getFieldOffsetByNameRecirsive,
+            "Return target field offset" )
         .def("field", &TypedVar::getField,
             "Return field of structure as an object attribute" )
         .def( "dataKind", &TypedVar::getDataKind,

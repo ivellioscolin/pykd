@@ -93,23 +93,27 @@ class TypeInfoTest( unittest.TestCase ):
 
     def testOffset( self ):
         ti1 = target.module.type( "structTest" )
-        self.assertEqual( 0, ti1.m_field0.offset() )
-        self.assertEqual( 4, ti1.m_field1.offset() )
-        self.assertEqual( 12, ti1.m_field2.offset() )
-        self.assertEqual( 14, ti1.m_field3.offset() )
-        
+        self.assertEqual( 0, ti1.fieldOffset("m_field0") )
+        self.assertEqual( 4, ti1.fieldOffset("m_field1") )
+        self.assertEqual( 12, ti1.fieldOffset("m_field2") )
+        self.assertEqual( 14, ti1.fieldOffset("m_field3") )
+
+        ti2 = target.module.type( "struct2" )
+        self.assertTrue( ti2.fieldOffset("m_union") >= ti2.m_struct.size() )
+        self.assertEqual( ti2.fieldOffset("m_union"), ti2.fieldOffset("m_union.m_value") )
+        self.assertEqual( 0, ti2.m_union.fieldOffset("m_value") )
+
     def testSize( self ):
         ti1 = target.module.type( "structTest" )
         self.assertEqual( 16 + pykd.ptrSize(), ti1.size() )
-        self.assertEqual( pykd.ptrSize(), target.module.type("structTest**").size() )     
+        self.assertEqual( pykd.ptrSize(), target.module.type("structTest**").size() )
         self.assertEqual( pykd.sizeof("structTest"), target.module.type("structTest").size() )
         self.assertEqual( pykd.sizeof("structTest**"), target.module.type("structTest**").size() )
-        self.assertEqual( pykd.sizeof("Int1B"), target.module.type("Int1B").size() )            
-        
+        self.assertEqual( pykd.sizeof("Int1B"), target.module.type("Int1B").size() )
 
     def testBitField( self ):
         ti = target.module.type( "g_structWithBits" )
-        self.assertEqual( 0, ti.m_bit6_7.offset() )
+        self.assertEqual( 0, ti.fieldOffset("m_bit6_7") )
         self.assertEqual( 4, ti.m_bit6_7.size() )
         self.assertEqual( "ULong:2", ti.m_bit6_7.name() )
         self.assertEqual( 2, ti.m_bit6_7.bitWidth() )
@@ -119,10 +123,10 @@ class TypeInfoTest( unittest.TestCase ):
         ti = target.module.type("enumType")
         self.assertTrue( hasattr( ti, "TWO" ) )
         self.assertEqual( 4, ti.TWO.size() )
-        
+
         ti = target.module.type("classChild")
         self.assertEqual( "enumType", ti.m_enumField.name() )
-        
+
     def testPtr(self):
         self.assertEqual( "listStruct1*", target.module.type( "g_listHead1" ).name() )
         self.assertEqual( "listStruct1*[2]", target.module.type( "g_arrOfListStruct1" ).name())
@@ -133,8 +137,8 @@ class TypeInfoTest( unittest.TestCase ):
 
     def testUnion(self):
         ti = target.module.type("unionTest")
-        self.assertEqual( 0, ti.m_doubleValue.offset() )
-        self.assertEqual( 0, ti.m_bits.offset() )
+        self.assertEqual( 0, ti.fieldOffset("m_doubleValue") )
+        self.assertEqual( 0, ti.fieldOffset("m_bits") )
         self.assertEqual( ti.size(), ti.m_doubleValue.size() )
 
     def testAsMap(self):
@@ -158,7 +162,7 @@ class TypeInfoTest( unittest.TestCase ):
 
         ti = target.module.type("StructWithNested::Nested")
         self.assertTrue( hasattr( ti, "m_nestedFiled" ) )
-        
+
     def testPrint(self):
         self.assertTrue( str(target.module.type( "g_ucharValue" ) ) )
         self.assertTrue( str(target.module.type( "g_ushortValue" ) ) )
@@ -183,12 +187,13 @@ class TypeInfoTest( unittest.TestCase ):
     def testTypedef(self):
         self.assertEqual( "structTest", pykd.typeInfo( "g_structTypeDef" ).name() )
         self.assertEqual( "structTest", pykd.typeInfo( "structTestTypeDef" ).name() )
-        
+
     def testStaticField(self):
         ti = pykd.typeInfo( "g_classChild" )
-        self.assertNotEqual( 0, ti.m_staticField.offset() )
-        self.assertNotEqual( 0, ti.m_staticConst.offset() )
-        self.assertNotEqual( 0, ti.m_stdstr.offset() )
+        self.assertNotEqual( 0, ti.m_staticField.staticOffset() )
+        if not ti.m_staticConst.staticOffset():
+            self.assertFalse( "MS DIA bug: https://connect.microsoft.com/VisualStudio/feedback/details/737430" )
+        self.assertNotEqual( 0, ti.m_stdstr.staticOffset() )
         
     def testUdtSubscribe(self):
         tv = pykd.typeInfo( "g_virtChild" )

@@ -72,9 +72,9 @@ class TypedVarTest( unittest.TestCase ):
 
     def testFieldOffset(self):
         tv = target.module.typedVar( "g_structTest" )
-        self.assertEqual( 0, tv.m_field0.offset() )
-        self.assertEqual( 4, tv.m_field1.offset() )
-        self.assertEqual( 16, tv.m_field4.offset() )
+        self.assertEqual( 0, tv.fieldOffset("m_field0") )
+        self.assertEqual( 4, tv.fieldOffset("m_field1") )
+        self.assertEqual( 16, tv.fieldOffset("m_field4") )
 
     def testArrayField(self):
         tv = target.module.typedVar( "g_struct3" )
@@ -104,7 +104,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( target.module.g_structTest, target.module.typedVar( "g_structTestPtr" ) )
 
     def testContainingRecord(self):
-        off1 = target.module.type( "structTest" ).m_field2.offset()
+        off1 = target.module.type( "structTest" ).fieldOffset("m_field2")
         off2 = target.module.offset( "g_structTest" )
         tv = target.module.containingRecord( off2 + off1, "structTest", "m_field2" )
         self.assertEqual( True, tv.m_field2 )
@@ -136,11 +136,10 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [1000,2000,3000], [ tv.m_someBaseFiled2 for tv in tvl ] )
         self.assertEqual( [1001,2001,3001], [ tv.m_childFiled1 for tv in tvl ] )
-        
+
         tvl1 = target.module.typedVarList( target.module.g_listHead, "listStruct", "listEntry" )
         tvl2 = pykd.typedVarList( target.module.g_listHead, target.moduleName + "!listStruct", "listEntry" )
         self.assertEqual( tvl1, tvl2 )
-        
 
     def testTypedVarArray(self):
         tvl = target.module.typedVarArray( target.module.g_testArray, "structTest", 2 )

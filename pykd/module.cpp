@@ -322,9 +322,11 @@ TypedVarPtr Module::containingRecordByName( ULONG64 address, const std::string &
 
     TypeInfoPtr     typeInfo = getTypeByName( typeName );
 
-    TypeInfoPtr     fieldTypeInfo = typeInfo->getField( fieldName );
-
-    VarDataPtr varData = VarDataMemory::factory( m_dataSpaces, address - fieldTypeInfo->getOffset() );
+    VarDataPtr varData = 
+        VarDataMemory::factory( 
+            m_dataSpaces,
+            address - typeInfo->getFieldOffsetByNameRecirsive( fieldName )
+        );
 
     return TypedVar::getTypedVar( m_client, typeInfo, varData );
 }
@@ -335,9 +337,11 @@ TypedVarPtr Module::containingRecordByType( ULONG64 address, const TypeInfoPtr &
 {
     address = addr64(address); 
 
-    TypeInfoPtr     fieldTypeInfo = typeInfo->getField( fieldName );
-
-    VarDataPtr varData = VarDataMemory::factory( m_dataSpaces, address - fieldTypeInfo->getOffset() );
+    VarDataPtr varData = 
+        VarDataMemory::factory( 
+            m_dataSpaces,
+            address - typeInfo->getFieldOffsetByNameRecirsive( fieldName )
+        );
 
     return TypedVar::getTypedVar( m_client, typeInfo, varData );
 }
@@ -364,7 +368,7 @@ python::list Module::getTypedVarListByType( ULONG64 listHeadAddress, const TypeI
 
     if ( fieldTypeInfo->getName() == ( typeInfo->getName() + "*" ) )
     {
-        for( entryAddress = ptrPtr( listHeadAddress, m_dataSpaces ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress + fieldTypeInfo->getOffset() ) )
+        for( entryAddress = ptrPtr( listHeadAddress, m_dataSpaces ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress + typeInfo->getFieldOffsetByNameRecirsive(listEntryName) ) )
             lst.append( getTypedVarByType( typeInfo, entryAddress ) );
     }
     else

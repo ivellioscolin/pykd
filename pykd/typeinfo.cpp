@@ -483,7 +483,8 @@ TypeInfoPtr TypeInfo::getRecurciveComplexType( TypeInfoPtr &lowestType, std::str
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-ULONG64 TypeInfo::getStaticOffset() {
+ULONG64 TypeInfo::getStaticOffset()
+{
     if ( !m_staticMember )
         throw TypeException( getName(), "This is not a static member" );
 
@@ -492,83 +493,9 @@ ULONG64 TypeInfo::getStaticOffset() {
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-ULONG TypeInfo::getOffset() {
-
-   if ( m_staticOffset )
-       throw TypeException( getName(), "This is a static member" );
-
-    return m_offset;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-ULONG64 TypeInfo::getTypeOffset()
-{
-   return m_staticMember ? m_staticOffset : m_offset;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-TypeInfoPtr UdtTypeInfo::getField( const std::string &fieldName )
-{
-    if ( m_fields.empty() )
-    {
-        getFields( m_dia, pyDia::SymbolPtr() );
-        getVirtualFields();
-    }
-
-    FieldList::reverse_iterator  it;
-        
-    it = std::find_if( m_fields.rbegin(), m_fields.rend(), boost::bind( &FieldType::first, _1) == fieldName );
-
-    if ( it == m_fields.rend() )
-        throw TypeException( m_dia->getName(), fieldName + ": unknown field type" );
-
-    return it->second;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-TypeInfoPtr UdtTypeInfo::getFieldByIndex( ULONG index )
-{
-    if ( m_fields.empty() )
-    {
-        getFields( m_dia, pyDia::SymbolPtr() );
-        getVirtualFields();
-    }
-
-    if ( index >= m_fields.size() )
-         throw PyException( PyExc_IndexError, "Index out of range");
-
-    return m_fields[ index ].second;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-std::string UdtTypeInfo::getFieldNameByIndex( ULONG index )
-{
-    if ( m_fields.empty() )
-    {
-        getFields( m_dia, pyDia::SymbolPtr() );
-        getVirtualFields();
-    }
-
-    if ( index >= m_fields.size() )
-         throw PyException( PyExc_IndexError, "Index out of range");
-
-    return m_fields[ index ].first;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
 ULONG UdtTypeInfo::getFieldCount()
 {
-    if ( m_fields.empty() )
-    {
-        getFields( m_dia, pyDia::SymbolPtr() );
-        getVirtualFields();
-    }
-
+    refreshFields();
     return (ULONG)m_fields.size();
 }
 
@@ -577,12 +504,12 @@ ULONG UdtTypeInfo::getFieldCount()
 void UdtTypeInfo::getFields( 
         pyDia::SymbolPtr &rootSym, 
         pyDia::SymbolPtr &baseVirtualSym,
-        ULONG startOffset,        
+        ULONG startOffset,
         LONG virtualBasePtr,
         ULONG virtualDispIndex,
         ULONG virtualDispSize )
 {
-    ULONG   childCount = rootSym->getChildCount();  
+    ULONG   childCount = rootSym->getChildCount();
 
     for ( ULONG i = 0; i < childCount; ++i )
     {
@@ -602,6 +529,7 @@ void UdtTypeInfo::getFields(
         {
             TypeInfoPtr     ti = TypeInfo::getTypeInfo( rootSym, childSym );
 
+            ULONG fieldOffset = 0;
             switch ( childSym->getDataKind() )
             {
             case DataIsMember:
@@ -615,16 +543,15 @@ void UdtTypeInfo::getFields(
                         virtualDispSize );
                 }
 
-                ti->setOffset( startOffset + childSym->getOffset() );
-
+                fieldOffset = startOffset + childSym->getOffset();
                 break;
 
             case DataIsStaticMember:
                 ti->setStaticOffset( childSym->getVa() );
-                break;                
+                break;
             }
 
-            m_fields.push_back( std::make_pair( childSym->getName(), ti ) );
+            m_fields.push_back( UdtUtils::Field( fieldOffset, childSym->getName(), ti ) );
         }
         else
         if ( symTag == SymTagVTable )
@@ -641,9 +568,7 @@ void UdtTypeInfo::getFields(
                
             }
 
-            ti->setOffset( startOffset + childSym->getOffset() );
-
-            m_fields.push_back( std::make_pair( "__VFN_table", ti ) ); 
+            m_fields.push_back( UdtUtils::Field( childSym->getOffset(), "__VFN_table", ti ) ); 
         }
     }  
 }
@@ -673,6 +598,17 @@ void UdtTypeInfo::getVirtualFields()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+void UdtTypeInfo::refreshFields()
+{
+    if ( m_fields.empty() )
+    {
+        getFields( m_dia, pyDia::SymbolPtr() );
+        getVirtualFields();
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 std::string UdtTypeInfo::print()
 {
     std::stringstream  sstr;
@@ -682,28 +618,29 @@ std::string UdtTypeInfo::print()
     ULONG       fieldCount = getFieldCount();
 
     for ( ULONG i = 0; i < fieldCount; ++i )
-    { 
-        TypeInfoPtr     fieldType = getFieldByIndex(i);
+    {
+        const UdtUtils::Field &udtField = lookupField(i);
+        TypeInfoPtr     fieldType = udtField.m_type;
 
         if ( fieldType->isStaticMember() )
         {   
             sstr << "   =" << std::right << std::setw(10) << std::setfill('0') << std::hex << fieldType->getStaticOffset();
-            sstr << " " << std::left << std::setw(18) << std::setfill(' ') << getFieldNameByIndex(i) << ':';
+            sstr << " " << std::left << std::setw(18) << std::setfill(' ') << udtField.m_name << ':';
         }
         else
         if ( fieldType->isVirtualMember() )
-        {           
+        {
             ULONG virtualBasePtr, virtualDispIndex, virtualDispSize;
             fieldType->getVirtualDisplacement( virtualBasePtr, virtualDispIndex, virtualDispSize );
 
             sstr << "   virtual base " <<  fieldType->getVirtualBase()->getName();
-            sstr << " +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getOffset();
-            sstr << " " << getFieldNameByIndex(i) << ':';
+            sstr << " +" << std::right << std::setw(4) << std::setfill('0') << std::hex << udtField.m_offset;
+            sstr << " " << udtField.m_name << ':';
         }
         else
         {
-            sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldType->getOffset();
-            sstr << " " << std::left << std::setw(24) << std::setfill(' ') << getFieldNameByIndex(i) << ':';
+            sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << udtField.m_offset;
+            sstr << " " << std::left << std::setw(24) << std::setfill(' ') << udtField.m_name << ':';
         }
 
         sstr << " " << std::left << fieldType->getName();
@@ -715,11 +652,9 @@ std::string UdtTypeInfo::print()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr EnumTypeInfo::getField( const std::string &fieldName ) {
-    pyDia::SymbolPtr  field = m_dia->getChildByName( fieldName );
-    TypeInfoPtr  ti = TypeInfo::getTypeInfo( m_dia, fieldName );
-    ti->setOffset( 0 );
-    return ti;
+TypeInfoPtr EnumTypeInfo::getField( const std::string &fieldName )
+{
+    return TypeInfo::getTypeInfo( m_dia, fieldName );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -734,9 +669,7 @@ TypeInfoPtr EnumTypeInfo::getFieldByIndex( ULONG index )
     if ( !field )
         throw TypeException( m_dia->getName(), ": field not found" );   
     
-    TypeInfoPtr  ti = TypeInfo::getTypeInfo( m_dia, field->getName() );
-    ti->setOffset( 0 );
-    return ti;
+    return TypeInfo::getTypeInfo( m_dia, field->getName() );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

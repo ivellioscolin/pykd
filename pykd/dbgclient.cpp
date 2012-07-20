@@ -591,9 +591,7 @@ TypedVarPtr DebugClient::containingRecordByType( ULONG64 addr, const TypeInfoPtr
 {
     addr = addr64(addr); 
 
-    TypeInfoPtr     fieldTypeInfo = typeInfo->getField( fieldName );
-
-    VarDataPtr varData = VarDataMemory::factory( m_dataSpaces, addr - fieldTypeInfo->getOffset() );
+    VarDataPtr varData = VarDataMemory::factory( m_dataSpaces, addr - typeInfo->getFieldOffsetByNameRecirsive(fieldName) );
 
     return TypedVar::getTypedVar( m_client, typeInfo, varData );
 }
@@ -617,7 +615,7 @@ python::list DebugClient::getTypedVarListByType( ULONG64 listHeadAddress, const 
 
     if ( fieldTypeInfo->getName() == ( typeInfo->getName() + "*" ) )
     {
-        for( entryAddress = ptrPtr( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress + fieldTypeInfo->getOffset() ) )
+        for( entryAddress = ptrPtr( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress + typeInfo->getFieldOffsetByNameRecirsive(listEntryName) ) )
             lst.append( getTypedVarByTypeInfo( typeInfo, entryAddress ) );
     }
     else
