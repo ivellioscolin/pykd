@@ -426,10 +426,10 @@ ULONG ptrSize()
 void DebugClient::terminateProcess()
 {
     HRESULT     hres;
-    
+
     hres = m_client->TerminateCurrentProcess();
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugClient::TerminateCurrentProcess failed" );
+        throw DbgException( "IDebugClient::TerminateCurrentProcess", hres );
 }
 
 void terminateProcess()

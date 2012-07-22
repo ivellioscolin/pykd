@@ -652,7 +652,8 @@ BOOST_PYTHON_MODULE( pykd )
     python::class_<EventHandlerWrap, boost::noncopyable>(
         "eventHandler", "Base class for overriding and handling debug notifications" )
         .def( python::init<>() )
-        .def( python::init<DebugClientPtr&>() )
+        .def( "reset", &pykd::EventHandler::reset,
+            "Reset event handler" )
         .def( "onBreakpoint", &pykd::EventHandlerWrap::onBreakpoint,
             "Triggered breakpoint event. Parameter is int: ID of breakpoint\n"
             "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" )

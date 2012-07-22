@@ -112,7 +112,7 @@ class BaseTest( unittest.TestCase ):
 
     def testNewAddededApi( self ):
         """ Branch test: new API 0.1.x what must be available """
-        self.assertTrue( hasattr(pykd, 'createDbgClient') )
+        # self.assertTrue( hasattr(pykd, 'createDbgClient') )
         self.assertTrue( hasattr(pykd, 'detachProcess') )
         self.assertTrue( hasattr(pykd, 'diaLoadPdb') )
         self.assertTrue( hasattr(pykd, 'getDebuggeeType' ) )
@@ -131,7 +131,7 @@ class BaseTest( unittest.TestCase ):
         self.assertTrue( hasattr(pykd, 'DiaException') )
         self.assertTrue( hasattr(pykd, 'DiaScope') )
         self.assertTrue( hasattr(pykd, 'DiaSymbol') )
-        self.assertTrue( hasattr(pykd, 'dbgClient') )
+        # self.assertTrue( hasattr(pykd, 'dbgClient') )
         self.assertTrue( hasattr(pykd, 'din') )
         self.assertTrue( hasattr(pykd, 'dout') )
         self.assertTrue( hasattr(pykd, 'eventHandler' ) )

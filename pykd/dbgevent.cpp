@@ -50,7 +50,6 @@ EventHandler::EventHandler( DebugClientPtr  &client )
 
 EventHandler::~EventHandler()
 {
-    m_handlerClient->SetEventCallbacks( NULL );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

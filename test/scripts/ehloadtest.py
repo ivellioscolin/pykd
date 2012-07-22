@@ -4,11 +4,12 @@ import unittest
 import target
 import pykd
 import fnmatch
+import testutils
 
 class ModuleLoadHandler(pykd.eventHandler):
     """Track load/unload module implementation"""
-    def __init__(self, client, moduleMask):
-        pykd.eventHandler.__init__(self, client)
+    def __init__(self, moduleMask):
+        pykd.eventHandler.__init__(self)
 
         self.moduleMask = moduleMask.lower()
 
@@ -36,16 +37,16 @@ class EhLoadTest(unittest.TestCase):
 
     def testLoadUnload(self):
         """Start new process and track loading and unloading modules"""
-        testClient = pykd.createDbgClient()
-        testClient.startProcess( target.appPath + " -testLoadUnload" )
+        pykd.startProcess(target.appPath + " -testLoadUnload")
+        with testutils.ContextCallIt( pykd.killProcess ) as contextCallIt:
+            modLoadHandler = ModuleLoadHandler( "*Iphlpapi*" )
+            with testutils.ContextCallIt( getattr(modLoadHandler, "reset") ) as resetEventHandler:
+                try:
+                    while True:
+                        pykd.go()
+                except pykd.WaitEventException:
+                    pass
 
-        modLoadHandler = ModuleLoadHandler( testClient, "*Iphlpapi*" )
-        try:
-            while True:
-                testClient.go()
-        except pykd.WaitEventException:
-            pass
-
-        self.assertTrue(modLoadHandler.wasLoad)
-        self.assertTrue(modLoadHandler.wasUnload)
+            self.assertTrue(modLoadHandler.wasLoad)
+            self.assertTrue(modLoadHandler.wasUnload)
 

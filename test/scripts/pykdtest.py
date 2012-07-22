@@ -43,13 +43,18 @@ def getTestSuite( singleName = "" ):
                unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
                unittest.TestLoader().loadTestsFromTestCase( synsymtest.SynSymTest ),
                unittest.TestLoader().loadTestsFromTestCase( thrdctxtest.ThreadContextTest ),
-               unittest.TestLoader().loadTestsFromTestCase( ehloadtest.EhLoadTest ),
-               unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
-               unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionBreakpointTest ),
                unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
            ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )
+
+def getNewProcessTestSuite():
+    return unittest.TestSuite(
+        [
+            unittest.TestLoader().loadTestsFromTestCase( ehloadtest.EhLoadTest ),
+            # unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
+            # unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionBreakpointTest ),
+        ] )
 
 
 if __name__ == "__main__":
@@ -70,12 +75,16 @@ if __name__ == "__main__":
 
     print ""
 
-    suite = getTestSuite()
-    #suite = getTestSuite( "diatest.DiaTest.testFind" )
-    #suite = getTestSuite( "typedvar.TypedVarTest.testTypeVarArg" )
-    #suite = getTestSuite( "typeinfo.TypeInfoTest.testCreateByName" )
-    #suite = getTestSuite( "typedvar.TypedVarTest.testBitField" )
+    oneProcessTests = getTestSuite()
+    #oneProcessTests = getTestSuite( "diatest.DiaTest.testFind" )
+    #oneProcessTests = getTestSuite( "typedvar.TypedVarTest.testTypeVarArg" )
+    #oneProcessTests = getTestSuite( "typeinfo.TypeInfoTest.testCreateByName" )
+    #oneProcessTests = getTestSuite( "typedvar.TypedVarTest.testBitField" )
 
-    unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( suite )
+    unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( oneProcessTests )
+
+    pykd.killProcess()
+
+    unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getNewProcessTestSuite() )
 
     raw_input("\npress return\n")

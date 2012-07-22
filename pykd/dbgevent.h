@@ -17,12 +17,15 @@ namespace pykd {
 class EventHandler : public DebugBaseEventCallbacks
 {
 public:
-
     EventHandler();
 
     EventHandler( DebugClientPtr  &client );
 
     virtual ~EventHandler();
+
+    void reset() {
+        m_handlerClient.Release();
+    }
 
 protected:
 
@@ -67,7 +70,6 @@ protected:
 
 
 protected:
-
     virtual ULONG onBreakpoint(ULONG Id) = 0;
 
     virtual ULONG onException(const python::dict &/*exceptData*/) = 0;
@@ -75,13 +77,12 @@ protected:
     virtual ULONG onLoadModule(const ModulePtr &/* module */)  = 0;
 
     virtual ULONG onUnloadModule(ULONG64 /*modBase*/)  = 0;
-    
+
     virtual ULONG onChangeSessionStatus( ULONG status ) = 0;
-    
+
     virtual ULONG onChangeDebugeeState() = 0;
 
 protected:
-
     CComPtr<IDebugClient>       m_handlerClient;
 
     DebugClientPtr              m_parentClient;
