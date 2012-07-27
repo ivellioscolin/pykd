@@ -350,30 +350,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\bpoint.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\context.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\cpureg.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgclient.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgcmd.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgevent.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\dbgexcept.cpp"
 				>
 			</File>
@@ -382,47 +358,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\dbgio.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgmem.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgpath.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\diadata.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\diaprint.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\diawrapper.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\disasm.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\inteventhandler.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\livevar.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\module.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\process.cpp"
 				>
 			</File>
 			<File
@@ -470,31 +406,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\stkframe.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\synsymbol.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\synsymhelpers.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\typedvar.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\typeinfo.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\udtutils.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\vardata.cpp"
+				RelativePath=".\windbgeng.cpp"
 				>
 			</File>
 		</Filter>
@@ -504,27 +416,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\bpoint.h"
-				>
-			</File>
-			<File
-				RelativePath=".\context.h"
-				>
-			</File>
-			<File
-				RelativePath=".\cpureg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgclient.h"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgcmd.h"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgevent.h"
+				RelativePath=".\dbgengine.h"
 				>
 			</File>
 			<File
@@ -532,51 +424,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\dbgio.h"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgmem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgobj.h"
-				>
-			</File>
-			<File
-				RelativePath=".\dbgpath.h"
-				>
-			</File>
-			<File
-				RelativePath=".\diacallback.h"
-				>
-			</File>
-			<File
-				RelativePath=".\diaregs.h"
-				>
-			</File>
-			<File
-				RelativePath=".\diawrapper.h"
-				>
-			</File>
-			<File
-				RelativePath=".\disasm.h"
-				>
-			</File>
-			<File
 				RelativePath=".\intbase.h"
 				>
 			</File>
 			<File
-				RelativePath=".\inteventhandler.h"
-				>
-			</File>
-			<File
 				RelativePath=".\module.h"
-				>
-			</File>
-			<File
-				RelativePath=".\process.h"
 				>
 			</File>
 			<File
@@ -588,47 +440,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\resource.h"
-				>
-			</File>
-			<File
 				RelativePath=".\stdafx.h"
 				>
 			</File>
 			<File
-				RelativePath=".\stkframe.h"
-				>
-			</File>
-			<File
-				RelativePath=".\synsymbol.h"
-				>
-			</File>
-			<File
-				RelativePath=".\synsymhelpers.h"
-				>
-			</File>
-			<File
-				RelativePath=".\typedvar.h"
-				>
-			</File>
-			<File
-				RelativePath=".\typeinfo.h"
-				>
-			</File>
-			<File
-				RelativePath=".\udtutils.h"
-				>
-			</File>
-			<File
-				RelativePath=".\utils.h"
-				>
-			</File>
-			<File
-				RelativePath=".\vardata.h"
-				>
-			</File>
-			<File
-				RelativePath=".\windbg.h"
+				RelativePath=".\windbgeng.h"
 				>
 			</File>
 		</Filter>

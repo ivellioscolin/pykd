@@ -2,7 +2,7 @@
 
 #include <windows.h>
 
-#include "windbg.h"
+//#include "windbg.h"
 
 namespace pykd {
 
@@ -21,23 +21,23 @@ public:
     }
 
     void saveState() {
-        if ( !WindbgGlobalSession::isInit() )
+        //if ( !WindbgGlobalSession::isInit() )
             TlsSetValue( m_index, PyEval_SaveThread() );
-        else
-            WindbgGlobalSession::SavePyState();                
+        //else
+        //    WindbgGlobalSession::SavePyState();                
     }
 
     void restoreState() {
-        if ( !WindbgGlobalSession::isInit() )
-        {
+        //if ( !WindbgGlobalSession::isInit() )
+        //{
             PyThreadState*      state = (PyThreadState*)TlsGetValue( m_index );
             if ( state )
                 PyEval_RestoreThread( state );
-        }
-        else
-        {
-            WindbgGlobalSession::RestorePyState();
-        }
+        //}
+        //else
+        //{
+        //    WindbgGlobalSession::RestorePyState();
+        //}
     }
 
 private:
