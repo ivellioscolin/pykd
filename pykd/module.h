@@ -44,10 +44,16 @@ public:
         return m_size;
     }
 
-    void
-    reloadSymbols()
-    {
+    std::string getSymFile() const {
+        return m_symfile;
     }
+
+    std::string getImageName() const {
+        return m_imageName;
+    }
+
+    void
+    reloadSymbols();
 
     ULONG64
     getSymbol( const std::string &symbolname ) {
@@ -58,6 +64,16 @@ public:
     getSymbolRva( const std::string &symbolname ) {
         return getRvaByName(symbolname);
     }
+
+    ULONG getCheckSum() const {
+        return m_checkSum;
+    }
+
+    ULONG getTimeDataStamp() const {
+        return m_timeDataStamp;
+    }
+
+    std::string print();
 
 private:
 
@@ -70,8 +86,12 @@ private:
     ULONG getRvaByName(const std::string &symName);
 
     std::string             m_name;
+    std::string             m_imageName;
+    std::string             m_symfile;
     ULONG64                 m_base;
     ULONG                   m_size;
+    ULONG                   m_timeDataStamp;
+    ULONG                   m_checkSum;
 
     SymbolPtr               m_symScope;
 };

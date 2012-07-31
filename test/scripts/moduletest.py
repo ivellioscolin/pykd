@@ -26,40 +26,26 @@ class ModuleTest( unittest.TestCase ):
     def testEnd( self ):
         self.assertEqual( target.module.size(), target.module.end() - target.module.begin() )
          
-#    def testPdb( self ):
-#        self.assertNotEqual( "", target.module.pdb() )
+    def testPdb( self ):
+       self.assertNotEqual( "", target.module.symfile() )
          
-#    def testImage( self ):
-#        self.assertEqual( target.module.name() + ".exe", target.module.image() )
+    def testImage( self ):
+       self.assertEqual( target.module.name() + ".exe", target.module.image() )
 
-#    def testFindModule( self ):
-    
-#        try: 
-#            pykd.loadModule( target.module.begin() - 0x10 )
-#            self.assertTrue( False )
-#        except pykd.BaseException: 
-#            self.assertTrue( True )
+    def testFindModule( self ):
+        self.assertRaises( pykd.BaseException, pykd.module, target.module.begin() - 0x10 )            
 
-#        self.assertNotEqual( None, pykd.loadModule( target.module.begin() ) )
-#        self.assertNotEqual( None, pykd.loadModule( target.module.begin() + 0x10) )
+        self.assertNotEqual( None, pykd.module( target.module.begin() ) )
+        self.assertNotEqual( None, pykd.module( target.module.begin() + 0x10) )
 
-#        try: 
-#            pykd.loadModule( target.module.end() )
-#            self.assertTrue( False )
-#        except pykd.BaseException: 
-#            self.assertTrue( True )
- 
-#        try: 
-#            pykd.loadModule( target.module.end() + 0x10 )
-#            self.assertTrue( False )
-#        except pykd.BaseException: 
-#            self.assertTrue( True )
+        self.assertRaises( pykd.BaseException, pykd.module, target.module.end() )
+        self.assertRaises( pykd.BaseException, pykd.module, target.module.end() + 0x10 )
 
-#    def testSymbol( self ):
-#        self.assertEqual( target.module.rva("FuncWithName0"), target.module.offset("FuncWithName0") - target.module.begin() )
-#        self.assertEqual( target.module.rva("FuncWithName0"), target.module.FuncWithName0 - target.module.begin() )
+    def testSymbol( self ):
+        self.assertEqual( target.module.rva("FuncWithName0"), target.module.offset("FuncWithName0") - target.module.begin() )
+        self.assertEqual( target.module.rva("FuncWithName0"), target.module.FuncWithName0 - target.module.begin() )
         
-#    def testType( self ):
-#        self.assertEqual( "structTest", target.module.type("structTest").name() );
-#        self.assertEqual( "structTest", target.module.type("g_structTest").name() );
+    def testType( self ):
+        self.assertEqual( "structTest", target.module.type("structTest").name() );
+        self.assertEqual( "structTest", target.module.type("g_structTest").name() );
 

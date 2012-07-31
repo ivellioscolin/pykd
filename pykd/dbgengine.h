@@ -16,7 +16,10 @@ ULONG ptrSize();
 ULONG64 findModuleBase( const std::string &moduleName );
 ULONG64 findModuleBase( ULONG64 offset );
 std::string getModuleName( ULONG64 baseOffset );
+std::string getModuleImageName( ULONG64 baseOffset ); 
 std::string getModuleSymbolFileName( ULONG64 baseOffset );
+ULONG getModuleTimeStamp( ULONG64 baseOffset );
+ULONG getModuleCheckSum( ULONG64 baseOffset );
 
 //manage access to target memory
 ULONG64 addr64( ULONG64 offset );

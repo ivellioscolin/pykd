@@ -174,6 +174,29 @@ std::string getModuleName( ULONG64 baseOffset )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+std::string getModuleImageName( ULONG64 baseOffset )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+    char  imageName[0x100];
+
+    hres = g_dbgEng->symbols->GetModuleNameString( 
+        DEBUG_MODNAME_IMAGE,
+        DEBUG_ANY_ID,
+        baseOffset,
+        imageName,
+        sizeof( imageName ),
+        NULL );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSymbol::GetModuleNameString failed" );
+
+    return std::string( imageName );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 std::string getModuleSymbolFileName( ULONG64 baseOffset )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
@@ -223,6 +246,38 @@ std::string getModuleSymbolFileName( ULONG64 baseOffset )
     WideCharToMultiByte( CP_ACP, 0, moduleInfo.LoadedPdbName, 256, pdbName, 256, NULL, NULL );
 
     return std::string( pdbName );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ULONG getModuleTimeStamp( ULONG64 baseOffset )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+    DEBUG_MODULE_PARAMETERS     moduleParam = { 0 };
+
+    hres = g_dbgEng->symbols->GetModuleParameters( 1, &baseOffset, 0, &moduleParam );
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );    
+
+    return moduleParam.TimeDateStamp;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ULONG getModuleCheckSum( ULONG64 baseOffset )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+    DEBUG_MODULE_PARAMETERS     moduleParam = { 0 };
+
+    hres = g_dbgEng->symbols->GetModuleParameters( 1, &baseOffset, 0, &moduleParam );
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );    
+
+    return moduleParam.Checksum;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

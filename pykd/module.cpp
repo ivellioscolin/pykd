@@ -21,6 +21,10 @@ Module::Module(const std::string &moduleName )
 {
     m_base = findModuleBase( moduleName );
     m_name = moduleName;
+    m_symfile = getModuleSymbolFileName( m_base );
+    m_imageName = getModuleImageName( m_base );
+    m_timeDataStamp = getModuleTimeStamp( m_base );
+    m_checkSum = getModuleCheckSum( m_base );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -29,6 +33,10 @@ Module::Module(ULONG64 offset )
 {
     m_base = findModuleBase( addr64(offset) );
     m_name = getModuleName( m_base );
+    m_symfile = getModuleSymbolFileName( m_base );
+    m_imageName = getModuleImageName( m_base );
+    m_timeDataStamp = getModuleTimeStamp( m_base );
+    m_checkSum = getModuleCheckSum( m_base );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -40,11 +48,10 @@ SymbolPtr& Module::getSymScope()
         if ( m_symScope )
             break;
 
-        std::string  symbolName = getModuleSymbolFileName( m_base );
-        if ( symbolName.empty() )
+        if ( m_symfile.empty() )
             break;
 
-        m_symScope = loadSymbolFile( symbolName );
+        m_symScope = loadSymbolFile( m_symfile );
 
     } while( false );
 
@@ -56,11 +63,35 @@ SymbolPtr& Module::getSymScope()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+void Module::reloadSymbols()
+{
+    m_symfile = getModuleSymbolFileName( m_base );
+    m_symScope.reset();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 ULONG Module::getRvaByName(const std::string &symName)
 {
     SymbolPtr  &symScope = getSymScope();
     SymbolPtr  child = symScope->getChildByName( symName );
     return child->getRva();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+std::string Module::print()
+{
+    std::stringstream   sstr;
+
+    sstr << "Module: " << m_name <<  std::endl;
+    sstr << "Start: " << std::hex << m_base << " End: " << getEnd() << " Size: " << m_size << std::endl;
+    sstr << "Image: " << m_imageName << std::endl;
+    sstr << "Symnol: " << m_symfile << std::endl;
+    //sstr << "Timestamp: " << m_timeDataStamp << std::endl;
+    //sstr << "Check Sum: " << m_checkSum << std::endl;
+
+    return sstr.str();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

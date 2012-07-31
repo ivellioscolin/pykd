@@ -176,19 +176,14 @@ BOOST_PYTHON_MODULE( pykd )
              "Return name of the module" )
         .def("reload", &Module::reloadSymbols,
             "(Re)load symbols for the module" )
-        .def("__getattr__", &Module::getSymbol,
-            "Return address of the symbol" );
-
-        //.def("image", &Module::getImageName,
-        //     "Return name of the image of the module" )
-        //.def("pdb", &Module::getPdbName,
-        //     "Return the full path to the module's pdb file ( symbol information )" )
-        //.def("reload", &Module::reloadSymbols,
-        //    "(Re)load symbols for the module" )
-        //.def("offset", &Module::getSymbol,
-        //    "Return offset of the symbol" )
-        //.def("rva", &Module::getSymbolRva,
-        //    "Return rva of the symbol" )
+        .def("image", &Module::getImageName,
+            "Return name of the image of the module" )
+        .def("symfile", &Module::getSymFile,
+             "Return the full path to the module's symbol information" )
+        .def("offset", &Module::getSymbol,
+            "Return offset of the symbol" )
+        .def("rva", &Module::getSymbolRva,
+            "Return rva of the symbol" )
         //.def( "sizeof", &Module::getSymbolSize,
         //    "Return a size of the type or variable" )
         //.def("type", &Module::getTypeByName,
@@ -215,13 +210,13 @@ BOOST_PYTHON_MODULE( pykd )
         //.def("containingRecord", &Module::containingRecordByType,
         //    "Return instance of the typedVar class. It's value are loaded from the target memory."
         //    "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
-        //.def("checksum",&Module::getCheckSum,
-        //    "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
-        //.def("timestamp",&Module::getTimeDataStamp,
-        //    "Return a low 32 bits of the time stamp of the image: IMAGE_FILE_HEADER.TimeDateStamp" )
-        //.def("__getattr__", &Module::getSymbol,
-        //    "Return address of the symbol" )
-        //.def( "__str__", &Module::print );
+        .def("checksum",&Module::getCheckSum,
+            "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
+        .def("timestamp",&Module::getTimeDataStamp,
+            "Return a low 32 bits of the time stamp of the image: IMAGE_FILE_HEADER.TimeDateStamp" )
+        .def("__getattr__", &Module::getSymbol,
+            "Return address of the symbol" )
+        .def( "__str__", &Module::print );
 
     pykd::exception<DbgException>( "BaseException", "Pykd base exception class" );
     pykd::exception<MemoryException,DbgException>( "MemoryException", "Target memory access exception class" );
