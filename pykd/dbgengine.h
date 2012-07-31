@@ -9,6 +9,9 @@ void terminateProcess( ULONG processId = -1);
 
 void debugGo();
 
+// system properties
+ULONG ptrSize();
+
 //manage debug module
 ULONG64 findModuleBase( const std::string &moduleName );
 ULONG64 findModuleBase( ULONG64 offset );

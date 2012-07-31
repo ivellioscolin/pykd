@@ -37,6 +37,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignBytes_, loadSignBytes, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords_, loadSignWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, compareMemory, 3, 4 );
 
 
 BOOST_PYTHON_MODULE( pykd )
@@ -56,6 +57,34 @@ BOOST_PYTHON_MODULE( pykd )
         "Go debugging"  );
 
     // Manage target memory access
+    python::def( "isValid", &isVaValid,
+        "Check if the virtual address is valid" );
+    python::def( "compareMemory", &compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
+        "Compare two memory buffers by virtual or physical addresses" ) );
+
+    python::def( "ptrByte", &ptrByte,
+        "Read an unsigned 1-byte integer from the target memory" );
+    python::def( "ptrWord", &ptrWord,
+        "Read an unsigned 2-byte integer from the target memory" );
+    python::def( "ptrDWord", (ULONG64(*)(ULONG64))&ptrDWord,
+        "Read an unsigned 4-byte integer from the target memory" );
+    python::def( "ptrQWord", (ULONG64(*)(ULONG64))&ptrQWord,
+        "Read an unsigned 8-byte integer from the target memory" );
+    python::def( "ptrMWord", (ULONG64(*)(ULONG64))&ptrMWord,
+        "Read an unsigned mashine's word wide integer from the target memory" );
+    python::def( "ptrSignByte", &ptrSignByte,
+        "Read an signed 1-byte integer from the target memory" );
+    python::def( "ptrSignWord", &ptrSignWord,
+        "Read an signed 2-byte integer from the target memory" );
+    python::def( "ptrSignDWord", &ptrSignDWord,
+        "Read an signed 4-byte integer from the target memory" );
+    python::def( "ptrSignQWord", &ptrSignQWord,
+        "Read an signed 8-byte integer from the target memory" );
+    python::def( "ptrSignMWord", &ptrSignMWord,
+        "Read an signed mashine's word wide integer from the target memory" );
+    python::def( "ptrPtr", (ULONG64(*)(ULONG64))&ptrPtr,
+        "Read an pointer value from the target memory" );
+
     python::def( "loadBytes", &loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as liat of unsigned bytes" ) );
     python::def( "loadWords", &loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
@@ -72,22 +101,22 @@ BOOST_PYTHON_MODULE( pykd )
         "Read the block of the target's memory and return it as list of signed longs" ) );
     python::def( "loadSignQWords", &loadSignQWords, loadSignQWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of signed long longs" ) );
-    //python::def( "loadChars", &loadChars, loadChars_( python::args( "address", "count", "phyAddr" ),
-    //    "Load string from target memory" ) );
-    //python::def( "loadWChars", &loadWChars, loadWChars_( python::args( "address", "count", "phyAddr" ),
-    //    "Load string from target memory" ) );
-    //python::def( "loadCStr", &loadCStr,
-    //    "Load string from the target buffer containing 0-terminated ansi-string" );
-    //python::def( "loadWStr", &loadWStr,
-    //    "Load string from the target buffer containing 0-terminated unicode-string" );
-    //python::def( "loadUnicodeString", &loadUnicodeStr,
-    //    "Return string represention of windows UNICODE_STRING type" );
-    //python::def( "loadAnsiString", &loadAnsiStr,
-    //    "Return string represention of windows ANSU_STRING type" );
-    //python::def( "loadPtrList", &loadPtrList,
-    //    "Return list of pointers, each points to next" );
-    //python::def( "loadPtrs", &loadPtrArray,
-    //    "Read the block of the target's memory and return it as a list of pointers" );
+    python::def( "loadChars", &loadChars, loadChars_( python::args( "address", "count", "phyAddr" ),
+        "Load string from target memory" ) );
+    python::def( "loadWChars", &loadWChars, loadWChars_( python::args( "address", "count", "phyAddr" ),
+        "Load string from target memory" ) );
+    python::def( "loadCStr", &loadCStr,
+        "Load string from the target buffer containing 0-terminated ansi-string" );
+    python::def( "loadWStr", &loadWStr,
+        "Load string from the target buffer containing 0-terminated unicode-string" );
+    python::def( "loadUnicodeString", &loadUnicodeStr,
+        "Return string represention of windows UNICODE_STRING type" );
+    python::def( "loadAnsiString", &loadAnsiStr,
+        "Return string represention of windows ANSI_STRING type" );
+    python::def( "loadPtrList", &loadPtrList,
+        "Return list of pointers, each points to next" );
+    python::def( "loadPtrs", &loadPtrArray,
+        "Read the block of the target's memory and return it as a list of pointers" );
 
 
     python::class_<intBase>( "intBase", "intBase", python::no_init )

@@ -227,6 +227,22 @@ std::string getModuleSymbolFileName( ULONG64 baseOffset )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+ULONG ptrSize()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+
+    hres = g_dbgEng->control->IsPointer64Bit();
+
+    if ( FAILED( hres ) )
+        throw  DbgException( "IDebugControl::IsPointer64Bit  failed" );
+    
+    return S_OK == hres ? 8 : 4;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 };
 
 

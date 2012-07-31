@@ -41,6 +41,30 @@ ULONG64 addr64( ULONG64 addr )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+bool isVaValid( ULONG64 addr )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+    ULONG       offsetInfo;
+    
+    hres = 
+        g_dbgEng->dataspace->GetOffsetInformation(
+            DEBUG_DATA_SPACE_VIRTUAL,
+            DEBUG_OFFSINFO_VIRTUAL_SOURCE,
+            addr64NoSafe( addr ),
+            &offsetInfo,
+            sizeof( offsetInfo ),
+            NULL );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugDataSpace4::GetOffsetInformation  failed" );
+
+    return  offsetInfo != DEBUG_VSOURCE_INVALID;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 void readMemory( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
@@ -53,8 +77,7 @@ void readMemory( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr )
 
         // workitem/10473 workaround
         ULONG64 nextAddress;
-        hres = 
-            g_dbgEng->dataspace->GetNextDifferentlyValidOffsetVirtual( offset, &nextAddress );
+        hres = g_dbgEng->dataspace->GetNextDifferentlyValidOffsetVirtual( offset, &nextAddress );
 
         DBG_UNREFERENCED_LOCAL_VARIABLE(nextAddress);
 
@@ -67,6 +90,81 @@ void readMemory( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr )
 
     if ( FAILED( hres ) )
         throw MemoryException( offset, phyAddr );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string loadCStr( ULONG64 offset )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    const size_t    maxLength = 0x10000;
+
+    offset = addr64NoSafe( offset );
+
+    ULONG   strLength = 0;
+
+    HRESULT     hres = 
+        g_dbgEng->dataspace->ReadMultiByteStringVirtual(
+            offset,
+            maxLength,
+            NULL,
+            0,
+            &strLength );
+
+    if ( FAILED( hres ) )
+        throw MemoryException( offset );
+
+    std::vector<char>  buffer(strLength);
+
+    hres = 
+        g_dbgEng->dataspace->ReadMultiByteStringVirtual(
+            offset,
+            strLength,
+            &buffer[0],
+            strLength,
+            NULL );
+
+    if ( FAILED( hres ) )
+        throw MemoryException( offset );
+                           
+    return std::string( &buffer[0] );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::wstring loadWStr( ULONG64 offset )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    const size_t    maxLength = 0x10000;
+ 
+    offset = addr64NoSafe( offset );
+
+    ULONG   strLength = 0;
+
+    HRESULT     hres = 
+        g_dbgEng->dataspace->ReadUnicodeStringVirtualWide(
+            offset,
+            maxLength,
+            NULL,
+            0,
+            &strLength );
+
+    std::vector<wchar_t>  buffer(strLength);
+        
+    hres = 
+        g_dbgEng->dataspace->ReadUnicodeStringVirtualWide(
+            offset,
+            strLength,
+            &buffer[0],
+            strLength,
+            NULL );
+    
+    if ( FAILED( hres ) )
+        throw MemoryException( offset );
+                           
+    return std::wstring( &buffer[0] );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
