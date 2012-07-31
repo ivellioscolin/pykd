@@ -4,6 +4,9 @@
 #include "dbgexcept.h"
 #include "pyaux.h"
 
+#include <dbgeng.h>
+#include <dbghelp.h>
+
 namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -18,6 +21,8 @@ public:
         CComQIPtr<IDebugControl4>  control;
         CComQIPtr<IDebugSystemObjects2>  system;
         CComQIPtr<IDebugSymbols3>  symbols;
+        CComQIPtr<IDebugDataSpaces4>  dataspace;
+        CComQIPtr<IDebugAdvanced2>  advanced;
 
         DbgEngBind( PDEBUG_CLIENT4 c )
         {
@@ -25,6 +30,8 @@ public:
             control = c;
             system = c;
             symbols = c;
+            dataspace = c;
+            advanced = c;
         }
 
         PyThreadStateSaver     pystate;

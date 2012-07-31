@@ -45,7 +45,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/bigobj"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DIA_SDK_ROOT)\include&quot;;&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x86\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(DIA_SDK_ROOT)\include&quot;;&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x64\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS"
 				GeneratePreprocessedFile="0"
 				KeepComments="false"
@@ -126,7 +126,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/bigobj"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DIA_SDK_ROOT)\include&quot;;&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x64\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(DIA_SDK_ROOT)\include&quot;;&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x64\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS"
 				GeneratePreprocessedFile="0"
 				KeepComments="false"
@@ -207,7 +207,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/bigobj"
-				AdditionalIncludeDirectories="&quot;$(DIA_SDK_ROOT)\include&quot;;&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x86\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(DIA_SDK_ROOT)\include&quot;;&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x64\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -287,7 +287,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/bigobj"
-				AdditionalIncludeDirectories="&quot;$(DIA_SDK_ROOT)\include&quot;;&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x64\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(DIA_SDK_ROOT)\include&quot;;&quot;$(DBG_SDK_ROOT)\inc&quot;;&quot;$(BOOST_ROOT)&quot;;&quot;$(PYTHON_ROOT)\x64\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -358,6 +358,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgmem.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\module.cpp"
 				>
 			</File>
@@ -405,10 +409,6 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath=".\windbgeng.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -421,6 +421,10 @@
 			</File>
 			<File
 				RelativePath=".\dbgexcept.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dbgmem.h"
 				>
 			</File>
 			<File
@@ -444,7 +448,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\windbgeng.h"
+				RelativePath=".\symengine.h"
+				>
+			</File>
+			<File
+				RelativePath=".\typeinfo.h"
 				>
 			</File>
 		</Filter>
@@ -455,6 +463,38 @@
 			>
 			<File
 				RelativePath=".\pykd.rc"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="win"
+			>
+			<File
+				RelativePath=".\win\dbgeng.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\win\dbgeng.h"
+				>
+			</File>
+			<File
+				RelativePath=".\win\memory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\win\utils.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="dia"
+			>
+			<File
+				RelativePath=".\dia\diawrapper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dia\diawrapper.h"
 				>
 			</File>
 		</Filter>

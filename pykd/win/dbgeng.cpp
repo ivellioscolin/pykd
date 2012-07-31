@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "windbgeng.h"
+#include "win/dbgeng.h"
 #include "dbgexcept.h"
 
 namespace pykd {
@@ -174,32 +174,55 @@ std::string getModuleName( ULONG64 baseOffset )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ULONG64 addr64( ULONG64 addr )
+std::string getModuleSymbolFileName( ULONG64 baseOffset )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
-    HRESULT     hres;
+    HRESULT  hres;
+    IMAGEHLP_MODULEW64   moduleInfo = {};
 
-    ULONG   processorMode;
-    hres = g_dbgEng->control->GetActualProcessorType( &processorMode );
+    hres = g_dbgEng->advanced->GetSymbolInformation(
+        DEBUG_SYMINFO_IMAGEHLP_MODULEW64,
+        baseOffset,
+        0,
+        &moduleInfo,
+        sizeof(moduleInfo),
+        NULL,
+        NULL,
+        0,
+        NULL );
+
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugControl::GetEffectiveProcessorType  failed" );
+        throw DbgException( "IDebugAdvanced2::GetSymbolInformation failed" );
 
-    switch( processorMode )
+    if (!*moduleInfo.LoadedPdbName)
     {
-    case IMAGE_FILE_MACHINE_I386:
-        if ( *( (ULONG*)&addr + 1 ) == 0 )
-            return (ULONG64)(LONG)addr;
+        std::wstring  param = L"/f ";
+        param += moduleInfo.ImageName;
 
-    case IMAGE_FILE_MACHINE_AMD64:
-        break;
+        hres = g_dbgEng->symbols->ReloadWide( param.c_str() );
+        if ( FAILED( hres ) )
+            throw DbgException("IDebugSymbols::Reload failed" );
 
-    default:
-        throw DbgException( "Unknown processor type" );
-        break;
+        hres = g_dbgEng->advanced->GetSymbolInformation(
+            DEBUG_SYMINFO_IMAGEHLP_MODULEW64,
+            baseOffset,
+            0,
+            &moduleInfo,
+            sizeof(moduleInfo),
+            NULL,
+            NULL,
+            0,
+            NULL );
+
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugAdvanced2::GetSymbolInformation failed" );
     }
 
-    return addr;
+    char  pdbName[ 256 ];
+    WideCharToMultiByte( CP_ACP, 0, moduleInfo.LoadedPdbName, 256, pdbName, 256, NULL, NULL );
+
+    return std::string( pdbName );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

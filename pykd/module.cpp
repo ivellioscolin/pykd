@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "dbgengine.h"
 #include "module.h"
+#include "dbgexcept.h"
 
 namespace pykd {
 
@@ -32,7 +33,50 @@ Module::Module(ULONG64 offset )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+SymbolPtr& Module::getSymScope()
+{
+    do {
+
+        if ( m_symScope )
+            break;
+
+        std::string  symbolName = getModuleSymbolFileName( m_base );
+        if ( symbolName.empty() )
+            break;
+
+        m_symScope = loadSymbolFile( symbolName );
+
+    } while( false );
+
+    if ( !m_symScope )
+        throw SymbolException( "failed to find symbol file" );
+
+    return m_symScope;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ULONG Module::getRvaByName(const std::string &symName)
+{
+    SymbolPtr  &symScope = getSymScope();
+    SymbolPtr  child = symScope->getChildByName( symName );
+    return child->getRva();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 }; // end of namespace pykd
+
+
+
+
+
+
+
+
+
+
+
 
 
 

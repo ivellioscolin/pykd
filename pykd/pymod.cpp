@@ -5,12 +5,19 @@
 #include "stdafx.h"
 
 #include "pykdver.h"
+
 #include "dbgengine.h"
+#include "symengine.h"
+
 #include "module.h"
 #include "intbase.h"
 #include "dbgexcept.h"
+#include "dbgmem.h"
+
+using namespace pykd;
 
 ////////////////////////////////////////////////////////////////////////////////
+
 
 static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 #ifdef _DEBUG
@@ -18,13 +25,25 @@ static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 #endif  // _DEBUG
 ;
 
-using namespace pykd;
+////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadChars_, loadChars, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadWChars_, loadWChars, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadBytes_, loadBytes, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadWords_, loadWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadDWords_, loadDWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadQWords_, loadQWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignBytes_, loadSignBytes, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords_, loadSignWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
+
 
 BOOST_PYTHON_MODULE( pykd )
 {
     python::scope().attr("version") = pykdVersion;
+
+    // Manage debug target 
 
     python::def( "startProcess", &startProcess,
         "Start process for debugging"); 
@@ -35,6 +54,41 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::def( "go", &debugGo,
         "Go debugging"  );
+
+    // Manage target memory access
+    python::def( "loadBytes", &loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as liat of unsigned bytes" ) );
+    python::def( "loadWords", &loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of unsigned shorts" ) );
+    python::def( "loadDWords", &loadDWords, loadDWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of unsigned long ( double word )" ) );
+    python::def( "loadQWords", &loadQWords, loadQWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of unsigned long long ( quad word )" ) );
+    python::def( "loadSignBytes", &loadSignBytes, loadSignBytes_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of signed bytes" ) );
+    python::def( "loadSignWords", &loadSignWords, loadSignWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of signed words" ) );
+    python::def( "loadSignDWords", &loadSignDWords, loadSignDWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of signed longs" ) );
+    python::def( "loadSignQWords", &loadSignQWords, loadSignQWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of signed long longs" ) );
+    //python::def( "loadChars", &loadChars, loadChars_( python::args( "address", "count", "phyAddr" ),
+    //    "Load string from target memory" ) );
+    //python::def( "loadWChars", &loadWChars, loadWChars_( python::args( "address", "count", "phyAddr" ),
+    //    "Load string from target memory" ) );
+    //python::def( "loadCStr", &loadCStr,
+    //    "Load string from the target buffer containing 0-terminated ansi-string" );
+    //python::def( "loadWStr", &loadWStr,
+    //    "Load string from the target buffer containing 0-terminated unicode-string" );
+    //python::def( "loadUnicodeString", &loadUnicodeStr,
+    //    "Return string represention of windows UNICODE_STRING type" );
+    //python::def( "loadAnsiString", &loadAnsiStr,
+    //    "Return string represention of windows ANSU_STRING type" );
+    //python::def( "loadPtrList", &loadPtrList,
+    //    "Return list of pointers, each points to next" );
+    //python::def( "loadPtrs", &loadPtrArray,
+    //    "Read the block of the target's memory and return it as a list of pointers" );
+
 
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )
@@ -92,7 +146,9 @@ BOOST_PYTHON_MODULE( pykd )
         .def("name", &Module::getName,
              "Return name of the module" )
         .def("reload", &Module::reloadSymbols,
-            "(Re)load symbols for the module" );
+            "(Re)load symbols for the module" )
+        .def("__getattr__", &Module::getSymbol,
+            "Return address of the symbol" );
 
         //.def("image", &Module::getImageName,
         //     "Return name of the image of the module" )
@@ -139,9 +195,9 @@ BOOST_PYTHON_MODULE( pykd )
         //.def( "__str__", &Module::print );
 
     pykd::exception<DbgException>( "BaseException", "Pykd base exception class" );
-    //pykd::exception<MemoryException,DbgException>( "MemoryException", "Target memory access exception class" );
+    pykd::exception<MemoryException,DbgException>( "MemoryException", "Target memory access exception class" );
     //pykd::exception<WaitEventException,DbgException>( "WaitEventException", "Debug interface access exception" );
-    //pykd::exception<SymbolException,DbgException>( "SymbolException", "Symbol exception" );
+    pykd::exception<SymbolException,DbgException>( "SymbolException", "Symbol exception" );
     //pykd::exception<pyDia::Exception,SymbolException>( "DiaException", "Debug interface access exception" );
     //pykd::exception<TypeException,SymbolException>( "TypeException", "type exception" );
     //pykd::exception<AddSyntheticSymbolException,DbgException>( "AddSynSymbolException", "synthetic symbol exception" );

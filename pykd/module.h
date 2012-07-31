@@ -1,6 +1,7 @@
 #pragma once
 
 #include "intbase.h"
+#include "symengine.h"
 
 namespace pykd {
 
@@ -48,15 +49,31 @@ public:
     {
     }
 
+    ULONG64
+    getSymbol( const std::string &symbolname ) {
+        return m_base + getRvaByName(symbolname);
+    }
+
+    ULONG
+    getSymbolRva( const std::string &symbolname ) {
+        return getRvaByName(symbolname);
+    }
+
 private:
+
+    SymbolPtr& getSymScope();
 
     BaseTypeVariant getValue() {
         return BaseTypeVariant(m_base);
     }
 
+    ULONG getRvaByName(const std::string &symName);
+
     std::string             m_name;
     ULONG64                 m_base;
     ULONG                   m_size;
+
+    SymbolPtr               m_symScope;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

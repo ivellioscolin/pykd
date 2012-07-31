@@ -13,9 +13,12 @@ void debugGo();
 ULONG64 findModuleBase( const std::string &moduleName );
 ULONG64 findModuleBase( ULONG64 offset );
 std::string getModuleName( ULONG64 baseOffset );
+std::string getModuleSymbolFileName( ULONG64 baseOffset );
 
 //manage access to target memory
 ULONG64 addr64( ULONG64 offset );
+
+void readMemory( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr = FALSE );
 
 };
 

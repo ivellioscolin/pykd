@@ -12,16 +12,20 @@ sys.path.insert(0, os.path.dirname(sys.argv[1]))
 import pykd
 
 import target
-import moduletest
+
 import intbase
+import memtest
+import moduletest
+
   
 def getTestSuite( singleName = "" ):
     if singleName == "":
         return unittest.TestSuite(
            [
                 unittest.TestLoader().loadTestsFromTestCase( target.TargetTest ),
-                unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
                 unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
+                unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
+                unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest )
             ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )

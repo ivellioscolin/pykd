@@ -7,18 +7,13 @@
 
 namespace pykd {
 
-
 template< class TExcept >
 struct exceptPyType{
-
-     static python::handle<>     pyExceptType;
-
+    static python::handle<>     pyExceptType;
 };
-
 
 template< class TExcept, class TBaseExcept = python::detail::not_specified >
 class exception  {
-
 
 public:
 
