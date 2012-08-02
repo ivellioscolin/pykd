@@ -150,6 +150,26 @@ ULONG64 findModuleBase( ULONG64 offset )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+ULONG64 findModuleBySymbol( const std::string &symbolName )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+    ULONG64     base;
+
+    hres = g_dbgEng->symbols->GetSymbolModule( ( std::string("!") + symbolName ).c_str(), &base );
+    if ( FAILED( hres ) )
+    {
+        std::stringstream   sstr;
+        sstr << "failed to find module for symbol: " << symbolName;
+        throw SymbolException( sstr.str() );
+    }
+
+    return base;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 std::string getModuleName( ULONG64 baseOffset )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );

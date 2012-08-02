@@ -3,20 +3,80 @@
 #include <iomanip>
 
 #include "typeinfo.h"
-#include "dbgclient.h"
+#include "dbgengine.h"
+#include "module.h"
 
 namespace pykd {
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr  TypeInfo::getTypeInfoByName( const std::string &typeName )
+static const boost::regex moduleSymMatch("^(?:([^!]*)!)?([^!]+)$"); 
+
+void splitSymName( const std::string &fullName, std::string &moduleName, std::string &symbolName )
 {
-    return g_dbgClient->getTypeInfoByName( typeName );
+    boost::cmatch    matchResult;
+
+    //OutputReader     outputDiscard( m_client );
+
+    if ( !boost::regex_match( fullName.c_str(), matchResult, moduleSymMatch ) )
+    {
+        std::stringstream   sstr;
+        sstr << "invalid symbol name: " << fullName;
+        throw SymbolException( sstr.str() );
+    }
+
+    symbolName = std::string( matchResult[2].first, matchResult[2].second );
+
+    if ( matchResult[1].matched )
+    {
+        moduleName = std::string( matchResult[1].first, matchResult[1].second );
+
+        return;
+    }
+
+    ULONG64  baseOffset = 0;
+    baseOffset = findModuleBySymbol( symbolName );
+
+    moduleName = getModuleName( baseOffset );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &typeSym )
+TypeInfoPtr TypeInfo::getTypeInfoByName( const std::string &typeName )
+{
+    std::string     moduleName;
+    std::string     symName;
+
+    if ( TypeInfo::isBaseType( typeName ) )
+        return TypeInfo::getBaseTypeInfo( typeName );
+
+    splitSymName( typeName, moduleName, symName );
+
+    ModulePtr   module = Module::loadModuleByName( moduleName );
+
+    return module->getTypeByName( symName );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ULONG64 TypeInfo::getSymbolSize( const std::string &fullName )
+{
+    std::string     moduleName;
+    std::string     symName;
+
+    if ( TypeInfo::isBaseType( fullName ) )
+        return TypeInfo::getBaseTypeInfo( fullName )->getSize();
+
+    splitSymName( fullName, moduleName, symName );
+
+    ModulePtr   module = Module::loadModuleByName( moduleName );
+
+    return module->getSymbolSize( symName );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &typeSym )
 {
     const ULONG symTag = typeSym->getSymTag();
     switch( symTag )
@@ -86,7 +146,7 @@ BaseTypeVariant  TypeInfo::getValue()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName )
+TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &symScope, const std::string &symName )
 {
     size_t pos = symName.find_first_of( "*[" );
 
@@ -104,11 +164,11 @@ TypeInfoPtr  TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, const std::strin
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr TypeInfo::getTypeInfo( pyDia::SymbolPtr &symScope, pyDia::SymbolPtr &symChild )
+TypeInfoPtr TypeInfo::getTypeInfo( SymbolPtr &symScope, SymbolPtr &symChild )
 {
     CComVariant constVal;
 
-    pyDia::SymbolPtr symType = symChild;
+    SymbolPtr symType = symChild;
     if ( symType->getSymTag() == SymTagData )
     {
         if ( symType->getLocType() == LocIsBitField )
@@ -203,9 +263,9 @@ TypeInfo::getBaseTypeInfo( const std::string &symName )
 /////////////////////////////////////////////////////////////////////////////////////
 
 TypeInfoPtr 
-TypeInfo::getBaseTypeInfo( pyDia::SymbolPtr &symbol )  
+TypeInfo::getBaseTypeInfo( SymbolPtr &symbol )  
 {
-    std::string     symName = symbol->getBasicTypeName( symbol->getBaseType() );
+    std::string     symName = getBasicTypeName( symbol->getBaseType() );
 
     if ( symName == "Int" || symName == "UInt" ) 
     {
@@ -225,7 +285,7 @@ TypeInfo::getBaseTypeInfo( pyDia::SymbolPtr &symbol )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-BitFieldTypeInfo::BitFieldTypeInfo(  pyDia::SymbolPtr &symbol )
+BitFieldTypeInfo::BitFieldTypeInfo( SymbolPtr &symbol )
 {
     m_bitWidth = (ULONG)symbol->getSize();
     m_bitPos = (ULONG)symbol->getBitPosition();
@@ -242,9 +302,9 @@ BitFieldTypeInfo::BitFieldTypeInfo(  pyDia::SymbolPtr &symbol )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symbol  ) 
+PointerTypeInfo::PointerTypeInfo( SymbolPtr &symbol  ) 
 {
-    pyDia::SymbolPtr pointTo = symbol->getType();
+    SymbolPtr pointTo = symbol->getType();
     try
     {
         m_derefType = TypeInfo::getTypeInfo( pointTo );
@@ -280,7 +340,7 @@ PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symbol  )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-PointerTypeInfo::PointerTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName ) 
+PointerTypeInfo::PointerTypeInfo( SymbolPtr &symScope, const std::string &symName ) 
 {
     try
     {
@@ -309,7 +369,7 @@ ULONG PointerTypeInfo::getSize()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-ArrayTypeInfo::ArrayTypeInfo( pyDia::SymbolPtr &symbol  ) 
+ArrayTypeInfo::ArrayTypeInfo( SymbolPtr &symbol  ) 
 {
     m_derefType = TypeInfo::getTypeInfo( symbol->getType() );
     m_count = symbol->getCount();
@@ -317,7 +377,7 @@ ArrayTypeInfo::ArrayTypeInfo( pyDia::SymbolPtr &symbol  )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-ArrayTypeInfo::ArrayTypeInfo( pyDia::SymbolPtr &symScope, const std::string &symName, ULONG count ) 
+ArrayTypeInfo::ArrayTypeInfo( SymbolPtr &symScope, const std::string &symName, ULONG count ) 
 {
     m_derefType = TypeInfo::getTypeInfo( symScope, symName );
     m_count = count;
@@ -410,7 +470,7 @@ static const boost::regex arrayMatch("^(.*)\\[(\\d+)\\]$");
 
 static const boost::regex symbolMatch("^([\\*]*)([^\\(\\)\\*\\[\\]]*)([\\(\\)\\*\\[\\]\\d]*)$");
 
-TypeInfoPtr TypeInfo::getComplexType( pyDia::SymbolPtr &symScope, const std::string &symName )
+TypeInfoPtr TypeInfo::getComplexType( SymbolPtr &symScope, const std::string &symName )
 {
     ULONG  ptrSize = (symScope->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
 
@@ -427,7 +487,7 @@ TypeInfoPtr TypeInfo::getComplexType( pyDia::SymbolPtr &symScope, const std::str
         return getRecurciveComplexType( basePtr, std::string( matchResult[3].first, matchResult[3].second ), ptrSize );
     }
             
-    pyDia::SymbolPtr lowestSymbol = symScope->getChildByName( innerSymName );
+    SymbolPtr lowestSymbol = symScope->getChildByName( innerSymName );
 
     if ( lowestSymbol->getSymTag() == SymTagData )
     {
@@ -502,8 +562,8 @@ ULONG UdtTypeInfo::getFieldCount()
 /////////////////////////////////////////////////////////////////////////////////////
 
 void UdtTypeInfo::getFields( 
-        pyDia::SymbolPtr &rootSym, 
-        pyDia::SymbolPtr &baseVirtualSym,
+        SymbolPtr &rootSym, 
+        SymbolPtr &baseVirtualSym,
         ULONG startOffset,
         LONG virtualBasePtr,
         ULONG virtualDispIndex,
@@ -513,7 +573,7 @@ void UdtTypeInfo::getFields(
 
     for ( ULONG i = 0; i < childCount; ++i )
     {
-        pyDia::SymbolPtr  childSym = rootSym->getChildByIndex( i );
+        SymbolPtr  childSym = rootSym->getChildByIndex( i );
 
         ULONG  symTag = childSym->getSymTag();
 
@@ -521,7 +581,7 @@ void UdtTypeInfo::getFields(
         {
             if ( !childSym->isVirtualBaseClass() )
             {
-                getFields( childSym, pyDia::SymbolPtr(), startOffset + childSym->getOffset() );
+                getFields( childSym, SymbolPtr(), startOffset + childSym->getOffset() );
             }
         }
         else
@@ -579,11 +639,11 @@ void UdtTypeInfo::getFields(
 
 void UdtTypeInfo::getVirtualFields()
 {
-    ULONG   childCount = m_dia->getChildCount<SymTagBaseClass>();  
+    ULONG   childCount = m_dia->getChildCount(SymTagBaseClass);  
 
     for ( ULONG i = 0; i < childCount; ++i )
     {
-        pyDia::SymbolPtr  childSym = m_dia->getChildByIndex( i );
+        SymbolPtr  childSym = m_dia->getChildByIndex( i );
 
         if ( !childSym->isVirtualBaseClass() )
             continue;
@@ -604,7 +664,7 @@ void UdtTypeInfo::refreshFields()
 {
     if ( m_fields.empty() )
     {
-        getFields( m_dia, pyDia::SymbolPtr() );
+        getFields( m_dia, SymbolPtr() );
         getVirtualFields();
     }
 }
@@ -666,7 +726,7 @@ TypeInfoPtr EnumTypeInfo::getFieldByIndex( ULONG index )
     if ( index >= m_dia->getChildCount() )
         throw TypeException( m_dia->getName(), ": field not found" );
 
-    pyDia::SymbolPtr field = m_dia->getChildByIndex(index);
+    SymbolPtr field = m_dia->getChildByIndex(index);
 
     if ( !field )
         throw TypeException( m_dia->getName(), ": field not found" );   
@@ -681,7 +741,7 @@ std::string EnumTypeInfo::getFieldNameByIndex( ULONG index )
     if ( index >= m_dia->getChildCount() )
         throw TypeException( m_dia->getName(), ": field not found" );
 
-    pyDia::SymbolPtr field = m_dia->getChildByIndex(index);
+    SymbolPtr field = m_dia->getChildByIndex(index);
 
     if ( !field )
         throw TypeException( m_dia->getName(), ": field not found" );   
@@ -702,9 +762,9 @@ python::dict EnumTypeInfo::asMap()
 {
     python::dict            dct;
 
-    pyDia::SymbolPtrList    symbolsList = m_dia->findChildrenImpl(SymTagData, "", nsfCaseSensitive  );
+    SymbolPtrList    symbolsList = m_dia->findChildren(SymTagData, "", TRUE );
 
-    for ( pyDia::SymbolPtrList::iterator  it = symbolsList.begin(); it != symbolsList.end(); it++ )
+    for ( SymbolPtrList::iterator  it = symbolsList.begin(); it != symbolsList.end(); it++ )
     {
          CComVariant     val;
 
@@ -724,9 +784,9 @@ std::string EnumTypeInfo::print()
 
     sstr << "enum: " << getName() << std::endl;
 
-    pyDia::SymbolPtrList    symbolsList = m_dia->findChildrenImpl(SymTagData, "", nsfCaseSensitive  );
+   SymbolPtrList    symbolsList = m_dia->findChildren(SymTagData, "", true );
 
-    for ( pyDia::SymbolPtrList::iterator  it = symbolsList.begin(); it != symbolsList.end(); it++ )
+    for ( SymbolPtrList::iterator  it = symbolsList.begin(); it != symbolsList.end(); it++ )
     {
          CComVariant     val;
          (*it)->getValue( val );

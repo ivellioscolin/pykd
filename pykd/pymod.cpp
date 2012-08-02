@@ -13,6 +13,7 @@
 #include "intbase.h"
 #include "dbgexcept.h"
 #include "dbgmem.h"
+#include "typeinfo.h"
 
 using namespace pykd;
 
@@ -56,7 +57,12 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "go", &debugGo,
         "Go debugging"  );
 
+    // system properties
+    python::def( "ptrSize", &ptrSize,
+        "Return effective pointer size" );
+
     // Manage target memory access
+
     python::def( "isValid", &isVaValid,
         "Check if the virtual address is valid" );
     python::def( "compareMemory", &compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
@@ -118,6 +124,9 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "loadPtrs", &loadPtrArray,
         "Read the block of the target's memory and return it as a list of pointers" );
 
+    // typed and vaiables
+    python::def( "sizeof", &TypeInfo::getSymbolSize,
+        "Return a size of the type or variable" );
 
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )
@@ -186,8 +195,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return rva of the symbol" )
         //.def( "sizeof", &Module::getSymbolSize,
         //    "Return a size of the type or variable" )
-        //.def("type", &Module::getTypeByName,
-        //    "Return typeInfo class by type name" )
+        .def("type", &Module::getTypeByName,
+            "Return typeInfo class by type name" )
         //.def("typedVar", &Module::getTypedVarByAddr,
         //    "Return a typedVar class instance" )
         //.def("typedVar",&Module::getTypedVarByName,
@@ -218,12 +227,29 @@ BOOST_PYTHON_MODULE( pykd )
             "Return address of the symbol" )
         .def( "__str__", &Module::print );
 
+    python::class_<TypeInfo, TypeInfoPtr, python::bases<intBase>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
+        .def("__init__", python::make_constructor(TypeInfo::getTypeInfoByName ) )
+        .def( "name", &TypeInfo::getName )
+        .def( "size", &TypeInfo::getSize )
+        .def( "staticOffset", &TypeInfo::getStaticOffset )
+        .def( "fieldOffset", &TypeInfo::getFieldOffsetByNameRecirsive )
+        .def( "bitOffset", &TypeInfo::getBitOffset )
+        .def( "bitWidth", &TypeInfo::getBitWidth )
+        .def( "field", &TypeInfo::getField )
+        .def( "asMap", &TypeInfo::asMap )
+        .def( "deref", &TypeInfo::deref )
+        .def( "__str__", &TypeInfo::print )
+        .def( "__getattr__", &TypeInfo::getField )
+        .def("__len__", &TypeInfo::getElementCount )
+        .def("__getitem__", &TypeInfo::getElementByIndex );
+
+
     pykd::exception<DbgException>( "BaseException", "Pykd base exception class" );
     pykd::exception<MemoryException,DbgException>( "MemoryException", "Target memory access exception class" );
     //pykd::exception<WaitEventException,DbgException>( "WaitEventException", "Debug interface access exception" );
     pykd::exception<SymbolException,DbgException>( "SymbolException", "Symbol exception" );
     //pykd::exception<pyDia::Exception,SymbolException>( "DiaException", "Debug interface access exception" );
-    //pykd::exception<TypeException,SymbolException>( "TypeException", "type exception" );
+    pykd::exception<TypeException,SymbolException>( "TypeException", "type exception" );
     //pykd::exception<AddSyntheticSymbolException,DbgException>( "AddSynSymbolException", "synthetic symbol exception" );
     //pykd::exception<ImplementException,DbgException>( "ImplementException", "implementation exception" );
 }

@@ -1,6 +1,8 @@
 
 #include "stdafx.h"
 
+#include <dbgeng.h>
+
 //#include <boost/tokenizer.hpp>
 //
 //#include "windbg.h"

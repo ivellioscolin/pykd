@@ -4,6 +4,8 @@
 #include "symengine.h"
 #include "dbgexcept.h"
 
+#include <dia2.h>
+
 namespace pykd {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -46,21 +48,19 @@ private:
 class DiaSymbol : public Symbol {
 public:
 
-    DiaSymbol(__inout DiaSymbolPtr &_symbol );
+    DiaSymbol( DiaSymbolPtr &_symbol );
+
+    DiaSymbol( IDiaSymbol *_symbol );
 
     SymbolPtr getChildByName(const std::string &_name);
 
     ULONG getRva();
 
-
-
-
-
-    //SymbolPtrList findChildrenImpl(
-    //    ULONG symTag,
-    //    const std::string &name = "",
-    //    DWORD nameCmpFlags = 0
-    //);
+    SymbolPtrList findChildren(
+        ULONG symTag,
+        const std::string &name = "",
+        bool caseSensitive = FALSE
+    );
 
     //python::list findChildrenEx(
     //    ULONG symTag,
@@ -78,67 +78,67 @@ public:
     //    return toPyList( findChildrenImpl(SymTagNull, name, nsfCaseSensitive) );
     //}
 
-    //ULONGLONG getSize();
+    ULONGLONG getSize();
 
-    //std::string getName();
+    std::string getName();
+
     //std::string getUndecoratedName();
 
-    //SymbolPtr getType();
+    SymbolPtr getType();
 
     //SymbolPtr getIndexType();
 
-    //ULONG getSymTag();
+    ULONG getSymTag();
 
     //ULONG getRva();
-    //ULONGLONG getVa();
+    ULONGLONG getVa();
 
-    //ULONG getLocType();
+    ULONG getLocType();
 
-    //LONG getOffset();
+    LONG getOffset();
 
-    //ULONG getCount();
+    ULONG getCount();
 
     //static void getValueImpl(IDiaSymbol *_symbol, VARIANT &vtValue);
     //python::object getValue();
-    //void getValue( VARIANT &vtValue);
+    
+    void getValue( VARIANT &vtValue);
 
     //bool isBasicType();
 
-    //bool isVirtualBaseClass();
+    bool isVirtualBaseClass();
 
     //bool isIndirectVirtualBaseClass();
 
-    //ULONG getBaseType();
+    ULONG getBaseType();
 
-    //ULONG getBitPosition();
+    ULONG getBitPosition();
 
     //ULONG getIndexId();
 
     //ULONG getUdtKind();
 
-    //ULONG getDataKind();
+    ULONG getDataKind();
 
     //ULONG getRegisterId();
 
-    //ULONG getMachineType() const {
-    //    return m_machineType;
-    //}
+    ULONG getMachineType() {
+        return m_machineType;
+    }
 
     //SymbolPtr getChildByName(const std::string &_name);
 
-    //template<ULONG symTag>
-    //ULONG getChildCount();
+    ULONG getChildCount( ULONG symTag );
 
-    //ULONG getChildCount() {
-    //    return getChildCount<SymTagNull>();
-    //}
+    ULONG getChildCount() {
+        return getChildCount(SymTagNull);
+    }
 
-    //template<ULONG symTag>
-    //SymbolPtr getChildByIndex(ULONG _index );
+    SymbolPtr getChildByIndex(ULONG symTag, ULONG _index );
 
-    //SymbolPtr getChildByIndex(ULONG _index ) {
-    //    return getChildByIndex<SymTagNull>( _index );
-    //}
+    SymbolPtr getChildByIndex(ULONG _index ) {
+        return getChildByIndex( SymTagNull, _index );
+    }
     //
     //bool isConstant();
 
@@ -146,16 +146,16 @@ public:
 
     //bool eq(Symbol &rhs);
 
-    //int getVirtualBasePointerOffset();
+    int getVirtualBasePointerOffset();
 
-    //ULONG getVirtualBaseDispIndex();
+    ULONG getVirtualBaseDispIndex();
 
-    //ULONG getVirtualBaseDispSize();
+    ULONG getVirtualBaseDispSize();
 
     //ULONG getSection();
 
 public:
-    //typedef std::pair<ULONG, const char *> ValueNameEntry;
+    typedef std::pair<ULONG, const char *> ValueNameEntry;
 
     //static const ValueNameEntry dataKindName[DataIsConstant + 1];
 
@@ -163,8 +163,8 @@ public:
 
     //static const ValueNameEntry locTypeName[LocTypeMax];
 
-    //static const ValueNameEntry basicTypeName[];
-    //static const size_t cntBasicTypeName;
+    static const ValueNameEntry basicTypeName[];
+    static const size_t cntBasicTypeName;
 
     //static const ValueNameEntry udtKindName[];
     //static const size_t cntUdtKindName;
@@ -175,7 +175,7 @@ public:
     //static const ValueNameEntry amd64RegName[];
     //static const size_t cntAmd64RegName;
 
-    //static std::string getBasicTypeName( ULONG basicType );
+    static std::string getBasicTypeName( ULONG basicType );
 
 protected:
 

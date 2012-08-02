@@ -409,6 +409,14 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\typeinfo.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\udtutils.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -455,6 +463,10 @@
 				RelativePath=".\typeinfo.h"
 				>
 			</File>
+			<File
+				RelativePath=".\udtutils.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -489,6 +501,10 @@
 		<Filter
 			Name="dia"
 			>
+			<File
+				RelativePath=".\dia\diadata.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\dia\diawrapper.cpp"
 				>

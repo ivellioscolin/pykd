@@ -80,6 +80,27 @@ ULONG Module::getRvaByName(const std::string &symName)
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+ULONG64 
+Module::getSymbolSize( const std::string &symName )
+{
+    try {
+
+        SymbolPtr  &symScope = getSymScope();
+
+        SymbolPtr  child = symScope->getChildByName( symName );
+
+        if ( child->getSymTag() == SymTagData )
+            return child->getSize();
+
+    } catch( const SymbolException& )
+    {
+    }
+
+    return getTypeByName(symName)->getSize();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 std::string Module::print()
 {
     std::stringstream   sstr;

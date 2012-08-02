@@ -2,6 +2,7 @@
 
 #include "intbase.h"
 #include "symengine.h"
+#include "typeinfo.h"
 
 namespace pykd {
 
@@ -72,6 +73,12 @@ public:
     ULONG getTimeDataStamp() const {
         return m_timeDataStamp;
     }
+
+    TypeInfoPtr getTypeByName( const std::string &typeName ) {
+        return TypeInfo::getTypeInfo( boost::static_pointer_cast<Symbol>( getSymScope() ), typeName);
+    }
+
+    ULONG64 getSymbolSize( const std::string &symName );
 
     std::string print();
 

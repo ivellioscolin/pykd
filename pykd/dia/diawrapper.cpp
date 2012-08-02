@@ -5,7 +5,7 @@
 
 namespace pykd {
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 const std::string DiaException::descPrefix("pyDia: ");
 
@@ -72,12 +72,150 @@ SymbolPtr  loadSymbolFile(const std::string &filePath)
     return SymbolPtr( new DiaSymbol( _globalScope ) );
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+
+std::string getBasicTypeName( ULONG basicType )
+{
+    for ( size_t i = 0; i < DiaSymbol::cntBasicTypeName; ++i )
+    {
+        if ( basicType == DiaSymbol::basicTypeName[i].first )
+            return std::string( DiaSymbol::basicTypeName[i].second );
+    }
+
+    std::stringstream   sstr;
+
+    sstr << "faild to find basic type with index %d" << basicType;
+
+    throw DiaException( sstr.str() );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 DiaSymbol::DiaSymbol(__inout DiaSymbolPtr &_symbol )
 {
     m_symbol = _symbol;
     m_symbol->get_machineType(&m_machineType);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+DiaSymbol::DiaSymbol( IDiaSymbol *_symbol )
+{
+    m_symbol = _symbol;
+    m_symbol->get_machineType(&m_machineType);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+SymbolPtrList  DiaSymbol::findChildren(
+        ULONG symTag,
+        const std::string &name,
+        bool caseSensitive
+    )
+{
+    DiaEnumSymbolsPtr symbols;
+    HRESULT hres;
+
+    if ( name.empty() )
+    {
+        hres = m_symbol->findChildren(
+            static_cast<enum ::SymTagEnum>(symTag),
+                NULL,
+                caseSensitive ? nsCaseSensitive : nsCaseInsensitive,
+                &symbols);
+
+    }
+    else
+    {
+        hres = m_symbol->findChildren(
+            static_cast<enum ::SymTagEnum>(symTag),
+                toWStr(name),
+                 caseSensitive ? nsCaseSensitive : nsCaseInsensitive,
+                &symbols);
+    }
+
+    if (S_OK != hres)
+        throw DiaException("Call IDiaSymbol::findChildren", hres);
+
+    SymbolPtrList childList;
+
+    DiaSymbolPtr child;
+    ULONG celt;
+    while ( SUCCEEDED(symbols->Next(1, &child, &celt)) && (celt == 1) )
+    {
+        childList.push_back( SymbolPtr( new DiaSymbol(child) ) );
+        child = NULL;
+    }
+
+    return childList;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+ULONG DiaSymbol::getBaseType()
+{
+    return callSymbol(get_baseType);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+ULONG DiaSymbol::getBitPosition()
+{
+    return callSymbol(get_bitPosition);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+ULONG DiaSymbol::getChildCount(ULONG symTag)
+{
+    DiaEnumSymbolsPtr symbols;
+    HRESULT hres = 
+        m_symbol->findChildren(
+            static_cast<enum ::SymTagEnum>(symTag),
+            NULL,
+            nsCaseSensitive,
+            &symbols);
+    if (S_OK != hres)
+        throw DiaException("Call IDiaSymbol::findChildren", hres);
+
+    LONG count;
+    hres = symbols->get_Count(&count);
+    if (S_OK != hres)
+        throw DiaException("Call IDiaEnumSymbols::get_Count", hres);
+
+    return count;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+SymbolPtr DiaSymbol::getChildByIndex(ULONG symTag, ULONG _index )
+{
+    DiaEnumSymbolsPtr symbols;
+    HRESULT hres = 
+        m_symbol->findChildren(
+            static_cast<enum ::SymTagEnum>(symTag),
+            NULL,
+            nsCaseSensitive,
+            &symbols);
+    if (S_OK != hres)
+        throw DiaException("Call IDiaSymbol::findChildren", hres);
+
+    LONG count;
+    hres = symbols->get_Count(&count);
+    if (S_OK != hres)
+        throw DiaException("Call IDiaEnumSymbols::get_Count", hres);
+
+    if (LONG(_index) >= count)
+    {
+        throw PyException( PyExc_IndexError, "Index out of range");
+    }
+
+    DiaSymbolPtr child;
+    hres = symbols->Item(_index, &child);
+    if (S_OK != hres)
+        throw DiaException("Call IDiaEnumSymbols::Item", hres);
+
+    return SymbolPtr( new DiaSymbol(child) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,10 +225,11 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &_name)
     DiaEnumSymbolsPtr symbols;
     HRESULT hres = 
         m_symbol->findChildren(
-            SymTagNull,
+            ::SymTagNull,
             toWStr(_name),
             nsCaseSensitive,
             &symbols);
+
     if (S_OK != hres)
         throw DiaException("Call IDiaSymbol::findChildren", hres);
 
@@ -113,6 +252,41 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &_name)
     return SymbolPtr( new DiaSymbol(child) );
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
+ULONG DiaSymbol::getCount()
+{
+    return callSymbol(get_count);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONG DiaSymbol::getDataKind()
+{
+    return callSymbol(get_dataKind);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONG DiaSymbol::getLocType()
+{
+    return callSymbol(get_locationType);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+std::string DiaSymbol::getName()
+{
+    autoBstr retValue( callSymbol(get_name) );
+    return retValue.asStr();
+}
+////////////////////////////////////////////////////////////////////////////////
+
+LONG DiaSymbol::getOffset()
+{
+    return callSymbol(get_offset);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 ULONG DiaSymbol::getRva()
@@ -121,6 +295,80 @@ ULONG DiaSymbol::getRva()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+ULONGLONG DiaSymbol::getSize()
+{
+    return callSymbol(get_length);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONG DiaSymbol::getSymTag()
+{
+    return callSymbol(get_symTag);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+SymbolPtr DiaSymbol::getType()
+{
+    return SymbolPtr( new DiaSymbol( callSymbol(get_type) ) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONGLONG DiaSymbol::getVa()
+{
+    return callSymbol(get_virtualAddress);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void DiaSymbol::getValue( VARIANT &vtValue)
+{
+    HRESULT hres = m_symbol->get_value(&vtValue);
+    if (S_OK != hres)
+        throw DiaException("Call IDiaSymbol::get_value", hres);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+int DiaSymbol::getVirtualBasePointerOffset()
+{
+    return callSymbol(get_virtualBasePointerOffset);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONG DiaSymbol::getVirtualBaseDispIndex()
+{
+    return callSymbol(get_virtualBaseDispIndex);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONG DiaSymbol::getVirtualBaseDispSize()
+{
+   SymbolPtr   baseTableType = SymbolPtr( new DiaSymbol( callSymbol(get_virtualBaseTableType) ) );
+
+   return (ULONG)baseTableType->getType()->getSize();
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+bool DiaSymbol::isVirtualBaseClass()
+{
+    return !!callSymbol(get_virtualBaseClass);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+//bool DiaSymbol::isIndirectVirtualBaseClass()
+//{
+//    return !!callSymbol(get_indirectVirtualBaseClass);
+//}
+
+//////////////////////////////////////////////////////////////////////////////
 
 }; // pykd nemaspace end
 

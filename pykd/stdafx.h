@@ -31,9 +31,9 @@
 #include <atlbase.h>
 #include <psapi.h>
 
-#include <dia2.h>
+//#include <dia2.h>
 
-#include <DbgEng.h>
+//#include <DbgEng.h>
 
 //
 //#ifndef  __field_ecount_opt

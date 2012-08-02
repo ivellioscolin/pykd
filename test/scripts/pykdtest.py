@@ -16,6 +16,7 @@ import target
 import intbase
 import memtest
 import moduletest
+import typeinfo 
 
   
 def getTestSuite( singleName = "" ):
@@ -25,7 +26,8 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( target.TargetTest ),
                 unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
                 unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
-                unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest )
+                unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
+                unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
             ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )
