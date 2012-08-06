@@ -14,6 +14,7 @@
 #include "dbgexcept.h"
 #include "dbgmem.h"
 #include "typeinfo.h"
+#include "typedvar.h"
 
 using namespace pykd;
 
@@ -127,6 +128,20 @@ BOOST_PYTHON_MODULE( pykd )
     // typed and vaiables
     python::def( "sizeof", &TypeInfo::getSymbolSize,
         "Return a size of the type or variable" );
+    python::def("typedVarList", &getTypedVarListByTypeName,
+        "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" );
+    python::def("typedVarList", &getTypedVarListByType,
+        "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" );
+    python::def("typedVarArray", &getTypedVarArrayByTypeName,
+        "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" );
+    python::def("typedVarArray", &getTypedVarArrayByType,
+        "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" );
+    python::def("containingRecord", &containingRecordByName,
+        "Return instance of the typedVar class. It's value are loaded from the target memory."
+        "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
+    python::def("containingRecord", &containingRecordByType,
+        "Return instance of the typedVar class. It's value are loaded from the target memory."
+        "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
 
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )
@@ -193,32 +208,23 @@ BOOST_PYTHON_MODULE( pykd )
             "Return offset of the symbol" )
         .def("rva", &Module::getSymbolRva,
             "Return rva of the symbol" )
-        //.def( "sizeof", &Module::getSymbolSize,
-        //    "Return a size of the type or variable" )
+        .def( "sizeof", &Module::getSymbolSize,
+            "Return a size of the type or variable" )
         .def("type", &Module::getTypeByName,
             "Return typeInfo class by type name" )
-        //.def("typedVar", &Module::getTypedVarByAddr,
-        //    "Return a typedVar class instance" )
-        //.def("typedVar",&Module::getTypedVarByName,
-        //    "Return a typedVar class instance" )
-        //.def("typedVar",&Module::getTypedVarByType,
-        //    "Return a typedVar class instance" )
-        //.def("typedVar",&Module::getTypedVarByTypeName,
-        //    "Return a typedVar class instance" )
-        //.def("typedVarList", &Module::getTypedVarListByTypeName,
-        //    "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
-        //.def("typedVarList", &Module::getTypedVarListByType,
-        //    "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
-        //.def("typedVarArray", &Module::getTypedVarArrayByTypeName,
-        //    "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
-        //.def("typedVarArray", &Module::getTypedVarArrayByType,
-        //    "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
-        //.def("containingRecord", &Module::containingRecordByName,
-        //    "Return instance of the typedVar class. It's value are loaded from the target memory."
-        //    "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
-        //.def("containingRecord", &Module::containingRecordByType,
-        //    "Return instance of the typedVar class. It's value are loaded from the target memory."
-        //    "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
+        .def("typedVar", &Module::getTypedVarByAddr,
+            "Return a typedVar class instance" )
+        .def("typedVar",&Module::getTypedVarByName,
+            "Return a typedVar class instance" )
+        .def("typedVar",&Module::getTypedVarByTypeName,
+            "Return a typedVar class instance" )
+        .def("typedVarList", &Module::getTypedVarListByTypeName,
+            "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
+        .def("typedVarArray", &Module::getTypedVarArrayByTypeName,
+            "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
+        .def("containingRecord", &Module::containingRecordByName,
+            "Return instance of the typedVar class. It's value are loaded from the target memory."
+            "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
         .def("checksum",&Module::getCheckSum,
             "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
         .def("timestamp",&Module::getTimeDataStamp,
@@ -243,6 +249,34 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__len__", &TypeInfo::getElementCount )
         .def("__getitem__", &TypeInfo::getElementByIndex );
 
+    python::class_<TypedVar, TypedVarPtr, python::bases<intBase>, boost::noncopyable >("typedVar", 
+        "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", python::no_init  )
+        .def("__init__", python::make_constructor(TypedVar::getTypedVarByName) )
+        .def("__init__", python::make_constructor(TypedVar::getTypedVarByTypeName) )
+        .def("__init__", python::make_constructor(TypedVar::getTypedVarByTypeInfo) )
+        .def("getAddress", &TypedVar::getAddress, 
+            "Return virtual address" )
+        .def("sizeof", &TypedVar::getSize,
+            "Return size of a variable in the target memory" )
+        .def("fieldOffset", &TypedVar::getFieldOffsetByNameRecirsive,
+            "Return target field offset" )
+        .def("field", &TypedVar::getField,
+            "Return field of structure as an object attribute" )
+        .def( "dataKind", &TypedVar::getDataKind,
+            "Retrieves the variable classification of a data: DataIsXxx")
+        .def("deref", &TypedVar::deref,
+            "Return value by pointer" )
+        .def("type", &TypedVar::getType,
+            "Return typeInfo instance" )
+        .def("__getattr__", &TypedVar::getField,
+            "Return field of structure as an object attribute" )
+        .def( "__str__", &TypedVar::print )
+        .def("__len__", &TypedVar::getElementCount )
+        .def("__getitem__", &TypedVar::getElementByIndex )
+        .def("__getitem__", &TypedVar::getElementByIndexPtr );
+
+    // wrapper for standart python exceptions
+    python::register_exception_translator<PyException>( &PyException::exceptionTranslate );
 
     pykd::exception<DbgException>( "BaseException", "Pykd base exception class" );
     pykd::exception<MemoryException,DbgException>( "MemoryException", "Target memory access exception class" );

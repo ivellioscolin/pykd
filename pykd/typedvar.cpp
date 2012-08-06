@@ -3,50 +3,50 @@
 #include <iomanip>
 
 #include "typedvar.h"
-#include "dbgclient.h"
+#include "module.h"
 #include "dbgmem.h"
 
 namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVarPtr   TypedVar::getTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData )
+TypedVarPtr   TypedVar::getTypedVar(  const TypeInfoPtr& typeInfo, VarDataPtr varData )
 {
     TypedVarPtr     tv;
 
     if ( typeInfo->isBasicType() )
     {
-        tv.reset( new BasicTypedVar( client, typeInfo, varData) );
+        tv.reset( new BasicTypedVar( typeInfo, varData) );
         return tv;
     }
 
     if ( typeInfo->isPointer() )
     {
-        tv.reset( new PtrTypedVar( client, typeInfo, varData ) );
+        tv.reset( new PtrTypedVar(  typeInfo, varData ) );
         return tv;
     }
 
     if ( typeInfo->isArray() )
     {
-        tv.reset( new ArrayTypedVar( client, typeInfo, varData  ) );
+        tv.reset( new ArrayTypedVar(  typeInfo, varData ) );
         return tv;
     }
 
     if ( typeInfo->isUserDefined() )
     {
-        tv.reset( new UdtTypedVar( client, typeInfo, varData ) );
+        tv.reset( new UdtTypedVar( typeInfo, varData ) );
         return tv;
     }
 
     if ( typeInfo->isBitField() )
     {
-        tv.reset( new BitFieldVar( client, typeInfo, varData ) );
+        tv.reset( new BitFieldVar( typeInfo, varData ) );
         return tv;
     }
 
     if ( typeInfo->isEnum() )
     {
-        tv.reset( new EnumTypedVar( client, typeInfo, varData ) );
+        tv.reset( new EnumTypedVar( typeInfo, varData ) );
         return tv;
     }
 
@@ -59,23 +59,42 @@ TypedVarPtr   TypedVar::getTypedVar( IDebugClient4 *client, const TypeInfoPtr& t
 
 TypedVarPtr TypedVar::getTypedVarByName( const std::string &varName )
 {
-    return g_dbgClient->getTypedVarByName( varName );
-}
+    std::string     moduleName;
+    std::string     symName;
 
-TypedVarPtr TypedVar::getTypedVarByTypeName( const std::string &typeName, ULONG64 addr )
-{
-    return g_dbgClient->getTypedVarByTypeName( typeName, addr );
-}
+    splitSymName( varName, moduleName, symName );
 
-TypedVarPtr TypedVar::getTypedVarByTypeInfo( const TypeInfoPtr &typeInfo, ULONG64 addr )
-{
-    return g_dbgClient->getTypedVarByTypeInfo( typeInfo, addr );
+    ModulePtr   module = Module::loadModuleByName( moduleName );
+
+    return module->getTypedVarByName( symName );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVar::TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData ) :
-    DbgObject( client ),
+TypedVarPtr TypedVar::getTypedVarByTypeName( const std::string &typeName, ULONG64 addr )
+{
+    addr = addr64( addr );
+
+    std::string     moduleName;
+    std::string     symName;
+
+    splitSymName( typeName, moduleName, symName );
+
+    ModulePtr   module = Module::loadModuleByName( moduleName );
+
+    return module->getTypedVarByTypeName( symName, addr );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVarPtr TypedVar::getTypedVarByTypeInfo( const TypeInfoPtr &typeInfo, ULONG64 addr )
+{
+    return getTypedVar( typeInfo, VarDataMemory::factory(addr) );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVar::TypedVar ( const TypeInfoPtr& typeInfo, VarDataPtr varData ) :
     m_typeInfo( typeInfo ),
     m_varData( varData ),
     m_dataKind( DataIsGlobal )
@@ -166,8 +185,8 @@ BaseTypeVariant PtrTypedVar::getValue()
 
 TypedVarPtr PtrTypedVar::deref()
 {
-    VarDataPtr varData = VarDataMemory::factory( m_dataSpaces, m_varData->readPtr() );
-    return TypedVar::getTypedVar( m_client, m_typeInfo->deref(), varData );
+    VarDataPtr varData = VarDataMemory::factory( m_varData->readPtr() );
+    return TypedVar::getTypedVar( m_typeInfo->deref(), varData );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -220,7 +239,7 @@ python::object ArrayTypedVar::getElementByIndex( ULONG  index )
 
     TypeInfoPtr     elementType = m_typeInfo->getElementType();
 
-    return python::object( TypedVar::getTypedVar( m_client, elementType, m_varData->fork(elementType->getSize()*index) ) );
+    return python::object( TypedVar::getTypedVar( elementType, m_varData->fork(elementType->getSize()*index) ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -235,7 +254,7 @@ UdtTypedVar::getField( const std::string &fieldName )
         if ( fieldType->getStaticOffset() == 0 )
             throw ImplementException( __FILE__, __LINE__, "Fix ME");
 
-        return  TypedVar::getTypedVar( m_client, fieldType, VarDataMemory::factory(m_dataSpaces, fieldType->getStaticOffset() ) );
+        return  TypedVar::getTypedVar( fieldType, VarDataMemory::factory(fieldType->getStaticOffset() ) );
     }
 
     ULONG   fieldOffset = 0;
@@ -247,7 +266,7 @@ UdtTypedVar::getField( const std::string &fieldName )
         fieldOffset += getVirtualBaseDisplacement( fieldType );
     }
 
-    return  TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldOffset) );
+    return  TypedVar::getTypedVar( fieldType, m_varData->fork(fieldOffset) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -264,7 +283,7 @@ UdtTypedVar::getElementByIndex( ULONG  index )
 
         return python::make_tuple(
             m_typeInfo->getFieldNameByIndex(index), 
-            TypedVar::getTypedVar( m_client, fieldType, VarDataMemory::factory(m_dataSpaces, fieldType->getStaticOffset() ) ) );
+            TypedVar::getTypedVar(fieldType, VarDataMemory::factory(fieldType->getStaticOffset() ) ) );
     }
 
     ULONG   fieldOffset = m_typeInfo->getFieldOffsetByIndex(index);
@@ -276,7 +295,7 @@ UdtTypedVar::getElementByIndex( ULONG  index )
 
     return python::make_tuple( 
             m_typeInfo->getFieldNameByIndex(index), 
-            TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldOffset) ) );
+            TypedVar::getTypedVar( fieldType, m_varData->fork(fieldOffset) ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -288,7 +307,7 @@ LONG UdtTypedVar::getVirtualBaseDisplacement( TypeInfoPtr& typeInfo )
 
     ULONG64     vbtableOffset = m_varData->fork( virtualBasePtr )->readPtr();
 
-    VarDataPtr   vbtable = VarDataMemory::factory(m_dataSpaces, vbtableOffset);
+    VarDataPtr   vbtable = VarDataMemory::factory(vbtableOffset);
 
     LONG   displacement = 0;
 
@@ -313,7 +332,7 @@ std::string UdtTypedVar::print()
         if ( fieldType->isStaticMember() )
         {
             if ( fieldType->getStaticOffset() != 0 )
-               fieldVar = TypedVar::getTypedVar( m_client, fieldType, VarDataMemory::factory(m_dataSpaces, fieldType->getStaticOffset() ) );
+               fieldVar = TypedVar::getTypedVar( fieldType, VarDataMemory::factory( fieldType->getStaticOffset() ) );
 
             sstr << "   =" << std::right << std::setw(10) << std::setfill('0') << std::hex << fieldType->getStaticOffset();
             sstr << " " << std::left << std::setw(18) << std::setfill(' ') << m_typeInfo->getFieldNameByIndex(i) << ':';
@@ -327,7 +346,7 @@ std::string UdtTypedVar::print()
                 fieldOffset += getVirtualBaseDisplacement( fieldType );
             }
 
-            fieldVar = TypedVar::getTypedVar( m_client, fieldType, m_varData->fork(fieldOffset) );
+            fieldVar = TypedVar::getTypedVar( fieldType, m_varData->fork(fieldOffset) );
             sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << fieldOffset;
             sstr << " " << std::left << std::setw(24) << std::setfill(' ') << m_typeInfo->getFieldNameByIndex(i) << ':';
         }
@@ -445,5 +464,99 @@ std::string EnumTypedVar::printValue()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+TypedVarPtr containingRecordByName( ULONG64 offset, const std::string &typeName, const std::string &fieldName )
+{
+    std::string     moduleName;
+    std::string     symName;
+
+    splitSymName( typeName, moduleName, symName );
+
+    ModulePtr   module = Module::loadModuleByName( moduleName );
+
+    return module->containingRecordByName( offset, symName, fieldName );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+TypedVarPtr containingRecordByType( ULONG64 addr, const TypeInfoPtr &typeInfo, const std::string &fieldName )
+{
+    addr = addr64(addr); 
+
+    VarDataPtr varData = VarDataMemory::factory( addr - typeInfo->getFieldOffsetByNameRecirsive(fieldName) );
+
+    return TypedVar::getTypedVar( typeInfo, varData );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+python::list getTypedVarListByTypeName( ULONG64 listHeadAddress, const std::string &typeName, const std::string &listEntryName )
+{
+    std::string     moduleName;
+    std::string     symName;
+
+    splitSymName( typeName, moduleName, symName );
+
+    ModulePtr   module = Module::loadModuleByName( moduleName );
+
+    return module->getTypedVarListByTypeName( listHeadAddress, symName, listEntryName );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+python::list getTypedVarListByType( ULONG64 listHeadAddress, const TypeInfoPtr &typeInfo, const std::string &listEntryName )
+{
+    python::list    lst;
+
+    listHeadAddress = addr64( listHeadAddress );
+
+    ULONG64                 entryAddress = 0;
+
+    TypeInfoPtr             fieldTypeInfo = typeInfo->getField( listEntryName );
+
+    if ( fieldTypeInfo->getName() == ( typeInfo->getName() + "*" ) )
+    {
+        for( entryAddress = ptrPtr( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress + typeInfo->getFieldOffsetByNameRecirsive(listEntryName) ) )
+            lst.append( TypedVar::getTypedVarByTypeInfo( typeInfo, entryAddress ) );
+    }
+    else
+    {
+        for( entryAddress = ptrPtr( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress ) )
+            lst.append( containingRecordByType( entryAddress, typeInfo, listEntryName ) );
+    }
+
+    return lst;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+python::list getTypedVarArrayByTypeName( ULONG64 addr, const std::string  &typeName, ULONG number )
+{
+    std::string     moduleName;
+    std::string     symName;
+
+    splitSymName( typeName, moduleName, symName );
+
+    ModulePtr   module = Module::loadModuleByName( moduleName );
+
+    return module->getTypedVarArrayByTypeName( addr, symName, number );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+python::list getTypedVarArrayByType( ULONG64 offset, const TypeInfoPtr &typeInfo, ULONG number )
+{
+    offset = addr64(offset); 
+       
+    python::list     lst;
+    
+    for( ULONG i = 0; i < number; ++i )
+        lst.append( TypedVar::getTypedVarByTypeInfo( typeInfo, offset + i * typeInfo->getSize() ) );
+   
+    return lst;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 
 } // end pykd namespace

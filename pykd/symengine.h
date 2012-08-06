@@ -110,7 +110,6 @@ class Symbol {
 
 public:
 
-    
     virtual SymbolPtrList findChildren( ULONG symTag, const std::string &name = "", bool caseSensitive = FALSE ) = 0;
     virtual ULONG getBaseType() = 0;
     virtual ULONG getBitPosition() = 0;
@@ -140,7 +139,7 @@ public:
 
 std::string getBasicTypeName( ULONG basicType );
 
-SymbolPtr  loadSymbolFile(const std::string &filePath);
+SymbolPtr  loadSymbolFile(const std::string &filePath, ULONGLONG loadBase = 0);
 
 ////////////////////////////////////////////////////////////////////////////////
 

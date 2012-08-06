@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "dbgengine.h"
 
+
 namespace pykd {
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-bool compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr = FALSE )
+bool compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr )
 {
     bool        result = false;
 

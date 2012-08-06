@@ -154,6 +154,8 @@ public:
 
     //ULONG getSection();
 
+    void setLoadAddress( ULONGLONG baseAddress );
+
 public:
     typedef std::pair<ULONG, const char *> ValueNameEntry;
 

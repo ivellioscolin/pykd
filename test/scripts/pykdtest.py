@@ -17,7 +17,7 @@ import intbase
 import memtest
 import moduletest
 import typeinfo 
-
+import typedvar
   
 def getTestSuite( singleName = "" ):
     if singleName == "":
@@ -28,6 +28,7 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
                 unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
                 unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
+                unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
             ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )
@@ -45,6 +46,8 @@ if __name__ == "__main__":
     target.module.reload();
     
     pykd.go()
+    
+    unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run(getTestSuite( "typedvar.TypedVarTest.testPrint" ) )
     
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
 

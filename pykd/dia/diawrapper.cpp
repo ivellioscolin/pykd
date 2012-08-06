@@ -45,7 +45,7 @@ std::string DiaException::makeFullDesc(const std::string &desc, HRESULT hres)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-SymbolPtr  loadSymbolFile(const std::string &filePath)
+SymbolPtr  loadSymbolFile(const std::string &filePath, ULONGLONG loadBase )
 {
     HRESULT hres;
     DiaDataSourcePtr dataSource;
@@ -63,6 +63,10 @@ SymbolPtr  loadSymbolFile(const std::string &filePath)
     hres = dataSource->openSession(&_session);
     if ( S_OK != hres )
         throw DiaException("Call IDiaDataSource::openSession", hres);
+
+    hres = _session->put_loadAddress(loadBase);
+    if (S_OK != hres)
+        throw DiaException("Call IDiaSession::put_loadAddress", hres);
 
     DiaSymbolPtr _globalScope;
     hres = _session->get_globalScope(&_globalScope);
@@ -368,7 +372,6 @@ bool DiaSymbol::isVirtualBaseClass()
 //    return !!callSymbol(get_indirectVirtualBaseClass);
 //}
 
-//////////////////////////////////////////////////////////////////////////////
 
 }; // pykd nemaspace end
 

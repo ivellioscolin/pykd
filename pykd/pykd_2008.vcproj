@@ -410,11 +410,19 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\typedvar.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\typeinfo.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\udtutils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\vardata.cpp"
 				>
 			</File>
 		</Filter>
@@ -460,11 +468,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\typedvar.h"
+				>
+			</File>
+			<File
 				RelativePath=".\typeinfo.h"
 				>
 			</File>
 			<File
 				RelativePath=".\udtutils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\vardata.h"
 				>
 			</File>
 		</Filter>

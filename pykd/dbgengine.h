@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dbgmem.h"
+
 namespace pykd {
 
 // manage debug target
@@ -22,10 +24,8 @@ std::string getModuleSymbolFileName( ULONG64 baseOffset );
 ULONG getModuleTimeStamp( ULONG64 baseOffset );
 ULONG getModuleCheckSum( ULONG64 baseOffset );
 
-//manage access to target memory
-ULONG64 addr64( ULONG64 offset );
-
-void readMemory( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr = FALSE );
+// это нужно сделать по-другому!
+std::string getSymbolByOffset( ULONG64 offset );
 
 };
 

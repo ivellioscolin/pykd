@@ -5,7 +5,7 @@
 #include "stdafx.h"
 
 #include "vardata.h"
-#include "dbgmem.h"
+#include "dbgengine.h"
 #include "dbgexcept.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,9 +14,8 @@ namespace pykd {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-VarDataMemory::VarDataMemory(CComPtr< IDebugDataSpaces4 > dataSpaces, ULONG64 addr)
-    : m_dataSpaces(dataSpaces)
-    , m_addr(addr)
+VarDataMemory::VarDataMemory(ULONG64 addr) :
+     m_addr(addr)
 {
 }
 
@@ -40,30 +39,27 @@ ULONG64 VarDataMemory::getAddr() const
 
 VarDataPtr VarDataMemory::fork(ULONG offset) const
 {
-    return VarDataPtr( new VarDataMemory(m_dataSpaces, m_addr + offset) );
+    return VarDataPtr( new VarDataMemory(m_addr + offset) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 void VarDataMemory::read(PVOID buffer, ULONG length, ULONG offset /*= 0*/) const
 {
-    readMemory(m_dataSpaces, m_addr + offset, buffer, length);
+    readMemory( m_addr + offset, buffer, length);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ULONG64 VarDataMemory::readPtr() const
 {
-    ULONG64 ptrValue = 0;
-    readMemoryPtr(m_dataSpaces, m_addr, &ptrValue);
-    return ptrValue;
+    return ptrPtr( m_addr );
 }
 
-////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
-VarDataConst::VarDataConst(CComPtr< IDebugControl4 > control, pyDia::SymbolPtr symData)
-    : m_control(control)
-    , m_fieldOffset(0)
+VarDataConst::VarDataConst( SymbolPtr &symData) :
+     m_fieldOffset(0)
     , m_dataBuff( new std::vector< UCHAR >((size_t)symData->getType()->getSize(), 0) )
 {
     VARIANT vtValue = {0};
@@ -147,7 +143,7 @@ void VarDataConst::read(PVOID buffer, ULONG length, ULONG offset /*= 0*/) const
 ULONG64 VarDataConst::readPtr() const
 {
     ULONG64 val = 0;
-    const ULONG length = (S_OK == m_control->IsPointer64Bit()) ? 8 : 4;
+    const ULONG length = ptrSize();
     if (length > m_dataBuff->size())
         throw DbgException("Internal error in " __FUNCTION__);
     RtlCopyMemory(&val, &m_dataBuff->at(0), length);
@@ -156,9 +152,8 @@ ULONG64 VarDataConst::readPtr() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-VarDataConst::VarDataConst(const VarDataConst &from, ULONG fieldOffset)
-    : m_control(from.m_control)
-    , m_fieldOffset(from.m_fieldOffset + fieldOffset)
+VarDataConst::VarDataConst(const VarDataConst &from, ULONG fieldOffset) :
+    m_fieldOffset(from.m_fieldOffset + fieldOffset)
     , m_dataBuff(from.m_dataBuff)
 {
 }

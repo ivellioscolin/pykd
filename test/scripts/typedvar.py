@@ -120,7 +120,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [1,2,3], [ tv.num for tv in tvl ] )
 
-        tvl = target.module.typedVarList( target.module.g_listHead, target.module.type("listStruct"), "listEntry" )
+        tvl = pykd.typedVarList( target.module.g_listHead, target.module.type("listStruct"), "listEntry" )
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [1,2,3], [ tv.num for tv in tvl ] )
 
@@ -128,11 +128,11 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [100,200,300], [ tv.num for tv in tvl ] )
 
-        tvl = target.module.typedVarList( target.module.g_listHead1, target.module.type("listStruct1"), "next" )
+        tvl = pykd.typedVarList( target.module.g_listHead1, target.module.type("listStruct1"), "next" )
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [100,200,300], [ tv.num for tv in tvl ] )
 
-        tvl = target.module.typedVarList( target.module.g_childListHead, target.module.type("ChildEntryTest"), "m_next" )
+        tvl = pykd.typedVarList( target.module.g_childListHead, target.module.type("ChildEntryTest"), "m_next" )
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [1000,2000,3000], [ tv.m_someBaseFiled2 for tv in tvl ] )
         self.assertEqual( [1001,2001,3001], [ tv.m_childFiled1 for tv in tvl ] )
@@ -147,7 +147,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 500, tvl[0].m_field1 )
         self.assertEqual( False, tvl[1].m_field2 )
 
-        tvl = target.module.typedVarArray( target.module.g_testArray, target.module.type("structTest"), 2 )
+        tvl = pykd.typedVarArray( target.module.g_testArray, target.module.type("structTest"), 2 )
         self.assertEqual( 2, len( tvl ) )
         self.assertEqual( 1, tvl[0].m_field3 )
         self.assertEqual( 0, tvl[1].m_field4 )

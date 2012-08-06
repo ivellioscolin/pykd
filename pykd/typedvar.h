@@ -2,7 +2,6 @@
 
 #include "typeinfo.h"
 #include "intbase.h"
-#include "dbgobj.h"
 #include "dbgexcept.h"
 #include "vardata.h"
 
@@ -15,11 +14,11 @@ typedef boost::shared_ptr<TypedVar>  TypedVarPtr;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class TypedVar : public intBase, protected DbgObject {
+class TypedVar : public intBase {
 
 public:
 
-    static TypedVarPtr getTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData );
+    static TypedVarPtr getTypedVar( const TypeInfoPtr& typeInfo, VarDataPtr varData );
 
     static TypedVarPtr getTypedVarByName( const std::string &varName );
 
@@ -86,7 +85,7 @@ public:
 
 protected:
 
-    TypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData );
+    TypedVar ( const TypeInfoPtr& typeInfo, VarDataPtr varData );
 
     TypeInfoPtr             m_typeInfo;
 
@@ -104,11 +103,8 @@ class BasicTypedVar : public TypedVar {
 
 public:
 
-    BasicTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData ) 
-        : TypedVar(client, typeInfo, varData)
-    {
-    }
-
+    BasicTypedVar ( const TypeInfoPtr& typeInfo, VarDataPtr varData ) : TypedVar(typeInfo, varData)
+    {}
 
     virtual std::string  print();
 
@@ -124,10 +120,8 @@ class PtrTypedVar : public TypedVar {
 
 public:
 
-    PtrTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData )
-        : TypedVar(client, typeInfo, varData)
-    {
-    }
+    PtrTypedVar ( const TypeInfoPtr& typeInfo, VarDataPtr varData ) : TypedVar(typeInfo, varData)
+    {}
 
     virtual std::string print();
 
@@ -145,10 +139,8 @@ class ArrayTypedVar: public TypedVar {
 
 public:
 
-    ArrayTypedVar ( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData )
-        : TypedVar(client, typeInfo, varData)
-    {
-    }
+    ArrayTypedVar ( const TypeInfoPtr& typeInfo, VarDataPtr varData ) : TypedVar(typeInfo, varData)
+    {}
 
     virtual ULONG getElementCount() {
         return m_typeInfo->getCount();
@@ -167,10 +159,8 @@ class UdtTypedVar : public TypedVar {
 
 public:
 
-    UdtTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData ) 
-        : TypedVar(client, typeInfo, varData)
-    {
-    }
+    UdtTypedVar( const TypeInfoPtr& typeInfo, VarDataPtr varData ) : TypedVar(typeInfo, varData)
+    {}
 
 protected:
 
@@ -195,10 +185,8 @@ class BitFieldVar: public TypedVar {
 
 public:
 
-    BitFieldVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData ) 
-        : TypedVar(client, typeInfo, varData)
-    {
-    }
+    BitFieldVar( const TypeInfoPtr& typeInfo, VarDataPtr varData ) : TypedVar( typeInfo, varData)
+    {}
 
     virtual std::string  printValue();
 
@@ -210,10 +198,8 @@ public:
 class EnumTypedVar : public TypedVar {
 public:
 
-    EnumTypedVar( IDebugClient4 *client, const TypeInfoPtr& typeInfo, VarDataPtr varData ) 
-        : TypedVar(client, typeInfo, varData)
-    {
-    }
+    EnumTypedVar( const TypeInfoPtr& typeInfo, VarDataPtr varData ) : TypedVar( typeInfo, varData)
+    {}
 
     virtual std::string print();
 
@@ -224,5 +210,18 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+TypedVarPtr containingRecordByName( ULONG64 addr, const std::string &typeName, const std::string &fieldName );
+
+TypedVarPtr containingRecordByType( ULONG64 addr, const TypeInfoPtr &typeInfo, const std::string &fieldName );
+
+python::list getTypedVarListByTypeName( ULONG64 listHeadAddres, const std::string  &typeName, const std::string &listEntryName );
+
+python::list getTypedVarListByType( ULONG64 listHeadAddres, const TypeInfoPtr &typeInfo, const std::string &listEntryName );
+
+python::list getTypedVarArrayByTypeName( ULONG64 addr, const std::string  &typeName, ULONG number );
+
+python::list getTypedVarArrayByType( ULONG64 addr, const TypeInfoPtr &typeInfo, ULONG number );
+
+///////////////////////////////////////////////////////////////////////////////////
 
 } // namespace pykd

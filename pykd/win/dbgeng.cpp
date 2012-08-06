@@ -318,6 +318,34 @@ ULONG ptrSize()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+std::string getSymbolByOffset( ULONG64 offset )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+
+    char    nameBuf[0x100];
+
+    hres = 
+        g_dbgEng->symbols->GetNameByOffset(
+            offset,
+            nameBuf,
+            sizeof(nameBuf),
+            NULL,
+            NULL );
+
+    std::string     fullName( nameBuf );
+
+    size_t          symPos = fullName.find ( '!' ) + 1;
+
+    std::string     symbolName;
+    symbolName.assign( fullName, symPos, fullName.length() - symPos );
+
+    return symbolName;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 };
 
 

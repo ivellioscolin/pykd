@@ -6,75 +6,73 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <array>
-#include <boost\smart_ptr\shared_ptr.hpp>
-
-#include "diawrapper.h"
+//#include <array>
+#include "symengine.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace pykd {
 
-// pointer to variable data access interface
-interface IVarData;
-typedef boost::shared_ptr< IVarData > VarDataPtr;
+class VarData;
+typedef boost::shared_ptr< VarData > VarDataPtr;
 
 // access to variable data interface
-interface IVarData
+class VarData
 {
-    virtual ~IVarData() {}
+public:
+    virtual ~VarData() {}
 
     virtual std::string asString() const = 0;
     virtual ULONG64 getAddr() const = 0;
     virtual VarDataPtr fork(ULONG offset) const = 0;
-
     virtual void read(PVOID buffer, ULONG length, ULONG offset = 0) const = 0;
     virtual ULONG64 readPtr() const = 0;
 };
 
 // variable in memory
-class VarDataMemory : public IVarData
+class VarDataMemory : public VarData
 {
 public:
 
     // IVarData implementation
-    virtual std::string asString() const override;
-    virtual ULONG64 getAddr() const override;
-    virtual VarDataPtr fork(ULONG offset) const override;
+    virtual std::string asString() const;
+    virtual ULONG64 getAddr() const;
+    virtual VarDataPtr fork(ULONG offset) const;
 
-    virtual void read(PVOID buffer, ULONG length, ULONG offset = 0) const override;
-    virtual ULONG64 readPtr() const override;
+    virtual void read(PVOID buffer, ULONG length, ULONG offset = 0) const;
+    virtual ULONG64 readPtr() const;
 
-    static VarDataPtr factory(CComPtr< IDebugDataSpaces4 > dataSpaces, ULONG64 addr) {
-        return VarDataPtr( new VarDataMemory(dataSpaces, addr) );
+    static VarDataPtr factory(ULONG64 addr) {
+        return VarDataPtr( new VarDataMemory(addr) );
     }
 
 protected:
-    VarDataMemory(CComPtr< IDebugDataSpaces4 > dataSpaces, ULONG64 addr);
+    VarDataMemory(ULONG64 addr);
 
 private:
-    CComPtr< IDebugDataSpaces4 > m_dataSpaces;
     ULONG64 m_addr;
 };
 
+
+
 // constant variable
-class VarDataConst : public IVarData
+class VarDataConst : public VarData
 {
 public:
     // IVarData implementation
-    virtual std::string asString() const override;
-    virtual ULONG64 getAddr() const override;
-    virtual VarDataPtr fork(ULONG offset) const override;
+    virtual std::string asString() const;
+    virtual ULONG64 getAddr() const;
+    virtual VarDataPtr fork(ULONG offset) const;
 
-    virtual void read(PVOID buffer, ULONG length, ULONG offset = 0) const override;
-    virtual ULONG64 readPtr() const override;
+    virtual void read(PVOID buffer, ULONG length, ULONG offset = 0) const;
+    virtual ULONG64 readPtr() const;
 
-    static VarDataPtr factory(CComPtr< IDebugControl4 > control, pyDia::SymbolPtr symData) {
-        return VarDataPtr( new VarDataConst(control, symData) );
+    static VarDataPtr factory(SymbolPtr &symData) {
+        return VarDataPtr( new VarDataConst(symData) );
     }
 
 protected:
-    VarDataConst(CComPtr< IDebugControl4 > control, pyDia::SymbolPtr symData);
+    VarDataConst(SymbolPtr &symData);
     VarDataConst(const VarDataConst &from, ULONG fieldOffset);
 
     template<typename T>
@@ -84,7 +82,6 @@ protected:
     }
 
 private:
-    CComPtr< IDebugControl4 > m_control;
 
     ULONG m_fieldOffset;
     boost::shared_ptr< std::vector<UCHAR> > m_dataBuff;
