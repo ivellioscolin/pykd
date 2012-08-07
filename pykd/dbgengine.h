@@ -30,6 +30,7 @@ ULONG getModuleCheckSum( ULONG64 baseOffset );
 ULONG getRegIndexByName( const std::string &regName );
 std::string getRegNameByIndex( ULONG index );
 BaseTypeVariant getRegVariantValue( ULONG index );
+ULONG64 getRegInstructionPointer();
 
 // это нужно сделать по-другому!
 std::string getSymbolByOffset( ULONG64 offset );

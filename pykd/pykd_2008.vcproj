@@ -366,6 +366,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\disasm.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\module.cpp"
 				>
 			</File>
@@ -452,6 +456,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\disasm.h"
+				>
+			</File>
+			<File
+				RelativePath=".\disasmengine.h"
+				>
+			</File>
+			<File
 				RelativePath=".\module.h"
 				>
 			</File>
@@ -505,6 +517,10 @@
 		<Filter
 			Name="win"
 			>
+			<File
+				RelativePath=".\win\dbgasm.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\win\dbgeng.cpp"
 				>

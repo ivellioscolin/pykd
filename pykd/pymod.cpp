@@ -16,6 +16,7 @@
 #include "typeinfo.h"
 #include "typedvar.h"
 #include "cpureg.h"
+#include "disasm.h"
 
 using namespace pykd;
 
@@ -288,11 +289,23 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__getitem__", &TypedVar::getElementByIndex )
         .def("__getitem__", &TypedVar::getElementByIndexPtr );
 
-
     python::class_<CpuReg, python::bases<intBase> >( 
         "cpuReg", "CPU regsiter class", boost::python::no_init )
             .def( "name", &CpuReg::name, "The name of the regsiter" )
             .def( "index", &CpuReg::index, "The index of thr register" );
+
+    python::class_<Disasm>("disasm", "Class disassemble a processor instructions" )
+        .def( python::init<>( "constructor" ) )
+        .def( python::init<ULONG64>( boost::python::args("offset"), "constructor" ) )
+        .def( "disasm", &Disasm::disassemble, "Disassemble next instruction" )
+        .def( "disasm", &Disasm::jump, "Disassemble from the specified offset" )
+        .def( "asm", &Disasm::assembly, "Insert assemblied instuction to current offset" )
+        .def( "begin", &Disasm::begin, "Return begin offset" )
+        .def( "current", &Disasm::current, "Return current offset" )
+        .def( "length", &Disasm::length, "Return current instruction length" )
+        .def( "instruction", &Disasm::instruction, "Returm current disassembled instruction" )
+        .def( "ea", &Disasm::ea, "Return effective address for last disassembled instruction or 0" )
+        .def( "reset", &Disasm::reset, "Reset current offset to begin" );
 
     // wrapper for standart python exceptions
     python::register_exception_translator<PyException>( &PyException::exceptionTranslate );

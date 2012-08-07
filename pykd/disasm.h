@@ -1,16 +1,12 @@
 #pragma once
 
-#include "dbgobj.h"
-
 namespace pykd {
 
 /////////////////////////////////////////////////////////////////////////////////
 
-class Disasm : private DbgObject {
+class Disasm  {
 
 public:
-
-    Disasm( IDebugClient4 *client, ULONG64 offset = 0 );
 
     Disasm( ULONG64 offset = 0);
 

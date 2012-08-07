@@ -451,7 +451,7 @@ BaseTypeVariant getRegVariantValue( ULONG index )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
-    HRESULT         hres;   
+    HRESULT         hres;
         
     DEBUG_VALUE    debugValue;
     hres = g_dbgEng->registers->GetValue( index, &debugValue );
@@ -478,6 +478,22 @@ BaseTypeVariant getRegVariantValue( ULONG index )
     } 
 
     throw DbgException( "Failed to convert register value" );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ULONG64 getRegInstructionPointer()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+    ULONG64  ip = 0;
+
+    hres = g_dbgEng->registers->GetInstructionOffset( &ip );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugRegisters::GetInstructionOffset failed" );
+
+    return ip;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
