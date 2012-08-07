@@ -23,16 +23,13 @@ class TypeInfo : boost::noncopyable, public intBase, public boost::enable_shared
 public:
 
     static
-    TypeInfoPtr  getTypeInfoByName( const std::string &symName );
+    TypeInfoPtr getTypeInfoByName( const std::string &symName );
 
     static
     ULONG64 getSymbolSize( const std::string &symName );
 
     static 
     TypeInfoPtr  getTypeInfo( SymbolPtr &symScope, const std::string &symName );
-
-    static 
-    TypeInfoPtr  getTypeInfo( SymbolPtr &symScope, SymbolPtr &symChild );
 
     static 
     TypeInfoPtr  getTypeInfo( SymbolPtr &symbol );

@@ -78,9 +78,28 @@ ULONG64 TypeInfo::getSymbolSize( const std::string &fullName )
 
 TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &typeSym )
 {
-    const ULONG symTag = typeSym->getSymTag();
+    ULONG symTag = typeSym->getSymTag();
+
     switch( symTag )
     {
+    case SymTagData:
+
+        if ( typeSym->getLocType() == LocIsBitField )
+        {
+            return TypeInfoPtr( new BitFieldTypeInfo(typeSym) );
+        }
+
+        if ( typeSym->getDataKind() == DataIsConstant )
+        {
+            BaseTypeVariant     constVal;
+            typeSym->getValue( constVal );
+            TypeInfoPtr ptr = getTypeInfo( typeSym->getType() );
+            ptr->setConstant( constVal );
+            return ptr;
+        }
+
+       return getTypeInfo( typeSym->getType() );
+
     case SymTagBaseType:
         return getBaseTypeInfo( typeSym );
 
@@ -129,38 +148,31 @@ TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &symScope, const std::string &symN
         if ( basePtr != 0 )
             return basePtr;
 
-        return getTypeInfo( symScope, symScope->getChildByName( symName ) );
+        SymbolPtr  symType = symScope->getChildByName( symName );
+
+        if ( symType->getSymTag() == SymTagData )
+        {
+            if ( symType->getLocType() == LocIsBitField )
+            {
+                return TypeInfoPtr( new BitFieldTypeInfo(symType) );
+            }
+
+            if ( symType->getDataKind() == DataIsConstant )
+            {
+                BaseTypeVariant     constVal;
+                symType->getValue( constVal );
+                TypeInfoPtr ptr = getTypeInfo( symType->getType() );
+                ptr->setConstant( constVal );
+                return ptr;
+            }
+
+            symType = symType->getType();
+        }
+
+        return getTypeInfo( symType );
     }
 
     return  getComplexType( symScope, symName );
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-TypeInfoPtr TypeInfo::getTypeInfo( SymbolPtr &symScope, SymbolPtr &symChild )
-{
-    SymbolPtr symType = symChild;
-
-    if ( symType->getSymTag() == SymTagData )
-    {
-        if ( symType->getLocType() == LocIsBitField )
-        {
-            return TypeInfoPtr( new BitFieldTypeInfo(symType) );
-        }
-
-        if ( symType->getDataKind() == DataIsConstant )
-        {
-            BaseTypeVariant     constVal;
-            symType->getValue( constVal );
-            TypeInfoPtr ptr = getTypeInfo( symType->getType() );
-            ptr->setConstant( constVal );
-            return ptr;
-        }
-
-        symType = symType->getType();
-    }
-
-    return getTypeInfo( symType );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -558,7 +570,7 @@ void UdtTypeInfo::getFields(
         else
         if ( symTag == SymTagData )
         {
-            TypeInfoPtr     ti = TypeInfo::getTypeInfo( rootSym, childSym );
+            TypeInfoPtr     ti = TypeInfo::getTypeInfo( childSym );
 
             ULONG fieldOffset = 0;
             switch ( childSym->getDataKind() )
@@ -587,7 +599,7 @@ void UdtTypeInfo::getFields(
         else
         if ( symTag == SymTagVTable )
         {
-            TypeInfoPtr     ti = TypeInfo::getTypeInfo( rootSym, childSym );
+            TypeInfoPtr     ti = TypeInfo::getTypeInfo( childSym );
 
             if ( baseVirtualSym )
             {
