@@ -102,7 +102,7 @@ public:
     //static void getValueImpl(IDiaSymbol *_symbol, VARIANT &vtValue);
     //python::object getValue();
     
-    void getValue( VARIANT &vtValue);
+    void getValue( BaseTypeVariant &vtValue );
 
     //bool isBasicType();
 

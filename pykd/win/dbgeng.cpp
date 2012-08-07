@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <boost\algorithm\string\case_conv.hpp>
+
 #include "win/dbgeng.h"
 #include "dbgexcept.h"
 
@@ -318,6 +320,21 @@ ULONG ptrSize()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+bool is64bitSystem()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+    
+    hres = g_dbgEng->control->IsPointer64Bit();
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::IsPointer64Bit failed" );
+        
+    return hres == S_OK;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 std::string getSymbolByOffset( ULONG64 offset )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
@@ -344,8 +361,127 @@ std::string getSymbolByOffset( ULONG64 offset )
     return symbolName;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
-};
+ULONG64 loadMSR( ULONG  msr )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+    ULONG64     value;
+
+    hres = g_dbgEng->dataspace->ReadMsr( msr, &value );
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugDataSpaces::ReadMsr", hres );
+
+    return value;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void setMSR( ULONG msr, ULONG64 value)
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+
+    hres = g_dbgEng->dataspace->WriteMsr(msr, value);
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugDataSpaces::WriteMsr", hres );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ULONG getRegIndexByName( const std::string &regName )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+    ULONG  index;
+
+    hres = g_dbgEng->registers->GetIndexByName( boost::to_lower_copy(regName).c_str(), &index );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugRegister::GetIndexByName", hres );
+
+    return index;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::string getRegNameByIndex( ULONG index )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+
+    ULONG       nameSize = 0;
+
+    hres = 
+       g_dbgEng->registers->GetDescription( 
+            index,
+            NULL,
+            0,
+            &nameSize,
+            NULL );
+
+    if ( nameSize == 0 )
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugRegister::GetDescription", hres );
+
+    std::vector<char>   nameBuffer(nameSize);
+    DEBUG_REGISTER_DESCRIPTION    desc = {};
+
+    hres = 
+        g_dbgEng->registers->GetDescription( 
+            index,
+            &nameBuffer[0],
+            nameSize,
+            NULL,
+            &desc );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugRegister::GetDescription", hres );
+
+    return std::string( &nameBuffer[0] );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+BaseTypeVariant getRegVariantValue( ULONG index )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT         hres;   
+        
+    DEBUG_VALUE    debugValue;
+    hres = g_dbgEng->registers->GetValue( index, &debugValue );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugRegister::GetValue", hres );
+        
+    switch( debugValue.Type )
+    {
+    case DEBUG_VALUE_INT8:
+        return BaseTypeVariant( (LONG)debugValue.I8 );
+        break;
+        
+    case DEBUG_VALUE_INT16:
+        return BaseTypeVariant( (LONG)debugValue.I16 );
+        break;
+        
+    case DEBUG_VALUE_INT32:
+        return BaseTypeVariant( debugValue.I32 );
+        break;
+        
+    case DEBUG_VALUE_INT64:
+        return BaseTypeVariant( debugValue.I64 );
+        break;
+    } 
+
+    throw DbgException( "Failed to convert register value" );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // end pykd namespace
 
 

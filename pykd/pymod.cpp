@@ -10,11 +10,12 @@
 #include "symengine.h"
 
 #include "module.h"
-#include "intbase.h"
+#include "variant.h"
 #include "dbgexcept.h"
 #include "dbgmem.h"
 #include "typeinfo.h"
 #include "typedvar.h"
+#include "cpureg.h"
 
 using namespace pykd;
 
@@ -61,6 +62,8 @@ BOOST_PYTHON_MODULE( pykd )
     // system properties
     python::def( "ptrSize", &ptrSize,
         "Return effective pointer size" );
+    python::def( "is64bitSystem", &is64bitSystem,
+       "Check if target system has 64 address space" );
 
     // Manage target memory access
 
@@ -142,6 +145,16 @@ BOOST_PYTHON_MODULE( pykd )
     python::def("containingRecord", &containingRecordByType,
         "Return instance of the typedVar class. It's value are loaded from the target memory."
         "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
+
+    // CPU registers
+    python::def( "reg", &getRegByName,
+        "Return a CPU regsiter value by the register's name" );
+    python::def( "reg", &getRegByIndex,
+        "Return a CPU regsiter value by the register's value" );
+    python::def ( "rdmsr", &loadMSR,
+        "Return MSR value" );
+    python::def( "wrmsr", &setMSR,
+        "Set MSR value" );
 
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )
@@ -275,6 +288,12 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__getitem__", &TypedVar::getElementByIndex )
         .def("__getitem__", &TypedVar::getElementByIndexPtr );
 
+
+    python::class_<CpuReg, python::bases<intBase> >( 
+        "cpuReg", "CPU regsiter class", boost::python::no_init )
+            .def( "name", &CpuReg::name, "The name of the regsiter" )
+            .def( "index", &CpuReg::index, "The index of thr register" );
+
     // wrapper for standart python exceptions
     python::register_exception_translator<PyException>( &PyException::exceptionTranslate );
 
@@ -289,6 +308,14 @@ BOOST_PYTHON_MODULE( pykd )
 }
 
 //////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
 
 
 

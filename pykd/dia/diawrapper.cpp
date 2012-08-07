@@ -328,11 +328,66 @@ ULONGLONG DiaSymbol::getVa()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void DiaSymbol::getValue( VARIANT &vtValue)
+void DiaSymbol::getValue( BaseTypeVariant &btv )
 {
+    CComVariant  vtValue;
     HRESULT hres = m_symbol->get_value(&vtValue);
     if (S_OK != hres)
         throw DiaException("Call IDiaSymbol::get_value", hres);
+
+    switch (vtValue.vt)
+    {
+    case VT_I1:
+        btv = (LONG)vtValue.bVal;
+        break;
+
+    case VT_UI1:
+        btv = (ULONG)vtValue.bVal;
+        break;
+
+    case VT_BOOL:
+        btv = !!vtValue.iVal;
+        break;
+
+    case VT_I2:
+        btv = (LONG)vtValue.iVal;
+        break;
+
+    case VT_UI2:
+        btv = (ULONG)vtValue.iVal;
+        break;
+
+    case VT_I4:
+    case VT_INT:
+        btv = (LONG)vtValue.lVal;
+        break;
+
+    case VT_UI4:
+    case VT_UINT:
+    case VT_ERROR:
+    case VT_HRESULT:
+        btv = (ULONG)vtValue.lVal;
+        break;
+
+    case VT_I8:
+        btv = (ULONG64)vtValue.llVal;
+        break;
+
+    case VT_UI8:
+        btv = (LONG64)vtValue.llVal;
+        break;
+
+    //case VT_R4:
+    //    btv = vtValue.fltVal;
+    //    break;
+
+    //case VT_R8:
+    //    fillDataBuff(vtValue.dblVal);
+    //    break;
+
+    default:
+        throw DbgException( "Unsupported const value" );
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////

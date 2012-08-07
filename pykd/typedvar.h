@@ -1,7 +1,7 @@
 #pragma once
 
 #include "typeinfo.h"
-#include "intbase.h"
+#include "variant.h"
 #include "dbgexcept.h"
 #include "vardata.h"
 

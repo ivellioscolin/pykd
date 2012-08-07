@@ -23,6 +23,7 @@ public:
         CComQIPtr<IDebugSymbols3>  symbols;
         CComQIPtr<IDebugDataSpaces4>  dataspace;
         CComQIPtr<IDebugAdvanced2>  advanced;
+        CComQIPtr<IDebugRegisters2>  registers;
 
         DbgEngBind( PDEBUG_CLIENT4 c )
         {
@@ -32,6 +33,7 @@ public:
             symbols = c;
             dataspace = c;
             advanced = c;
+            registers = c;
         }
 
         PyThreadStateSaver     pystate;

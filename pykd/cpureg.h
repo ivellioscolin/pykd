@@ -1,19 +1,18 @@
 #pragma once
 
-#include "intbase.h"
-#include "dbgobj.h"
+#include "variant.h"
 
 namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class CpuReg : public intBase, protected DbgObject {
+class CpuReg : public intBase {
 
 public:
 
-    CpuReg( IDebugClient4 *client, const std::string &regName );
+    CpuReg( const std::string &regName );
 
-    CpuReg( IDebugClient4 *client, ULONG index );
+    CpuReg( ULONG index );
 
     std::string
     name() const {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "variant.h"
+
 namespace pykd {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +130,7 @@ public:
     virtual ULONG getSymTag() = 0;
     virtual SymbolPtr getType() = 0;
     virtual ULONGLONG getVa() = 0;
-    virtual void getValue( VARIANT &vtValue) = 0;
+    virtual void getValue( BaseTypeVariant &vtValue) = 0;
     virtual ULONG getVirtualBaseDispIndex() = 0;
     virtual int getVirtualBasePointerOffset() = 0;
     virtual bool isVirtualBaseClass() = 0;

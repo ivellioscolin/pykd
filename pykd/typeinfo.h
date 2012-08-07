@@ -5,7 +5,7 @@
 #include <boost\enable_shared_from_this.hpp>
 
 #include "udtutils.h"
-#include "intbase.h"
+#include "variant.h"
 #include "symengine.h"
 #include "dbgexcept.h"
 
@@ -56,9 +56,7 @@ public:
         m_virtualBasePtr( 0 ),
         m_virtualDispIndex( 0 ),
         m_virtualDispSize( 0 )
-        {
-            m_constantValue.vt = VT_EMPTY;
-        }
+        {}
 
     virtual std::string print() {
         std::stringstream   sstr;
@@ -156,7 +154,7 @@ public:
         throw PyException( PyExc_TypeError, "object is unsubscriptable");  
     }
 
-    void setConstant( const VARIANT& var )
+    void setConstant( const BaseTypeVariant& var )
     {
         m_constant = true;
         m_constantValue = var;
@@ -220,7 +218,7 @@ protected:
 
     bool        m_virtualMember;
 
-    VARIANT     m_constantValue;
+    BaseTypeVariant  m_constantValue;
 
     LONG        m_virtualBasePtr;
 

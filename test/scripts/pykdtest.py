@@ -18,6 +18,7 @@ import memtest
 import moduletest
 import typeinfo 
 import typedvar
+import regtest
   
 def getTestSuite( singleName = "" ):
     if singleName == "":
@@ -29,6 +30,7 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
                 unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
                 unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
+                unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
             ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )

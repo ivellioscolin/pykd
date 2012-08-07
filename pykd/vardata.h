@@ -75,16 +75,21 @@ protected:
     VarDataConst(SymbolPtr &symData);
     VarDataConst(const VarDataConst &from, ULONG fieldOffset);
 
-    template<typename T>
-    void fillDataBuff(const T &data)
-    {
-        RtlCopyMemory( &m_dataBuff->at(0), &data, min(sizeof(T), m_dataBuff->size()) );
-    }
+    //template<typename T>
+    //void fillDataBuff(const T &data)
+    //{
+    //    RtlCopyMemory( &m_dataBuff->at(0), &data, min(sizeof(T), m_dataBuff->size()) );
+    //}
 
 private:
 
-    ULONG m_fieldOffset;
-    boost::shared_ptr< std::vector<UCHAR> > m_dataBuff;
+    BaseTypeVariant  m_value;
+    ULONG  m_fieldOffset;
+
+    //ULONG m_fieldOffset;
+    //boost::shared_ptr< std::vector<UCHAR> > m_dataBuff;
+
+    
 };
 
 }

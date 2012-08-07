@@ -350,6 +350,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\cpureg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgexcept.cpp"
 				>
 			</File>
@@ -432,6 +436,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\cpureg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgengine.h"
 				>
 			</File>
@@ -441,10 +449,6 @@
 			</File>
 			<File
 				RelativePath=".\dbgmem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\intbase.h"
 				>
 			</File>
 			<File
@@ -481,6 +485,10 @@
 			</File>
 			<File
 				RelativePath=".\vardata.h"
+				>
+			</File>
+			<File
+				RelativePath=".\variant.h"
 				>
 			</File>
 		</Filter>

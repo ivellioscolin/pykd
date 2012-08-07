@@ -114,34 +114,7 @@ BaseTypeVariant  TypeInfo::getValue()
     if ( !m_constant )
         throw TypeException( getName(), "this type is not a constant and has not a value" );
 
-    switch( m_constantValue.vt )
-    {
-    case VT_UI1:
-        return (ULONG)m_constantValue.bVal;;
-
-    case VT_I1:
-        return (LONG)m_constantValue.cVal;
-
-    case VT_UI2:
-        return (ULONG)m_constantValue.uiVal;
-
-    case VT_I2:
-        return (LONG)m_constantValue.iVal;
-
-    case VT_UI4:
-        return (ULONG)m_constantValue.lVal;
-
-    case VT_I4:
-        return (LONG)m_constantValue.ulVal;
-
-    case VT_UI8:
-        return (ULONG64)m_constantValue.ullVal;
-
-    case VT_I8:
-        return (LONG64)m_constantValue.llVal;
-    }
-
-    throw TypeException( getName(), "Failed to convert constant type to any integer type" );
+    return m_constantValue;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -166,9 +139,8 @@ TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &symScope, const std::string &symN
 
 TypeInfoPtr TypeInfo::getTypeInfo( SymbolPtr &symScope, SymbolPtr &symChild )
 {
-    CComVariant constVal;
-
     SymbolPtr symType = symChild;
+
     if ( symType->getSymTag() == SymTagData )
     {
         if ( symType->getLocType() == LocIsBitField )
@@ -178,18 +150,17 @@ TypeInfoPtr TypeInfo::getTypeInfo( SymbolPtr &symScope, SymbolPtr &symChild )
 
         if ( symType->getDataKind() == DataIsConstant )
         {
+            BaseTypeVariant     constVal;
             symType->getValue( constVal );
+            TypeInfoPtr ptr = getTypeInfo( symType->getType() );
+            ptr->setConstant( constVal );
+            return ptr;
         }
 
         symType = symType->getType();
     }
 
-    TypeInfoPtr ptr = getTypeInfo( symType );
-
-    if ( constVal.vt != VT_EMPTY )
-        ptr->setConstant( constVal );
-
-    return ptr;
+    return getTypeInfo( symType );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -766,11 +737,11 @@ python::dict EnumTypeInfo::asMap()
 
     for ( SymbolPtrList::iterator  it = symbolsList.begin(); it != symbolsList.end(); it++ )
     {
-         CComVariant     val;
+         BaseTypeVariant     val;
 
          (*it)->getValue( val );
 
-         dct[val.ulVal] = (*it)->getName();
+         dct[ boost::apply_visitor( VariantToULong(), val ) ] = (*it)->getName();
     }
 
     return dct;
@@ -788,11 +759,11 @@ std::string EnumTypeInfo::print()
 
     for ( SymbolPtrList::iterator  it = symbolsList.begin(); it != symbolsList.end(); it++ )
     {
-         CComVariant     val;
+         BaseTypeVariant   val;
          (*it)->getValue( val );
 
          sstr << "   " << (*it)->getName();
-         sstr << " = " << std::hex << val.ulVal << " (" << std::dec << val.ulVal << ')';
+         sstr << " = " << boost::apply_visitor( VariantToHex(), val ) << " (" << boost::apply_visitor( VariantToStr(), val )<< ')';
          sstr << std::endl;
     }
 

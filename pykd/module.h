@@ -1,6 +1,6 @@
 #pragma once
 
-#include "intbase.h"
+#include "variant.h"
 #include "symengine.h"
 #include "typeinfo.h"
 #include "typedvar.h"
