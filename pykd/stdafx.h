@@ -41,6 +41,11 @@
 //#endif // __field_ecount_opt
 //
 //
+
+#include <vector>
+#include <string>
+#include <list>
+
 #define BOOST_PYTHON_STATIC_LIB
 
 #pragma warning(push)

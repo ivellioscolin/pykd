@@ -333,34 +333,6 @@ bool is64bitSystem()
     return hres == S_OK;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-std::string getSymbolByOffset( ULONG64 offset )
-{
-    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
-
-    HRESULT     hres;
-
-    char    nameBuf[0x100];
-
-    hres = 
-        g_dbgEng->symbols->GetNameByOffset(
-            offset,
-            nameBuf,
-            sizeof(nameBuf),
-            NULL,
-            NULL );
-
-    std::string     fullName( nameBuf );
-
-    size_t          symPos = fullName.find ( '!' ) + 1;
-
-    std::string     symbolName;
-    symbolName.assign( fullName, symPos, fullName.length() - symPos );
-
-    return symbolName;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 ULONG64 loadMSR( ULONG  msr )
@@ -494,6 +466,50 @@ ULONG64 getRegInstructionPointer()
         throw DbgException( "IDebugRegisters::GetInstructionOffset failed" );
 
     return ip;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ULONG getStackTraceFrameCount()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+    ULONG  filledFrames;
+
+    hres = g_dbgEng->control->GetStackTrace( 0, 0, 0, NULL, 0, &filledFrames );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetStackTrace  failed" );
+
+    return filledFrames;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void getStackTrace( STACK_FRAME_DESC* frames, ULONG frameCount, ULONG* frameReturned )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+
+    ULONG   filledFrames;
+    std::vector<DEBUG_STACK_FRAME>  stack(frameCount); 
+
+    hres = g_dbgEng->control->GetStackTrace( 0, 0, 0, &stack[0], frameCount, &filledFrames);
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetStackTrace  failed" );
+
+    for ( ULONG i = 0; i < filledFrames; ++i )
+    {
+        frames[i].number = stack[i].FrameNumber;
+        frames[i].instructionOffset = stack[i].InstructionOffset;
+        frames[i].returnOffset = stack[i].ReturnOffset;
+        frames[i].frameOffset = stack[i].FrameOffset;
+        frames[i].stackOffset = stack[i].StackOffset;
+    }
+
+    if ( frameReturned )
+        *frameReturned = filledFrames;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

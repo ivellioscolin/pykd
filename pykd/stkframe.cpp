@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "stkframe.h"
+#include "dbgengine.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -11,14 +12,13 @@ namespace pykd {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-StackFrame::StackFrame(DebugClientPtr client, const DEBUG_STACK_FRAME &frame)
-    : m_client(client)
-    , m_frameNumber(frame.FrameNumber)
-    , m_instructionOffset(frame.InstructionOffset)
-    , m_returnOffset(frame.ReturnOffset)
-    , m_frameOffset(frame.FrameOffset)
-    , m_stackOffset(frame.StackOffset)
+StackFrame::StackFrame( const STACK_FRAME_DESC& desc )
 {
+    m_frameNumber = desc.number;
+    m_instructionOffset = desc.instructionOffset;
+    m_returnOffset = desc.returnOffset;
+    m_frameOffset = desc.frameOffset;
+    m_stackOffset = desc.stackOffset;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -40,16 +40,29 @@ std::string StackFrame::print() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-python::dict StackFrame::getLocals(ContextPtr ctx /*= ContextPtr()*/)
+python::list getCurrentStack()
 {
-    ctx = ctx   ? ctx->forkByStackFrame(*this)
-                : m_client->getThreadContext()->forkByStackFrame(*this);
-    return m_client->getLocals(ctx);
+    ULONG  frameCount = getStackTraceFrameCount();
+
+    std::vector<STACK_FRAME_DESC>  frames(frameCount); 
+
+    getStackTrace( &frames[0], frameCount );
+
+    python::list    frameList;
+
+    for ( ULONG i = 0; i < frameCount; ++i )
+    {
+        python::object  frameObj( StackFrame( frames.at(i) ) ); 
+
+        frameList.append( frameObj );
+    }
+
+    return frameList; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 } // namespace pykd
 
-////////////////////////////////////////////////////////////////////////////////
+
 

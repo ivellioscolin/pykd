@@ -32,8 +32,16 @@ std::string getRegNameByIndex( ULONG index );
 BaseTypeVariant getRegVariantValue( ULONG index );
 ULONG64 getRegInstructionPointer();
 
-// это нужно сделать по-другому!
-//std::string getSymbolByOffset( ULONG64 offset );
+// Stack and local variables
+struct STACK_FRAME_DESC {
+    ULONG number;
+    ULONG64 instructionOffset;
+    ULONG64 returnOffset;
+    ULONG64 frameOffset;
+    ULONG64 stackOffset;
+};
 
+ULONG getStackTraceFrameCount();
+void getStackTrace( STACK_FRAME_DESC* frames, ULONG frameCount, ULONG* frameReturned = NULL );
 };
 

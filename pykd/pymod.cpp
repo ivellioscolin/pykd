@@ -17,6 +17,7 @@
 #include "typedvar.h"
 #include "cpureg.h"
 #include "disasm.h"
+#include "stkframe.h"
 
 using namespace pykd;
 
@@ -43,6 +44,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, compareMemory, 3, 4 );
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( StackFrame_getLocals, StackFrame::getLocals, 0, 1 );
 
 BOOST_PYTHON_MODULE( pykd )
 {
@@ -156,6 +158,11 @@ BOOST_PYTHON_MODULE( pykd )
         "Return MSR value" );
     python::def( "wrmsr", &setMSR,
         "Set MSR value" );
+
+    // stack and local variables
+    python::def( "getCurrentStack", &getCurrentStack,
+        "Return a current stack as a list of stackFrame objects" );
+
 
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )
@@ -293,6 +300,23 @@ BOOST_PYTHON_MODULE( pykd )
         "cpuReg", "CPU regsiter class", boost::python::no_init )
             .def( "name", &CpuReg::name, "The name of the regsiter" )
             .def( "index", &CpuReg::index, "The index of thr register" );
+
+    python::class_<StackFrame>( "stackFrame", 
+         "Class representing a frame of the call stack", python::no_init )
+        .def_readonly( "instructionOffset", &StackFrame::m_instructionOffset,
+            "Return a frame's instruction offset" )
+        .def_readonly( "returnOffset", &StackFrame::m_returnOffset,
+            "Return a frame's return offset" )
+        .def_readonly( "frameOffset", &StackFrame::m_frameOffset,
+            "Return a frame's offset" )
+        .def_readonly( "stackOffset", &StackFrame::m_stackOffset,
+            "Return a frame's stack offset" )
+        .def_readonly( "frameNumber", &StackFrame::m_frameNumber,
+            "Return a frame's number" )
+        //.def( "getLocals", &StackFrame::getLocals, StackFrame_getLocals( python::args( "ctx" ),
+        //    "Get list of local variables for this stack frame" ) )
+        .def( "__str__", &StackFrame::print,
+            "Return stacks frame as a string");
 
     python::class_<Disasm>("disasm", "Class disassemble a processor instructions" )
         .def( python::init<>( "constructor" ) )
