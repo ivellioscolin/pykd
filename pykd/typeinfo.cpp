@@ -16,8 +16,6 @@ void splitSymName( const std::string &fullName, std::string &moduleName, std::st
 {
     boost::cmatch    matchResult;
 
-    //OutputReader     outputDiscard( m_client );
-
     if ( !boost::regex_match( fullName.c_str(), matchResult, moduleSymMatch ) )
     {
         std::stringstream   sstr;

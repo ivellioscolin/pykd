@@ -99,6 +99,8 @@ private:
 
     SymbolPtr& getSymScope();
 
+    SymbolSessionPtr& getSymSession();
+
     BaseTypeVariant getValue() {
         return BaseTypeVariant(m_base);
     }
@@ -113,7 +115,7 @@ private:
     ULONG                   m_timeDataStamp;
     ULONG                   m_checkSum;
 
-    SymbolPtr               m_symScope;
+    SymbolSessionPtr        m_symSession;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

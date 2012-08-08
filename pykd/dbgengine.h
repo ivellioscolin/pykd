@@ -33,7 +33,7 @@ BaseTypeVariant getRegVariantValue( ULONG index );
 ULONG64 getRegInstructionPointer();
 
 // это нужно сделать по-другому!
-std::string getSymbolByOffset( ULONG64 offset );
+//std::string getSymbolByOffset( ULONG64 offset );
 
 };
 

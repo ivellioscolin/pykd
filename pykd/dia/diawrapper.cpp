@@ -45,7 +45,7 @@ std::string DiaException::makeFullDesc(const std::string &desc, HRESULT hres)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-SymbolPtr  loadSymbolFile(const std::string &filePath, ULONGLONG loadBase )
+SymbolSessionPtr  loadSymbolFile(const std::string &filePath, ULONGLONG loadBase )
 {
     HRESULT hres;
     DiaDataSourcePtr dataSource;
@@ -73,7 +73,7 @@ SymbolPtr  loadSymbolFile(const std::string &filePath, ULONGLONG loadBase )
     if ( S_OK != hres )
         throw DiaException("Call IDiaSymbol::get_globalScope", hres);
 
-    return SymbolPtr( new DiaSymbol( _globalScope ) );
+    return SymbolSessionPtr( new DiaSession( _session, _globalScope ) );
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -422,11 +422,29 @@ bool DiaSymbol::isVirtualBaseClass()
 
 //////////////////////////////////////////////////////////////////////////////
 
-//bool DiaSymbol::isIndirectVirtualBaseClass()
-//{
-//    return !!callSymbol(get_indirectVirtualBaseClass);
-//}
+SymbolPtr DiaSession::findByRva( ULONG rva, ULONG symTag, LONG* pdisplacement )
+{
+    DiaSymbolPtr child;
+    LONG displacement;
 
+    HRESULT hres = 
+        m_session->findSymbolByRVAEx(
+            rva,
+            static_cast<enum ::SymTagEnum>(symTag),
+            &child,
+            &displacement);
+
+    if (S_OK != hres)
+        throw DiaException("Call IDiaSession::findSymbolByRVAEx", hres);
+    if (!child)
+        throw DiaException("Call IDiaSession::findSymbolByRVAEx", E_UNEXPECTED);
+    if ( pdisplacement == NULL && displacement != 0 )
+        throw DiaException("Call IDiaSession::findSymbolByRVAEx failed to find suymbol" );
+
+    return SymbolPtr( new DiaSymbol(child) );
+}
+
+//////////////////////////////////////////////////////////////////////////////
 
 }; // pykd nemaspace end
 

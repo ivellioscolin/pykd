@@ -10,6 +10,9 @@ class Symbol;
 typedef boost::shared_ptr< Symbol > SymbolPtr;
 typedef std::list< SymbolPtr > SymbolPtrList;
 
+class SymbolSession;
+typedef boost::shared_ptr<SymbolSession> SymbolSessionPtr;
+
 ////////////////////////////////////////////////////////////////////////////////
 
 enum SymTagEnum
@@ -139,9 +142,21 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+class SymbolSession {
+
+public:
+
+    virtual SymbolPtr& getSymbolScope() = 0;
+
+    virtual SymbolPtr findByRva( ULONG rva, ULONG symTag = SymTagData, LONG* displacement = NULL ) = 0;
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
 std::string getBasicTypeName( ULONG basicType );
 
-SymbolPtr  loadSymbolFile(const std::string &filePath, ULONGLONG loadBase = 0);
+SymbolSessionPtr  loadSymbolFile(const std::string &filePath, ULONGLONG loadBase = 0);
 
 ////////////////////////////////////////////////////////////////////////////////
 

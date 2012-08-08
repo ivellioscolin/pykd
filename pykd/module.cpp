@@ -42,24 +42,31 @@ Module::Module(ULONG64 offset )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-SymbolPtr& Module::getSymScope()
+SymbolSessionPtr& Module::getSymSession()
 {
     do {
 
-        if ( m_symScope )
-            break;
+        if ( m_symSession )
+            return m_symSession;
 
         if ( m_symfile.empty() )
             break;
 
-        m_symScope = loadSymbolFile( m_symfile, m_base );
+        m_symSession = loadSymbolFile( m_symfile, m_base );
 
     } while( false );
 
-    if ( !m_symScope )
+    if ( !m_symSession )
         throw SymbolException( "failed to find symbol file" );
 
-    return m_symScope;
+    return m_symSession;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+SymbolPtr& Module::getSymScope()
+{
+    return getSymSession()->getSymbolScope();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +74,7 @@ SymbolPtr& Module::getSymScope()
 void Module::reloadSymbols()
 {
     m_symfile = getModuleSymbolFileName( m_base );
-    m_symScope.reset();
+    m_symSession.reset();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -126,9 +133,11 @@ Module::getTypedVarByAddr( ULONG64 offset )
     if ( offset < m_base || offset > getEnd() )
         throw DbgException( "address is out of the module space" );
 
-    std::string  symName = getSymbolByOffset( offset );
+    SymbolPtr symVar = getSymSession()->findByRva( (ULONG)(offset - m_base ) );
 
-    return getTypedVarByName( symName );
+    TypeInfoPtr typeInfo = TypeInfo::getTypeInfo( symVar->getType() );
+
+    return TypedVar::getTypedVar(typeInfo, VarDataMemory::factory(offset) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -147,32 +156,6 @@ Module::getTypedVarByName( const std::string &symName )
     }
 
     return TypedVar::getTypedVar( typeInfo, VarDataConst::factory(symVar) );
-
-    
-
-
-    //HRESULT     hres;
-
-    //pyDia::SymbolPtr  symVar = getSymScope()->getChildByName( symName );
-
-    //std::string     fullName = m_name;
-    //fullName += '!';
-    //fullName += symName;
-
-    //ULONG64   offset;
-
-    //hres = m_symbols->GetOffsetByName( fullName.c_str(), &offset );
-
-    //TypeInfoPtr typeInfo = TypeInfo::getTypeInfo( symVar->getType() );
-
-    //if ( FAILED( hres ) )
-    //{
-    //    if ( LocIsConstant == symVar->getLocType() )
-    //        return TypedVar::getTypedVar( m_client, typeInfo, VarDataConst::factory(m_control, symVar) );
-    //    throw DbgException("IDebugSymbols::GetOffsetByName failed" );
-    //}
-
-    //return TypedVar::getTypedVar( m_client, typeInfo, VarDataMemory::factory(m_dataSpaces, offset) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -211,5 +194,3 @@ python::list Module::getTypedVarListByTypeName( ULONG64 listHeadAddress, const s
 ///////////////////////////////////////////////////////////////////////////////////
 
 }; // end of namespace pykd
-
-

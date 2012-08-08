@@ -232,6 +232,30 @@ protected:
 
 ////////////////////////////////////////////////////////////////////////////
 
+class DiaSession : public SymbolSession
+{
+public:
+
+    DiaSession( IDiaSession* session, IDiaSymbol *globalScope ) :
+        m_globalScope( new DiaSymbol( globalScope ) ),
+        m_session( session )
+        {}
+
+    SymbolPtr& getSymbolScope() {
+        return m_globalScope;
+    }
+
+    SymbolPtr findByRva( ULONG rva, ULONG symTag = SymTagData, LONG* displacement = NULL );
+
+private:
+
+    SymbolPtr  m_globalScope;
+    DiaSessionPtr  m_session;
+
+};
+
+////////////////////////////////////////////////////////////////////////////
+
 } // end pykd namespace
 
 
