@@ -48,9 +48,7 @@ if __name__ == "__main__":
     target.module.reload();
     
     pykd.go()
-    
-    unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run(getTestSuite( "typedvar.TypedVarTest.testPrint" ) )
-    
+   
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
 
     pykd.killProcess( processId )

@@ -93,6 +93,8 @@ public:
 
     ULONG64 getSymbolSize( const std::string &symName );
 
+    SymbolPtr getSymbolByVa( ULONG64 offset, ULONG symTag, LONG* displacemnt );
+
     std::string print();
 
 private:

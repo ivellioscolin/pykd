@@ -370,6 +370,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\localvar.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\module.cpp"
 				>
 			</File>
@@ -465,6 +469,10 @@
 			</File>
 			<File
 				RelativePath=".\disasmengine.h"
+				>
+			</File>
+			<File
+				RelativePath=".\localvar.h"
 				>
 			</File>
 			<File

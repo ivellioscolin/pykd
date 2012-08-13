@@ -18,6 +18,7 @@
 #include "cpureg.h"
 #include "disasm.h"
 #include "stkframe.h"
+#include "localvar.h"
 
 using namespace pykd;
 
@@ -44,8 +45,6 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, compareMemory, 3, 4 );
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( StackFrame_getLocals, StackFrame::getLocals, 0, 1 );
-
 BOOST_PYTHON_MODULE( pykd )
 {
     python::scope().attr("version") = pykdVersion;
@@ -58,6 +57,12 @@ BOOST_PYTHON_MODULE( pykd )
         "Stop process debugging"); 
     python::def( "killProcess", &terminateProcess,
         "Stop debugging and terminate current process" );
+    python::def( "loadDump", &loadDump,
+        "Load crash dump");
+    python::def( "isDumpAnalyzing", &isDumpAnalyzing,
+        "Check if it is a dump analyzing ( not living debuggee )" );
+    python::def( "isKernelDebugging", &isKernelDebugging,
+        "Check if kernel dubugging is running" );
 
     python::def( "go", &debugGo,
         "Go debugging"  );
@@ -162,7 +167,7 @@ BOOST_PYTHON_MODULE( pykd )
     // stack and local variables
     python::def( "getCurrentStack", &getCurrentStack,
         "Return a current stack as a list of stackFrame objects" );
-
+    python::def( "getLocals", &getLocals, "Get list of local variables" );
 
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )
@@ -317,6 +322,33 @@ BOOST_PYTHON_MODULE( pykd )
         //    "Get list of local variables for this stack frame" ) )
         .def( "__str__", &StackFrame::print,
             "Return stacks frame as a string");
+
+    //python::class_<ThreadContext, ContextPtr>(
+    //    "Context", "Context of thread (register values)", python::no_init )
+    //    .def( "ip", &ThreadContext::getIp, 
+    //        "Get instruction pointer register" )
+    //    .def( "retreg", &ThreadContext::getRetReg, 
+    //        "Get primary return value register" )
+    //    .def( "csp", &ThreadContext::getSp, 
+    //        "Get current stack pointer" )
+    //    .def( "get", &ThreadContext::getValue, 
+    //        "Get register value by ID (CV_REG_XXX)" )
+    //    .def( "get", &ThreadContext::getValueByName,
+    //        "Get register value by name" )
+    //    .def( "processorType", &ThreadContext::getProcessorType,
+    //        "Get processor ThreadContext as string")
+    //    .def( "fork", &ThreadContext::forkByStackFrame,
+    //        "Create new thread context by stackFrame")
+    //    .def("__len__", &ThreadContext::getCount,
+    //        "Return count of registers")
+    //    .def("__getitem__", &ThreadContext::getByIndex,
+    //        "Return tuple<ID, NAME, VALUE> by index")
+    //    .def("__getitem__", &ThreadContext::getValueByName,
+    //        "Return register value by name" )
+    //    .def("__getattr__", &ThreadContext::getValueByName,
+    //        "Return register value as a attribute of the Context" )
+    //    .def("__str__", &ThreadContext::print,
+    //        "Return context as a string" );
 
     python::class_<Disasm>("disasm", "Class disassemble a processor instructions" )
         .def( python::init<>( "constructor" ) )

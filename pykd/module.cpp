@@ -193,4 +193,16 @@ python::list Module::getTypedVarListByTypeName( ULONG64 listHeadAddress, const s
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+SymbolPtr Module::getSymbolByVa( ULONG64 offset, ULONG symTag, LONG* displacment )
+{
+    offset = addr64(offset);
+
+    if ( offset < m_base || offset > getEnd() )
+        throw DbgException( "address is out of the module space" );
+
+   return getSymSession()->findByRva( (ULONG)(offset - m_base ), symTag, displacment );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }; // end of namespace pykd

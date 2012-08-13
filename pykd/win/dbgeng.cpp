@@ -91,6 +91,58 @@ void terminateProcess( ULONG processId )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+void loadDump( const std::wstring &fileName )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+     
+    hres = g_dbgEng->client->OpenDumpFileWide( fileName.c_str(), NULL );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugClient4::OpenDumpFileWide failed" );
+
+    hres = g_dbgEng->control->WaitForEvent(DEBUG_WAIT_DEFAULT, INFINITE);
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::WaitForEvent failed" );
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+bool isDumpAnalyzing()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT         hres;
+    ULONG           debugClass, debugQualifier;
+    
+    hres = g_dbgEng->control->GetDebuggeeType( &debugClass, &debugQualifier );
+    
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
+         
+    return debugQualifier >= DEBUG_DUMP_SMALL;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+bool isKernelDebugging()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+    ULONG       debugClass, debugQualifier;
+    
+    hres = g_dbgEng->control->GetDebuggeeType( &debugClass, &debugQualifier );
+    
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
+         
+    return debugClass == DEBUG_CLASS_KERNEL;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 void debugGo()
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );

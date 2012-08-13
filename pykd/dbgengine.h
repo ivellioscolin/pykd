@@ -10,6 +10,11 @@ ULONG startProcess( const std::wstring  &processName );
 void detachProcess( ULONG processId = -1);
 void terminateProcess( ULONG processId = -1);
 
+void loadDump( const std::wstring &fileName );
+
+bool isDumpAnalyzing();
+bool isKernelDebugging();
+
 void debugGo();
 
 // system properties

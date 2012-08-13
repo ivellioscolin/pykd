@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "stkframe.h"
 #include "dbgengine.h"
+#include "localvar.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -40,6 +41,13 @@ std::string StackFrame::print() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
+python::dict StackFrame::getLocals()
+{
+    return getLocalsByFrame( *this );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 python::list getCurrentStack()
 {
     ULONG  frameCount = getStackTraceFrameCount();
@@ -61,6 +69,19 @@ python::list getCurrentStack()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+StackFrame getCurrentStackFrame()
+{
+    ULONG  frameCount = getStackTraceFrameCount();
+
+    std::vector<STACK_FRAME_DESC>  frames(frameCount); 
+
+    getStackTrace( &frames[0], frameCount );
+
+    return frames[0];
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace pykd
 

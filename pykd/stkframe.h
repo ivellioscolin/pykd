@@ -5,6 +5,7 @@
 #pragma once
 
 #include "dbgengine.h"
+#include "context.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +18,7 @@ class StackFrame
 public:
     StackFrame( const STACK_FRAME_DESC& desc );
 
-//    python::dict getLocals(ContextPtr ctx = ContextPtr());
+    python::dict getLocals();
 
     std::string print() const;
 
@@ -32,6 +33,8 @@ public:
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+
+StackFrame getCurrentStackFrame();
 
 python::list getCurrentStack();
 
