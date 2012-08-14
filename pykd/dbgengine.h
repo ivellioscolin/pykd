@@ -17,6 +17,13 @@ bool isKernelDebugging();
 
 void debugGo();
 
+// debug output
+void dprint( const std::wstring &str, bool dml = false );
+void dprintln( const std::wstring &str, bool dml = false );
+std::string dreadline();
+void eprint( const std::wstring &str );
+void eprintln( const std::wstring &str );
+
 // system properties
 ULONG ptrSize();
 bool is64bitSystem();
@@ -48,5 +55,6 @@ struct STACK_FRAME_DESC {
 
 ULONG getStackTraceFrameCount();
 void getStackTrace( STACK_FRAME_DESC* frames, ULONG frameCount, ULONG* frameReturned = NULL );
+
 };
 

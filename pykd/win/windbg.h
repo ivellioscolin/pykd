@@ -1,6 +1,5 @@
 #pragma once
 
-
 namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -64,13 +63,12 @@ private:
 
     PyThreadState                   *pyState;
 
-    static volatile LONG            sessionCount;      
+    static volatile LONG            sessionCount;
     
-    static WindbgGlobalSession      *windbgGlobalSession;     
+    static WindbgGlobalSession      *windbgGlobalSession;
 
 };   
 
 ///////////////////////////////////////////////////////////////////////////////////
-
 
 }; // namespace pykd

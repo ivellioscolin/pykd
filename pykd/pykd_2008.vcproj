@@ -366,6 +366,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\win\dbgpath.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\disasm.cpp"
 				>
 			</File>
@@ -464,6 +468,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\win\dbgpath.h"
+				>
+			</File>
+			<File
 				RelativePath=".\disasm.h"
 				>
 			</File>
@@ -546,11 +554,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\win\dbgio.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\win\dbgio.h"
+				>
+			</File>
+			<File
 				RelativePath=".\win\memory.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\win\utils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\win\windbg.h"
 				>
 			</File>
 		</Filter>

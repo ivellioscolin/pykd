@@ -20,6 +20,8 @@
 #include "stkframe.h"
 #include "localvar.h"
 
+#include "win/dbgio.h"
+
 using namespace pykd;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -32,6 +34,10 @@ static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 ;
 
 ////////////////////////////////////////////////////////////////////////////////
+
+
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, dprint, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, dprintln, 1, 2 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadChars_, loadChars, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadWChars_, loadWChars, 2, 3 );
@@ -66,6 +72,20 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::def( "go", &debugGo,
         "Go debugging"  );
+
+    // Debug output
+    python::def( "dprint", &pykd::dprint, dprint_( boost::python::args( "str", "dml" ), 
+        "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
+    python::def( "dprintln", &pykd::dprintln, dprintln_( boost::python::args( "str", "dml" ), 
+        "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
+
+    // Python debug output console helper classes
+    python::class_<DbgOut>( "dout", "dout", python::no_init )
+        .def( "write", &DbgOut::write );
+    python::class_<DbgErr>( "dout", "dout", python::no_init )
+        .def( "write", &DbgErr::write );
+    python::class_<DbgIn>( "din", "din", python::no_init )
+        .def( "readline", &DbgIn::readline );
 
     // system properties
     python::def( "ptrSize", &ptrSize,

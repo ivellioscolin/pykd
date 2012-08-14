@@ -104,7 +104,6 @@ void loadDump( const std::wstring &fileName )
     hres = g_dbgEng->control->WaitForEvent(DEBUG_WAIT_DEFAULT, INFINITE);
     if ( FAILED( hres ) )
         throw DbgException( "IDebugControl::WaitForEvent failed" );
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +168,8 @@ void debugGo()
     } while( currentStatus != DEBUG_STATUS_BREAK && currentStatus != DEBUG_STATUS_NO_DEBUGGEE );
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////
 
 ULONG64 findModuleBase( const std::string &moduleName )
 {

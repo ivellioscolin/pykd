@@ -56,6 +56,11 @@ public:
         return m_bind.get();
     }
 
+    void setClient( PDEBUG_CLIENT4 client )
+    {
+        m_bind.reset(new DbgEngBind(client) );
+    }
+
 private:
 
     std::auto_ptr<DbgEngBind>    m_bind;
@@ -66,6 +71,6 @@ private:
 
 extern  DebugEngine     g_dbgEng;
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
 };
