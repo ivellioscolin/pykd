@@ -271,6 +271,22 @@ std::string getModuleImageName( ULONG64 baseOffset )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+ULONG getModuleSize( ULONG64 baseOffset )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+    DEBUG_MODULE_PARAMETERS     moduleParam = { 0 };
+
+    hres = g_dbgEng->symbols->GetModuleParameters( 1, &baseOffset, 0, &moduleParam );
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );    
+
+    return moduleParam.Size;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 std::string getModuleSymbolFileName( ULONG64 baseOffset )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );

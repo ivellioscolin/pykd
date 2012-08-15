@@ -17,6 +17,7 @@ class ModuleTest( unittest.TestCase ):
         
     def testSize( self ):
         self.assertNotEqual( 0, target.module.size() )
+        self.assertTrue( pykd.isValid( target.module.begin() + target.module.size() - 1) )
          
     def testBegin( self ):
         self.assertNotEqual( 0, target.module.begin() )
@@ -25,6 +26,7 @@ class ModuleTest( unittest.TestCase ):
              
     def testEnd( self ):
         self.assertEqual( target.module.size(), target.module.end() - target.module.begin() )
+        self.assertTrue( pykd.isValid( target.module.end() - 1) )
          
     def testPdb( self ):
        self.assertNotEqual( "", target.module.symfile() )
@@ -33,7 +35,7 @@ class ModuleTest( unittest.TestCase ):
        self.assertEqual( target.module.name() + ".exe", target.module.image() )
 
     def testFindModule( self ):
-        self.assertRaises( pykd.BaseException, pykd.module, target.module.begin() - 0x10 )            
+        self.assertRaises( pykd.BaseException, pykd.module, target.module.begin() - 0x10 )
 
         self.assertNotEqual( None, pykd.module( target.module.begin() ) )
         self.assertNotEqual( None, pykd.module( target.module.begin() + 0x10) )
