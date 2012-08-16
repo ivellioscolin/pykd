@@ -42,6 +42,10 @@ ULONG64 loadMSR( ULONG  msr );
 
 void setMSR( ULONG msr, ULONG64 value);
 
+std::string getProcessorMode();
+
+std::string getProcessorType();
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 }; // end pykd namespace

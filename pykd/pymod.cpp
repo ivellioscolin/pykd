@@ -192,6 +192,11 @@ BOOST_PYTHON_MODULE( pykd )
         "Return MSR value" );
     python::def( "wrmsr", &setMSR,
         "Set MSR value" );
+    python::def( "getProcessorMode", &getProcessorMode, 
+        "Return current processor mode as string: X86, ARM, IA64 or X64" );
+    python::def( "getProcessorType", &getProcessorType,
+        "Return type of physical processor: X86, ARM, IA64 or X64" );
+
 
     // stack and local variables
     python::def( "getCurrentStack", &getCurrentStack,

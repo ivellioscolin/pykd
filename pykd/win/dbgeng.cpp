@@ -645,6 +645,60 @@ void getStackTrace( STACK_FRAME_DESC* frames, ULONG frameCount, ULONG* frameRetu
 
 ///////////////////////////////////////////////////////////////////////////////
 
+std::string processorToStr(ULONG processorMode)
+{
+    switch( processorMode )
+    {
+    case IMAGE_FILE_MACHINE_I386:
+        return "X86";
+        
+    case IMAGE_FILE_MACHINE_ARM:
+        return "ARM";
+        
+    case IMAGE_FILE_MACHINE_IA64:
+        return "IA64";
+        
+    case IMAGE_FILE_MACHINE_AMD64:
+        return "X64";
+    }
+
+    throw DbgException( "Unknown CPU type" );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::string getProcessorMode()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT         hres;
+    ULONG           processorMode;
+
+    hres = g_dbgEng->control->GetEffectiveProcessorType( &processorMode );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetEffectiveProcessorType  failed" );
+
+    return processorToStr(processorMode);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::string getProcessorType()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+    ULONG       processorMode;
+
+    hres = g_dbgEng->control->GetActualProcessorType( &processorMode );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetActualProcessorType  failed" );
+
+    return processorToStr(processorMode);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // end pykd namespace
 
 
