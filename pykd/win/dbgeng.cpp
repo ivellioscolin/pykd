@@ -168,6 +168,21 @@ void debugGo()
     } while( currentStatus != DEBUG_STATUS_BREAK && currentStatus != DEBUG_STATUS_NO_DEBUGGEE );
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+
+void debugBreak()
+{
+    PyThreadState   *pystate = PyEval_SaveThread();
+
+    HRESULT     hres;
+
+    hres = g_dbgEng->control->SetInterrupt( DEBUG_INTERRUPT_ACTIVE );
+
+    PyEval_RestoreThread( pystate );
+
+    if ( FAILED( hres ) )
+        throw  DbgException( "IDebugControl::SetInterrupt" ); 
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 

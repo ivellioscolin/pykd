@@ -16,6 +16,7 @@ bool isDumpAnalyzing();
 bool isKernelDebugging();
 
 void debugGo();
+void debugBreak();
 
 // debug output
 void dprint( const std::wstring &str, bool dml = false );

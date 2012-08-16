@@ -70,6 +70,9 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "isKernelDebugging", &isKernelDebugging,
         "Check if kernel dubugging is running" );
 
+
+    python::def( "breakin", &debugBreak,
+        "Break into debugger" );
     python::def( "go", &debugGo,
         "Go debugging"  );
 
