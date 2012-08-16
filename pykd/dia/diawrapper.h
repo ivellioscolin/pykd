@@ -15,6 +15,9 @@ typedef CComPtr< IDiaEnumSymbols > DiaEnumSymbolsPtr;
 typedef CComPtr< IDiaDataSource > DiaDataSourcePtr;
 typedef CComPtr< IDiaSession > DiaSessionPtr;
 typedef CComPtr< IDiaEnumSymbolsByAddr > DiaEnumSymbolsByAddrPtr;
+typedef CComPtr< IDiaEnumLineNumbers > DiaEnumLineNumbersPtr;
+typedef CComPtr< IDiaLineNumber> DiaLineNumberPtr;
+typedef CComPtr< IDiaSourceFile > DiaSourceFilePtr;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -249,6 +252,8 @@ public:
     SymbolPtr findByRva( ULONG rva, ULONG symTag = SymTagNull, LONG* displacement = NULL );
 
     ULONG findRvaByName( const std::string &name );
+
+    void getSourceLine( ULONG64 offset, std::string &fileName, ULONG &lineNo, LONG &displacement );
 
 private:
 

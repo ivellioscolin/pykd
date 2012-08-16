@@ -803,6 +803,40 @@ std::string EnumTypeInfo::print()
     return sstr.str();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+python::tuple getSourceLine( ULONG64 offset )
+{
+    if ( offset == 0 )
+        offset = getRegInstructionPointer();
+    else
+        offset = addr64( offset );
+
+    ModulePtr module = Module::loadModuleByOffset( offset );
+
+    std::string  fileName;
+    ULONG  lineNo;
+    LONG  displacement;
+    
+    module->getSourceLine( offset, fileName, lineNo, displacement );
+
+    return python::make_tuple( fileName, lineNo, displacement );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::string getSourceFile( ULONG64 offset )
+{
+    if ( offset == 0 )
+        offset = getRegInstructionPointer();
+    else
+        offset = addr64( offset );
+
+    ModulePtr module = Module::loadModuleByOffset( offset );
+    
+    return module->getSourceFile( offset );
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 }; // end namespace pykd

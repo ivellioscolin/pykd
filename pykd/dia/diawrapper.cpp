@@ -495,7 +495,45 @@ SymbolPtr DiaSession::findByRva( ULONG rva, ULONG symTag, LONG* pdisplacement )
     return SymbolPtr( new DiaSymbol(child) );
 }
 
-//////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+void DiaSession::getSourceLine( ULONG64 offset, std::string &fileName, ULONG &lineNo, LONG &displacement )
+{
+    DiaEnumLineNumbersPtr  lines;
+
+    HRESULT hres = m_session->findLinesByVA( offset, 1, &lines );
+    if (S_OK != hres)
+        throw DiaException("failed to find source line");
+
+    DiaLineNumberPtr  sourceLine;
+    hres = lines->Item( 0, &sourceLine );
+    if (S_OK != hres)
+        throw DiaException("failed to find source line");
+
+    DiaSourceFilePtr  sourceFile;
+    hres = sourceLine->get_sourceFile( &sourceFile );
+    if (S_OK != hres)
+        throw DiaException("failed to find source line");
+    
+    autoBstr  fileNameBstr;
+    hres = sourceFile->get_fileName ( &fileNameBstr );
+    if (S_OK != hres)
+        throw DiaException("failed to find source line");
+    fileName = fileNameBstr.asStr();
+
+    hres = sourceLine->get_lineNumber( &lineNo );
+    if (S_OK != hres)
+        throw DiaException("failed to find source line");
+
+    ULONGLONG  va;
+    hres = sourceLine->get_virtualAddress ( &va );
+    if (S_OK != hres)
+        throw DiaException("failed to find source line");
+
+    displacement = (LONG)( (LONGLONG)offset - (LONGLONG)va );
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 }; // pykd nemaspace end
 

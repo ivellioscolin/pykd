@@ -98,6 +98,10 @@ public:
 
     std::string getSymbolNameByVa( ULONG64 offset );
 
+    void getSourceLine( ULONG64 offset, std::string &fileName, ULONG &lineNo, LONG &displacement );
+
+    std::string getSourceFile( ULONG64 offset );
+
     std::string print();
 
 private:

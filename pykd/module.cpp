@@ -230,4 +230,24 @@ std::string Module::getSymbolNameByVa( ULONG64 offset )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+void Module::getSourceLine( ULONG64 offset, std::string &fileName, ULONG &lineNo, LONG &displacement )
+{
+    getSymSession()->getSourceLine( offset, fileName, lineNo, displacement );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string Module::getSourceFile( ULONG64 offset )
+{
+    std::string  fileName;
+    ULONG  lineNo;
+    LONG  displacement;
+
+    getSymSession()->getSourceLine( offset, fileName, lineNo, displacement );
+
+    return fileName;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }; // end of namespace pykd

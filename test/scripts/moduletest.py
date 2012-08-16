@@ -5,6 +5,7 @@
 import unittest
 import target
 import pykd
+import re
 
 class ModuleTest( unittest.TestCase ):
 
@@ -51,4 +52,15 @@ class ModuleTest( unittest.TestCase ):
     def testType( self ):
         self.assertEqual( "structTest", target.module.type("structTest").name() );
         self.assertEqual( "structTest", target.module.type("g_structTest").name() );
+        
+    def testSourceFile( self ):
+        fileName = pykd.getSourceFile(target.module.FuncWithName0 )
+        self.assertTrue( re.search('targetapp\\.cpp', fileName ) )
+        fileName, lineNo, displacement = pykd.getSourceLine( target.module.FuncWithName0 + 2)
+        self.assertEqual( 382, lineNo )
+        self.assertTrue( re.search('targetapp\\.cpp', fileName ) )
+        self.assertEqual( 2, displacement )
+        fileName, lineNo, displacement = pykd.getSourceLine()
+        self.assertEqual( 636, lineNo )
+
 

@@ -51,6 +51,9 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, compareMemory, 3, 4 );
 
+BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, getSourceLine, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, getSourceFile, 0, 1 );
+
 BOOST_PYTHON_MODULE( pykd )
 {
     python::scope().attr("version") = pykdVersion;
@@ -69,7 +72,6 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if it is a dump analyzing ( not living debuggee )" );
     python::def( "isKernelDebugging", &isKernelDebugging,
         "Check if kernel dubugging is running" );
-
 
     python::def( "breakin", &debugBreak,
         "Break into debugger" );
@@ -162,6 +164,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Read the block of the target's memory and return it as a list of pointers" );
 
     // types and vaiables
+    python::def( "getSourceFile", &getSourceFile, getSourceFile_( python::args( "offset"),
+        "Return source file by the specified offset" ) );
+    python::def( "getSourceLine", &getSourceLine, getSourceLine_( python::args( "offset"),
+        "Return source file name, line and displacement by the specified offset" ) );
     python::def( "getOffset", &TypeInfo::getOffset,
         "Return traget virtual address for specified symbol" );
     python::def( "findSymbol", &TypeInfo::findSymbol, 
@@ -196,7 +202,6 @@ BOOST_PYTHON_MODULE( pykd )
         "Return current processor mode as string: X86, ARM, IA64 or X64" );
     python::def( "getProcessorType", &getProcessorType,
         "Return type of physical processor: X86, ARM, IA64 or X64" );
-
 
     // stack and local variables
     python::def( "getCurrentStack", &getCurrentStack,

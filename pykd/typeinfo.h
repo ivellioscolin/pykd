@@ -518,6 +518,10 @@ private:
 
 void splitSymName( const std::string &fullName, std::string &moduleName, std::string &symbolName );
 
+python::tuple getSourceLine( ULONG64 offset = 0 );
+
+std::string getSourceFile( ULONG64 offset = 0 );
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 }; // namespace pykd
