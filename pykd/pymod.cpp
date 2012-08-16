@@ -73,6 +73,8 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::def( "breakin", &debugBreak,
         "Break into debugger" );
+    python::def( "expr", &evaluate,
+        "Evaluate windbg expression" );
     python::def( "go", &debugGo,
         "Go debugging"  );
 

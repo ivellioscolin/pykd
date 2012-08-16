@@ -168,7 +168,7 @@ void debugGo()
     } while( currentStatus != DEBUG_STATUS_BREAK && currentStatus != DEBUG_STATUS_NO_DEBUGGEE );
 }
 
-/////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 void debugBreak()
 {
@@ -184,7 +184,55 @@ void debugBreak()
         throw  DbgException( "IDebugControl::SetInterrupt" ); 
 }
 
-/////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+ULONG64 evaluate( const std::wstring  &expression )
+{
+    PyThreadState   *pystate = PyEval_SaveThread();
+
+    HRESULT             hres;
+    ULONG64             value = 0;
+
+    DEBUG_VALUE  debugValue = {};
+    ULONG        remainderIndex = 0;
+
+    hres = g_dbgEng->control->IsPointer64Bit();
+    if ( FAILED( hres ) )
+        throw  DbgException( "IDebugControl::IsPointer64Bit  failed" );
+    
+    if ( hres == S_OK )
+    {
+        hres = g_dbgEng->control->EvaluateWide( 
+            expression.c_str(), 
+            DEBUG_VALUE_INT64,
+            &debugValue,
+            &remainderIndex );
+            
+        if ( FAILED( hres ) )
+            throw  DbgException( "IDebugControl::Evaluate  failed" );
+            
+        if ( remainderIndex == expression.length() )
+            value = debugValue.I64;
+    }
+    else
+    {
+        hres = g_dbgEng->control->EvaluateWide( 
+            expression.c_str(), 
+            DEBUG_VALUE_INT32,
+            &debugValue,
+            &remainderIndex );
+            
+        if (  FAILED( hres ) )
+            throw  DbgException( "IDebugControl::Evaluate  failed" );
+            
+        if ( remainderIndex == expression.length() )
+            value = debugValue.I32;
+    }      
+
+    return value;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 ULONG64 findModuleBase( const std::string &moduleName )
 {

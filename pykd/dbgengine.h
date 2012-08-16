@@ -17,6 +17,7 @@ bool isKernelDebugging();
 
 void debugGo();
 void debugBreak();
+ULONG64 evaluate( const std::wstring  &expression );
 
 // debug output
 void dprint( const std::wstring &str, bool dml = false );
