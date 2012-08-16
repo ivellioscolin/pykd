@@ -162,6 +162,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Read the block of the target's memory and return it as a list of pointers" );
 
     // types and vaiables
+    python::def( "getOffset", &TypeInfo::getOffset,
+        "Return traget virtual address for specified symbol" );
     python::def( "findSymbol", &TypeInfo::findSymbol, 
         "Find symbol by the target virtual memory offset" );
     python::def( "sizeof", &TypeInfo::getSymbolSize,

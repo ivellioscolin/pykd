@@ -31,6 +31,9 @@ public:
     static
     std::string findSymbol( ULONG64 offset );
 
+    static
+    ULONG64 getOffset( const std::string &symbolName );
+
     static 
     TypeInfoPtr  getTypeInfo( SymbolPtr &symScope, const std::string &symName );
 

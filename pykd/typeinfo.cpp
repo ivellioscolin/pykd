@@ -83,6 +83,20 @@ std::string TypeInfo::findSymbol( ULONG64 offset )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+ULONG64 TypeInfo::getOffset( const std::string &fullName )
+{
+    std::string     moduleName;
+    std::string     symName;
+
+    splitSymName( fullName, moduleName, symName );
+
+    ModulePtr   module = Module::loadModuleByName( moduleName );
+
+    return module->getSymbolOffset( symName );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &typeSym )
 {
     ULONG symTag = typeSym->getSymTag();
