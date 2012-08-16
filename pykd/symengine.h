@@ -119,7 +119,7 @@ public:
     virtual ULONG getBaseType() = 0;
     virtual ULONG getBitPosition() = 0;
     virtual SymbolPtr getChildByIndex(ULONG _index ) = 0;
-    virtual SymbolPtr getChildByName(const std::string &_name) = 0;
+    virtual SymbolPtr getChildByName(const std::string &_name ) = 0;
     virtual ULONG getChildCount() = 0;
     virtual ULONG getChildCount(ULONG symTag ) = 0;
     virtual ULONG getCount() = 0;
@@ -132,6 +132,7 @@ public:
     virtual ULONGLONG getSize() = 0;
     virtual ULONG getSymTag() = 0;
     virtual SymbolPtr getType() = 0;
+    virtual std::string getUndecoratedName() = 0;
     virtual ULONGLONG getVa() = 0;
     virtual void getValue( BaseTypeVariant &vtValue) = 0;
     virtual ULONG getVirtualBaseDispIndex() = 0;
@@ -148,7 +149,7 @@ public:
 
     virtual SymbolPtr& getSymbolScope() = 0;
 
-    virtual SymbolPtr findByRva( ULONG rva, ULONG symTag = SymTagData, LONG* displacement = NULL ) = 0;
+    virtual SymbolPtr findByRva( ULONG rva, ULONG symTag = SymTagNull, LONG* displacement = NULL ) = 0;
 
 };
 

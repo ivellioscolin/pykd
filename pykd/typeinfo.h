@@ -28,6 +28,9 @@ public:
     static
     ULONG64 getSymbolSize( const std::string &symName );
 
+    static
+    std::string findSymbol( ULONG64 offset );
+
     static 
     TypeInfoPtr  getTypeInfo( SymbolPtr &symScope, const std::string &symName );
 

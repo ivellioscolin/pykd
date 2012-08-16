@@ -26,6 +26,7 @@ Module::Module(const std::string &moduleName )
     m_imageName = getModuleImageName( m_base );
     m_timeDataStamp = getModuleTimeStamp( m_base );
     m_checkSum = getModuleCheckSum( m_base );
+    m_size = getModuleSize( m_base );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -38,6 +39,7 @@ Module::Module(ULONG64 offset )
     m_imageName = getModuleImageName( m_base );
     m_timeDataStamp = getModuleTimeStamp( m_base );
     m_checkSum = getModuleCheckSum( m_base );
+    m_size = getModuleSize( m_base );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -81,9 +83,8 @@ void Module::reloadSymbols()
 
 ULONG Module::getRvaByName(const std::string &symName)
 {
-    SymbolPtr  &symScope = getSymScope();
-    SymbolPtr  child = symScope->getChildByName( symName );
-    return child->getRva();
+    SymbolPtr  sym = getSymScope()->getChildByName( symName );
+    return sym->getRva();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -151,7 +152,7 @@ Module::getTypedVarByName( const std::string &symName )
 
     if ( LocIsConstant != symVar->getLocType() )
     {
-        ULONG64  offset = getSymbol( symName );
+        ULONG64  offset = getSymbolOffset( symName );
         return TypedVar::getTypedVar(typeInfo, VarDataMemory::factory(offset) );
     }
 
@@ -201,6 +202,30 @@ SymbolPtr Module::getSymbolByVa( ULONG64 offset, ULONG symTag, LONG* displacment
         throw DbgException( "address is out of the module space" );
 
    return getSymSession()->findByRva( (ULONG)(offset - m_base ), symTag, displacment );
+}
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string Module::getSymbolNameByVa( ULONG64 offset )
+{
+    offset = addr64(offset);
+
+    if ( offset < m_base || offset > getEnd() )
+        throw DbgException( "address is out of the module space" );
+
+    LONG displacement = 0;
+
+    SymbolPtr  sym =  getSymSession()->findByRva( (ULONG)(offset - m_base ), SymTagNull, &displacement );
+
+    std::stringstream  sstr;
+
+    sstr << sym->getName();
+
+    if ( displacement > 0 )
+        sstr << '+' << std::hex << displacement;
+    else if ( displacement < 0 )
+        sstr << '-' << std::hex << -displacement;        
+
+    return sstr.str();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

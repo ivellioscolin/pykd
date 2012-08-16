@@ -14,6 +14,7 @@ typedef CComPtr< IDiaSymbol > DiaSymbolPtr;
 typedef CComPtr< IDiaEnumSymbols > DiaEnumSymbolsPtr;
 typedef CComPtr< IDiaDataSource > DiaDataSourcePtr;
 typedef CComPtr< IDiaSession > DiaSessionPtr;
+typedef CComPtr< IDiaEnumSymbolsByAddr > DiaEnumSymbolsByAddrPtr;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -52,7 +53,7 @@ public:
 
     DiaSymbol( IDiaSymbol *_symbol );
 
-    SymbolPtr getChildByName(const std::string &_name);
+    SymbolPtr getChildByName(const std::string &_name );
 
     ULONG getRva();
 
@@ -82,7 +83,7 @@ public:
 
     std::string getName();
 
-    //std::string getUndecoratedName();
+    std::string getUndecoratedName();
 
     SymbolPtr getType();
 
@@ -90,7 +91,6 @@ public:
 
     ULONG getSymTag();
 
-    //ULONG getRva();
     ULONGLONG getVa();
 
     ULONG getLocType();
@@ -237,20 +237,24 @@ class DiaSession : public SymbolSession
 public:
 
     DiaSession( IDiaSession* session, IDiaSymbol *globalScope ) :
-        m_globalScope( new DiaSymbol( globalScope ) ),
-        m_session( session )
+        m_globalScope( globalScope ),
+        m_session( session ),
+        m_globalSymbol( new DiaSymbol( globalScope ) )
         {}
 
     SymbolPtr& getSymbolScope() {
-        return m_globalScope;
+        return m_globalSymbol;
     }
 
-    SymbolPtr findByRva( ULONG rva, ULONG symTag = SymTagData, LONG* displacement = NULL );
+    SymbolPtr findByRva( ULONG rva, ULONG symTag = SymTagNull, LONG* displacement = NULL );
+
+    ULONG findRvaByName( const std::string &name );
 
 private:
 
-    SymbolPtr  m_globalScope;
-    DiaSessionPtr  m_session;
+    DiaSymbolPtr    m_globalScope;
+    SymbolPtr       m_globalSymbol;
+    DiaSessionPtr   m_session;
 
 };
 

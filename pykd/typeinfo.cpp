@@ -74,6 +74,15 @@ ULONG64 TypeInfo::getSymbolSize( const std::string &fullName )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+std::string TypeInfo::findSymbol( ULONG64 offset )
+{
+    ModulePtr   module = Module::loadModuleByOffset( offset );
+
+    return  module->getName() + '!' + module->getSymbolNameByVa( offset );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &typeSym )
 {
     ULONG symTag = typeSym->getSymTag();

@@ -156,7 +156,9 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "loadPtrs", &loadPtrArray,
         "Read the block of the target's memory and return it as a list of pointers" );
 
-    // typed and vaiables
+    // types and vaiables
+    python::def( "findSymbol", &TypeInfo::findSymbol, 
+        "Find symbol by the target virtual memory offset" );
     python::def( "sizeof", &TypeInfo::getSymbolSize,
         "Return a size of the type or variable" );
     python::def("typedVarList", &getTypedVarListByTypeName,
@@ -250,11 +252,13 @@ BOOST_PYTHON_MODULE( pykd )
             "Return name of the image of the module" )
         .def("symfile", &Module::getSymFile,
              "Return the full path to the module's symbol information" )
-        .def("offset", &Module::getSymbol,
+        .def("offset", &Module::getSymbolOffset,
             "Return offset of the symbol" )
+        .def("findSymbol", &Module::getSymbolNameByVa,
+            "Return symbol name by offset" )
         .def("rva", &Module::getSymbolRva,
             "Return rva of the symbol" )
-        .def( "sizeof", &Module::getSymbolSize,
+        .def("sizeof", &Module::getSymbolSize,
             "Return a size of the type or variable" )
         .def("type", &Module::getTypeByName,
             "Return typeInfo class by type name" )
@@ -275,7 +279,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
         .def("timestamp",&Module::getTimeDataStamp,
             "Return a low 32 bits of the time stamp of the image: IMAGE_FILE_HEADER.TimeDateStamp" )
-        .def("__getattr__", &Module::getSymbol,
+        .def("__getattr__", &Module::getSymbolOffset,
             "Return address of the symbol" )
         .def( "__str__", &Module::print );
 

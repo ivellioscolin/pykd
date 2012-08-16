@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "dbghelp.h"
 #include "dia/diawrapper.h"
 #include "win/utils.h"
 
@@ -125,7 +126,7 @@ SymbolPtrList  DiaSymbol::findChildren(
         hres = m_symbol->findChildren(
             static_cast<enum ::SymTagEnum>(symTag),
                 NULL,
-                caseSensitive ? nsCaseSensitive : nsCaseInsensitive,
+                (caseSensitive ? nsCaseSensitive : nsCaseInsensitive) | nsfUndecoratedName,
                 &symbols);
 
     }
@@ -134,7 +135,7 @@ SymbolPtrList  DiaSymbol::findChildren(
         hres = m_symbol->findChildren(
             static_cast<enum ::SymTagEnum>(symTag),
                 toWStr(name),
-                 caseSensitive ? nsCaseSensitive : nsCaseInsensitive,
+                (caseSensitive ? nsCaseSensitive : nsCaseInsensitive) | nsfUndecoratedName,
                 &symbols);
     }
 
@@ -177,7 +178,7 @@ ULONG DiaSymbol::getChildCount(ULONG symTag)
         m_symbol->findChildren(
             static_cast<enum ::SymTagEnum>(symTag),
             NULL,
-            nsCaseSensitive,
+            nsfCaseSensitive | nsfUndecoratedName,
             &symbols);
     if (S_OK != hres)
         throw DiaException("Call IDiaSymbol::findChildren", hres);
@@ -199,7 +200,7 @@ SymbolPtr DiaSymbol::getChildByIndex(ULONG symTag, ULONG _index )
         m_symbol->findChildren(
             static_cast<enum ::SymTagEnum>(symTag),
             NULL,
-            nsCaseSensitive,
+            nsfCaseSensitive | nsfUndecoratedName,
             &symbols);
     if (S_OK != hres)
         throw DiaException("Call IDiaSymbol::findChildren", hres);
@@ -224,36 +225,67 @@ SymbolPtr DiaSymbol::getChildByIndex(ULONG symTag, ULONG _index )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-SymbolPtr DiaSymbol::getChildByName(const std::string &_name)
+SymbolPtr DiaSymbol::getChildByName(const std::string &name )
 {
     DiaEnumSymbolsPtr symbols;
     HRESULT hres = 
         m_symbol->findChildren(
             ::SymTagNull,
-            toWStr(_name),
-            nsCaseSensitive,
+            toWStr(name),
+            nsfCaseSensitive | nsfUndecoratedName,
             &symbols);
-
-    if (S_OK != hres)
-        throw DiaException("Call IDiaSymbol::findChildren", hres);
 
     LONG count;
     hres = symbols->get_Count(&count);
     if (S_OK != hres)
         throw DiaException("Call IDiaEnumSymbols::get_Count", hres);
 
-    if (!count)
-        throw DiaException(_name + " not found");
+    if (count >0 )
+    {
+        DiaSymbolPtr child;
+        hres = symbols->Item(0, &child);
+        if (S_OK != hres)
+            throw DiaException("Call IDiaEnumSymbols::Item", hres);
 
-    if (count != 1)
-        throw DiaException(_name + " is not unique");
+        return SymbolPtr( new DiaSymbol(child) );
+    }
 
-    DiaSymbolPtr child;
-    hres = symbols->Item(0, &child);
+    std::string     pattern = "*";
+    pattern += name;
+    pattern += "*";
+    symbols = 0;
+
+    hres = 
+        m_symbol->findChildren(
+            ::SymTagNull,
+            toWStr(pattern),
+            nsfRegularExpression | nsfCaseSensitive | nsfUndecoratedName,
+            &symbols);
+
     if (S_OK != hres)
-        throw DiaException("Call IDiaEnumSymbols::Item", hres);
+        throw DiaException("Call IDiaSymbol::findChildren", hres);
 
-    return SymbolPtr( new DiaSymbol(child) );
+    hres = symbols->get_Count(&count);
+    if (S_OK != hres)
+        throw DiaException("Call IDiaEnumSymbols::get_Count", hres);
+
+    if (count == 0)
+         throw DiaException( name + " not found");
+    
+    for ( LONG i = 0; i < count; ++i )
+    {
+        DiaSymbolPtr child;
+        hres = symbols->Item(i, &child);
+        if (S_OK != hres)
+            throw DiaException("Call IDiaEnumSymbols::Item", hres);
+
+        SymbolPtr  symPtr = SymbolPtr( new DiaSymbol(child) );
+
+        if ( name == symPtr->getName() )
+            return symPtr;
+    }
+
+    throw DiaException(name + " is not found");
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -279,12 +311,31 @@ ULONG DiaSymbol::getLocType()
 
 //////////////////////////////////////////////////////////////////////////////
 
+static const  boost::regex  stdcallMatch("^_(\\w+)@.+$");
+
 std::string DiaSymbol::getName()
 {
     autoBstr retValue( callSymbol(get_name) );
+
+    boost::cmatch  matchResult;
+
+    std::string retStr = retValue.asStr();
+
+    if ( boost::regex_match( retStr.c_str(), matchResult, stdcallMatch ) )
+        retStr= std::string( matchResult[1].first, matchResult[1].second );
+
+    return retStr;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::string DiaSymbol::getUndecoratedName()
+{
+    autoBstr retValue( callSymbol(get_undecoratedName) );
     return retValue.asStr();
 }
-////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
 
 LONG DiaSymbol::getOffset()
 {

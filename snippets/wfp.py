@@ -19,7 +19,13 @@ def printBlob( blob ):
         if i == 0: str += "\n"
     str += "\n"
 
+    str += "As string: " + loadWStr(blob.data )
+    str += "\n"  
+
     return str
+
+def printArray16( array16 ):
+    return " ".join( [ "%02x"%v for v in array16.byteArray16 ] )
 
 def printFwpsValue( value ):
     return { 
@@ -32,8 +38,9 @@ def printFwpsValue( value ):
         "FWP_INT32"  : lambda : "%#x" % value.int32,
         "FWP_INT64"  : lambda : "%#x" % value.int64.deref(),
         "FWP_BYTE_BLOB_TYPE" : lambda : printBlob( value.byteBlob.deref() ),
+        "FWP_BYTE_ARRAY16_TYPE" : lambda : printArray16( value.byteArray16.deref() )
 
-    }.get( fwpsDataType[ value.type ], lambda : "---" )()
+    }.get( fwpsDataType[ value.field("type") ], lambda : "---" )()
 
 def wfpFixedValues( addr ):
   
@@ -56,7 +63,7 @@ def wfpFixedValues( addr ):
 
     for i in range( 0, len(values) ): 
         dprintln( "    " + fwpsFields[ i ] )
-        dprintln( "      Type: " + fwpsDataType[ values[i].type ] )
+        dprintln( "      Type: " + fwpsDataType[ values[i].field("type") ] )
         dprintln( "      Value: " +  printFwpsValue( values[i] )  )
 
 def printDiscardReason( discardReason ):

@@ -58,9 +58,10 @@ public:
     reloadSymbols();
 
     ULONG64
-    getSymbol( const std::string &symbolname ) {
+    getSymbolOffset( const std::string &symbolname ) {
         return m_base + getRvaByName(symbolname);
     }
+
 
     ULONG
     getSymbolRva( const std::string &symbolname ) {
@@ -94,6 +95,8 @@ public:
     ULONG64 getSymbolSize( const std::string &symName );
 
     SymbolPtr getSymbolByVa( ULONG64 offset, ULONG symTag, LONG* displacemnt );
+
+    std::string getSymbolNameByVa( ULONG64 offset );
 
     std::string print();
 

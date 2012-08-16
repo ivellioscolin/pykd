@@ -4,7 +4,7 @@ import sys
 
 def loadSymbols():
    global nt
-   nt = loadModule( "nt" )
+   nt = module( "nt" )
 
 def getObjNameFromObjHeader( objHeader ):
 

@@ -3,7 +3,7 @@ import sys
 
 def checkSSDT():
 
-   nt = loadModule( "nt" )
+   nt = module( "nt" )
 
    if is64bitSystem():   
 
