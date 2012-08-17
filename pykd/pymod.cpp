@@ -226,7 +226,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Set software breakpoint on executiont" ) );
     python::def( "setBp", &setHardwareBp, setHardwareBp_( python::args( "offset", "size", "accsessType", "callback" ) ,
         "Set hardware breakpoint" ) );
-
+    python::def( "removeBp", &breakPointRemove,
+        "Remove breapoint by IDs" );
+    python::def( "removeAllBp", &breakPointRemoveAll,
+        "Remove all breapoints" );
 
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )

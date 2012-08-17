@@ -15,6 +15,7 @@ ULONG setSoftwareBp(ULONG64 offset, BpCallback &callback = BpCallback() );
 ULONG setHardwareBp(ULONG64 offset, ULONG size, ULONG accessType, BpCallback &callback = BpCallback());
 
 
+
 //////////////////////////////////////////////////////////////////////////////////
 //
 //inline BPOINT_ID setSoftwareBp(ULONG64 addr, BpCallback &callback = BpCallback()) {

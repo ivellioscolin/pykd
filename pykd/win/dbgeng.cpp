@@ -829,6 +829,46 @@ ULONG breakPointSet( ULONG64 offset, bool hardware, ULONG size, ULONG accessType
     return breakId;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+void breakPointRemove( ULONG id )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    IDebugBreakpoint *bp;
+    HRESULT hres = g_dbgEng->control->GetBreakpointById(id, &bp);
+    if (S_OK != hres)
+        throw DbgException("IDebugControl::GetBreakpointById", hres);
+
+    hres = g_dbgEng->control->RemoveBreakpoint(bp);
+    if (S_OK != hres)
+        throw DbgException("IDebugControl::RemoveBreakpoint", hres);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void breakPointRemoveAll()
+{
+    ULONG numberOfBps;
+    do {
+        HRESULT hres = g_dbgEng->control->GetNumberBreakpoints(&numberOfBps);
+        if (S_OK != hres)
+            throw DbgException("IDebugControl::GetNumberBreakpoints", hres);
+
+        if (!numberOfBps)
+            break;
+
+        IDebugBreakpoint *bp;
+        hres = g_dbgEng->control->GetBreakpointByIndex(0, &bp);
+        if (S_OK != hres)
+            throw DbgException("IDebugControl::GetBreakpointByIndex", hres);
+
+        hres = g_dbgEng->control->RemoveBreakpoint(bp);
+        if (S_OK != hres)
+            throw DbgException("IDebugControl::RemoveBreakpoint", hres);
+
+    } while (numberOfBps);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

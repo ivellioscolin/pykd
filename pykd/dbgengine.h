@@ -64,6 +64,8 @@ void getStackTrace( STACK_FRAME_DESC* frames, ULONG frameCount, ULONG* frameRetu
 
 //breakpoints
 ULONG breakPointSet( ULONG64 offset, bool hardware = false, ULONG size = 0, ULONG accessType = 0 );
+void breakPointRemove( ULONG id );
+void breakPointRemoveAll();
 
 };
 
