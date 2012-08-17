@@ -19,6 +19,7 @@
 #include "disasm.h"
 #include "stkframe.h"
 #include "localvar.h"
+#include "bpoint.h"
 
 #include "win/dbgio.h"
 #include "win/windbg.h"
@@ -54,6 +55,9 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, compareMemory, 3, 4 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, getSourceLine, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, getSourceFile, 0, 1 );
+
+BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBp_, setSoftwareBp, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 
 BOOST_PYTHON_MODULE( pykd )
 {
@@ -106,7 +110,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Return effective pointer size" );
     python::def( "is64bitSystem", &is64bitSystem,
        "Check if target system has 64 address space" );
-    python::def( "getPageSize", &getPageSize,
+    python::def( "pageSize", &getPageSize,
         "Get the page size for the currently executing processor context" );
 
     // Manage target memory access
@@ -216,6 +220,13 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "getCurrentStack", &getCurrentStack,
         "Return a current stack as a list of stackFrame objects" );
     python::def( "getLocals", &getLocals, "Get list of local variables" );
+
+    // breakpoints
+    python::def( "setBp", &setSoftwareBp, setSoftwareBp_( python::args( "offset", "callback" ),
+        "Set software breakpoint on executiont" ) );
+    python::def( "setBp", &setHardwareBp, setHardwareBp_( python::args( "offset", "size", "accsessType", "callback" ) ,
+        "Set hardware breakpoint" ) );
+
 
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )

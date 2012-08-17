@@ -771,6 +771,67 @@ std::string getProcessorType()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+ULONG breakPointSet( ULONG64 offset, bool hardware, ULONG size, ULONG accessType )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+
+    IDebugBreakpoint  *bp;
+    hres = g_dbgEng->control->AddBreakpoint(
+        hardware ? DEBUG_BREAKPOINT_DATA : DEBUG_BREAKPOINT_CODE,
+        DEBUG_ANY_ID,
+        &bp);
+    if (S_OK != hres)
+        throw DbgException("IDebugControl::AddBreakpoint", hres);
+
+    hres = bp->SetOffset(offset);
+    if (S_OK != hres)
+    {
+        g_dbgEng->control->RemoveBreakpoint(bp);
+        throw DbgException("IDebugBreakpoint::SetOffset", hres);
+    }
+
+    ULONG bpFlags;
+    hres = bp->GetFlags(&bpFlags);
+    if (S_OK != hres)
+    {
+        g_dbgEng->control->RemoveBreakpoint(bp);
+        throw DbgException("IDebugBreakpoint::GetFlags", hres);
+    }
+
+    bpFlags |= DEBUG_BREAKPOINT_ENABLED;
+    hres = bp->SetFlags(bpFlags);
+    if (S_OK != hres)
+    {
+        g_dbgEng->control->RemoveBreakpoint(bp);
+        throw DbgException("IDebugBreakpoint::SetFlags", hres);
+    }
+
+    if ( hardware )
+    {
+        HRESULT hres = bp->SetDataParameters(size, accessType);
+        if (S_OK != hres)
+        {
+            g_dbgEng->control->RemoveBreakpoint(bp);
+            throw DbgException("IDebugBreakpoint::SetDataParameters", hres);
+        }
+    }
+
+    ULONG  breakId;
+    hres = bp->GetId(&breakId);
+    if (S_OK != hres)
+    {
+        g_dbgEng->control->RemoveBreakpoint(bp);
+        throw DbgException("IDebugBreakpoint::GetId", hres);
+    }
+
+    return breakId;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // end pykd namespace
 
 

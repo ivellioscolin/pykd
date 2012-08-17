@@ -62,5 +62,8 @@ struct STACK_FRAME_DESC {
 ULONG getStackTraceFrameCount();
 void getStackTrace( STACK_FRAME_DESC* frames, ULONG frameCount, ULONG* frameReturned = NULL );
 
+//breakpoints
+ULONG breakPointSet( ULONG64 offset, bool hardware = false, ULONG size = 0, ULONG accessType = 0 );
+
 };
 
