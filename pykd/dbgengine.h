@@ -16,6 +16,8 @@ bool isDumpAnalyzing();
 bool isKernelDebugging();
 
 void debugGo();
+void debugStep();
+void debugStepIn();
 void debugBreak();
 ULONG64 evaluate( const std::wstring  &expression );
 

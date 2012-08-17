@@ -170,6 +170,62 @@ void debugGo()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void debugStep()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+
+    hres = g_dbgEng->control->SetExecutionStatus( DEBUG_STATUS_STEP_OVER );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::SetExecutionStatus failed" );
+
+    ULONG    currentStatus;
+
+    do {
+        hres = g_dbgEng->control->WaitForEvent(DEBUG_WAIT_DEFAULT, INFINITE);
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugControl::WaitForEvent failed" );
+
+        hres = g_dbgEng->control->GetExecutionStatus( &currentStatus );
+
+        if ( FAILED( hres ) )
+            throw  DbgException( "IDebugControl::GetExecutionStatus  failed" ); 
+
+    } while( currentStatus != DEBUG_STATUS_BREAK && currentStatus != DEBUG_STATUS_NO_DEBUGGEE );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void debugStepIn()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+
+    hres = g_dbgEng->control->SetExecutionStatus( DEBUG_STATUS_STEP_INTO );
+
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::SetExecutionStatus failed" );
+
+    ULONG    currentStatus;
+
+    do {
+        hres = g_dbgEng->control->WaitForEvent(DEBUG_WAIT_DEFAULT, INFINITE);
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugControl::WaitForEvent failed" );
+
+        hres = g_dbgEng->control->GetExecutionStatus( &currentStatus );
+
+        if ( FAILED( hres ) )
+            throw  DbgException( "IDebugControl::GetExecutionStatus  failed" ); 
+
+    } while( currentStatus != DEBUG_STATUS_BREAK && currentStatus != DEBUG_STATUS_NO_DEBUGGEE );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 void debugBreak()
 {
     PyThreadState   *pystate = PyEval_SaveThread();

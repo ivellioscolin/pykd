@@ -21,6 +21,7 @@
 #include "localvar.h"
 
 #include "win/dbgio.h"
+#include "win/windbg.h"
 
 using namespace pykd;
 
@@ -72,6 +73,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if it is a dump analyzing ( not living debuggee )" );
     python::def( "isKernelDebugging", &isKernelDebugging,
         "Check if kernel dubugging is running" );
+    python::def( "isWindbgExt", &WindbgGlobalSession::isInit,
+        "Check if script works in windbg context" );
 
     python::def( "breakin", &debugBreak,
         "Break into debugger" );
@@ -79,6 +82,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Evaluate windbg expression" );
     python::def( "go", &debugGo,
         "Go debugging"  );
+    python::def( "step", &debugStep,
+        "The target is executing a single instruction or--if that instruction is a subroutine call--subroutine" );
+    python::def( "trace", &debugStepIn,
+        "The target is executing a single instruction" );
 
     // Debug output
     python::def( "dprint", &pykd::dprint, dprint_( boost::python::args( "str", "dml" ), 
