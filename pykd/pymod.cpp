@@ -106,6 +106,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return effective pointer size" );
     python::def( "is64bitSystem", &is64bitSystem,
        "Check if target system has 64 address space" );
+    python::def( "getPageSize", &getPageSize,
+        "Get the page size for the currently executing processor context" );
 
     // Manage target memory access
 

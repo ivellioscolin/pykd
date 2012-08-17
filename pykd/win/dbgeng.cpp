@@ -522,6 +522,22 @@ bool is64bitSystem()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+ULONG getPageSize()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+    ULONG  pageSize;
+
+    hres = g_dbgEng->control->GetPageSize( &pageSize );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetPageSize failed" );
+
+    return pageSize;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 ULONG64 loadMSR( ULONG  msr )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
