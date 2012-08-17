@@ -124,6 +124,7 @@ public:
     virtual ULONG getChildCount(ULONG symTag ) = 0;
     virtual ULONG getCount() = 0;
     virtual ULONG getDataKind() = 0;
+    virtual SymbolPtr getIndexType() = 0;
     virtual ULONG getLocType() = 0;
     virtual ULONG getMachineType() = 0;
     virtual std::string getName() = 0;
@@ -132,13 +133,18 @@ public:
     virtual ULONGLONG getSize() = 0;
     virtual ULONG getSymTag() = 0;
     virtual SymbolPtr getType() = 0;
+    virtual ULONG getUdtKind() = 0;
     virtual std::string getUndecoratedName() = 0;
     virtual ULONGLONG getVa() = 0;
     virtual void getValue( BaseTypeVariant &vtValue) = 0;
     virtual ULONG getVirtualBaseDispIndex() = 0;
     virtual int getVirtualBasePointerOffset() = 0;
-    virtual bool isVirtualBaseClass() = 0;
     virtual ULONG getVirtualBaseDispSize() = 0;
+    virtual bool isBasicType() = 0;
+    virtual bool isConstant() = 0;
+    virtual bool isIndirectVirtualBaseClass() = 0;
+    virtual bool isVirtualBaseClass() = 0;
+   
 };
 
 ///////////////////////////////////////////////////////////////////////////////

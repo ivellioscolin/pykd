@@ -304,6 +304,20 @@ ULONG DiaSymbol::getDataKind()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+ULONG DiaSymbol::getIndexId()
+{
+    return callSymbol(get_symIndexId);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+SymbolPtr DiaSymbol::getIndexType()
+{
+    return SymbolPtr( new DiaSymbol(callSymbol(get_arrayIndexType) ) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 ULONG DiaSymbol::getLocType()
 {
     return callSymbol(get_locationType);
@@ -368,6 +382,13 @@ ULONG DiaSymbol::getSymTag()
 SymbolPtr DiaSymbol::getType()
 {
     return SymbolPtr( new DiaSymbol( callSymbol(get_type) ) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONG DiaSymbol::getUdtKind()
+{
+    return callSymbol(get_udtKind);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -462,6 +483,30 @@ ULONG DiaSymbol::getVirtualBaseDispSize()
    SymbolPtr   baseTableType = SymbolPtr( new DiaSymbol( callSymbol(get_virtualBaseTableType) ) );
 
    return (ULONG)baseTableType->getType()->getSize();
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+bool DiaSymbol::isBasicType()
+{
+    DWORD baseType = btNoType;
+    return 
+        SUCCEEDED( m_symbol->get_baseType(&baseType) ) && 
+        (btNoType != baseType);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+bool DiaSymbol::isConstant()
+{
+    return !!callSymbol(get_constType); 
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+bool DiaSymbol::isIndirectVirtualBaseClass()
+{
+    return !!callSymbol(get_indirectVirtualBaseClass);
 }
 
 //////////////////////////////////////////////////////////////////////////////
