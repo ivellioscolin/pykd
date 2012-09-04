@@ -8,12 +8,13 @@ import pykd
 appPath = None
 module = None
 moduleName = None
+processId = None
 
 class TargetTest( unittest.TestCase ):
 
     def testStartStop(self):
-        processId = pykd.startProcess( appPath )
-        pykd.killProcess( processId )
+        _locProcessId = pykd.startProcess( appPath )
+        pykd.killProcess( _locProcessId )
 
 
 

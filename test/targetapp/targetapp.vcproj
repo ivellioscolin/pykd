@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="targetapp"
 	ProjectGUID="{C6254E16-AB8E-41EE-887D-31458E93FC68}"
 	RootNamespace="targetapp"
+	SccProjectName="$/pykd/branch/0.2.x/test/targetapp"
+	SccAuxPath="https://tfs.codeplex.com/tfs/TFS08"
+	SccLocalPath="."
+	SccProvider="{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
