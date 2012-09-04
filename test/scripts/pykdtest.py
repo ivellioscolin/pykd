@@ -19,6 +19,7 @@ import moduletest
 import typeinfo 
 import typedvar
 import regtest
+import localstest
 
 class StartProcessWithoutParamsTest(unittest.TestCase):
     def testStart(self):
@@ -30,13 +31,13 @@ class StartProcessWithoutParamsTest(unittest.TestCase):
 class TerminateProcessTest(unittest.TestCase):
     def testKill(self):
         pykd.killProcess( target.processId )
+        pykd.detachProcess( target.processId )
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
         return unittest.TestSuite(
            [
                 unittest.TestLoader().loadTestsFromTestCase( StartProcessWithoutParamsTest ),
-                unittest.TestLoader().loadTestsFromTestCase( target.TargetTest ),
                 # *** Test without start/kill new processes
                 unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
                 unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
@@ -44,8 +45,10 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
                 unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
                 unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
-                # *** 
+                # ^^^
                 unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest ),
+
+                unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
             ] ) 
     else:
        return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )
@@ -53,7 +56,7 @@ def getTestSuite( singleName = "" ):
 if __name__ == "__main__":
 
     print "\nTesting PyKd ver. " + pykd.version
-    
+
     target.appPath = sys.argv[1]
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
     #print "Test module: %s" % target.appPath

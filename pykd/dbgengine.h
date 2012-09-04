@@ -59,8 +59,7 @@ struct STACK_FRAME_DESC {
     ULONG64 stackOffset;
 };
 
-ULONG getStackTraceFrameCount();
-void getStackTrace( STACK_FRAME_DESC* frames, ULONG frameCount, ULONG* frameReturned = NULL );
+void getStackTrace(std::vector<STACK_FRAME_DESC> &frames);
 
 //breakpoints
 ULONG breakPointSet( ULONG64 offset, bool hardware = false, ULONG size = 0, ULONG accessType = 0 );

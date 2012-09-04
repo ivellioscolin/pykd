@@ -6,6 +6,7 @@
 
 #include "dbgengine.h"
 #include "context.h"
+#include "symengine.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -18,9 +19,11 @@ class StackFrame
 public:
     StackFrame( const STACK_FRAME_DESC& desc );
 
-    python::dict getLocals();
+    python::dict getLocals() const;
 
     std::string print() const;
+
+    ULONG64 getValue(RegRealativeId rri, LONG64 offset = 0) const;
 
 public:
 

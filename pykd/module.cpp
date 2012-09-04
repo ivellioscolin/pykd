@@ -220,10 +220,10 @@ std::string Module::getSymbolNameByVa( ULONG64 offset )
 
     sstr << sym->getName();
 
-    if ( displacement > 0 )
+    if ( displacement > 0 && displacement )
         sstr << '+' << std::hex << displacement;
     else if ( displacement < 0 )
-        sstr << '-' << std::hex << -displacement;        
+        sstr << '-' << std::hex << -displacement;
 
     return sstr.str();
 }

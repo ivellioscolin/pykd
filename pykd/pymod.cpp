@@ -295,7 +295,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def("offset", &Module::getSymbolOffset,
             "Return offset of the symbol" )
         .def("findSymbol", &Module::getSymbolNameByVa,
-            "Return symbol name by offset" )
+            "Return symbol name by virtual address" )
         .def("rva", &Module::getSymbolRva,
             "Return rva of the symbol" )
         .def("sizeof", &Module::getSymbolSize,
@@ -382,8 +382,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a frame's stack offset" )
         .def_readonly( "frameNumber", &StackFrame::m_frameNumber,
             "Return a frame's number" )
-        //.def( "getLocals", &StackFrame::getLocals, StackFrame_getLocals( python::args( "ctx" ),
-        //    "Get list of local variables for this stack frame" ) )
+        .def( "getLocals", &StackFrame::getLocals,
+             "Get list of local variables for this stack frame" )
         .def( "__str__", &StackFrame::print,
             "Return stacks frame as a string");
 

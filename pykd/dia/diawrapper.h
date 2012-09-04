@@ -19,6 +19,8 @@ typedef CComPtr< IDiaEnumLineNumbers > DiaEnumLineNumbersPtr;
 typedef CComPtr< IDiaLineNumber> DiaLineNumberPtr;
 typedef CComPtr< IDiaSourceFile > DiaSourceFilePtr;
 
+typedef std::map<ULONG, ULONG> DiaRegToRegRelativeBase;
+
 //////////////////////////////////////////////////////////////////////////////
 
 class DiaException : public SymbolException {
@@ -51,10 +53,9 @@ private:
 
 class DiaSymbol : public Symbol {
 public:
+    DiaSymbol( DiaSymbolPtr &_symbol, DWORD machineType );
 
-    DiaSymbol( DiaSymbolPtr &_symbol );
-
-    DiaSymbol( IDiaSymbol *_symbol );
+    static SymbolPtr fromGlobalScope( IDiaSymbol *_symbol );
 
     SymbolPtr getChildByName(const std::string &_name );
 
@@ -105,6 +106,7 @@ public:
     ULONG getDataKind();
 
     //ULONG getRegisterId();
+    virtual ULONG getRegRealativeId() override;
 
     ULONG getMachineType() {
         return m_machineType;
@@ -195,6 +197,8 @@ protected:
     //    const char *prefix = NULL
     //);
 
+    ULONG getRegRealativeIdImpl(const DiaRegToRegRelativeBase &DiaRegToRegRelative);
+
     template <typename TRet>
     TRet callSymbolT(
         HRESULT(STDMETHODCALLTYPE IDiaSymbol::*method)(TRet *),
@@ -222,8 +226,8 @@ public:
 
     DiaSession( IDiaSession* session, IDiaSymbol *globalScope ) :
         m_globalScope( globalScope ),
-        m_session( session ),
-        m_globalSymbol( new DiaSymbol( globalScope ) )
+        m_globalSymbol( DiaSymbol::fromGlobalScope( globalScope ) ),
+        m_session( session )
         {}
 
     SymbolPtr& getSymbolScope() {

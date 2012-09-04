@@ -673,46 +673,26 @@ ULONG64 getRegInstructionPointer()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ULONG getStackTraceFrameCount()
+void getStackTrace(std::vector<STACK_FRAME_DESC> &frames)
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
-    HRESULT  hres;
-    ULONG  filledFrames;
-
-    hres = g_dbgEng->control->GetStackTrace( 0, 0, 0, NULL, 0, &filledFrames );
+    HRESULT hres;
+    ULONG   filledFrames = 1024;
+    std::vector<DEBUG_STACK_FRAME> dbgFrames(filledFrames);
+    hres = g_dbgEng->control->GetStackTrace( 0, 0, 0, &dbgFrames[0], filledFrames, &filledFrames);
     if ( FAILED( hres ) )
         throw DbgException( "IDebugControl::GetStackTrace  failed" );
 
-    return filledFrames;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-void getStackTrace( STACK_FRAME_DESC* frames, ULONG frameCount, ULONG* frameReturned )
-{
-    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
-
-    HRESULT     hres;
-
-    ULONG   filledFrames;
-    std::vector<DEBUG_STACK_FRAME>  stack(frameCount); 
-
-    hres = g_dbgEng->control->GetStackTrace( 0, 0, 0, &stack[0], frameCount, &filledFrames);
-    if ( FAILED( hres ) )
-        throw DbgException( "IDebugControl::GetStackTrace  failed" );
-
+    frames.resize(filledFrames);
     for ( ULONG i = 0; i < filledFrames; ++i )
     {
-        frames[i].number = stack[i].FrameNumber;
-        frames[i].instructionOffset = stack[i].InstructionOffset;
-        frames[i].returnOffset = stack[i].ReturnOffset;
-        frames[i].frameOffset = stack[i].FrameOffset;
-        frames[i].stackOffset = stack[i].StackOffset;
+        frames[i].number = dbgFrames[i].FrameNumber;
+        frames[i].instructionOffset = dbgFrames[i].InstructionOffset;
+        frames[i].returnOffset = dbgFrames[i].ReturnOffset;
+        frames[i].frameOffset = dbgFrames[i].FrameOffset;
+        frames[i].stackOffset = dbgFrames[i].StackOffset;
     }
-
-    if ( frameReturned )
-        *frameReturned = filledFrames;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -8,7 +8,7 @@ namespace pykd {
 
 python::dict getLocals();
 
-python::dict getLocalsByFrame( StackFrame &frame );
+python::dict getLocalsByFrame( const StackFrame &frame );
 
 ///////////////////////////////////////////////////////////////////////////////
 

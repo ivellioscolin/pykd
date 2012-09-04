@@ -14,3 +14,12 @@ class ContextCallIt:
         try: self.callIt()
         except: pass
 
+class KillProcess:
+    """Kill process"""
+    def __init__(self, processId):
+        self.processId = processId
+
+    def __call__(self):
+        pykd.killProcess( self.processId )
+        pykd.detachProcess( self.processId )
+

@@ -111,6 +111,15 @@ enum BasicType
 
 ////////////////////////////////////////////////////////////////////////////////
 
+enum RegRealativeId
+{
+    rriInstructionPointer,
+    rriStackFrame,
+    rriStackPointer
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
 class Symbol {
 
 public:
@@ -144,7 +153,7 @@ public:
     virtual bool isConstant() = 0;
     virtual bool isIndirectVirtualBaseClass() = 0;
     virtual bool isVirtualBaseClass() = 0;
-   
+    virtual ULONG getRegRealativeId() = 0;  // <- RegRealativeId
 };
 
 ///////////////////////////////////////////////////////////////////////////////

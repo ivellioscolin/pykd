@@ -8,6 +8,36 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static const struct DiaRegToRegRelativeAmd64 : DiaRegToRegRelativeBase
+{
+    typedef std::map<ULONG, ULONG> Base;
+    DiaRegToRegRelativeAmd64();
+} g_DiaRegToRegRelativeAmd64;
+
+DiaRegToRegRelativeAmd64::DiaRegToRegRelativeAmd64()
+{
+    (*this)[CV_AMD64_RIP] = rriInstructionPointer;
+    (*this)[CV_AMD64_RBP] = rriStackFrame;
+    (*this)[CV_AMD64_RSP] = rriStackPointer;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+static const struct DiaRegToRegRelativeI386 : DiaRegToRegRelativeBase
+{
+    typedef std::map<ULONG, ULONG> Base;
+    DiaRegToRegRelativeI386();
+} g_DiaRegToRegRelativeI386;
+
+DiaRegToRegRelativeI386::DiaRegToRegRelativeI386()
+{
+    (*this)[CV_REG_EIP] = rriInstructionPointer;
+    (*this)[CV_REG_EBP] = rriStackFrame;
+    (*this)[CV_REG_ESP] = rriStackPointer;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 const std::string DiaException::descPrefix("pyDia: ");
 
 std::string DiaException::makeFullDesc(const std::string &desc, HRESULT hres)
@@ -96,18 +126,21 @@ std::string getBasicTypeName( ULONG basicType )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-DiaSymbol::DiaSymbol(__inout DiaSymbolPtr &_symbol )
+DiaSymbol::DiaSymbol(__inout DiaSymbolPtr &_symbol, DWORD machineType )
+    : m_symbol(_symbol), m_machineType(machineType)
 {
-    m_symbol = _symbol;
-    m_symbol->get_machineType(&m_machineType);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 
-DiaSymbol::DiaSymbol( IDiaSymbol *_symbol )
+SymbolPtr DiaSymbol::fromGlobalScope( IDiaSymbol *_symbol )
 {
-    m_symbol = _symbol;
-    m_symbol->get_machineType(&m_machineType);
+    DWORD machineType;
+    HRESULT hres = _symbol->get_machineType(&machineType);
+    if (S_OK != hres)
+        throw DiaException("IDiaSymbol::get_machineType", hres);
+
+    return SymbolPtr( new DiaSymbol(DiaSymbolPtr(_symbol), machineType) );
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +181,7 @@ SymbolPtrList  DiaSymbol::findChildren(
     ULONG celt;
     while ( SUCCEEDED(symbols->Next(1, &child, &celt)) && (celt == 1) )
     {
-        childList.push_back( SymbolPtr( new DiaSymbol(child) ) );
+        childList.push_back( SymbolPtr( new DiaSymbol(child, m_machineType) ) );
         child = NULL;
     }
 
@@ -220,7 +253,7 @@ SymbolPtr DiaSymbol::getChildByIndex(ULONG symTag, ULONG _index )
     if (S_OK != hres)
         throw DiaException("Call IDiaEnumSymbols::Item", hres);
 
-    return SymbolPtr( new DiaSymbol(child) );
+    return SymbolPtr( new DiaSymbol(child, m_machineType) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -247,7 +280,7 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &name )
         if (S_OK != hres)
             throw DiaException("Call IDiaEnumSymbols::Item", hres);
 
-        return SymbolPtr( new DiaSymbol(child) );
+        return SymbolPtr( new DiaSymbol(child, m_machineType) );
     }
 
     std::string     pattern = "*";
@@ -279,7 +312,7 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &name )
         if (S_OK != hres)
             throw DiaException("Call IDiaEnumSymbols::Item", hres);
 
-        SymbolPtr  symPtr = SymbolPtr( new DiaSymbol(child) );
+        SymbolPtr  symPtr = SymbolPtr( new DiaSymbol(child, m_machineType) );
 
         if ( name == symPtr->getName() )
             return symPtr;
@@ -304,6 +337,33 @@ ULONG DiaSymbol::getDataKind()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+ULONG DiaSymbol::getRegRealativeId()
+{
+    switch (m_machineType)
+    {
+    case IMAGE_FILE_MACHINE_AMD64:
+        return getRegRealativeIdImpl(g_DiaRegToRegRelativeAmd64);
+    case IMAGE_FILE_MACHINE_I386:
+        return getRegRealativeIdImpl(g_DiaRegToRegRelativeI386);
+    }
+    throw DiaException("Unsupported machine type");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONG DiaSymbol::getRegRealativeIdImpl(const DiaRegToRegRelativeBase &DiaRegToRegRelative)
+{
+    DiaRegToRegRelativeBase::const_iterator it = 
+        DiaRegToRegRelative.find(callSymbol(get_registerId));
+
+    if (it == DiaRegToRegRelative.end())
+        throw DiaException("Cannot convert DAI register ID to relative register ID");
+
+    return it->second;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 ULONG DiaSymbol::getIndexId()
 {
     return callSymbol(get_symIndexId);
@@ -313,7 +373,8 @@ ULONG DiaSymbol::getIndexId()
 
 SymbolPtr DiaSymbol::getIndexType()
 {
-    return SymbolPtr( new DiaSymbol(callSymbol(get_arrayIndexType) ) );
+    DiaSymbolPtr diaSymbol(callSymbol(get_arrayIndexType));
+    return SymbolPtr( new DiaSymbol(diaSymbol, m_machineType) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -381,7 +442,8 @@ ULONG DiaSymbol::getSymTag()
 
 SymbolPtr DiaSymbol::getType()
 {
-    return SymbolPtr( new DiaSymbol( callSymbol(get_type) ) );
+    DiaSymbolPtr diaSymbol(callSymbol(get_type));
+    return SymbolPtr( new DiaSymbol( diaSymbol, m_machineType ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -480,9 +542,10 @@ ULONG DiaSymbol::getVirtualBaseDispIndex()
 
 ULONG DiaSymbol::getVirtualBaseDispSize()
 {
-   SymbolPtr   baseTableType = SymbolPtr( new DiaSymbol( callSymbol(get_virtualBaseTableType) ) );
+    DiaSymbolPtr diaSymbol(callSymbol(get_virtualBaseTableType));
+    SymbolPtr baseTableType = SymbolPtr( new DiaSymbol( diaSymbol, m_machineType ) );
 
-   return (ULONG)baseTableType->getType()->getSize();
+    return (ULONG)baseTableType->getType()->getSize();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -534,10 +597,13 @@ SymbolPtr DiaSession::findByRva( ULONG rva, ULONG symTag, LONG* pdisplacement )
         throw DiaException("Call IDiaSession::findSymbolByRVAEx", hres);
     if (!child)
         throw DiaException("Call IDiaSession::findSymbolByRVAEx", E_UNEXPECTED);
-    if ( pdisplacement == NULL && displacement != 0 )
+    if ( !pdisplacement && displacement)
         throw DiaException("Call IDiaSession::findSymbolByRVAEx failed to find suymbol" );
 
-    return SymbolPtr( new DiaSymbol(child) );
+    if (pdisplacement)
+        *pdisplacement = displacement;
+
+    return SymbolPtr( new DiaSymbol(child, m_globalSymbol->getMachineType() ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
