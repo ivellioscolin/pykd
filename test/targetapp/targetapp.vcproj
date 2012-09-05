@@ -409,6 +409,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\scripts\customtypestest.py"
+				>
+			</File>
+			<File
 				RelativePath="..\scripts\dbgcmd.py"
 				>
 			</File>

@@ -157,6 +157,10 @@ public:
         throw PyException( PyExc_TypeError, "object is unsubscriptable");  
     }
 
+    virtual void appendField(const std::string &fieldName, TypeInfoPtr fieldType) {
+        throw TypeException( getName(), "type is not is not extensible" );
+    }
+
     void setConstant( const BaseTypeVariant& var )
     {
         m_constant = true;
@@ -298,24 +302,11 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class UdtTypeInfo : public TypeInfo 
+class UdtFieldColl : public TypeInfo
 {
-public:
-
-    UdtTypeInfo (SymbolPtr &symbol ) :
-        m_dia( symbol ),
-        m_fields( symbol->getName() )
-    {
-    }
-
 protected:
-
     virtual std::string getName() {
-        return m_dia->getName();
-    }
-
-    virtual ULONG getSize() {
-        return (ULONG)m_dia->getSize();
+        return m_fields.getName();
     }
 
     virtual TypeInfoPtr getField( const std::string &fieldName ) {
@@ -331,7 +322,7 @@ protected:
     }
 
     virtual ULONG getFieldOffsetByNameRecirsive( const std::string &fieldName ) {
-        return UdtUtils::getFiledOffsetRecirsive( shared_from_this(), fieldName );
+        return UdtUtils::getFieldOffsetRecirsive( shared_from_this(), fieldName );
     }
 
     virtual ULONG getFieldOffsetByNameNotRecursively( const std::string &fieldName ) {
@@ -342,10 +333,9 @@ protected:
         return lookupField(index).m_offset;
     }
 
-    virtual ULONG getFieldCount();
-
-    virtual bool isUserDefined() {
-        return true;
+    virtual ULONG getFieldCount() {
+        refreshFields();
+        return (ULONG)m_fields.size();
     }
 
     virtual ULONG getElementCount() {
@@ -358,9 +348,61 @@ protected:
 
     virtual std::string print();
 
-    SymbolPtr    m_dia;
+    virtual bool isUserDefined() {
+        return true;
+    }
 
-    UdtUtils::FieldCollection  m_fields;
+protected:
+    UdtFieldColl(const std::string &typeName) : m_fields(typeName) {}
+
+    virtual void refreshFields() {}
+    virtual std::string getTypeString() const = 0;
+
+    bool empty() const {
+        return m_fields.empty();
+    }
+
+    void push_back(const UdtUtils::Field &field) {
+        m_fields.push_back(field);
+    }
+
+    template <typename T>
+    const UdtUtils::Field &lookupField( T index) {
+        refreshFields();
+        return m_fields.lookup(index);
+    }
+
+    UdtUtils::Field &last(){
+        return *m_fields.rbegin();
+    }
+
+private:
+    UdtUtils::FieldCollection m_fields;
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+
+class UdtTypeInfo : public UdtFieldColl
+{
+public:
+
+    UdtTypeInfo (SymbolPtr &symbol ) :
+        UdtFieldColl( symbol->getName() ),
+        m_dia( symbol )
+    {
+    }
+
+protected:
+    virtual ULONG getSize() {
+        return (ULONG)m_dia->getSize();
+    }
+    void getVirtualFields();
+
+    virtual void refreshFields() override;
+
+    virtual std::string getTypeString() const override {
+        return "struct/class";
+    }
 
     void getFields( 
         SymbolPtr &rootSym, 
@@ -371,16 +413,8 @@ protected:
         ULONG m_virtualDispSize = 0 );
 
 
-    void getVirtualFields();
-
 private:
-    void refreshFields();
-
-    template <typename T>
-    const UdtUtils::Field &lookupField( T index) {
-        refreshFields();
-        return m_fields.lookup(index);
-    }
+    SymbolPtr m_dia;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

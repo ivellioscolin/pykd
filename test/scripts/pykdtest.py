@@ -20,6 +20,7 @@ import typeinfo
 import typedvar
 import regtest
 import localstest
+import customtypestest
 
 class StartProcessWithoutParamsTest(unittest.TestCase):
     def testStart(self):
@@ -45,6 +46,7 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
                 unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
                 unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
+                unittest.TestLoader().loadTestsFromTestCase( customtypestest.CustomTypesTest ),
                 # ^^^
                 unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest ),
 

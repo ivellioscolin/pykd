@@ -36,7 +36,7 @@ const Field &FieldCollection::lookup(const std::string &name) const
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ULONG getFiledOffsetRecirsive(TypeInfoPtr typeInfo, const std::string &fieldName)
+ULONG getFieldOffsetRecirsive(TypeInfoPtr typeInfo, const std::string &fieldName)
 {
     // "m_field1.m_field2" -> ["m_field1", "m_field2"]
     typedef boost::char_separator<char> CharSep;

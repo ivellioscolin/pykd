@@ -557,10 +557,45 @@ ULONG64 TypeInfo::getStaticOffset()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-ULONG UdtTypeInfo::getFieldCount()
+std::string UdtFieldColl::print()
 {
-    refreshFields();
-    return (ULONG)m_fields.size();
+    std::stringstream  sstr;
+
+    sstr << getTypeString() << ": " << getName() << " Size: 0x" << std::hex << getSize() << " (" << std::dec << getSize() << ")" << std::endl;
+    
+    ULONG       fieldCount = getFieldCount();
+
+    for ( ULONG i = 0; i < fieldCount; ++i )
+    {
+        const UdtUtils::Field &udtField = lookupField(i);
+        TypeInfoPtr     fieldType = udtField.m_type;
+
+        if ( fieldType->isStaticMember() )
+        {   
+            sstr << "   =" << std::right << std::setw(10) << std::setfill('0') << std::hex << fieldType->getStaticOffset();
+            sstr << " " << std::left << std::setw(18) << std::setfill(' ') << udtField.m_name << ':';
+        }
+        else
+        if ( fieldType->isVirtualMember() )
+        {
+            ULONG virtualBasePtr, virtualDispIndex, virtualDispSize;
+            fieldType->getVirtualDisplacement( virtualBasePtr, virtualDispIndex, virtualDispSize );
+
+            sstr << "   virtual base " <<  fieldType->getVirtualBase()->getName();
+            sstr << " +" << std::right << std::setw(4) << std::setfill('0') << std::hex << udtField.m_offset;
+            sstr << " " << udtField.m_name << ':';
+        }
+        else
+        {
+            sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << udtField.m_offset;
+            sstr << " " << std::left << std::setw(24) << std::setfill(' ') << udtField.m_name << ':';
+        }
+
+        sstr << " " << std::left << fieldType->getName();
+        sstr << std::endl;
+    }
+
+    return sstr.str();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -615,7 +650,9 @@ void UdtTypeInfo::getFields(
                 break;
             }
 
-            m_fields.push_back( UdtUtils::Field( fieldOffset, childSym->getName(), ti ) );
+            UdtFieldColl::push_back(
+                UdtUtils::Field( fieldOffset, childSym->getName(), ti )
+            );
         }
         else
         if ( symTag == SymTagVTable )
@@ -632,7 +669,7 @@ void UdtTypeInfo::getFields(
                
             }
 
-            m_fields.push_back( 
+            UdtFieldColl::push_back( 
                 UdtUtils::Field( startOffset + childSym->getOffset(), "__VFN_table", ti )
             ); 
         }
@@ -666,54 +703,11 @@ void UdtTypeInfo::getVirtualFields()
 
 void UdtTypeInfo::refreshFields()
 {
-    if ( m_fields.empty() )
+    if ( UdtFieldColl::empty() )
     {
         getFields( m_dia, SymbolPtr() );
         getVirtualFields();
     }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-std::string UdtTypeInfo::print()
-{
-    std::stringstream  sstr;
-
-    sstr << "struct/class: " << getName() << " Size: 0x" << std::hex << getSize() << " (" << std::dec << getSize() << ")" << std::endl;
-    
-    ULONG       fieldCount = getFieldCount();
-
-    for ( ULONG i = 0; i < fieldCount; ++i )
-    {
-        const UdtUtils::Field &udtField = lookupField(i);
-        TypeInfoPtr     fieldType = udtField.m_type;
-
-        if ( fieldType->isStaticMember() )
-        {   
-            sstr << "   =" << std::right << std::setw(10) << std::setfill('0') << std::hex << fieldType->getStaticOffset();
-            sstr << " " << std::left << std::setw(18) << std::setfill(' ') << udtField.m_name << ':';
-        }
-        else
-        if ( fieldType->isVirtualMember() )
-        {
-            ULONG virtualBasePtr, virtualDispIndex, virtualDispSize;
-            fieldType->getVirtualDisplacement( virtualBasePtr, virtualDispIndex, virtualDispSize );
-
-            sstr << "   virtual base " <<  fieldType->getVirtualBase()->getName();
-            sstr << " +" << std::right << std::setw(4) << std::setfill('0') << std::hex << udtField.m_offset;
-            sstr << " " << udtField.m_name << ':';
-        }
-        else
-        {
-            sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << udtField.m_offset;
-            sstr << " " << std::left << std::setw(24) << std::setfill(' ') << udtField.m_name << ':';
-        }
-
-        sstr << " " << std::left << fieldType->getName();
-        sstr << std::endl;
-    }
-
-    return sstr.str();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

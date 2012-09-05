@@ -46,13 +46,17 @@ public:
     const Field &lookup(ULONG index) const;
     const Field &lookup(const std::string &name) const;
 
+    const std::string &getName() const {
+        return m_baseTypeName;
+    }
+
 private:
     std::string m_baseTypeName;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ULONG getFiledOffsetRecirsive(TypeInfoPtr typeInfo, const std::string &fieldName);
+ULONG getFieldOffsetRecirsive(TypeInfoPtr typeInfo, const std::string &fieldName);
 
 ///////////////////////////////////////////////////////////////////////////////////
 

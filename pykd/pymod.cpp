@@ -14,6 +14,7 @@
 #include "dbgexcept.h"
 #include "dbgmem.h"
 #include "typeinfo.h"
+#include "customtypes.h"
 #include "typedvar.h"
 #include "cpureg.h"
 #include "disasm.h"
@@ -58,6 +59,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, getSourceFile, 0, 1 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBp_, setSoftwareBp, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
+
+BOOST_PYTHON_FUNCTION_OVERLOADS( CustomStruct_create, CustomStruct::create, 1, 2 );
 
 BOOST_PYTHON_MODULE( pykd )
 {
@@ -231,6 +234,12 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "removeAllBp", &breakPointRemoveAll,
         "Remove all breapoints" );
 
+    // custom types
+    python::def( "createStruct", &CustomStruct::create, CustomStruct_create( python::args( "name", "alignReq" ), 
+        "Create empty structure. Use append() method for building" ) );
+    python::def( "createUnion", &CustomUnion::create,
+        "Create empty union. Use append() method for building" );
+
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )
         .def( "__eq__", &intBase::eq )
@@ -334,6 +343,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "field", &TypeInfo::getField )
         .def( "asMap", &TypeInfo::asMap )
         .def( "deref", &TypeInfo::deref )
+        .def( "append", &TypeInfo::appendField )
         .def( "__str__", &TypeInfo::print )
         .def( "__getattr__", &TypeInfo::getField )
         .def("__len__", &TypeInfo::getElementCount )

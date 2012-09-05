@@ -362,6 +362,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\customtypes.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dbgexcept.cpp"
 				>
 			</File>
@@ -465,6 +469,10 @@
 			</File>
 			<File
 				RelativePath=".\cpureg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\customtypes.h"
 				>
 			</File>
 			<File
