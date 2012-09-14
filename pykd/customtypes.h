@@ -15,11 +15,11 @@ namespace pykd {
 class CustomStruct : public UdtFieldColl
 {
 public:
-    static TypeInfoPtr create(const std::string &name, ULONG alignReq = 0);
+    static TypeInfoPtr create(const std::string &name, ULONG align = 0);
 
 protected:
-    CustomStruct(const std::string &name, ULONG alignReq)
-        : UdtFieldColl(name), m_name(name), m_alignReq(alignReq ? alignReq : ptrSize()) 
+    CustomStruct(const std::string &name, ULONG align)
+        : UdtFieldColl(name), m_name(name), m_align(align) 
     {
     }
 
@@ -37,7 +37,7 @@ protected:
 
 private:
     std::string m_name;
-    ULONG m_alignReq;
+    ULONG m_align;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,6 +61,10 @@ protected:
 private:
     std::string m_name;
 };
+
+////////////////////////////////////////////////////////////////////////////////
+
+TypeInfoPtr PtrToVoid();
 
 ////////////////////////////////////////////////////////////////////////////////
 

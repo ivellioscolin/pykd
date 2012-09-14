@@ -235,10 +235,12 @@ BOOST_PYTHON_MODULE( pykd )
         "Remove all breapoints" );
 
     // custom types
-    python::def( "createStruct", &CustomStruct::create, CustomStruct_create( python::args( "name", "alignReq" ), 
+    python::def( "createStruct", &CustomStruct::create, CustomStruct_create( python::args( "name", "align" ), 
         "Create empty structure. Use append() method for building" ) );
     python::def( "createUnion", &CustomUnion::create,
         "Create empty union. Use append() method for building" );
+    python::def( "pVoid", &PtrToVoid,
+        "Create \"Void *\" type" );
 
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )

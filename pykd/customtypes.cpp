@@ -42,7 +42,7 @@ void CustomStruct::appendField(const std::string &fieldName, TypeInfoPtr fieldTy
         throw TypeException(getName(), "duplicate field name: " + fieldName);
 
     ULONG offset = getSize();
-    offset += (offset % m_alignReq);
+    offset += offset % (m_align ? m_align : fieldType->getAlignReq());
     UdtFieldColl::push_back(
         UdtUtils::Field(offset, fieldName, fieldType)
     );
@@ -89,6 +89,13 @@ void CustomUnion::appendField(const std::string &fieldName, TypeInfoPtr fieldTyp
     UdtFieldColl::push_back(
         UdtUtils::Field(0, fieldName, fieldType)
     );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+TypeInfoPtr PtrToVoid()
+{
+    return TypeInfoPtr( new PointerTypeInfo(ptrSize()) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

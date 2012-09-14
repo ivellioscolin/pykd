@@ -306,6 +306,10 @@ BitFieldTypeInfo::BitFieldTypeInfo( SymbolPtr &symbol )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+std::string PointerTypeInfo::VoidTypeName( "Void" );
+
+///////////////////////////////////////////////////////////////////////////////////
+
 PointerTypeInfo::PointerTypeInfo( SymbolPtr &symbol  ) 
 {
     SymbolPtr pointTo = symbol->getType();
@@ -331,7 +335,7 @@ PointerTypeInfo::PointerTypeInfo( SymbolPtr &symbol  )
         case SymTagBaseType:
             //  * pointer to Void
             if (btVoid == static_cast<BasicType>(pointTo->getBaseType()))
-                m_derefName = "Void";
+                m_derefName = VoidTypeName;
             break;
 
         case SymTagVTableShape:
@@ -355,6 +359,14 @@ PointerTypeInfo::PointerTypeInfo( SymbolPtr &symScope, const std::string &symNam
         m_derefType.swap( TypeInfoPtr() );
     }
     m_size = (symScope->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+PointerTypeInfo::PointerTypeInfo( ULONG size )
+    : m_size(size)
+    , m_derefName(VoidTypeName)
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -596,6 +608,18 @@ std::string UdtFieldColl::print()
     }
 
     return sstr.str();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ULONG UdtFieldColl::getAlignReq()
+{
+    ULONG alignReq = 1;
+    const ULONG fieldCount = getFieldCount();
+    for ( ULONG i = 0; i < fieldCount; ++i )
+        alignReq = max(alignReq, lookupField(i).m_type->getAlignReq());
+
+    return alignReq;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

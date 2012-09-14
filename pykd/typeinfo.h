@@ -161,6 +161,10 @@ public:
         throw TypeException( getName(), "type is not is not extensible" );
     }
 
+    virtual ULONG getAlignReq() {
+        return 1;
+    }
+
     void setConstant( const BaseTypeVariant& var )
     {
         m_constant = true;
@@ -292,6 +296,10 @@ public:
         return m_bitWidth;
     }
 
+    virtual ULONG getAlignReq() override {
+        return m_size;
+    }
+
 private:
 
     ULONG           m_size;
@@ -351,6 +359,8 @@ protected:
     virtual bool isUserDefined() {
         return true;
     }
+
+    virtual ULONG getAlignReq() override;
 
 protected:
     UdtFieldColl(const std::string &typeName) : m_fields(typeName) {}
@@ -453,6 +463,10 @@ protected:
 
     virtual std::string print();
 
+    virtual ULONG getAlignReq() override {
+        return getSize();
+    }
+
     SymbolPtr    m_dia;
 };
 
@@ -471,6 +485,9 @@ public:
 
     PointerTypeInfo( SymbolPtr &symScope, const std::string &symName );
 
+    // void *
+    PointerTypeInfo( ULONG size );
+
     virtual std::string getName();
 
     virtual ULONG getSize();
@@ -481,6 +498,10 @@ public:
 
     virtual TypeInfoPtr deref() {
         return getDerefType();
+    }
+
+    virtual ULONG getAlignReq() override {
+        return m_size;
     }
 
     TypeInfoPtr getDerefType() {
@@ -500,6 +521,7 @@ public:
     }
 
 private:
+    static std::string VoidTypeName;
 
     TypeInfoPtr     m_derefType;
     ULONG           m_size;
@@ -535,6 +557,10 @@ public:
 
     virtual TypeInfoPtr getElementType() {
         return m_derefType;
+    }
+
+    virtual ULONG getAlignReq() override {
+        return m_derefType->getAlignReq();
     }
 
     TypeInfoPtr getDerefType() {
