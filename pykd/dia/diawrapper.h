@@ -25,8 +25,8 @@ typedef std::map<ULONG, ULONG> DiaRegToRegRelativeBase;
 
 class DiaException : public SymbolException {
 public:
-    DiaException(const std::string &desc, HRESULT hres)
-        : SymbolException( makeFullDesc(desc, hres) )
+    DiaException(const std::string &desc, HRESULT hres, IDiaSymbol *symbol = NULL)
+        : SymbolException( makeFullDesc(desc, hres, symbol) )
         , m_hres(hres)
     {
     }
@@ -44,7 +44,7 @@ private:
 
     static const std::string descPrefix;
 
-    static std::string makeFullDesc(const std::string &desc, HRESULT hres);
+    static std::string makeFullDesc(const std::string &desc, HRESULT hres, IDiaSymbol *symbol = NULL);
 
     HRESULT m_hres;
 };
@@ -70,8 +70,6 @@ public:
     ULONGLONG getSize();
 
     std::string getName();
-
-    std::string getUndecoratedName();
 
     SymbolPtr getType();
 
@@ -208,7 +206,7 @@ protected:
         TRet retValue;
         HRESULT hres = (m_symbol->*method)(&retValue);
         if (S_OK != hres)
-            throw DiaException(std::string("Call IDiaSymbol::") + methodName, hres);
+            throw DiaException(std::string("Call IDiaSymbol::") + methodName, hres, m_symbol);
 
         return retValue;
     }

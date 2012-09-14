@@ -143,7 +143,6 @@ public:
     virtual ULONG getSymTag() = 0;
     virtual SymbolPtr getType() = 0;
     virtual ULONG getUdtKind() = 0;
-    virtual std::string getUndecoratedName() = 0;
     virtual ULONGLONG getVa() = 0;
     virtual void getValue( BaseTypeVariant &vtValue) = 0;
     virtual ULONG getVirtualBaseDispIndex() = 0;

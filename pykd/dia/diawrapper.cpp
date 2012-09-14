@@ -40,10 +40,54 @@ DiaRegToRegRelativeI386::DiaRegToRegRelativeI386()
 
 const std::string DiaException::descPrefix("pyDia: ");
 
-std::string DiaException::makeFullDesc(const std::string &desc, HRESULT hres)
+std::string DiaException::makeFullDesc(const std::string &desc, HRESULT hres, IDiaSymbol *symbol /*= NULL*/)
 {
     std::stringstream sstream;
     sstream << descPrefix << desc << " failed" << std::endl;
+    if (symbol)
+    {
+        BSTR bstrName = NULL;
+        HRESULT locRes = symbol->get_undecoratedName(&bstrName);
+        if (S_OK == locRes && bstrName)
+        {
+            autoBstr freeBstr(bstrName);
+            sstream << "Symbol name: \"" << autoBstr::asStr(bstrName) << "\"";
+        }
+        else
+        {
+            locRes = symbol->get_name(&bstrName);
+            if (S_OK == locRes && bstrName)
+            {
+                autoBstr freeBstr(bstrName);
+                sstream << "Symbol name: " << autoBstr::asStr(bstrName);
+            }
+            else
+            {
+                sstream << "Symbol: ";
+            }
+        }
+
+        DWORD dwValue;
+        locRes = symbol->get_relativeVirtualAddress(&dwValue);
+        if (S_OK == locRes)
+        {
+            sstream << ", RVA= 0x" << std::hex << dwValue;
+        }
+
+        locRes = symbol->get_symTag(&dwValue);
+        if (S_OK == locRes)
+        {
+            sstream << ", tag= " << std::dec << dwValue;
+        }
+
+        locRes = symbol->get_locationType(&dwValue);
+        if (S_OK == locRes)
+        {
+            sstream << ", location: " << std::dec << dwValue;
+        }
+
+        sstream << std::endl;
+    }
     sstream << "Return value is 0x" << std::hex << hres;
 
     PCHAR errMessage = NULL;
@@ -392,32 +436,11 @@ static const  boost::regex  stdcallMatch("^_(\\w+)@.+$");
 
 std::string DiaSymbol::getName()
 {
-    autoBstr retValue( callSymbol(get_name) );
-
-    boost::cmatch  matchResult;
-
-    std::string retStr = retValue.asStr();
-
-    if ( boost::regex_match( retStr.c_str(), matchResult, stdcallMatch ) )
-    {
-        retStr= std::string( matchResult[1].first, matchResult[1].second );
-    }
-    else if (IMAGE_FILE_MACHINE_I386 == m_machineType)
-    {
-        DWORD symTag;
-        HRESULT hres = m_symbol->get_symTag(&symTag);
-        if (S_OK == hres && SymTagPublicSymbol == symTag)
-            retStr.erase( retStr.begin() );
-    }
-
-    return retStr;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-std::string DiaSymbol::getUndecoratedName()
-{
-    autoBstr retValue( callSymbol(get_undecoratedName) );
+    BSTR bstrName = NULL;
+    HRESULT hres = m_symbol->get_undecoratedName(&bstrName);
+    if (S_OK != hres)
+        bstrName = callSymbol(get_name);
+    autoBstr retValue( bstrName );
     return retValue.asStr();
 }
 
