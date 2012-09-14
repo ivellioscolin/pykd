@@ -211,6 +211,10 @@ public:
         return m_virtualBaseType;
     }
 
+    bool is(TypeInfo *rhs) const {
+        return this == rhs;
+    }
+
 protected:
 
     std::string getComplexName();
