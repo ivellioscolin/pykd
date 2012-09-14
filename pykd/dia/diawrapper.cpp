@@ -139,6 +139,8 @@ SymbolPtr DiaSymbol::fromGlobalScope( IDiaSymbol *_symbol )
     HRESULT hres = _symbol->get_machineType(&machineType);
     if (S_OK != hres)
         throw DiaException("IDiaSymbol::get_machineType", hres);
+    if (!machineType)
+        machineType = IMAGE_FILE_MACHINE_I386;
 
     return SymbolPtr( new DiaSymbol(DiaSymbolPtr(_symbol), machineType) );
 }
@@ -397,7 +399,16 @@ std::string DiaSymbol::getName()
     std::string retStr = retValue.asStr();
 
     if ( boost::regex_match( retStr.c_str(), matchResult, stdcallMatch ) )
+    {
         retStr= std::string( matchResult[1].first, matchResult[1].second );
+    }
+    else if (IMAGE_FILE_MACHINE_I386 == m_machineType)
+    {
+        DWORD symTag;
+        HRESULT hres = m_symbol->get_symTag(&symTag);
+        if (S_OK == hres && SymTagPublicSymbol == symTag)
+            retStr.erase( retStr.begin() );
+    }
 
     return retStr;
 }
