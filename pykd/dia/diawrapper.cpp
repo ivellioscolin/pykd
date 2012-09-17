@@ -445,7 +445,7 @@ std::string DiaSymbol::getName()
 
     ULONG symTag;
     hres = m_symbol->get_symTag( &symTag );
-    if ( S_OK == hres  &&  symTag == SymTagPublicSymbol )
+    if ( S_OK == hres  &&  symTag == SymTagPublicSymbol && retStr[0] == '_' )
     {
         retStr.erase( 0, 1 );
     }
