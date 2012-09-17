@@ -3,6 +3,7 @@
 #include "dbgengine.h"
 #include "dbgexcept.h"
 #include "pyaux.h"
+#include "eventhandler.h"
 
 #include <dbgeng.h>
 #include <dbghelp.h>
@@ -39,6 +40,26 @@ public:
         PyThreadStateSaver     pystate;
     };
 
+    class DbgEventCallbacks : public DebugBaseEventCallbacks 
+    {
+        // IUnknown impls
+        STDMETHOD_(ULONG, AddRef)() { return 1; }
+        STDMETHOD_(ULONG, Release)() { return 1; }
+
+        // IDebugEventCallbacks impls
+        STDMETHOD(GetInterestMask)(
+            __out PULONG Mask 
+            )
+        {
+            *Mask = DEBUG_EVENT_BREAKPOINT;
+            return S_OK;
+        }
+
+        STDMETHOD(Breakpoint)(
+            __in IDebugBreakpoint *bp
+        );
+    };
+
     DbgEngBind*
     operator->() 
     {
@@ -56,20 +77,36 @@ public:
         return m_bind.get();
     }
 
-    void setClient( PDEBUG_CLIENT4 client )
+    void registerCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
+    void removeCallbacks();
+    const DEBUG_EVENT_CALLBACK* getCallbacks() const {
+        return m_eventCallbacks;
+    }
+
+    DebugEngine() :
+        m_callbacks()
     {
-        m_bind.reset(new DbgEngBind(client) );
+        g_eventHandler = new EventHandler();
+    }
+
+    ~DebugEngine()
+    {
+        delete g_eventHandler;
+        g_eventHandler = NULL;
     }
 
 private:
 
     std::auto_ptr<DbgEngBind>    m_bind;
 
+    DbgEventCallbacks            m_callbacks;
+
+    const DEBUG_EVENT_CALLBACK   *m_eventCallbacks;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-extern  DebugEngine     g_dbgEng;
+extern  DebugEngine  g_dbgEng;
 
 /////////////////////////////////////////////////////////////////////////////////
 

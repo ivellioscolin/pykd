@@ -13,7 +13,7 @@ def printBreakLine():
 
 def printNdisObj():
                    
-    ndis=loadModule("ndis")
+    ndis=module("ndis")
 
     ndisMajorVersion = ptrByte( ndis.NdisGetVersion + 1 )
     ndisMinorVersion = ptrByte( ndis.NdisGetVersion + 3 )

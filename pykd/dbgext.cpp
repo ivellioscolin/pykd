@@ -100,7 +100,7 @@ HRESULT
 CALLBACK
 py( PDEBUG_CLIENT4 client, PCSTR args )
 {
-    g_dbgEng.setClient( client );
+//    g_dbgEng.setClient( client );
 
     WindbgGlobalSession::RestorePyState();
 
@@ -212,7 +212,7 @@ HRESULT
 CALLBACK
 pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 {
-    g_dbgEng.setClient( client );
+//    g_dbgEng.setClient( client );
 
     WindbgGlobalSession::RestorePyState();
 

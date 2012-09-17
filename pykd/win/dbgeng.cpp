@@ -852,6 +852,77 @@ void breakPointRemoveAll()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void eventRegisterCallbacks( const DEBUG_EVENT_CALLBACK *callbacks )
+{
+    g_dbgEng.registerCallbacks( callbacks );
+}
+
+
+void DebugEngine::registerCallbacks( const DEBUG_EVENT_CALLBACK *callbacks )
+{
+    HRESULT hres;
+
+    m_eventCallbacks = callbacks;
+
+    hres = operator->()->client->SetEventCallbacks( &m_callbacks );
+
+    if ( S_OK != hres)
+        throw DbgException("IDebugClient::SetEventCallbacks", hres );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void eventRemoveCallbacks()
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+inline
+ULONG ConvertCallbackResult( DEBUG_CALLBACK_RESULT result )
+{
+    switch( result )
+    {
+    case DebugCallbackBreak:
+        return DEBUG_STATUS_BREAK;
+
+    case DebugCallbackProceed:
+        return DEBUG_STATUS_GO_HANDLED;
+
+    default:
+        assert( 0 );
+
+    case DebugCallbackNoChange:
+        return DEBUG_STATUS_NO_CHANGE;
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+HRESULT STDMETHODCALLTYPE DebugEngine::DbgEventCallbacks::Breakpoint(
+            __in IDebugBreakpoint *bp
+        ) 
+{
+    DEBUG_EVENT_CALLBACK* eventCallback = const_cast<DEBUG_EVENT_CALLBACK*>( g_dbgEng.getCallbacks() );
+
+    ULONG       id;
+    HRESULT     hres;
+
+    hres = bp->GetId( &id );
+
+    if ( hres == S_OK )
+    {
+        DEBUG_CALLBACK_RESULT result = eventCallback->OnBreakpoint( id );
+
+        return ConvertCallbackResult( result );
+    }
+
+    return DEBUG_STATUS_NO_CHANGE;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+
 } // end pykd namespace
 
 
