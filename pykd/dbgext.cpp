@@ -100,7 +100,6 @@ HRESULT
 CALLBACK
 py( PDEBUG_CLIENT4 client, PCSTR args )
 {
-//    g_dbgEng.setClient( client );
 
     WindbgGlobalSession::RestorePyState();
 
@@ -212,9 +211,11 @@ HRESULT
 CALLBACK
 pycmd( PDEBUG_CLIENT4 client, PCSTR args )
 {
-//    g_dbgEng.setClient( client );
-
     WindbgGlobalSession::RestorePyState();
+
+    ULONG    mask = 0;
+    client->GetOutputMask( &mask );
+    client->SetOutputMask( mask & ~DEBUG_OUTPUT_PROMPT ); // убрать эхо ввода
 
     try {
 
@@ -240,6 +241,8 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
     {
         eprintln( L"unexpected error" );
     }
+
+    client->SetOutputMask( mask );
 
     WindbgGlobalSession::SavePyState();
 
