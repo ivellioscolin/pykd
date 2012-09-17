@@ -14,14 +14,13 @@ void dprint( const std::wstring &str, bool dml )
     {
         PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
-        for ( size_t   i = 0; i < str.size() / 100 + 1; ++i )
-        {
-           g_dbgEng->control->ControlledOutputWide(  
-                dml ? DEBUG_OUTCTL_AMBIENT_DML : DEBUG_OUTCTL_AMBIENT_TEXT, DEBUG_OUTPUT_NORMAL, 
-                L"%ws",
-                str.substr( i*100, min( str.size() - i*100, 100 ) ).c_str() 
-                );
-        }
+        g_dbgEng->control->ControlledOutputWide(  
+            dml ? DEBUG_OUTCTL_AMBIENT_DML : DEBUG_OUTCTL_AMBIENT_TEXT,
+            DEBUG_OUTPUT_NORMAL, 
+            L"%ws",
+            str.c_str()
+            );
+
     }
     else
     {
@@ -45,14 +44,12 @@ void eprint( const std::wstring &str )
     {
         PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
-        for ( size_t   i = 0; i < str.size() / 100 + 1; ++i )
-        {
-           g_dbgEng->control->OutputWide(  
-                DEBUG_OUTPUT_ERROR, 
-                L"%ws",
-                str.substr( i*100, min( str.size() - i*100, 100 ) ).c_str() 
-                );
-        }
+        g_dbgEng->control->OutputWide(  
+            DEBUG_OUTPUT_ERROR, 
+            L"%ws",
+            str.c_str()
+            );
+
     }
     else
     {
