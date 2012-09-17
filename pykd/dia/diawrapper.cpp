@@ -432,16 +432,30 @@ ULONG DiaSymbol::getLocType()
 
 //////////////////////////////////////////////////////////////////////////////
 
-static const  boost::regex  stdcallMatch("^_(\\w+)@.+$");
+static const  boost::regex  stdcallMatch("^(\\w+)(@\\d+)?$");
 
 std::string DiaSymbol::getName()
 {
     BSTR bstrName = NULL;
     HRESULT hres = m_symbol->get_undecoratedName(&bstrName);
     if (S_OK != hres)
-        bstrName = callSymbol(get_name);
-    autoBstr retValue( bstrName );
-    return retValue.asStr();
+       bstrName = callSymbol(get_name);
+
+    std::string retStr = autoBstr( bstrName ).asStr();
+
+    ULONG symTag;
+    hres = m_symbol->get_symTag( &symTag );
+    if ( S_OK == hres  &&  symTag == SymTagPublicSymbol )
+    {
+        retStr.erase( 0, 1 );
+    }
+
+    boost::cmatch  matchResult;
+
+    if ( boost::regex_match( retStr.c_str(), matchResult, stdcallMatch ) )
+        retStr= std::string( matchResult[1].first, matchResult[1].second );
+
+    return retStr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
