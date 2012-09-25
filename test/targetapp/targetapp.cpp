@@ -459,6 +459,12 @@ void FuncWithName1(int a)
     std::cout << g_arrOfPtrToFunc[1];
 }
 
+static
+void _FuncWithName2(int a)
+{
+    std::cout << a;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 #pragma optimize("g", off)
 VOID functionCalledFromEnumWindowsProc1(DWORD dwProcessId)
@@ -637,6 +643,7 @@ int _tmain(int argc, _TCHAR* argv[])
         __debugbreak();
         FuncWithName0();
         FuncWithName1(2);
+        _FuncWithName2(3);
     }
     catch(std::exception & ex)
     {

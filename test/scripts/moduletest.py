@@ -49,6 +49,11 @@ class ModuleTest( unittest.TestCase ):
         self.assertEqual( target.module.rva("FuncWithName0"), target.module.FuncWithName0 - target.module.begin() )
         self.assertEqual( target.module.rva("FuncWithName0"), pykd.getOffset( target.module.name() + "!FuncWithName0") - target.module.begin() )
         
+    def testFindSymbol( self ):
+        self.assertEqual( "FuncWithName0", target.module.findSymbol( target.module.offset("FuncWithName0") ) )
+        self.assertEqual( "_FuncWithName2", target.module.findSymbol( target.module.offset("_FuncWithName2") ) )
+        
+        
     def testType( self ):
         self.assertEqual( "structTest", target.module.type("structTest").name() );
         self.assertEqual( "structTest", target.module.type("g_structTest").name() );
@@ -61,6 +66,6 @@ class ModuleTest( unittest.TestCase ):
         self.assertTrue( re.search('targetapp\\.cpp', fileName ) )
         self.assertEqual( 2, displacement )
         fileName, lineNo, displacement = pykd.getSourceLine()
-        self.assertEqual( 616, lineNo )
+        self.assertEqual( 622, lineNo )
 
 

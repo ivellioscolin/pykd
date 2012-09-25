@@ -53,8 +53,13 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
             ] ) 
     else:
-       return unittest.TestSuite( unittest.TestLoader().loadTestsFromName( singleName ) )
-
+       return unittest.TestSuite(
+          [
+                unittest.TestLoader().loadTestsFromTestCase( StartProcessWithoutParamsTest ),
+                unittest.TestLoader().loadTestsFromName( singleName ),
+                unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest )
+          ] )
+          
 if __name__ == "__main__":
 
     print "\nTesting PyKd ver. " + pykd.version

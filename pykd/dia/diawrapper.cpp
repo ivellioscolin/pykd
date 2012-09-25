@@ -306,6 +306,7 @@ SymbolPtr DiaSymbol::getChildByIndex(ULONG symTag, ULONG _index )
 
 SymbolPtr DiaSymbol::getChildByName(const std::string &name )
 {
+    // ищем прямое совпадение
     DiaEnumSymbolsPtr symbols;
     HRESULT hres = 
         m_symbol->findChildren(
@@ -329,9 +330,37 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &name )
         return SymbolPtr( new DiaSymbol(child, m_machineType) );
     }
 
-    std::string     pattern = "*";
+    // _имя
+    std::string underscoreName;
+    underscoreName += '_';
+    underscoreName += name;
+    symbols = 0;
+
+    hres = 
+        m_symbol->findChildren(
+            ::SymTagNull,
+            toWStr(underscoreName),
+            nsfCaseSensitive | nsfUndecoratedName,
+            &symbols);
+
+    hres = symbols->get_Count(&count);
+    if (S_OK != hres)
+        throw DiaException("Call IDiaEnumSymbols::get_Count", hres);
+
+    if (count >0 )
+    {
+        DiaSymbolPtr child;
+        hres = symbols->Item(0, &child);
+        if (S_OK != hres)
+            throw DiaException("Call IDiaEnumSymbols::Item", hres);
+
+        return SymbolPtr( new DiaSymbol(child, m_machineType) );
+    }
+    
+    // _имя@парам
+    std::string     pattern = "_";
     pattern += name;
-    pattern += "*";
+    pattern += "@*";
     symbols = 0;
 
     hres = 
@@ -350,20 +379,17 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &name )
 
     if (count == 0)
          throw DiaException( name + " not found");
-    
-    for ( LONG i = 0; i < count; ++i )
+
+    if (count >0 )
     {
         DiaSymbolPtr child;
-        hres = symbols->Item(i, &child);
+        hres = symbols->Item(0, &child);
         if (S_OK != hres)
             throw DiaException("Call IDiaEnumSymbols::Item", hres);
 
-        SymbolPtr  symPtr = SymbolPtr( new DiaSymbol(child, m_machineType) );
-
-        if ( name == symPtr->getName() )
-            return symPtr;
+        return SymbolPtr( new DiaSymbol(child, m_machineType) );
     }
-
+    
     throw DiaException(name + " is not found");
 }
 
@@ -432,30 +458,60 @@ ULONG DiaSymbol::getLocType()
 
 //////////////////////////////////////////////////////////////////////////////
 
-static const  boost::regex  stdcallMatch("^(\\w+)(@\\d+)?$");
+static const  boost::regex  stdcallMatch("^_(\\w+)(@\\d+)?$");
+static const  boost::regex  fastcallMatch("^@(\\w+)(@\\d+)?$");
 
 std::string DiaSymbol::getName()
 {
+    HRESULT hres;
     BSTR bstrName = NULL;
-    HRESULT hres = m_symbol->get_undecoratedName(&bstrName);
-    if (S_OK != hres)
-       bstrName = callSymbol(get_name);
-
-    std::string retStr = autoBstr( bstrName ).asStr();
 
     ULONG symTag;
     hres = m_symbol->get_symTag( &symTag );
-    if ( S_OK == hres  &&  symTag == SymTagPublicSymbol && retStr[0] == '_' )
+
+    if ( FAILED( hres ) )
+        throw DiaException("Call IDiaSymbol::get_symTag", hres);
+
+    if ( symTag == SymTagPublicSymbol )
     {
-        retStr.erase( 0, 1 );
+        std::string  retStr = autoBstr( callSymbol(get_name) ).asStr();
+
+        boost::cmatch  matchResult;
+
+        if ( boost::regex_match( retStr.c_str(), matchResult, stdcallMatch ) )
+            return std::string( matchResult[1].first, matchResult[1].second );
+
+        if ( boost::regex_match( retStr.c_str(), matchResult, fastcallMatch ) )
+            return std::string( matchResult[1].first, matchResult[1].second );
+
+        return retStr;
+    }
+        
+    if( symTag == SymTagData || symTag == SymTagFunction )
+    {
+        hres = m_symbol->get_undecoratedNameEx( UNDNAME_NAME_ONLY, &bstrName);
+        if ( FAILED( hres ) )
+            throw DiaException("Call IDiaSymbol::get_undecoratedNameEx", hres);
+
+        std::string  retStr = autoBstr( bstrName ).asStr();
+
+        if ( !retStr.empty() )
+        {
+            boost::cmatch  matchResult;
+
+            if ( boost::regex_match( retStr.c_str(), matchResult, stdcallMatch ) )
+                return std::string( matchResult[1].first, matchResult[1].second );
+
+            if ( boost::regex_match( retStr.c_str(), matchResult, fastcallMatch ) )
+                return std::string( matchResult[1].first, matchResult[1].second );
+    
+            return retStr; 
+        }
     }
 
-    boost::cmatch  matchResult;
+    bstrName = callSymbol(get_name);
 
-    if ( boost::regex_match( retStr.c_str(), matchResult, stdcallMatch ) )
-        retStr= std::string( matchResult[1].first, matchResult[1].second );
-
-    return retStr;
+    return autoBstr( bstrName ).asStr();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
