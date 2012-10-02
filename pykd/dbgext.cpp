@@ -28,9 +28,11 @@ WindbgGlobalSession::WindbgGlobalSession()
 
     python::object   main_namespace = main.attr("__dict__");
 
-    // делаем аналог from pykd import *
     python::object   pykd = boost::python::import( "pykd" );
 
+    main_namespace["globalEventHandler"] = EventHandlerPtr( new EventHandlerImpl() );
+
+   // делаем аналог from pykd import *
     python::dict     pykd_namespace( pykd.attr("__dict__") ); 
 
     python::list     iterkeys( pykd_namespace.iterkeys() );
@@ -41,6 +43,13 @@ WindbgGlobalSession::WindbgGlobalSession()
 
         main_namespace[ key ] = pykd_namespace[ key ];
     }
+
+    // перенаправление стандартных потоков ВВ
+    python::object       sys = python::import("sys");
+
+    sys.attr("stdout") = python::object( DbgOut() );
+    sys.attr("stderr") = python::object( DbgErr() );
+    sys.attr("stdin") = python::object( DbgIn() );
 
     pyState = PyEval_SaveThread();
 }
@@ -100,7 +109,6 @@ HRESULT
 CALLBACK
 py( PDEBUG_CLIENT4 client, PCSTR args )
 {
-
     WindbgGlobalSession::RestorePyState();
 
     PyThreadState   *globalInterpreter = PyThreadState_Swap( NULL );
@@ -120,6 +128,10 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
         sys.attr("stdout") = python::object( DbgOut() );
         sys.attr("stderr") = python::object( DbgErr() );
         sys.attr("stdin") = python::object( DbgIn() );
+
+        python::object   pykd = python::import( "pykd" );
+
+        global["globalEventHandler"] = EventHandlerPtr( new EventHandlerImpl() );
 
         // импортируем модуль обработки исключений ( нужен для вывода traceback а )
         python::object       tracebackModule = python::import("traceback");
@@ -190,7 +202,6 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
 
             eprintln( sstr.str() );
         }
-
     }
     catch(...)
     {
@@ -218,13 +229,6 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
     client->SetOutputMask( mask & ~DEBUG_OUTPUT_PROMPT ); // убрать эхо ввода
 
     try {
-
-        // перенаправление стандартных потоков ВВ
-        python::object       sys = python::import("sys");
-       
-        sys.attr("stdout") = python::object( DbgOut() );
-        sys.attr("stderr") = python::object( DbgErr() );
-        sys.attr("stdin") = python::object( DbgIn() );
 
         PyRun_String(
             "__import__('code').InteractiveConsole(__import__('__main__').__dict__).interact()", 

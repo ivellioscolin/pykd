@@ -12,37 +12,27 @@ class PyThreadStateSaver {
 
 public:
 
-    PyThreadStateSaver() {
-        m_index = TlsAlloc();
+    PyThreadStateSaver( PyThreadState* s = NULL) {
+
+        state = s;
     }
 
     ~PyThreadStateSaver() {
-        TlsFree( m_index );
     }
 
     void saveState() {
-        //if ( !WindbgGlobalSession::isInit() )
-            TlsSetValue( m_index, PyEval_SaveThread() );
-        //else
-        //    WindbgGlobalSession::SavePyState();                
+        state = PyEval_SaveThread();
     }
 
     void restoreState() {
-        //if ( !WindbgGlobalSession::isInit() )
-        //{
-            PyThreadState*      state = (PyThreadState*)TlsGetValue( m_index );
             if ( state )
                 PyEval_RestoreThread( state );
-        //}
-        //else
-        //{
-        //    WindbgGlobalSession::RestorePyState();
-        //}
     }
 
 private:
 
-    DWORD   m_index;
+    //DWORD   m_index;
+    PyThreadState*      state;
 };
 
 

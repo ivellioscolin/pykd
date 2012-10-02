@@ -66,9 +66,10 @@ void getStackTrace(std::vector<STACK_FRAME_DESC> &frames);
 #define DEBUG_CALLBACK_METHODTYPE __cdecl
 
 enum DEBUG_CALLBACK_RESULT {
-    DebugCallbackBreak,
-    DebugCallbackProceed,
-    DebugCallbackNoChange
+    DebugCallbackProceed = 0,
+    DebugCallbackNoChange = 1,
+    DebugCallbackBreak = 2,
+    DebugCallbackMax = 3
 };
 
 
@@ -78,7 +79,7 @@ struct DEBUG_EVENT_CALLBACK {
 };
 
 void eventRegisterCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
-void eventRemoveCallbacks();
+void eventRemoveCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
 
 //breakpoints
 ULONG breakPointSet( ULONG64 offset, bool hardware = false, ULONG size = 0, ULONG accessType = 0 );

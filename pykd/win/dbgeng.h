@@ -12,8 +12,8 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class DebugEngine {
-
+class DebugEngine : private DebugBaseEventCallbacks 
+{
 public:
 
     struct DbgEngBind {
@@ -26,39 +26,38 @@ public:
         CComQIPtr<IDebugAdvanced2>  advanced;
         CComQIPtr<IDebugRegisters2>  registers;
 
-        DbgEngBind( PDEBUG_CLIENT4 c )
+        DbgEngBind( PDEBUG_CLIENT4 client_, PDEBUG_EVENT_CALLBACKS callback )
         {
-            client = c;
-            control = c;
-            system = c;
-            symbols = c;
-            dataspace = c;
-            advanced = c;
-            registers = c;
+            client = client_;
+            control = client_;
+            system = client_;
+            symbols = client_;
+            dataspace = client_;
+            advanced = client_;
+            registers = client_;
+
+            client->SetEventCallbacks( callback );
         }
 
         PyThreadStateSaver     pystate;
     };
 
-    class DbgEventCallbacks : public DebugBaseEventCallbacks 
+    // IUnknown impls
+    STDMETHOD_(ULONG, AddRef)() { return 1; }
+    STDMETHOD_(ULONG, Release)() { return 1; }
+
+    // IDebugEventCallbacks impls
+    STDMETHOD(GetInterestMask)(
+        __out PULONG Mask 
+        )
     {
-        // IUnknown impls
-        STDMETHOD_(ULONG, AddRef)() { return 1; }
-        STDMETHOD_(ULONG, Release)() { return 1; }
+        *Mask = DEBUG_EVENT_BREAKPOINT;
+        return S_OK;
+    }
 
-        // IDebugEventCallbacks impls
-        STDMETHOD(GetInterestMask)(
-            __out PULONG Mask 
-            )
-        {
-            *Mask = DEBUG_EVENT_BREAKPOINT;
-            return S_OK;
-        }
-
-        STDMETHOD(Breakpoint)(
-            __in IDebugBreakpoint *bp
-        );
-    };
+    STDMETHOD(Breakpoint)(
+        __in IDebugBreakpoint *bp
+    );
 
     DbgEngBind*
     operator->() 
@@ -72,36 +71,33 @@ public:
         if ( FAILED( hres ) )
             throw DbgException("DebugCreate failed");
 
-        m_bind.reset(new DbgEngBind(client) );
+        m_bind.reset(new DbgEngBind(client, this) );
 
         return m_bind.get();
     }
 
     void registerCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
-    void removeCallbacks();
-    const DEBUG_EVENT_CALLBACK* getCallbacks() const {
-        return m_eventCallbacks;
-    }
-
-    DebugEngine() :
-        m_callbacks()
-    {
-        g_eventHandler = new EventHandler();
-    }
-
-    ~DebugEngine()
-    {
-        delete g_eventHandler;
-        g_eventHandler = NULL;
-    }
+    void removeCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
 
 private:
 
     std::auto_ptr<DbgEngBind>    m_bind;
 
-    DbgEventCallbacks            m_callbacks;
+    struct DebugEventContext 
+    {
+        DEBUG_EVENT_CALLBACK*       callback;
+        PyThreadStateSaver          pystate;
 
-    const DEBUG_EVENT_CALLBACK   *m_eventCallbacks;
+        DebugEventContext( const DEBUG_EVENT_CALLBACK* callback_, PyThreadStateSaver &pystate_ ) :
+            callback( const_cast<DEBUG_EVENT_CALLBACK*>(callback_) ),
+            pystate(pystate_)
+            {}
+    };
+
+    typedef std::list<DebugEventContext>  HandlerList;
+
+    boost::recursive_mutex       m_handlerLock;
+    HandlerList  m_handlers;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

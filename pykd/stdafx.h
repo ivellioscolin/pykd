@@ -60,3 +60,4 @@ namespace python = boost::python;
 #include <boost/regex.hpp> 
 #include <boost/variant.hpp>
 #include <boost/tokenizer.hpp>
+#include <boost/thread/win32/recursive_mutex.hpp>

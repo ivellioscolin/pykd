@@ -117,7 +117,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Get the page size for the currently executing processor context" );
 
     // Manage target memory access
-
+    python::def( "addr64", &addr64,
+        "Extend address to 64 bits formats" );
     python::def( "isValid", &isVaValid,
         "Check if the virtual address is valid" );
     python::def( "compareMemory", &compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
@@ -229,9 +230,9 @@ BOOST_PYTHON_MODULE( pykd )
         "Set software breakpoint on executiont" ) );
     python::def( "setBp", &setHardwareBp, setHardwareBp_( python::args( "offset", "size", "accsessType", "callback" ) ,
         "Set hardware breakpoint" ) );
-    python::def( "removeBp", &breakPointRemove,
+    python::def( "removeBp", &removeBp,
         "Remove breapoint by IDs" );
-    python::def( "removeAllBp", &breakPointRemoveAll,
+    python::def( "removeAllBp", &removeAllBp,
         "Remove all breapoints" );
 
     // custom types
@@ -438,6 +439,12 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "instruction", &Disasm::instruction, "Returm current disassembled instruction" )
         .def( "ea", &Disasm::ea, "Return effective address for last disassembled instruction or 0" )
         .def( "reset", &Disasm::reset, "Reset current offset to begin" );
+
+    python::class_<EventHandlerWrap, EventHandlerPtr, boost::noncopyable>(
+        "eventHandler", "Base class for overriding and handling debug notifications",  python::no_init )
+        .def( "onBreakpoint", &EventHandlerWrap::OnBreakpoint,
+            "Triggered breakpoint event. Parameter is int: ID of breakpoint\n"
+            "For ignore event method must return DEBUG_STATUS_NO_CHANGE value" );
 
     // wrapper for standart python exceptions
     python::register_exception_translator<PyException>( &PyException::exceptionTranslate );

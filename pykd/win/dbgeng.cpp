@@ -244,7 +244,7 @@ void debugBreak()
 
 ULONG64 evaluate( const std::wstring  &expression )
 {
-    PyThreadState   *pystate = PyEval_SaveThread();
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
     HRESULT             hres;
     ULONG64             value = 0;
@@ -829,6 +829,8 @@ void breakPointRemove( ULONG id )
 
 void breakPointRemoveAll()
 {
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
     ULONG numberOfBps;
     do {
         HRESULT hres = g_dbgEng->control->GetNumberBreakpoints(&numberOfBps);
@@ -860,20 +862,32 @@ void eventRegisterCallbacks( const DEBUG_EVENT_CALLBACK *callbacks )
 
 void DebugEngine::registerCallbacks( const DEBUG_EVENT_CALLBACK *callbacks )
 {
-    HRESULT hres;
+    boost::recursive_mutex::scoped_lock l(m_handlerLock);
 
-    m_eventCallbacks = callbacks;
-
-    hres = operator->()->client->SetEventCallbacks( &m_callbacks );
-
-    if ( S_OK != hres)
-        throw DbgException("IDebugClient::SetEventCallbacks", hres );
+    m_handlers.push_back( DebugEventContext( callbacks, PyThreadStateSaver( PyThreadState_Get() ) ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void eventRemoveCallbacks()
+void eventRemoveCallbacks( const DEBUG_EVENT_CALLBACK *callback )
 {
+    g_dbgEng.removeCallbacks( callback );
+}
+
+void DebugEngine::removeCallbacks( const DEBUG_EVENT_CALLBACK *callback )
+{
+    boost::recursive_mutex::scoped_lock l(m_handlerLock);
+
+    HandlerList::iterator  it = m_handlers.begin();
+
+    for ( ; it != m_handlers.end(); ++it )
+    {
+        if ( it->callback == callback )
+        {
+            m_handlers.erase( it );
+            break;
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -899,29 +913,35 @@ ULONG ConvertCallbackResult( DEBUG_CALLBACK_RESULT result )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-HRESULT STDMETHODCALLTYPE DebugEngine::DbgEventCallbacks::Breakpoint(
+HRESULT STDMETHODCALLTYPE DebugEngine::Breakpoint(
             __in IDebugBreakpoint *bp
         ) 
 {
-    DEBUG_EVENT_CALLBACK* eventCallback = const_cast<DEBUG_EVENT_CALLBACK*>( g_dbgEng.getCallbacks() );
-
-    ULONG       id;
-    HRESULT     hres;
+    HRESULT hres;
+    ULONG id;
 
     hres = bp->GetId( &id );
+    if ( FAILED( hres ) )
+        return DEBUG_STATUS_NO_CHANGE;
 
-    if ( hres == S_OK )
+    boost::recursive_mutex::scoped_lock l(m_handlerLock);
+
+    HandlerList::iterator  it = m_handlers.begin();
+
+    for ( ; it != m_handlers.end(); ++it )
     {
-        DEBUG_CALLBACK_RESULT result = eventCallback->OnBreakpoint( id );
+        PyThread_StateSave pyThreadSave( it->pystate );
 
-        return ConvertCallbackResult( result );
+        DEBUG_CALLBACK_RESULT result = it->callback->OnBreakpoint( id );
+
+        if ( DebugCallbackNoChange != result )
+            return ConvertCallbackResult( result );
     }
 
     return DEBUG_STATUS_NO_CHANGE;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
 
 } // end pykd namespace
 

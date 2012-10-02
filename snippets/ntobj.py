@@ -26,7 +26,7 @@ Work with NT Object tree manager
 
 from pykd import *
 
-nt = loadModule("nt")
+nt = module("nt")
 
 def getTypeWin7(p):
   """

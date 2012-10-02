@@ -9,25 +9,25 @@ from pykd import *
 
 def iat( moduleName, mask = "*" ):
 
-    module = loadModule( moduleName )
-    dprintln( "Module: " + moduleName + " base: %x" % module.begin() + " end: %x" % module.end() )
+    mod = module( moduleName )
+    dprintln( "Module: " + moduleName + " base: %x" % mod.begin() + " end: %x" % mod.end() )
 
     if isKernelDebugging():
-        systemModule = loadModule( "nt" )
+        systemModule = module( "nt" )
     else:
-        systemModule = loadModule( "ntdll" )
+        systemModule = module( "ntdll" )
     
 
     if is64bitSystem():
-        ntHeader = systemModule.typedVar( "_IMAGE_NT_HEADERS64", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+        ntHeader = systemModule.typedVar( "_IMAGE_NT_HEADERS64", mod.begin() + ptrDWord( mod.begin() + 0x3c ) )
         if ntHeader.OptionalHeader.Magic == 0x10b:
             systemModule = loadModule( "ntdll32" ) 
-            ntHeader = systemModule.typedVar( "_IMAGE_NT_HEADERS", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+            ntHeader = systemModule.typedVar( "_IMAGE_NT_HEADERS", mod.begin() + ptrDWord( mod.begin() + 0x3c ) )
             pSize = 4
         else:
             pSize = 8     
     else:
-        ntHeader = systemModule.typedVar(  "_IMAGE_NT_HEADERS", module.begin() + ptrDWord( module.begin() + 0x3c ) )
+        ntHeader = systemModule.typedVar(  "_IMAGE_NT_HEADERS", mod.begin() + ptrDWord( mod.begin() + 0x3c ) )
         pSize = 4
 
 
@@ -37,7 +37,7 @@ def iat( moduleName, mask = "*" ):
     if ntHeader.OptionalHeader.DataDirectory[12].Size == 0:
         return
     
-    iatAddr = module.begin() + ntHeader.OptionalHeader.DataDirectory[12].VirtualAddress;
+    iatAddr = mod.begin() + ntHeader.OptionalHeader.DataDirectory[12].VirtualAddress;
 
     for i in range( 0, ntHeader.OptionalHeader.DataDirectory[12].Size / pSize ):
 

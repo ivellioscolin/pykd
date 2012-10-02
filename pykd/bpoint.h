@@ -6,47 +6,20 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "pyaux.h"
+
 namespace pykd {
 
-typedef python::object  BpCallback;
+ULONG setSoftwareBp(ULONG64 offset, python::object &callback = python::object() );
 
-ULONG setSoftwareBp(ULONG64 offset, BpCallback &callback = BpCallback() );
+ULONG setHardwareBp(ULONG64 offset, ULONG size, ULONG accessType, python::object &callback = python::object() );
 
-ULONG setHardwareBp(ULONG64 offset, ULONG size, ULONG accessType, BpCallback &callback = BpCallback());
+void removeBp( ULONG id );
+
+void removeAllBp();
 
 
-
-//////////////////////////////////////////////////////////////////////////////////
-//
-//inline BPOINT_ID setSoftwareBp(ULONG64 addr, BpCallback &callback = BpCallback()) {
-//    return g_dbgClient->setSoftwareBp(addr, callback);
-//}
-//
-//////////////////////////////////////////////////////////////////////////////////
-//
-//inline BPOINT_ID setHardwareBp(ULONG64 addr, ULONG size, ULONG accessType, BpCallback &callback = BpCallback()) {
-//    return g_dbgClient->setHardwareBp(addr, size, accessType, callback);
-//}
-//
-//////////////////////////////////////////////////////////////////////////////////
-//
-//inline python::list getAllBp() {
-//    return g_dbgClient->getAllBp();
-//}
-//
-//////////////////////////////////////////////////////////////////////////////////
-//
-//inline void removeBp(BPOINT_ID Id) {
-//    return g_dbgClient->removeBp(Id);
-//}
-//
-//////////////////////////////////////////////////////////////////////////////////
-//
-//inline void removeAllBp() {
-//    return g_dbgClient->removeAllBp();
-//}
-
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 }   // end pykd namespace
 
