@@ -23,7 +23,7 @@ EventHandler::~EventHandler()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-DEBUG_CALLBACK_RESULT DEBUG_CALLBACK_METHODTYPE EventHandlerImpl::OnBreakpoint( ULONG bpId )
+DEBUG_CALLBACK_RESULT EventHandlerImpl::OnBreakpoint( ULONG bpId )
 {
     BpMap::iterator  foundIt = m_bpMap.find( bpId );
     if ( foundIt == m_bpMap.end() )

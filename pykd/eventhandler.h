@@ -21,7 +21,7 @@ public:
 
 private:
 
-    virtual DEBUG_CALLBACK_RESULT DEBUG_CALLBACK_METHODTYPE OnBreakpoint( ULONG bpId ) = 0;
+    virtual DEBUG_CALLBACK_RESULT OnBreakpoint( ULONG bpId ) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ class EventHandlerWrap : public python::wrapper<EventHandler>, public EventHandl
 
 public:
 
-    virtual DEBUG_CALLBACK_RESULT DEBUG_CALLBACK_METHODTYPE OnBreakpoint( ULONG Id ) {
+    virtual DEBUG_CALLBACK_RESULT OnBreakpoint( ULONG Id ) {
         return handler("onBreakpoint", Id);
     }
 
@@ -100,7 +100,7 @@ public:
 
 private:
 
-    virtual DEBUG_CALLBACK_RESULT DEBUG_CALLBACK_METHODTYPE OnBreakpoint( ULONG bpId );
+    virtual DEBUG_CALLBACK_RESULT OnBreakpoint( ULONG bpId );
 
 private:
 

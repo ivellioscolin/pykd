@@ -63,8 +63,6 @@ void getStackTrace(std::vector<STACK_FRAME_DESC> &frames);
 
 // callback events
 
-#define DEBUG_CALLBACK_METHODTYPE __cdecl
-
 enum DEBUG_CALLBACK_RESULT {
     DebugCallbackProceed = 0,
     DebugCallbackNoChange = 1,
@@ -75,7 +73,7 @@ enum DEBUG_CALLBACK_RESULT {
 
 struct DEBUG_EVENT_CALLBACK {
 
-    virtual DEBUG_CALLBACK_RESULT DEBUG_CALLBACK_METHODTYPE OnBreakpoint( ULONG bpId ) = 0;
+    virtual DEBUG_CALLBACK_RESULT OnBreakpoint( ULONG bpId ) = 0;
 };
 
 void eventRegisterCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
