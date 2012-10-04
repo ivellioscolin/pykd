@@ -124,7 +124,6 @@ def buildObjectName(p):
   return objectFullName
 
 
-
 HANDLE_VALUE_INC = 4
 HT_PAGE_SIZE = 4096
 HT_ENTRY_SIZE = (2 * ptrSize())
@@ -177,11 +176,11 @@ def getListByHandleTable(tableHandles=None, objTypeAddr=0, containHeaders=True):
         continue
 
       if (0 == objTypeAddr):
-        lstObjects.append(p)
+        lstObjects.append( ( p, HandleEntryIndex*HANDLE_VALUE_INC) )
       else:
         pCurrentType = getType(p)
         if (addr64(objTypeAddr) == addr64(pCurrentType)):
-          lstObjects.append(p)
+          lstObjects.append( ( p, HandleEntryIndex*HANDLE_VALUE_INC) )
 
     return lstObjects
 
@@ -230,6 +229,8 @@ def getListByHandleTable(tableHandles=None, objTypeAddr=0, containHeaders=True):
 
   dprintln("ERROR: Unknown handle table level: %u" % nTableLevel)
   return list()
+  
+ 
 
 NUMBER_HASH_BUCKETS = 37
 
@@ -398,7 +399,8 @@ def main():
       dprintln(main.__doc__, True)
       return
 
-  lstObjects = getListByHandleTable(tableHandles, objTypeAddr, containHeaders)
+  lstObjects = [ p[0] for p in getListByHandleTable(tableHandles, objTypeAddr, containHeaders) ]
+
   dprintln("%u objects:" % len(lstObjects))
   for object in lstObjects:
     objectType = getType(object)
