@@ -235,6 +235,16 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "removeAllBp", &removeAllBp,
         "Remove all breapoints" );
 
+    // processes and threads
+    python::def( "getCurrentProcess", &getCurrentProcess,
+        "Return pointer to current process's block" );
+    python::def( "getImplicitThread", &getImplicitThread, 
+        "Return implicit thread for current process" );
+    python::def( "setCurrentProcess", &setCurrentProcess, 
+        "Set current process by address" );
+    python::def( "setImplicitThread", &setImplicitThread, 
+        "Set implicit thread for current process" );
+
     // custom types
     python::def( "createStruct", &CustomStruct::create, CustomStruct_create( python::args( "name", "align" ), 
         "Create empty structure. Use append() method for building" ) );

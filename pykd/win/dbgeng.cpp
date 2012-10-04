@@ -943,6 +943,68 @@ HRESULT STDMETHODCALLTYPE DebugEngine::Breakpoint(
 
 ///////////////////////////////////////////////////////////////////////////////
 
+ULONG64
+getCurrentProcess()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT         hres;  
+    ULONG64         processAddr = 0;
+    
+    hres = g_dbgEng->system->GetImplicitProcessDataOffset( &processAddr );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSystemObjects2::GetImplicitProcessDataOffset  failed" ); 
+        
+     return processAddr; 
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ULONG64 
+getImplicitThread()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres; 
+    ULONG64     threadOffset = -1;
+
+    hres = g_dbgEng->system->GetImplicitThreadDataOffset( &threadOffset );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSystemObjects2::GetImplicitThreadDataOffset  failed" ); 
+        
+    return threadOffset;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void setCurrentProcess( ULONG64 processAddr )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+
+    processAddr = addr64(processAddr);
+    hres = g_dbgEng->system->SetImplicitProcessDataOffset( processAddr );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSystemObjects2::SetImplicitProcessDataOffset  failed" );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void setImplicitThread( ULONG64 threadAddr )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT                 hres;  
+
+    threadAddr = addr64(threadAddr);
+    hres = g_dbgEng->system->SetImplicitThreadDataOffset( threadAddr );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSystemObjects2::SetImplicitThreadDataOffset  failed" );         
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // end pykd namespace
 
 

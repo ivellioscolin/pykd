@@ -84,5 +84,12 @@ ULONG breakPointSet( ULONG64 offset, bool hardware = false, ULONG size = 0, ULON
 void breakPointRemove( ULONG id );
 void breakPointRemoveAll();
 
+
+// processes end threads
+ULONG64 getCurrentProcess();
+ULONG64 getImplicitThread();
+void setCurrentProcess( ULONG64 processAddr );
+void setImplicitThread( ULONG64 threadAddr );
+
 };
 
