@@ -245,6 +245,11 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "setImplicitThread", &setImplicitThread, 
         "Set implicit thread for current process" );
 
+    // symbol path
+    python::def( "getSymbolPath", &getSymbolPath, "Returns current symbol path");
+    python::def( "setSymbolPath", &setSymbolPath, "Set current symbol path");
+    python::def( "appendSymbolPath", &appendSymbolPath, "Append current symbol path");
+
     // custom types
     python::def( "createStruct", &CustomStruct::create, CustomStruct_create( python::args( "name", "align" ), 
         "Create empty structure. Use append() method for building" ) );

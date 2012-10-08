@@ -91,5 +91,10 @@ ULONG64 getImplicitThread();
 void setCurrentProcess( ULONG64 processAddr );
 void setImplicitThread( ULONG64 threadAddr );
 
+// Symbol patch
+std::string getSymbolPath();
+void setSymbolPath(const std::string &symPath);
+void appendSymbolPath(const std::string &symPath);
+
 };
 
