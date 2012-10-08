@@ -117,7 +117,7 @@ std::string Module::print()
     sstr << "Module: " << m_name <<  std::endl;
     sstr << "Start: " << std::hex << m_base << " End: " << getEnd() << " Size: " << m_size << std::endl;
     sstr << "Image: " << m_imageName << std::endl;
-    sstr << "Symnol: " << m_symfile << std::endl;
+    sstr << "Symbols: " << m_symfile << std::endl;
     sstr << "Timestamp: " << m_timeDataStamp << std::endl;
     sstr << "Check Sum: " << m_checkSum << std::endl;
 
