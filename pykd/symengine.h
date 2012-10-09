@@ -172,7 +172,14 @@ public:
 
 std::string getBasicTypeName( ULONG basicType );
 
-SymbolSessionPtr  loadSymbolFile(const std::string &filePath, ULONGLONG loadBase = 0);
+SymbolSessionPtr loadSymbolFile(const std::string &filePath, ULONGLONG loadBase = 0);
+
+SymbolSessionPtr loadSymbolFile(
+    __in ULONGLONG loadBase,
+    __in const std::string &executable,
+    __out std::string &loadedSymbolFile,
+    __in_opt std::string symbolSearchPath = std::string()
+);
 
 ////////////////////////////////////////////////////////////////////////////////
 

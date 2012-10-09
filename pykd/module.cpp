@@ -22,7 +22,6 @@ Module::Module(const std::string &moduleName )
 {
     m_base = findModuleBase( moduleName );
     m_name = moduleName;
-    m_symfile = getModuleSymbolFileName( m_base );
     m_imageName = getModuleImageName( m_base );
     m_timeDataStamp = getModuleTimeStamp( m_base );
     m_checkSum = getModuleCheckSum( m_base );
@@ -35,7 +34,6 @@ Module::Module(ULONG64 offset )
 {
     m_base = findModuleBase( addr64(offset) );
     m_name = getModuleName( m_base );
-    m_symfile = getModuleSymbolFileName( m_base );
     m_imageName = getModuleImageName( m_base );
     m_timeDataStamp = getModuleTimeStamp( m_base );
     m_checkSum = getModuleCheckSum( m_base );
@@ -46,20 +44,15 @@ Module::Module(ULONG64 offset )
 
 SymbolSessionPtr& Module::getSymSession()
 {
-    do {
-
-        if ( m_symSession )
-            return m_symSession;
-
-        if ( m_symfile.empty() )
-            break;
-
-        m_symSession = loadSymbolFile( m_symfile, m_base );
-
-    } while( false );
+    m_symSession = loadSymbolFile(m_base, m_imageName, m_symfile);
 
     if ( !m_symSession )
-        throw SymbolException( "failed to find symbol file" );
+    {
+        m_symfile = getModuleSymbolFileName(m_base);
+        m_symSession = loadSymbolFile(m_symfile, m_base);
+        if (m_symSession)
+            throw SymbolException( "failed to load symbol file" );
+    }
 
     return m_symSession;
 }
@@ -75,8 +68,8 @@ SymbolPtr& Module::getSymScope()
 
 void Module::reloadSymbols()
 {
-    m_symfile = getModuleSymbolFileName( m_base );
     m_symSession.reset();
+    getSymSession();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -113,6 +106,8 @@ Module::getSymbolSize( const std::string &symName )
 std::string Module::print()
 {
     std::stringstream   sstr;
+
+    prepareSymbolFile();
 
     sstr << "Module: " << m_name <<  std::endl;
     sstr << "Start: " << std::hex << m_base << " End: " << getEnd() << " Size: " << m_size << std::endl;
@@ -246,6 +241,19 @@ std::string Module::getSourceFile( ULONG64 offset )
     getSymSession()->getSourceLine( offset, fileName, lineNo, displacement );
 
     return fileName;
+}
+
+void Module::prepareSymbolFile()
+{
+    try
+    {
+        // load symbols for modules, if need
+        getSymSession();
+    }
+    catch (const SymbolException &e)
+    {
+        DBG_UNREFERENCED_LOCAL_VARIABLE(e);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

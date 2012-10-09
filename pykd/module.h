@@ -46,7 +46,8 @@ public:
         return m_size;
     }
 
-    std::string getSymFile() const {
+    std::string getSymFile() {
+        prepareSymbolFile();
         return m_symfile;
     }
 
@@ -115,6 +116,8 @@ private:
     }
 
     ULONG getRvaByName(const std::string &symName);
+
+    void prepareSymbolFile();
 
     std::string             m_name;
     std::string             m_imageName;
