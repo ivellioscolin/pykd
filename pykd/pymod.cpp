@@ -245,6 +245,9 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "setImplicitThread", &setImplicitThread, 
         "Set implicit thread for current process" );
 
+    python::def( "setSymSrvDir", &setSymSrvDir,
+        "Set directory of SYMSRV.dll library.\nUsually this is a directory of WinDbg");
+
     // symbol path
     python::def( "getSymbolPath", &getSymbolPath, "Returns current symbol path");
     python::def( "setSymbolPath", &setSymbolPath, "Set current symbol path");

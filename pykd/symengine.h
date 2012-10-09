@@ -181,6 +181,8 @@ SymbolSessionPtr loadSymbolFile(
     __in_opt std::string symbolSearchPath = std::string()
 );
 
+void setSymSrvDir(const std::wstring &symSrvDirectory);
+
 ////////////////////////////////////////////////////////////////////////////////
 
 }; // end pykd endpoint

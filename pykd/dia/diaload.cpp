@@ -125,7 +125,7 @@ public:
         /* [out] */ DWORD *pcbData,
         /* [size_is][out] */ BYTE *pbData
     ) override {
-        return 
+        return
             readMemoryImpl(
                 m_loadBase + relativeVirtualAddress,
                 pbData,
@@ -133,6 +133,41 @@ public:
                 pcbData);
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////////
+
+struct SymSrvLoadHelper : boost::noncopyable
+{
+    static std::wstring g_symSrvDir;
+
+    HMODULE m_loadedSymSrv;
+
+    SymSrvLoadHelper() : m_loadedSymSrv(NULL)
+    {
+        if (g_symSrvDir.empty())
+            return;
+
+        if (::GetModuleHandle(_T("symsrv.dll")))
+        {
+            // already loaded
+            return;
+        }
+
+        std::wstring symSrvFullPath = g_symSrvDir;
+        if (L'\\' != *symSrvFullPath.rbegin())
+            symSrvFullPath += L"\\";
+        symSrvFullPath += L"symsrv.dll";
+
+        m_loadedSymSrv = ::LoadLibraryW( symSrvFullPath.c_str() );
+    }
+
+    ~SymSrvLoadHelper()
+    {
+        if (m_loadedSymSrv)
+            ::FreeLibrary(m_loadedSymSrv);
+    }
+};
+std::wstring SymSrvLoadHelper::g_symSrvDir;
 
 // Load debug symbols using ReadExeAtRVACallback
 struct DataForExeByRva : IDataProvider {
@@ -155,6 +190,7 @@ struct DataForExeByRva : IDataProvider {
 
     virtual HRESULT load(__inout IDiaDataSource &dataSource) override {
         CComPtr< IUnknown > readExeAtRVACallback(new ReadExeAtRVACallback(m_loadBase, m_openedSymbolFile) );
+        SymSrvLoadHelper symSrvLoadHelper;
         return 
             dataSource.loadDataForExe(
                 m_executable.c_str(),
@@ -196,6 +232,13 @@ SymbolSessionPtr loadSymbolFile(
     SymbolSessionPtr symSession = diaLoad::createSession(dataForExeByRva, loadBase);
     loadedSymbolFile = dataForExeByRva.m_openedSymbolFile;
     return symSession;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void setSymSrvDir(const std::wstring &symSrvDir)
+{
+    diaLoad::SymSrvLoadHelper::g_symSrvDir = symSrvDir;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
