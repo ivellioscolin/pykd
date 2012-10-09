@@ -3,8 +3,6 @@
 #include "dbghelp.h"
 #include "dia/diawrapper.h"
 #include "win/utils.h"
-#include "dbgengine.h"
-#include "diacallback.h"
 
 namespace pykd {
 
@@ -92,24 +90,58 @@ std::string DiaException::makeFullDesc(const std::string &desc, HRESULT hres, ID
     }
     sstream << "Return value is 0x" << std::hex << hres;
 
-    PCHAR errMessage = NULL;
-    FormatMessageA(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-        NULL,
-        hres,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        (PCHAR)&errMessage,
-        0,
-        NULL);
-    if (errMessage)
+    switch (hres)
     {
-        sstream << ": " << std::endl;
-        sstream << errMessage;
-        LocalFree(errMessage);
-    }
-    else
-    {
-        sstream << std::endl;
+#define _CASE_DIA_ERROR(x)  case E_PDB_##x: sstream << ": E_PDB_" #x << std::endl; break
+
+    _CASE_DIA_ERROR(USAGE);
+    _CASE_DIA_ERROR(OUT_OF_MEMORY);
+    _CASE_DIA_ERROR(FILE_SYSTEM);
+    _CASE_DIA_ERROR(NOT_FOUND);
+    _CASE_DIA_ERROR(INVALID_SIG);
+    _CASE_DIA_ERROR(INVALID_AGE);
+    _CASE_DIA_ERROR(PRECOMP_REQUIRED);
+    _CASE_DIA_ERROR(OUT_OF_TI);
+    _CASE_DIA_ERROR(NOT_IMPLEMENTED);
+    _CASE_DIA_ERROR(V1_PDB);
+    _CASE_DIA_ERROR(FORMAT);
+    _CASE_DIA_ERROR(LIMIT);
+    _CASE_DIA_ERROR(CORRUPT);
+    _CASE_DIA_ERROR(TI16);
+    _CASE_DIA_ERROR(ACCESS_DENIED);
+    _CASE_DIA_ERROR(ILLEGAL_TYPE_EDIT);
+    _CASE_DIA_ERROR(INVALID_EXECUTABLE);
+    _CASE_DIA_ERROR(DBG_NOT_FOUND);
+    _CASE_DIA_ERROR(NO_DEBUG_INFO);
+    _CASE_DIA_ERROR(INVALID_EXE_TIMESTAMP);
+    _CASE_DIA_ERROR(RESERVED);
+    _CASE_DIA_ERROR(DEBUG_INFO_NOT_IN_PDB);
+    _CASE_DIA_ERROR(SYMSRV_BAD_CACHE_PATH);
+    _CASE_DIA_ERROR(SYMSRV_CACHE_FULL);
+
+#undef _CASE_DIA_ERROR
+    default:
+        {
+            PCHAR errMessage = NULL;
+            FormatMessageA(
+                FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+                NULL,
+                hres,
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                (PCHAR)&errMessage,
+                0,
+                NULL);
+            if (errMessage)
+            {
+                sstream << ": " << std::endl;
+                sstream << errMessage;
+                LocalFree(errMessage);
+            }
+            else
+            {
+                sstream << std::endl;
+            }
+        }
     }
 
     return sstream.str();
@@ -119,163 +151,6 @@ std::string DiaException::makeFullDesc(const std::string &desc, HRESULT hres, ID
 
 #define callSymbol(method) \
     callSymbolT( &IDiaSymbol::##method, #method)
-
-////////////////////////////////////////////////////////////////////////////////
-
-interface IDiaLoadDataImpl
-{
-    virtual ~IDiaLoadDataImpl() {}
-    virtual HRESULT load(__inout IDiaDataSource &DiaDataSource) = 0;
-};
-
-////////////////////////////////////////////////////////////////////////////////
-
-static SymbolSessionPtr loadDebugSymbols(
-    IDiaLoadDataImpl &LoadDataImpl,
-    ULONGLONG loadBase
-)
-{
-    HRESULT hres;
-    DiaDataSourcePtr dataSource;
-
-    hres = dataSource.CoCreateInstance(__uuidof(DiaSource), NULL, CLSCTX_INPROC_SERVER);
-
-    if ( S_OK != hres )
-        throw DiaException("Call ::CoCreateInstance", hres);
-
-    hres = LoadDataImpl.load(*dataSource);
-    if ( S_OK != hres )
-        throw DiaException("Call IDiaDataSource::loadDataXxx", hres);
-
-    DiaSessionPtr _session;
-    hres = dataSource->openSession(&_session);
-    if ( S_OK != hres )
-        throw DiaException("Call IDiaDataSource::openSession", hres);
-
-    hres = _session->put_loadAddress(loadBase);
-    if (S_OK != hres)
-        throw DiaException("Call IDiaSession::put_loadAddress", hres);
-
-    DiaSymbolPtr _globalScope;
-    hres = _session->get_globalScope(&_globalScope);
-    if ( S_OK != hres )
-        throw DiaException("Call IDiaSymbol::get_globalScope", hres);
-
-    return SymbolSessionPtr( new DiaSession( _session, _globalScope ) );
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-SymbolSessionPtr  loadSymbolFile(const std::string &filePath, ULONGLONG loadBase )
-{
-    struct LoadDataFromPdb : IDiaLoadDataImpl, boost::noncopyable
-    {
-        const std::string &m_filePath;
-        LoadDataFromPdb(const std::string &filePath) : m_filePath(filePath) {}
-
-        virtual HRESULT load(__inout IDiaDataSource &dataSource) override
-        {
-            return dataSource.loadDataFromPdb( toWStr(m_filePath) );
-        }
-    };
-
-    LoadDataFromPdb loadDataFromPdb(filePath);
-
-    return loadDebugSymbols(loadDataFromPdb, loadBase);
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-
-SymbolSessionPtr loadSymbolFile(
-    __in ULONGLONG loadBase,
-    __in const std::string &executable,
-    __out std::string &loadedSymbolFile,
-    __in_opt std::string symbolSearchPath /*= std::string()*/
-)
-{
-    if (symbolSearchPath.empty())
-        symbolSearchPath = getSymbolPath();
-
-    class ReadExeAtRVACallback : public IDiaReadExeAtRVACallback
-    {
-        ULONGLONG m_loadBase;
-        int m_nRefCount;
-        CComPtr< IDiaLoadCallback2 > m_diaLoadCallback2;
-public:
-        ReadExeAtRVACallback(ULONGLONG loadBase, std::string &openedSymbolFile) 
-            : m_loadBase(loadBase), m_nRefCount(1), m_diaLoadCallback2(new DiaLoadCallback2(&openedSymbolFile))
-        {
-        }
-
-        ULONG STDMETHODCALLTYPE AddRef() {
-            m_nRefCount++;
-            return m_nRefCount;
-        }
-        ULONG STDMETHODCALLTYPE Release() {
-            const int nRefCount = (--m_nRefCount);
-            if (!nRefCount)
-                delete this;
-            return nRefCount;
-        }
-
-        HRESULT STDMETHODCALLTYPE QueryInterface( REFIID rid, void **ppUnk ) {
-            if ( ppUnk == NULL )
-                return E_INVALIDARG;
-
-            if (rid == __uuidof(IDiaReadExeAtRVACallback))
-            {
-                *ppUnk = this;
-                return S_OK;
-            }
-
-            return m_diaLoadCallback2->QueryInterface(rid, ppUnk);
-        }
-
-        virtual HRESULT STDMETHODCALLTYPE ReadExecutableAtRVA( 
-            /* [in] */ DWORD relativeVirtualAddress,
-            /* [in] */ DWORD cbData,
-            /* [out] */ DWORD *pcbData,
-            /* [size_is][out] */ BYTE *pbData
-        ) override
-        {
-            return 
-                readMemoryImpl(
-                    m_loadBase + relativeVirtualAddress,
-                    pbData,
-                    cbData,
-                    pcbData);
-        }
-    };
-
-    struct LoadDataForExeByRva : IDiaLoadDataImpl, boost::noncopyable
-    {
-        ULONGLONG m_loadBase;
-        const std::string &m_executable;
-        const std::string &m_symbolSearchPath;
-        std::string m_openedSymbolFile;
-
-        LoadDataForExeByRva(ULONGLONG loadBase, const std::string &executable, std::string symbolSearchPath)
-            : m_loadBase(loadBase), m_executable(executable), m_symbolSearchPath(symbolSearchPath)
-        {
-        }
-
-        virtual HRESULT load(__inout IDiaDataSource &dataSource) override
-        {
-            CComPtr< IUnknown > readExeAtRVACallback(new ReadExeAtRVACallback(m_loadBase, m_openedSymbolFile) );
-            return 
-                dataSource.loadDataForExe(
-                    toWStr(m_executable),
-                    toWStr(m_symbolSearchPath),
-                    readExeAtRVACallback);
-        }
-    };
-
-    LoadDataForExeByRva loadDataForExeByRva(loadBase, executable, symbolSearchPath);
-
-    SymbolSessionPtr symSession = loadDebugSymbols(loadDataForExeByRva, loadBase);
-    loadedSymbolFile = loadDataForExeByRva.m_openedSymbolFile;
-    return symSession;
-}
 
 //////////////////////////////////////////////////////////////////////////////////
 
