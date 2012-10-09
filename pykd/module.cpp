@@ -44,17 +44,40 @@ Module::Module(ULONG64 offset )
 
 SymbolSessionPtr& Module::getSymSession()
 {
-    m_symSession = loadSymbolFile(m_base, m_imageName, m_symfile);
+    if (m_symSession)
+        return m_symSession;
 
-    if ( !m_symSession )
+    try
     {
-        m_symfile = getModuleSymbolFileName(m_base);
-        m_symSession = loadSymbolFile(m_symfile, m_base);
+        m_symSession = loadSymbolFile(m_base, m_imageName, m_symfile);
+    }
+    catch(const SymbolException &e)
+    {
+        DBG_UNREFERENCED_LOCAL_VARIABLE(e);
+    }
+    if (m_symSession)
+        return m_symSession;
+
+    // TODO: read image file path and load using IDiaReadExeAtOffsetCallback
+
+    m_symfile = getModuleSymbolFileName(m_base);
+    if (!m_symfile.empty())
+    {
+        try
+        {
+            m_symSession = loadSymbolFile(m_symfile, m_base);
+        }
+        catch(const SymbolException &e)
+        {
+            DBG_UNREFERENCED_LOCAL_VARIABLE(e);
+        }
         if (m_symSession)
-            throw SymbolException( "failed to load symbol file" );
+            return m_symSession;
+
+        m_symfile.clear();
     }
 
-    return m_symSession;
+    throw SymbolException( "failed to load symbol file" );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

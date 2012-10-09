@@ -259,7 +259,7 @@ public:
         {
         }
 
-        HRESULT STDMETHODCALLTYPE load(__inout IDiaDataSource &dataSource) override
+        virtual HRESULT load(__inout IDiaDataSource &dataSource) override
         {
             CComPtr< IUnknown > readExeAtRVACallback(new ReadExeAtRVACallback(m_loadBase, m_openedSymbolFile) );
             return 
