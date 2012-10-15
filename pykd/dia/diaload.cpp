@@ -125,12 +125,24 @@ public:
         /* [out] */ DWORD *pcbData,
         /* [size_is][out] */ BYTE *pbData
     ) override {
-        return
-            readMemoryImpl(
+
+        try
+        {
+            readMemory(
                 m_loadBase + relativeVirtualAddress,
                 pbData,
                 cbData,
+                FALSE,
                 pcbData);
+
+            return S_OK;
+        }
+        catch( const MemoryException &except )
+        {
+            DBG_UNREFERENCED_LOCAL_VARIABLE(except);
+        }
+
+        return S_FALSE;
     }
 };
 

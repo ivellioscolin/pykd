@@ -62,11 +62,12 @@ bool isVaValid( ULONG64 addr )
 
     return  offsetInfo != DEBUG_VSOURCE_INVALID;
 }
-
 ///////////////////////////////////////////////////////////////////////////////////
 
-HRESULT readMemoryImpl(ULONG64 offset, PVOID buffer, ULONG length, ULONG *readed, bool phyAddr)
+void readMemory( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr, ULONG *readed )
 {
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
     HRESULT hres;
     if ( phyAddr == false )
     {
@@ -84,17 +85,6 @@ HRESULT readMemoryImpl(ULONG64 offset, PVOID buffer, ULONG length, ULONG *readed
     {
         hres = g_dbgEng->dataspace->ReadPhysical( offset, buffer, length, readed );
     }
-
-    return hres;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void readMemory( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr )
-{
-    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
-
-    HRESULT hres = readMemoryImpl(offset, buffer, length, NULL, phyAddr);
 
     if ( FAILED( hres ) )
         throw MemoryException( offset, phyAddr );
