@@ -437,10 +437,13 @@ BOOST_PYTHON_MODULE( pykd )
             "Triggered breakpoint event. Parameter is int: ID of breakpoint\n"
             "For ignore event method must return False value" )
         .def( "onModuleLoad", &EventHandlerWrap::OnModuleLoad,
-            "Triggered module load event. Parameter is long: module base, string: module name\n"
+            "Triggered module load event. Parameter are long: module base, string: module name\n"
             "For ignore event method must return False value" )
         .def( "onModuleUnload", &EventHandlerWrap::OnModuleUnload,
-            "Triggered module unload event. Parameter is long: module base, string: module name\n"
+            "Triggered module unload event. Parameter are  long: module base, string: module name\n"
+            "For ignore event method must return False value" )
+        .def( "onException", &EventHandlerWrap::OnException,
+            "Triggered exception event. Parameters are long: exception address, long: exception code\n"
             "For ignore event method must return False value" );
 
     // wrapper for standart python exceptions

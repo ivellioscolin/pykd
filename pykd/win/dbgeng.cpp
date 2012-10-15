@@ -971,6 +971,9 @@ HRESULT STDMETHODCALLTYPE DebugEngine::LoadModule(
     return ConvertCallbackResult( result );
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+
 HRESULT STDMETHODCALLTYPE DebugEngine::UnloadModule(
      __in_opt PCSTR ImageBaseName,
      __in ULONG64 BaseOffset )
@@ -986,6 +989,30 @@ HRESULT STDMETHODCALLTYPE DebugEngine::UnloadModule(
         PyThread_StateSave pyThreadSave( it->pystate );
 
         DEBUG_CALLBACK_RESULT  ret = it->callback->OnModuleUnload( BaseOffset, getModuleName(BaseOffset) );
+
+        result = ret != DebugCallbackNoChange ? ret : result;
+    }
+
+    return ConvertCallbackResult( result );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+HRESULT STDMETHODCALLTYPE DebugEngine::Exception(
+    __in PEXCEPTION_RECORD64 Exception,
+    __in ULONG FirstChance )
+{
+    DEBUG_CALLBACK_RESULT result = DebugCallbackNoChange;
+
+    boost::recursive_mutex::scoped_lock l(m_handlerLock);
+
+    HandlerList::iterator  it = m_handlers.begin();
+
+    for ( ; it != m_handlers.end(); ++it )
+    {
+        PyThread_StateSave pyThreadSave( it->pystate );
+
+        DEBUG_CALLBACK_RESULT  ret = it->callback->OnException( Exception->ExceptionAddress, Exception->ExceptionCode );
 
         result = ret != DebugCallbackNoChange ? ret : result;
     }

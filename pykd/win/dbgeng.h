@@ -54,6 +54,7 @@ public:
         *Mask = DEBUG_EVENT_BREAKPOINT;
         *Mask |= DEBUG_EVENT_LOAD_MODULE;
         *Mask |= DEBUG_EVENT_UNLOAD_MODULE;
+        *Mask |= DEBUG_EVENT_EXCEPTION;
         return S_OK;
     }
 
@@ -73,6 +74,10 @@ public:
     STDMETHOD(UnloadModule)(
         __in_opt PCSTR ImageBaseName,
         __in ULONG64 BaseOffset );
+
+    STDMETHOD(Exception)(
+        __in PEXCEPTION_RECORD64 Exception,
+        __in  ULONG FirstChance );
 
     DbgEngBind*
     operator->() 

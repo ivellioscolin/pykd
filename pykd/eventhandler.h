@@ -24,6 +24,7 @@ private:
     virtual DEBUG_CALLBACK_RESULT OnBreakpoint( ULONG bpId ) = 0;
     virtual DEBUG_CALLBACK_RESULT OnModuleLoad( ULONG64 offset, const std::string &name ) = 0;
     virtual DEBUG_CALLBACK_RESULT OnModuleUnload( ULONG64 offset, const std::string &name ) = 0;
+    virtual DEBUG_CALLBACK_RESULT OnException( ULONG64 offset, ULONG code ) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -44,6 +45,10 @@ public:
 
     virtual DEBUG_CALLBACK_RESULT OnModuleUnload( ULONG64 offset, const std::string &name ) {
         return handler("onModuleUnload", offset, name );
+    }
+
+    virtual DEBUG_CALLBACK_RESULT OnException( ULONG64 offset, ULONG code ) {
+        return handler("onException", offset, code );
     }
 
 private:
