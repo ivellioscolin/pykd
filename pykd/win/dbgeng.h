@@ -52,12 +52,27 @@ public:
         )
     {
         *Mask = DEBUG_EVENT_BREAKPOINT;
+        *Mask |= DEBUG_EVENT_LOAD_MODULE;
+        *Mask |= DEBUG_EVENT_UNLOAD_MODULE;
         return S_OK;
     }
 
     STDMETHOD(Breakpoint)(
         __in IDebugBreakpoint *bp
     );
+
+    STDMETHOD(LoadModule)(
+        __in ULONG64 ImageFileHandle,
+        __in ULONG64 BaseOffset,
+        __in ULONG ModuleSize,
+        __in_opt PCSTR ModuleName,
+        __in_opt PCSTR ImageName,
+        __in ULONG CheckSum,
+        __in ULONG TimeDateStamp);
+
+    STDMETHOD(UnloadModule)(
+        __in_opt PCSTR ImageBaseName,
+        __in ULONG64 BaseOffset );
 
     DbgEngBind*
     operator->() 

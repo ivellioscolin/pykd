@@ -22,6 +22,8 @@ public:
 private:
 
     virtual DEBUG_CALLBACK_RESULT OnBreakpoint( ULONG bpId ) = 0;
+    virtual DEBUG_CALLBACK_RESULT OnModuleLoad( ULONG64 offset, const std::string &name ) = 0;
+    virtual DEBUG_CALLBACK_RESULT OnModuleUnload( ULONG64 offset, const std::string &name ) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -36,15 +38,38 @@ public:
         return handler("onBreakpoint", Id);
     }
 
+    virtual DEBUG_CALLBACK_RESULT OnModuleLoad( ULONG64 offset, const std::string &name ) {
+        return handler("onModuleLoad", offset, name );
+    }
+
+    virtual DEBUG_CALLBACK_RESULT OnModuleUnload( ULONG64 offset, const std::string &name ) {
+        return handler("onModuleUnload", offset, name );
+    }
+
 private:
 
     template<typename Arg1Type>
-    DEBUG_CALLBACK_RESULT handler( const char* handlerName, Arg1Type  arg1 )
+    DEBUG_CALLBACK_RESULT handler( const char* handlerName, Arg1Type arg1 )
     {
         if (python::override pythonHandler = get_override( handlerName ))
         {
             try {
                 return pythonHandler(arg1);
+            }
+            catch (const python::error_already_set &)  {
+                //onHandlerException();
+            }
+        }
+        return DebugCallbackNoChange;
+    }
+
+    template<typename Arg1Type, typename Arg2Type>
+    DEBUG_CALLBACK_RESULT handler( const char* handlerName, Arg1Type arg1, Arg2Type arg2 )
+    {
+        if (python::override pythonHandler = get_override( handlerName ))
+        {
+            try {
+                return pythonHandler(arg1,arg2);
             }
             catch (const python::error_already_set &)  {
                 //onHandlerException();

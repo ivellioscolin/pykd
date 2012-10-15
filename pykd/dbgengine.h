@@ -74,6 +74,8 @@ enum DEBUG_CALLBACK_RESULT {
 struct DEBUG_EVENT_CALLBACK {
 
     virtual DEBUG_CALLBACK_RESULT OnBreakpoint( ULONG bpId ) = 0;
+    virtual DEBUG_CALLBACK_RESULT OnModuleLoad( ULONG64 offset, const std::string &name ) = 0;
+    virtual DEBUG_CALLBACK_RESULT OnModuleUnload( ULONG64 offset, const std::string &name ) = 0;
 };
 
 void eventRegisterCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );

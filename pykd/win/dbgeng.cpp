@@ -919,6 +919,7 @@ HRESULT STDMETHODCALLTYPE DebugEngine::Breakpoint(
 {
     HRESULT hres;
     ULONG id;
+    DEBUG_CALLBACK_RESULT result = DebugCallbackNoChange;
 
     hres = bp->GetId( &id );
     if ( FAILED( hres ) )
@@ -932,13 +933,64 @@ HRESULT STDMETHODCALLTYPE DebugEngine::Breakpoint(
     {
         PyThread_StateSave pyThreadSave( it->pystate );
 
-        DEBUG_CALLBACK_RESULT result = it->callback->OnBreakpoint( id );
+        DEBUG_CALLBACK_RESULT  ret = it->callback->OnBreakpoint( id );
 
-        if ( DebugCallbackNoChange != result )
-            return ConvertCallbackResult( result );
+        result = ret != DebugCallbackNoChange ? ret : result;
     }
 
-    return DEBUG_STATUS_NO_CHANGE;
+    return ConvertCallbackResult( result );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+HRESULT STDMETHODCALLTYPE DebugEngine::LoadModule(
+    __in ULONG64 ImageFileHandle,
+    __in ULONG64 BaseOffset,
+    __in ULONG ModuleSize,
+    __in_opt PCSTR ModuleName,
+    __in_opt PCSTR ImageName,
+    __in ULONG CheckSum,
+    __in ULONG TimeDateStamp
+    )
+{
+    DEBUG_CALLBACK_RESULT result = DebugCallbackNoChange;
+
+    boost::recursive_mutex::scoped_lock l(m_handlerLock);
+
+    HandlerList::iterator  it = m_handlers.begin();
+
+    for ( ; it != m_handlers.end(); ++it )
+    {
+        PyThread_StateSave pyThreadSave( it->pystate );
+
+        DEBUG_CALLBACK_RESULT  ret = it->callback->OnModuleLoad( BaseOffset, std::string(ModuleName) );
+
+        result = ret != DebugCallbackNoChange ? ret : result;
+    }
+
+    return ConvertCallbackResult( result );
+}
+
+HRESULT STDMETHODCALLTYPE DebugEngine::UnloadModule(
+     __in_opt PCSTR ImageBaseName,
+     __in ULONG64 BaseOffset )
+{
+    DEBUG_CALLBACK_RESULT result = DebugCallbackNoChange;
+
+    boost::recursive_mutex::scoped_lock l(m_handlerLock);
+
+    HandlerList::iterator  it = m_handlers.begin();
+
+    for ( ; it != m_handlers.end(); ++it )
+    {
+        PyThread_StateSave pyThreadSave( it->pystate );
+
+        DEBUG_CALLBACK_RESULT  ret = it->callback->OnModuleUnload( BaseOffset, getModuleName(BaseOffset) );
+
+        result = ret != DebugCallbackNoChange ? ret : result;
+    }
+
+    return ConvertCallbackResult( result );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
