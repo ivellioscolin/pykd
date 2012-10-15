@@ -3,6 +3,7 @@
 #include <boost\algorithm\string\case_conv.hpp>
 
 #include "win/dbgeng.h"
+#include "win/dbgio.h"
 #include "dbgexcept.h"
 
 namespace pykd {
@@ -286,6 +287,23 @@ ULONG64 evaluate( const std::wstring  &expression )
     }      
 
     return value;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::string debugCommand( const std::wstring &command )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT         hres;
+    OutputReader    outReader( g_dbgEng->client );
+
+    hres = g_dbgEng->control->ExecuteWide( DEBUG_OUTCTL_THIS_CLIENT, command.c_str(), 0 );
+
+    if ( FAILED( hres ) )
+        throw  DbgException( "IDebugControl::Execute  failed" ); 
+
+    return std::string( outReader.Line() ); 
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -87,6 +87,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Break into debugger" );
     python::def( "expr", &evaluate,
         "Evaluate windbg expression" );
+    python::def( "dbgCommand", &debugCommand,
+        "Run a debugger's command and return it's result as a string" );
     python::def( "go", &debugGo,
         "Go debugging"  );
     python::def( "step", &debugStep,

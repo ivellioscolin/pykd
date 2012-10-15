@@ -19,6 +19,7 @@ void debugGo();
 void debugStep();
 void debugStepIn();
 void debugBreak();
+std::string debugCommand( const std::wstring &command );
 ULONG64 evaluate( const std::wstring  &expression );
 
 // debug output
