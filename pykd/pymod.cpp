@@ -66,6 +66,17 @@ BOOST_PYTHON_MODULE( pykd )
 {
     python::scope().attr("version") = pykdVersion;
 
+    // DbgEng services 
+    python::def( "setSymSrvDir", &setSymSrvDir,
+        "Set directory of SYMSRV.dll library.\nUsually this is a directory of WinDbg");
+    python::def( "loadExt", &loadExtension,
+        "Load a WinDBG extension. Return handle of the loaded extension" );
+    python::def( "removeExt", &removeExtension,
+        "Unload a WinDBG extension. Parameters: handle returned by loadExt" );
+    python::def( "callExt", &callExtension,
+        "Call a WinDBG extension's routine. Parameters: handle returned by loadExt; string command line" );
+
+
     // Manage debug target 
 
     python::def( "startProcess", &startProcess,
@@ -248,10 +259,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Set current process by address" );
     python::def( "setImplicitThread", &setImplicitThread, 
         "Set implicit thread for current process" );
-
-    python::def( "setSymSrvDir", &setSymSrvDir,
-        "Set directory of SYMSRV.dll library.\nUsually this is a directory of WinDbg");
-
+    
     // symbol path
     python::def( "getSymbolPath", &getSymbolPath, "Returns current symbol path");
     python::def( "setSymbolPath", &setSymbolPath, "Set current symbol path");

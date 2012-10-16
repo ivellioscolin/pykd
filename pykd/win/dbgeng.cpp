@@ -1126,15 +1126,59 @@ void setImplicitThread( ULONG64 threadAddr )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
-    HRESULT                 hres;  
+    HRESULT  hres;
 
     threadAddr = addr64(threadAddr);
     hres = g_dbgEng->system->SetImplicitThreadDataOffset( threadAddr );
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugSystemObjects2::SetImplicitThreadDataOffset  failed" );         
+        throw DbgException( "IDebugSystemObjects2::SetImplicitThreadDataOffset  failed" );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+ULONG64 loadExtension(const std::wstring &extPath )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+    ULONG64  handle = 0;
+
+    hres = g_dbgEng->control->AddExtensionWide( extPath.c_str(), 0, &handle );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::AddExtension failed" );
+
+    return handle;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void removeExtension( ULONG64 extHandle )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    g_dbgEng->control->RemoveExtension( extHandle );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::string callExtension( ULONG64 extHandle, const std::wstring command, const std::wstring  &params  )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+
+    OutputReader  outReader( g_dbgEng->client );
+
+    hres = g_dbgEng->control->CallExtensionWide( extHandle, command.c_str(), params.c_str() );
+
+    if ( FAILED( hres ) )
+        throw  DbgException( "IDebugControl::CallExtension  failed" ); 
+        
+    return std::string( outReader.Line() );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 
 } // end pykd namespace
 

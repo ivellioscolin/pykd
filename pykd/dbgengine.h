@@ -101,5 +101,10 @@ std::string getSymbolPath();
 void setSymbolPath(const std::string &symPath);
 void appendSymbolPath(const std::string &symPath);
 
+// Extensions
+ULONG64 loadExtension(const std::wstring &extPath );
+void removeExtension( ULONG64 extHandle );
+std::string callExtension( ULONG64 extHandle, const std::wstring command, const std::wstring  &params  );
+
 };
 
