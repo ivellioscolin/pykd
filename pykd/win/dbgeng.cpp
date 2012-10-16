@@ -51,6 +51,40 @@ ULONG startProcess( const std::wstring  &processName )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+ULONG attachProcess( ULONG pid )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+
+    ULONG       opt;
+    hres = g_dbgEng->control->GetEngineOptions( &opt );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetEngineOptions failed" );
+
+    opt |= DEBUG_ENGOPT_INITIAL_BREAK;
+    hres = g_dbgEng->control->SetEngineOptions( opt );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::SetEngineOptions failed" );
+    
+    hres = g_dbgEng->client->AttachProcess( 0, pid, 0 );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugClient::AttachProcess failed" );
+
+    hres = g_dbgEng->control->WaitForEvent(DEBUG_WAIT_DEFAULT, INFINITE);
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::WaitForEvent failed" );
+
+    ULONG processId = -1;
+    hres = g_dbgEng->system->GetCurrentProcessId( &processId );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSystemObjects::GetCurrentProcessId failed" );
+
+    return processId;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 void detachProcess( ULONG processId )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );

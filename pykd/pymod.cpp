@@ -70,6 +70,8 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::def( "startProcess", &startProcess,
         "Start process for debugging"); 
+    python::def( "attachProcess", &attachProcess,
+        "Attach debugger to a exsisting process" );
     python::def( "detachProcess", &detachProcess, 
         "Stop process debugging"); 
     python::def( "killProcess", &terminateProcess,
