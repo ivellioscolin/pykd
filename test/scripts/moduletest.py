@@ -66,6 +66,6 @@ class ModuleTest( unittest.TestCase ):
         self.assertTrue( re.search('targetapp\\.cpp', fileName ) )
         self.assertEqual( 2, displacement )
         fileName, lineNo, displacement = pykd.getSourceLine()
-        self.assertEqual( 622, lineNo )
+        self.assertEqual( 624, lineNo )
 
 

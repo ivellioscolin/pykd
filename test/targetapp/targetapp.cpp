@@ -459,6 +459,8 @@ void FuncWithName1(int a)
     std::cout << g_arrOfPtrToFunc[1];
 }
 
+#pragma optimize("g", off)
+
 static
 void _FuncWithName2(int a)
 {
@@ -466,7 +468,7 @@ void _FuncWithName2(int a)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-#pragma optimize("g", off)
+
 VOID functionCalledFromEnumWindowsProc1(DWORD dwProcessId)
 {
     DWORD dwCurrentProcessId = GetCurrentProcessId();

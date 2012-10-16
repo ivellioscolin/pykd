@@ -6,6 +6,8 @@ from pykd import dprintln
 from pykd import dprint
 
 def printAllSamples():
+    dprintln( "<b>User mode</b>", True)
+    dprintln( "Get critical sections list <link cmd=\"!py samples run um.critlist\">Run</link> <link cmd=\"!py samples source um.critlist\">Source</link>", True)
     dprintln( "<b>Kernel mode</b>", True )
     dprintln( "Get process list <link cmd=\"!py samples run km.proclist\">Run</link> <link cmd=\"!py samples source km.proclist\">Source</link>", True)
     dprintln( "Get kernel service list <link cmd=\"!py samples run km.ssdt\">Run</link> <link cmd=\"!py samples source km.ssdt\">Source</link>", True)
