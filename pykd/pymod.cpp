@@ -62,6 +62,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( CustomStruct_create, CustomStruct::create, 1, 2 );
 
+BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, TypeInfo::findSymbol, 1, 2 );
+
 BOOST_PYTHON_MODULE( pykd )
 {
     python::scope().attr("version") = pykdVersion;
@@ -202,8 +204,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return source file name, line and displacement by the specified offset" ) );
     python::def( "getOffset", &TypeInfo::getOffset,
         "Return traget virtual address for specified symbol" );
-    python::def( "findSymbol", &TypeInfo::findSymbol, 
-        "Find symbol by the target virtual memory offset" );
+    python::def( "findSymbol", &TypeInfo::findSymbol, findSymbol_( python::args( "offset", "safe"),
+        "Find symbol by the target virtual memory offset" ) );
     python::def( "sizeof", &TypeInfo::getSymbolSize,
         "Return a size of the type or variable" );
     python::def("typedVarList", &getTypedVarListByTypeName,

@@ -74,13 +74,30 @@ ULONG64 TypeInfo::getSymbolSize( const std::string &fullName )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-std::string TypeInfo::findSymbol( ULONG64 offset )
+std::string TypeInfo::findSymbol( ULONG64 offset, bool safe)
 {
+    if ( !safe )
+    {
+        ModulePtr   module = Module::loadModuleByOffset( offset );
+
+        return  module->getName() + '!' + module->getSymbolNameByVa( offset );
+    }
+
     try {
 
         ModulePtr   module = Module::loadModuleByOffset( offset );
 
-        return  module->getName() + '!' + module->getSymbolNameByVa( offset );
+        try {
+
+            return  module->getName() + '!' + module->getSymbolNameByVa( offset );
+
+        }
+        catch( DbgException& )
+        {
+            std::stringstream sstr;
+            sstr <<  module->getName() << '!' << std::hex << ( offset - module->getBase() );
+            return sstr.str();
+        }
 
     } 
     catch( DbgException& )

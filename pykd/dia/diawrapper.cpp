@@ -472,23 +472,8 @@ std::string DiaSymbol::getName()
 
     if ( FAILED( hres ) )
         throw DiaException("Call IDiaSymbol::get_symTag", hres);
-
-    if ( symTag == SymTagPublicSymbol )
-    {
-        std::string  retStr = autoBstr( callSymbol(get_name) ).asStr();
-
-        boost::cmatch  matchResult;
-
-        if ( boost::regex_match( retStr.c_str(), matchResult, stdcallMatch ) )
-            return std::string( matchResult[1].first, matchResult[1].second );
-
-        if ( boost::regex_match( retStr.c_str(), matchResult, fastcallMatch ) )
-            return std::string( matchResult[1].first, matchResult[1].second );
-
-        return retStr;
-    }
-        
-    if( symTag == SymTagData || symTag == SymTagFunction )
+      
+    if( symTag == SymTagData || symTag == SymTagFunction || symTag == SymTagPublicSymbol )
     {
         hres = m_symbol->get_undecoratedNameEx( UNDNAME_NAME_ONLY, &bstrName);
         if ( FAILED( hres ) )
