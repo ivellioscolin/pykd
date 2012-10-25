@@ -154,8 +154,8 @@ class IpProtocol:
 
     def getNextLayerPacket( self, dataPos ):
         return { 
-		ICMP_PROTO : lambda x : "",
-		UDP_PROTO : lambda x : UdpPacket(x),
+                ICMP_PROTO : lambda x : "",
+                UDP_PROTO : lambda x : UdpPacket(x),
                 TCP_PROTO : lambda x : TcpPacket(x)
             }.get( self.typeVal, lambda x : "Unknown protocol" )(dataPos)
 
@@ -382,7 +382,7 @@ def getPacketFromNb( nb ):
 
     pcktBytes = list()
 
-    mdl = typedVar( "ndis", "_MDL", nb.CurrentMdl )
+    mdl = typedVar( "ndis!_MDL", nb.CurrentMdl )
     dataLength = nb.DataLength
     dataOffset = nb.CurrentMdlOffset
 
@@ -395,9 +395,9 @@ def getPacketFromNb( nb ):
 
         dataLength -= copyData
 
-        mdl = typedVar( "ndis", "_MDL", mdl.Next )
+        mdl = typedVar( "ndis!_MDL", mdl.Next )
 
-    return pcktBytes	
+    return pcktBytes
     
 
 
@@ -405,11 +405,11 @@ def getPacketsFromNbl( nblAddr ):
 
     pcktList = list()
 
-    nbl = typedVar( "ndis", "_NET_BUFFER_LIST", nblAddr )
+    nbl = typedVar( "ndis!_NET_BUFFER_LIST", nblAddr )
 
     while True:
     
-        nb = typedVar( "ndis", "_NET_BUFFER", nbl.FirstNetBuffer )
+        nb = typedVar( "ndis!_NET_BUFFER", nbl.FirstNetBuffer )
       
         while True:
 
@@ -418,12 +418,12 @@ def getPacketsFromNbl( nblAddr ):
             if nb.Next == 0:
                 break
 
-            nb = typedVar( "ndis", "_NET_BUFFER", nb.Next )
+            nb = typedVar( "ndis!_NET_BUFFER", nb.Next )
 
         if nbl.Next == 0:
             break
 
-        nbl = typedVar( "ndis", "_NET_BUFFER_LIST", nbl.Next )
+        nbl = typedVar( "ndis!_NET_BUFFER_LIST", nbl.Next )
 
     return pcktList 
 
@@ -437,7 +437,7 @@ def printNblStruct( nblAddr ):
                      
             dprintln( "NET_BUFFER_LIST %#x" % nblAddr )
 
-            nbl = typedVar( "ndis", "_NET_BUFFER_LIST", nblAddr )
+            nbl = typedVar( "ndis!_NET_BUFFER_LIST", nblAddr )
 
             nbAddr = nbl.FirstNetBuffer
 
@@ -445,7 +445,7 @@ def printNblStruct( nblAddr ):
 
                dprint( "\tNET_BUFFER %#x" % nbAddr )
                 
-               nb = typedVar( "ndis", "_NET_BUFFER", nbAddr )
+               nb = typedVar( "ndis!_NET_BUFFER", nbAddr )
 
                dprintln( "  data length = %d, data offset = %#x " % ( nb.DataLength, nb.DataOffset ) )
 
@@ -455,7 +455,7 @@ def printNblStruct( nblAddr ):
 
                    dprint( "\t\tMDL %#x" % mdlAddr )
                    
-                   mdl = typedVar( "ndis", "_MDL", mdlAddr )
+                   mdl = typedVar( "ndis!_MDL", mdlAddr )
 
                    dprintln( "  byte count = %d, byte offset = %#x, mapped addr = %#x" % ( mdl.ByteCount, mdl.ByteOffset, mdl.MappedSystemVa ) )
 

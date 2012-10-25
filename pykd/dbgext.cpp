@@ -59,6 +59,79 @@ WindbgGlobalSession     *WindbgGlobalSession::windbgGlobalSession = NULL;
 
 ////////////////////////////////////////////////////////////////////////////////
 
+class InterruptWatch
+{
+public:
+    InterruptWatch( PDEBUG_CLIENT4 client, python::object& global ) 
+    {
+        m_debugControl = client;
+
+        m_global = global;
+
+        m_stopEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
+
+        m_thread = 
+            CreateThread(
+                NULL,
+                0,
+                threadRoutine,
+                this,
+                0,
+                NULL );
+    }
+
+    ~InterruptWatch()
+    {
+        SetEvent( m_stopEvent );
+
+        WaitForSingleObject( m_thread, INFINITE );
+
+        CloseHandle( m_stopEvent );
+
+        CloseHandle( m_thread );
+    }
+
+private:
+
+
+    static int quit(void *) {
+        PyErr_SetString( PyExc_SystemExit, "" );
+        return -1;
+    }
+
+    DWORD workRoutine(){
+
+        while( WAIT_TIMEOUT == WaitForSingleObject( m_stopEvent, 250 ) )
+        {
+            HRESULT  hres =  m_debugControl->GetInterrupt();
+            if ( hres == S_OK )
+            {
+                PyGILState_STATE state = PyGILState_Ensure();
+                Py_AddPendingCall(&quit, NULL);
+                PyGILState_Release(state);
+
+                break;
+            }
+        }
+
+        return 0;
+    }
+
+    static DWORD WINAPI threadRoutine(LPVOID lpParameter) {
+        return  static_cast<InterruptWatch*>(lpParameter)->workRoutine();
+    }
+
+    HANDLE  m_thread;
+
+    HANDLE  m_stopEvent;
+
+    python::object m_global;
+
+    CComQIPtr<IDebugControl> m_debugControl;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
 BOOL WINAPI DllMain(
   __in  HINSTANCE /*hinstDLL*/,
   __in  DWORD fdwReason,
@@ -120,6 +193,8 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
         python::object       main =  python::import("__main__");
 
         python::object       global(main.attr("__dict__"));
+
+        InterruptWatch   interruptWatch( client, global );
 
         // настраиваем ввод/вывод ( чтобы в скрипте можно было писать print )
 
@@ -228,23 +303,27 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
     client->GetOutputMask( &mask );
     client->SetOutputMask( mask & ~DEBUG_OUTPUT_PROMPT ); // убрать эхо ввода
 
+    InterruptWatch   interruptWatch( client, WindbgGlobalSession::global() );
+
     try {
 
-        PyRun_String(
-            "__import__('code').InteractiveConsole(__import__('__main__').__dict__).interact()", 
-            Py_file_input,
-            WindbgGlobalSession::global().ptr(),
-            WindbgGlobalSession::global().ptr()
+        python::exec( 
+            "try:\n"
+            "  __import__('code').InteractiveConsole(__import__('__main__').__dict__).interact()\n"
+            "except SystemExit:\n"
+            "  print 'Ctrl+Break'\n",
+            WindbgGlobalSession::global(),
+            WindbgGlobalSession::global()
             );
-
-        // выход из интерпретатора происходит через исключение raise SystemExit(code)
-        // которое потом может помешать исполнению callback ов
-        PyErr_Clear();
     }
     catch(...)
     {
         eprintln( L"unexpected error" );
     }
+
+    // выход из интерпретатора происходит через исключение raise SystemExit(code)
+    // которое потом может помешать исполнению callback ов
+    PyErr_Clear();
 
     client->SetOutputMask( mask );
 
