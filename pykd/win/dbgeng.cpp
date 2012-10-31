@@ -1015,7 +1015,22 @@ HRESULT STDMETHODCALLTYPE DebugEngine::LoadModule(
     {
         PyThread_StateSave pyThreadSave( it->pystate );
 
-        DEBUG_CALLBACK_RESULT  ret = it->callback->OnModuleLoad( BaseOffset, std::string(ModuleName) );
+        std::string   modName;
+
+        if ( ModuleName )
+        {
+            modName = ModuleName;
+        }
+        else if ( ImageName )
+        {
+            // при работоте kernel отладчика ModuleName может быть равен NULL;
+            modName = ImageName;
+            modName.erase( modName.rfind('.') );
+        }
+        else
+            modName = "";
+
+        DEBUG_CALLBACK_RESULT  ret = it->callback->OnModuleLoad( BaseOffset, modName );
 
         result = ret != DebugCallbackNoChange ? ret : result;
     }
