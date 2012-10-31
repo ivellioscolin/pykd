@@ -103,6 +103,8 @@ public:
 
     std::string getSourceFile( ULONG64 offset );
 
+    python::list enumSymbols( const std::string  &mask = "*" );
+
     std::string print();
 
 private:

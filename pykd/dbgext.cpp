@@ -280,7 +280,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
     }
     catch(...)
     {
-        eprintln( L"unexpected error" );
+       eprintln( L"unexpected error" );
     }
 
     Py_EndInterpreter( localInterpreter ); 
@@ -308,17 +308,17 @@ pycmd( PDEBUG_CLIENT4 client, PCSTR args )
     try {
 
         python::exec( 
-            "try:\n"
-            "  __import__('code').InteractiveConsole(__import__('__main__').__dict__).interact()\n"
-            "except SystemExit:\n"
-            "  print 'Ctrl+Break'\n",
+            "__import__('code').InteractiveConsole(__import__('__main__').__dict__).interact()\n",
             WindbgGlobalSession::global(),
             WindbgGlobalSession::global()
             );
     }
     catch(...)
     {
-        eprintln( L"unexpected error" );
+        if ( !PyErr_ExceptionMatches( PyExc_SystemExit ) )
+        {
+            eprintln( L"unexpected error" );
+        }
     }
 
     // выход из интерпретатора происходит через исключение raise SystemExit(code)

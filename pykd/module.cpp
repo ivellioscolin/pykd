@@ -196,7 +196,7 @@ TypedVarPtr Module::containingRecordByName( ULONG64 offset, const std::string &t
     return containingRecordByType( offset, typeInfo, fieldName );
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 python::list Module::getTypedVarArrayByTypeName( ULONG64 offset, const std::string  &typeName, ULONG number )
 {
@@ -277,6 +277,36 @@ void Module::prepareSymbolFile()
     {
         DBG_UNREFERENCED_LOCAL_VARIABLE(e);
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+python::list Module::enumSymbols( const std::string  &mask)
+{
+    python::list  lst;
+
+    SymbolPtrList  symlst = getSymScope()->findChildren( SymTagData, mask, true );
+
+    for ( SymbolPtrList::iterator it = symlst.begin(); it != symlst.end(); ++it )
+    {
+        if ( (*it)->getDataKind() == DataIsConstant )
+        {
+            lst.append( python::make_tuple( (*it)->getName(), python::object() ) );
+        }
+        else
+        {
+            lst.append( python::make_tuple( (*it)->getName(), (*it)->getVa() ) );
+        }
+    }
+
+    symlst = getSymScope()->findChildren( SymTagFunction, mask, true );
+
+    for ( SymbolPtrList::iterator it = symlst.begin(); it != symlst.end(); ++it )
+    {
+        lst.append( python::make_tuple( (*it)->getName(), (*it)->getVa() ) );
+    }
+
+    return lst;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

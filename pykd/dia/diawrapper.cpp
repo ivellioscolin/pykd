@@ -206,7 +206,7 @@ SymbolPtrList  DiaSymbol::findChildren(
         hres = m_symbol->findChildren(
             static_cast<enum ::SymTagEnum>(symTag),
                 NULL,
-                (caseSensitive ? nsCaseSensitive : nsCaseInsensitive) | nsfUndecoratedName,
+                (caseSensitive ? nsCaseSensitive : nsCaseInsensitive) | nsfUndecoratedName | nsfRegularExpression,
                 &symbols);
 
     }
@@ -215,7 +215,7 @@ SymbolPtrList  DiaSymbol::findChildren(
         hres = m_symbol->findChildren(
             static_cast<enum ::SymTagEnum>(symTag),
                 toWStr(name),
-                (caseSensitive ? nsCaseSensitive : nsCaseInsensitive) | nsfUndecoratedName,
+                (caseSensitive ? nsCaseSensitive : nsCaseInsensitive) | nsfUndecoratedName | nsfRegularExpression,
                 &symbols);
     }
 
@@ -652,7 +652,14 @@ bool DiaSymbol::isBasicType()
 
 bool DiaSymbol::isConstant()
 {
-    return !!callSymbol(get_constType); 
+    HRESULT  hres;
+    BOOL  retBool = FALSE;
+
+    hres = m_symbol->get_constType( &retBool );
+    if ( FAILED( hres ) )
+        throw DiaException("Call IDiaSymbol::get_constType", hres, m_symbol);
+
+    return !!retBool;
 }
 
 //////////////////////////////////////////////////////////////////////////////

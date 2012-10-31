@@ -52,6 +52,7 @@ class ModuleTest( unittest.TestCase ):
     def testFindSymbol( self ):
         self.assertEqual( "FuncWithName0", target.module.findSymbol( target.module.offset("FuncWithName0") ) )
         self.assertEqual( "_FuncWithName2", target.module.findSymbol( target.module.offset("_FuncWithName2") ) )
+       # self.assertEqual( "", typed)
         
         
     def testType( self ):
@@ -67,5 +68,13 @@ class ModuleTest( unittest.TestCase ):
         self.assertEqual( 2, displacement )
         fileName, lineNo, displacement = pykd.getSourceLine()
         self.assertEqual( 624, lineNo )
-
+        
+    def testEnumSymbols( self ):
+        lst = target.module.enumSymbols("hello*Str")
+        self.assertEqual( 2, len(lst) )
+        lst = target.module.enumSymbols( "g_const*Value")
+        self.assertEqual( 2, len(lst) )
+        lst = target.module.enumSymbols( "*FuncWithName*")
+        self.assertEqual( 3, len(lst) )
+        self.assertNotEqual( 0, len(target.module.enumSymbols( "*virtFunc*") ) )
 
