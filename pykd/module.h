@@ -105,6 +105,8 @@ public:
 
     python::list enumSymbols( const std::string  &mask = "*" );
 
+    python::list enumTypes( const std::string  &mask = "*" );
+
     std::string print();
 
 private:

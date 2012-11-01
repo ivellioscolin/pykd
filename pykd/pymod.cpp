@@ -65,6 +65,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( CustomStruct_create, CustomStruct::create, 1, 2
 BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, TypeInfo::findSymbol, 1, 2 );
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_enumSymbols, Module::enumSymbols, 0, 1 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_enumTypes, Module::enumTypes, 0, 1 );
+
 
 BOOST_PYTHON_MODULE( pykd )
 {
@@ -363,6 +365,8 @@ BOOST_PYTHON_MODULE( pykd )
             "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
         .def("enumSymbols", &Module::enumSymbols, Module_enumSymbols( python::args("mask"),
              "Return list of tuple ( symbolname, offset )" ) )
+        .def("enumTypes", &Module::enumTypes, Module_enumTypes( python::args("mask"),
+            "Return list of type's names" ))
         .def("checksum",&Module::getCheckSum,
             "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
         .def("timestamp",&Module::getTimeDataStamp,

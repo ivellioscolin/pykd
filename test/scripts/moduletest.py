@@ -70,11 +70,26 @@ class ModuleTest( unittest.TestCase ):
         self.assertEqual( 624, lineNo )
         
     def testEnumSymbols( self ):
+        lst = target.module.enumSymbols()
+        self.assertNotEqual( 0, len(lst) )
         lst = target.module.enumSymbols("hello*Str")
         self.assertEqual( 2, len(lst) )
         lst = target.module.enumSymbols( "g_const*Value")
         self.assertEqual( 2, len(lst) )
         lst = target.module.enumSymbols( "*FuncWithName*")
         self.assertEqual( 3, len(lst) )
-        self.assertNotEqual( 0, len(target.module.enumSymbols( "*virtFunc*") ) )
+        lst = target.module.enumSymbols( "*virtFunc*") 
+        self.assertNotEqual( 0, len(lst) )
+        lst = target.module.enumSymbols( "classChild" )
+        self.assertEqual( 0, len(lst) )
+          
 
+    def testEnumTypes( self ):
+        lst = target.module.enumTypes()
+        self.assertNotEqual( 0, len(lst) )
+        lst = target.module.enumTypes("*class*")
+        self.assertEqual( 2, len(lst) )
+        self.assertTrue( "classChild" in lst )
+        self.assertTrue( "classBase" in lst )
+        lst = target.module.enumTypes("hello*Str")
+        self.assertEqual( 0, len(lst) )

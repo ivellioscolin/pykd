@@ -311,4 +311,23 @@ python::list Module::enumSymbols( const std::string  &mask)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+python::list Module::enumTypes( const std::string  &mask )
+{
+    python::list  lst;
+    int  tags[] = { SymTagUDT, SymTagEnum };
+
+    for ( size_t i = 0; i < sizeof(tags)/sizeof(tags[0]); ++i )
+    {
+        SymbolPtrList  symlst = getSymScope()->findChildren( tags[i], mask, true );
+
+        for ( SymbolPtrList::iterator it = symlst.begin(); it != symlst.end(); ++it )
+        {
+            lst.append( (*it)->getName() );
+        }
+    }
+
+    return lst;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
 }; // end of namespace pykd
