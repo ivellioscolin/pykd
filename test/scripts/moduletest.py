@@ -68,7 +68,7 @@ class ModuleTest( unittest.TestCase ):
         self.assertEqual( 2, displacement )
         fileName, lineNo, displacement = pykd.getSourceLine()
         self.assertEqual( 624, lineNo )
-        
+
     def testEnumSymbols( self ):
         lst = target.module.enumSymbols()
         self.assertNotEqual( 0, len(lst) )
@@ -82,14 +82,21 @@ class ModuleTest( unittest.TestCase ):
         self.assertNotEqual( 0, len(lst) )
         lst = target.module.enumSymbols( "classChild" )
         self.assertEqual( 0, len(lst) )
-          
 
     def testEnumTypes( self ):
-        lst = target.module.enumTypes()
-        self.assertNotEqual( 0, len(lst) )
-        lst = target.module.enumTypes("*class*")
-        self.assertEqual( 2, len(lst) )
-        self.assertTrue( "classChild" in lst )
-        self.assertTrue( "classBase" in lst )
-        lst = target.module.enumTypes("hello*Str")
-        self.assertEqual( 0, len(lst) )
+        lst1 = target.module.enumTypes()
+        self.assertNotEqual( 0, len(lst1) )
+
+        self.assertTrue( "classChild" in lst1 )
+        self.assertTrue( "classBase" in lst1 )
+        self.assertTrue( "structTest" in lst1 )
+
+        lst2 = target.module.enumTypes("*class*")
+        self.assertEqual( 2, len(lst2) )
+        self.assertTrue( len(lst1) > len(lst2) )
+
+        self.assertTrue( "classChild" in lst2 )
+        self.assertTrue( "classBase" in lst2 )
+
+        lst3 = target.module.enumTypes("hello*Str")
+        self.assertEqual( 0, len(lst3) )
