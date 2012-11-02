@@ -92,7 +92,7 @@ class ModuleTest( unittest.TestCase ):
         self.assertTrue( "structTest" in lst1 )
 
         lst2 = target.module.enumTypes("*class*")
-        self.assertEqual( 2, len(lst2) )
+        self.assertTrue( len(lst2) >= 2 )
         self.assertTrue( len(lst1) > len(lst2) )
 
         self.assertTrue( "classChild" in lst2 )
