@@ -92,6 +92,33 @@ void readMemory( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr, ULONG
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+bool readMemoryUnsafe( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr, ULONG *readed )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT hres;
+    if ( phyAddr == false )
+    {
+        offset = addr64NoSafe( offset );
+
+        // workitem/10473 workaround
+        ULONG64 nextAddress;
+        hres = g_dbgEng->dataspace->GetNextDifferentlyValidOffsetVirtual( offset, &nextAddress );
+
+        DBG_UNREFERENCED_LOCAL_VARIABLE(nextAddress);
+
+        hres = g_dbgEng->dataspace->ReadVirtual( offset, buffer, length, readed );
+    }
+    else
+    {
+        hres = g_dbgEng->dataspace->ReadPhysical( offset, buffer, length, readed );
+    }
+
+    return hres == S_OK;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 std::string loadCStr( ULONG64 offset )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );

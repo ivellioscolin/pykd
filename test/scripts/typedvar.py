@@ -238,7 +238,12 @@ class TypedVarTest( unittest.TestCase ):
         self.assertTrue( str(target.module.typedVar( "g_voidPtr" ) ) )
         self.assertTrue( str(target.module.typedVar( "g_arrOfPtrToFunc" ) ) )
         self.assertTrue( str(target.module.typedVar( "g_unTypedPtrToFunction" ) ) )
-
+        
+    def testNotValidPrint(self):
+        types = ("structTest", ) #, "ULong[100]", "Ulong*" )
+        for ti in types:
+            self.assertTrue( str(pykd.typedVar( target.module.type(ti), 0 ) ) )
+    
     def testStaticField(self):
         tv = pykd.typedVar( "g_classChild" )
         self.assertEqual( 200, tv.m_staticField )

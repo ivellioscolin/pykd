@@ -166,10 +166,18 @@ std::string BasicTypedVar::print()
 
 std::string  BasicTypedVar::printValue()
 {
-    std::stringstream       sstr;
+    std::stringstream  sstr;
+
+    try {
     
-    sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );
-    sstr << " (" << boost::apply_visitor( VariantToStr(), getValue() ) << ")";
+        sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );
+        sstr << " (" << boost::apply_visitor( VariantToStr(), getValue() ) << ")";
+
+    } 
+    catch( MemoryException& )
+    {
+        sstr << "????";
+    }
 
     return sstr.str();
 }
@@ -205,9 +213,17 @@ std::string PtrTypedVar::print()
 
 std::string  PtrTypedVar::printValue()
 {
-    std::stringstream   sstr;    
+    std::stringstream   sstr;
 
-    sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );
+    try {
+
+        sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );
+
+    }
+    catch( MemoryException& )
+    {
+        sstr << "????";
+    }
 
     return sstr.str();
 }
@@ -406,9 +422,16 @@ BaseTypeVariant BitFieldVar::getValue()
 std::string  BitFieldVar::printValue()
 {
     std::stringstream       sstr;
-    
-    sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );
-    sstr << " (" << boost::apply_visitor( VariantToStr(), getValue() ) << ")";
+
+    try
+    {   
+        sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );
+        sstr << " (" << boost::apply_visitor( VariantToStr(), getValue() ) << ")";
+    }
+    catch( MemoryException& )
+    {
+        sstr << "????";
+    }
 
     return sstr.str();
 }
@@ -442,23 +465,31 @@ std::string EnumTypedVar::printValue()
 {  
     std::stringstream   sstr;    
 
-    ULONG       val = boost::apply_visitor( VariantToULong(), getValue() );
+    try {
 
-    for ( ULONG i = 0; i < m_typeInfo->getFieldCount(); ++i )
-    {
-       ULONG       val1 = boost::apply_visitor( VariantToULong(), m_typeInfo->getFieldByIndex(i)->getValue() );
+        ULONG       val = boost::apply_visitor( VariantToULong(), getValue() );
 
-       if ( val == val1 )
-       {
-           sstr << m_typeInfo->getFieldNameByIndex(i);
-           sstr << "(0x" << std::hex << val << ")";
+        for ( ULONG i = 0; i < m_typeInfo->getFieldCount(); ++i )
+        {
+           ULONG       val1 = boost::apply_visitor( VariantToULong(), m_typeInfo->getFieldByIndex(i)->getValue() );
 
-           return sstr.str();
-       }
+           if ( val == val1 )
+           {
+               sstr << m_typeInfo->getFieldNameByIndex(i);
+               sstr << "(0x" << std::hex << val << ")";
+
+               return sstr.str();
+           }
+        }
+
+        sstr << "0x" << std::hex << val;
+        sstr << " ( No matching name )";
+
     }
-
-    sstr << "0x" << std::hex << val;
-    sstr << " ( No matching name )";
+    catch( MemoryException& )
+    {
+        sstr << "????";
+    }
 
     return sstr.str();
 }
