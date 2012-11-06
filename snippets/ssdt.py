@@ -2,7 +2,7 @@ from pykd import *
 import sys
 
 
-nt = loadModule( "nt" )
+nt = module( "nt" )
 
 def getServiceAddrWlh(Start, Offset):
     return Start + (Offset / 16)
