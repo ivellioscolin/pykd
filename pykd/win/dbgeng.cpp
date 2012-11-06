@@ -1047,6 +1047,24 @@ HRESULT STDMETHODCALLTYPE DebugEngine::UnloadModule(
 {
     DEBUG_CALLBACK_RESULT result = DebugCallbackNoChange;
 
+    HRESULT  hres;
+
+    char  moduleNameBuf[0x100];
+
+    // были случаи, когда по BaseOffset не получить было имя модуля
+    // поэтому не используется ф. getModuleName
+    hres = g_dbgEng->symbols->GetModuleNameString( 
+        DEBUG_MODNAME_MODULE,
+        DEBUG_ANY_ID,
+        BaseOffset,
+        moduleNameBuf,
+        sizeof( moduleNameBuf ),
+        NULL );
+
+    std::string moduleName = "";
+    if ( hres == S_OK )
+        moduleName = std::string( moduleNameBuf );
+
     boost::recursive_mutex::scoped_lock l(m_handlerLock);
 
     HandlerList::iterator  it = m_handlers.begin();
@@ -1055,10 +1073,11 @@ HRESULT STDMETHODCALLTYPE DebugEngine::UnloadModule(
     {
         PyThread_StateSave pyThreadSave( it->pystate );
 
-        DEBUG_CALLBACK_RESULT  ret = it->callback->OnModuleUnload( BaseOffset, getModuleName(BaseOffset) );
+        DEBUG_CALLBACK_RESULT  ret = it->callback->OnModuleUnload( BaseOffset, moduleName );
 
         result = ret != DebugCallbackNoChange ? ret : result;
     }
+
 
     return ConvertCallbackResult( result );
 }
