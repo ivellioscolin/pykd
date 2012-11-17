@@ -9,13 +9,13 @@ from pykd import *
 
 def export( moduleName, mask = "*" ):
 
-    modObj = loadModule( moduleName )
+    modObj = module( moduleName )
     dprintln( "Module: " + moduleName + " base: %x" % modObj.begin() + " end: %x" % modObj.end() )
 
     if isKernelDebugging():
-        systemModule = loadModule( "nt" )
+        systemModule = module( "nt" )
     else:
-        systemModule = loadModule( "ntdll" )
+        systemModule = module( "ntdll" )
    
 
     if is64bitSystem():
