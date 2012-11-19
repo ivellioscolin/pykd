@@ -399,24 +399,29 @@ def main():
       dprintln(main.__doc__, True)
       return
 
-  lstObjects = [ p[0] for p in getListByHandleTable(tableHandles, objTypeAddr, containHeaders) ]
+  ObjectHandlePairs = [ (p[0], p[1]) for p in getListByHandleTable(tableHandles, objTypeAddr, containHeaders) ]
 
-  dprintln("%u objects:" % len(lstObjects))
-  for object in lstObjects:
-    objectType = getType(object)
+  dprintln("%u objects:" % len(ObjectHandlePairs))
+  for objectHandle in ObjectHandlePairs:
+    objectType = getType(objectHandle[0])
     if objectType in ViewObjectCommand:
       viewCommand = ViewObjectCommand[objectType]
     else:
       viewCommand = "!object"
-    dprint("\tobject=<link cmd=\"" + viewCommand + " 0x%x\">" % object + viewCommand + " 0x%x</link>" % object, True)
-    objectName = buildObjectName(object)
+
+    dprint("\t<link cmd=\"" + viewCommand + " 0x%x\">" % objectHandle[0] + viewCommand + " 0x%x</link>" % objectHandle[0], True)
+    objectName = buildObjectName(objectHandle[0])
     if len(objectName):
-      dprintln( ", name=`" + objectName + "'" )
-    elif nt.typedVar("_OBJECT_TYPE", getType(object)).TypeInfo.QueryNameProcedure:
-      dprintln(", <i>custom</i> name", True)
+      dprint( ", name=`" + objectName + "'" )
+    elif nt.typedVar("_OBJECT_TYPE", getType(objectHandle[0])).TypeInfo.QueryNameProcedure:
+      dprint(", <i>custom</i> name", True)
     else:
-      dprintln(" , <_unnamed_>")
+      dprint(" , <_unnamed_>")
+
+    dprint(", <link cmd=\"!handle 0x%x\">!handle 0x%x</link>\n" % (objectHandle[1], objectHandle[1]), True)
+
     dprint("\ttype is `" + getObjectName(objectType) + "' (<link cmd=\"!object 0x%x\">0x%x</link>)" % (objectType, objectType), True)
+
     dprintln( "\n" )
 
   if (1 == argc):
