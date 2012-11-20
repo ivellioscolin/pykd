@@ -52,6 +52,12 @@ std::string getRegNameByIndex( ULONG index );
 BaseTypeVariant getRegVariantValue( ULONG index );
 ULONG64 getRegInstructionPointer();
 
+ULONG64 loadMSR( ULONG  msr );
+void setMSR( ULONG msr, ULONG64 value);
+std::string getProcessorMode();
+std::string getProcessorType();
+void setProcessorMode( const std::string &mode );
+
 // Stack and local variables
 struct STACK_FRAME_DESC {
     ULONG number;

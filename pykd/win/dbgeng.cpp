@@ -787,6 +787,29 @@ std::string getProcessorMode()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void setProcessorMode( const std::string &mode )
+{
+    HRESULT         hres;  
+    ULONG           processorMode;
+
+    if ( mode == "X86" )
+        processorMode = IMAGE_FILE_MACHINE_I386;
+    else if ( mode == "ARM" )
+        processorMode = IMAGE_FILE_MACHINE_ARM;
+    else if ( mode == "IA64" )
+        processorMode = IMAGE_FILE_MACHINE_IA64;
+    else if ( mode == "X64" )
+        processorMode = IMAGE_FILE_MACHINE_AMD64;
+    else
+        throw DbgException( "Unknown processor type" );
+
+    hres =  g_dbgEng->control->SetEffectiveProcessorType( processorMode );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::SetEffectiveProcessorType  failed" );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 std::string getProcessorType()
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
