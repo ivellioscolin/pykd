@@ -227,7 +227,14 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
         }            
             
         if ( argsList.size() == 0 )
-            return S_OK;      
+        {
+            Py_EndInterpreter( localInterpreter ); 
+            PyThreadState_Swap( globalInterpreter );
+
+            WindbgGlobalSession::SavePyState();
+
+            return S_OK;
+        }
             
         char    **pythonArgs = new char* [ argsList.size() ];
      
