@@ -564,12 +564,13 @@ bool is64bitSystem()
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
     HRESULT     hres;
-    
-    hres = g_dbgEng->control->IsPointer64Bit();
+    ULONG  procType;
+
+    hres = g_dbgEng->control->GetActualProcessorType( &procType );
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugControl::IsPointer64Bit failed" );
+        throw DbgException( "IDebugControl::GetActualProcessorType failed" );
         
-    return hres == S_OK;
+    return procType == IMAGE_FILE_MACHINE_AMD64;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
