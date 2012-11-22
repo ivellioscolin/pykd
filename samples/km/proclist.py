@@ -12,9 +12,6 @@ def processInfo():
         print "".join( [chr(i) for i in process.ImageFileName if i != 0] )
 
 def run():
-   processInfo()
-
-def main():
 
     if not isWindbgExt():
         if not loadDump( sys.argv[1] ):
@@ -28,6 +25,6 @@ def main():
     processInfo()
 
 if __name__ == "__main__":
-    main()
+    run()
 
 

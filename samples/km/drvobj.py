@@ -90,14 +90,21 @@ def printDrvMajorTable( drvName ):
         dprintln( "MajorFunction[%d] = %s" % ( i, findSymbol( drvObj.MajorFunction[i] ) ) )
 
 def run():
-   loadSymbols();
-
-   printDrvMajorTable( "afd" )
-
-if __name__ == "__main__":
 
     if not isWindbgExt():
-       loadDump( sys.argv[1] )
+        if not loadDump( sys.argv[1] ):
+             dprintln( sys.argv[1] + " - load failed" )
+             return
 
+    if not isKernelDebugging():
+        dprintln( "not a kernel debugging" )
+        return  
+
+    loadSymbols();
+
+    printDrvMajorTable( "afd" )
+
+if __name__ == "__main__":
     run()
+
 
