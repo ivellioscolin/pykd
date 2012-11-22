@@ -127,6 +127,7 @@ ULONG64 TypeInfo::getOffset( const std::string &fullName )
 TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &typeSym )
 {
     ULONG symTag = typeSym->getSymTag();
+    TypeInfoPtr  ptr;
 
     switch( symTag )
     {
@@ -134,44 +135,59 @@ TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &typeSym )
 
         if ( typeSym->getLocType() == LocIsBitField )
         {
-            return TypeInfoPtr( new BitFieldTypeInfo(typeSym) );
+            ptr = TypeInfoPtr( new BitFieldTypeInfo(typeSym) );
+            break;
         }
 
         if ( typeSym->getDataKind() == DataIsConstant )
         {
             BaseTypeVariant     constVal;
             typeSym->getValue( constVal );
-            TypeInfoPtr ptr = getTypeInfo( typeSym->getType() );
+            ptr = getTypeInfo( typeSym->getType() );
             ptr->setConstant( constVal );
-            return ptr;
+            break;
         }
 
-       return getTypeInfo( typeSym->getType() );
+       ptr = getTypeInfo( typeSym->getType() );
+       break;
 
     case SymTagBaseType:
-        return getBaseTypeInfo( typeSym );
+        ptr = getBaseTypeInfo( typeSym );
+        break;
 
     case SymTagUDT:
     case SymTagBaseClass:
-        return TypeInfoPtr( new UdtTypeInfo( typeSym ) );
+        ptr = TypeInfoPtr( new UdtTypeInfo( typeSym ) );
+        break;
 
     case SymTagArrayType:
-        return TypeInfoPtr( new ArrayTypeInfo( typeSym ) );
+        ptr = TypeInfoPtr( new ArrayTypeInfo( typeSym ) );
+        break;
 
     case SymTagPointerType:   
-        return TypeInfoPtr( new PointerTypeInfo( typeSym ) );
+        ptr = TypeInfoPtr( new PointerTypeInfo( typeSym ) );
+        break;
 
     case SymTagVTable:
-        return TypeInfoPtr( new PointerTypeInfo( typeSym->getType() ) );
+        ptr = TypeInfoPtr( new PointerTypeInfo( typeSym->getType() ) );
+        break;
 
     case SymTagEnum:
-        return TypeInfoPtr( new EnumTypeInfo( typeSym ) );
+        ptr = TypeInfoPtr( new EnumTypeInfo( typeSym ) );
+        break;
 
     case SymTagTypedef:
-        return getTypeInfo( typeSym->getType() );
+        ptr = getTypeInfo( typeSym->getType() );
+        break;
+
+    default:
+        throw TypeException( typeSym->getName(), "this type is not supported" );
     }
 
-    throw TypeException( typeSym->getName(), "this type is not supported" );
+    if ( ptr )
+        ptr->m_ptrSize = (typeSym->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
+
+    return ptr;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -731,7 +747,7 @@ void UdtTypeInfo::getFields(
 
 void UdtTypeInfo::getVirtualFields()
 {
-    ULONG   childCount = m_dia->getChildCount(SymTagBaseClass);  
+    ULONG   childCount = m_dia->getChildCount(SymTagBaseClass);
 
     for ( ULONG i = 0; i < childCount; ++i )
     {

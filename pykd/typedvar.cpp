@@ -186,14 +186,14 @@ std::string  BasicTypedVar::printValue()
 
 BaseTypeVariant PtrTypedVar::getValue()
 {
-    return m_varData->readPtr();
+    return m_varData->readPtr( getSize() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 TypedVarPtr PtrTypedVar::deref()
 {
-    VarDataPtr varData = VarDataMemory::factory( m_varData->readPtr() );
+    VarDataPtr varData = VarDataMemory::factory( m_varData->readPtr( getSize() ) );
     return TypedVar::getTypedVar( m_typeInfo->deref(), varData );
 }
 
@@ -321,7 +321,7 @@ LONG UdtTypedVar::getVirtualBaseDisplacement( TypeInfoPtr& typeInfo )
     ULONG virtualBasePtr, virtualDispIndex, virtualDispSize;
     typeInfo->getVirtualDisplacement( virtualBasePtr, virtualDispIndex, virtualDispSize );
 
-    ULONG64     vbtableOffset = m_varData->fork( virtualBasePtr )->readPtr();
+    ULONG64     vbtableOffset = m_varData->fork( virtualBasePtr )->readPtr( typeInfo->ptrSize() );
 
     VarDataPtr   vbtable = VarDataMemory::factory(vbtableOffset);
 
@@ -545,14 +545,16 @@ python::list getTypedVarListByType( ULONG64 listHeadAddress, const TypeInfoPtr &
 
     TypeInfoPtr             fieldTypeInfo = typeInfo->getField( listEntryName );
 
+    ULONG64 (*ptrFunc)(ULONG64) = fieldTypeInfo->ptrSize() == 4 ? &ptrDWord : &ptrQWord;
+
     if ( fieldTypeInfo->getName() == ( typeInfo->getName() + "*" ) )
     {
-        for( entryAddress = ptrPtr( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress + typeInfo->getFieldOffsetByNameRecirsive(listEntryName) ) )
+        for( entryAddress = ptrFunc( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrFunc( entryAddress + typeInfo->getFieldOffsetByNameRecirsive(listEntryName) ) )
             lst.append( TypedVar::getTypedVarByTypeInfo( typeInfo, entryAddress ) );
     }
     else
     {
-        for( entryAddress = ptrPtr( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrPtr( entryAddress ) )
+        for( entryAddress = ptrFunc( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrFunc( entryAddress ) )
             lst.append( containingRecordByType( entryAddress, typeInfo, listEntryName ) );
     }
 

@@ -58,7 +58,8 @@ public:
         m_virtualMember( false ),
         m_virtualBasePtr( 0 ),
         m_virtualDispIndex( 0 ),
-        m_virtualDispSize( 0 )
+        m_virtualDispSize( 0 ),
+        m_ptrSize( 0 )
         {}
 
     virtual std::string print() {
@@ -215,6 +216,10 @@ public:
         return this == rhs;
     }
 
+    ULONG ptrSize() const {
+        return m_ptrSize;
+    }
+
 protected:
 
     std::string getComplexName();
@@ -242,6 +247,8 @@ protected:
     ULONG       m_virtualDispSize;
 
     TypeInfoPtr m_virtualBaseType;
+
+    ULONG       m_ptrSize;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,54 @@
+from pykd import *
+
+def main():
+    pass
+
+def listModuleFromLdr64():
+
+    dprintln( "<u>64 bit modules:</u>", True )
+ 
+    peb = typedVar( "ntdll!PEB", getCurrentProcess() )
+
+    moduleLst = typedVarList( peb.Ldr.deref().InLoadOrderModuleList, "ntdll!_LDR_DATA_TABLE_ENTRY", "InMemoryOrderLinks" )
+
+    for mod in moduleLst:
+        name = typedVar( "ntdll!_UNICODE_STRING", mod.BaseDllName )  
+        dprintln(loadWChars(name.Buffer, name.Length/2))
+
+    dprintln( "\n<u>32 bit modules:</u>", True)
+
+    peb32 = typedVar( "ntdll32!_PEB", getCurrentProcess() - pageSize() )
+
+    moduleLst = typedVarList( peb32.Ldr.deref().InLoadOrderModuleList, "ntdll32!_LDR_DATA_TABLE_ENTRY", "InMemoryOrderLinks" )
+
+    for mod in moduleLst:
+        name = typedVar( "ntdll32!_UNICODE_STRING", mod.BaseDllName )  
+        dprintln(loadWChars(name.Buffer, name.Length/2))
+
+def listModuleFromLdr():
+
+    peb = typedVar( "ntdll!PEB", getCurrentProcess() )
+    
+    moduleLst = typedVarList( peb.Ldr.deref().InLoadOrderModuleList, "ntdll!_LDR_DATA_TABLE_ENTRY", "InMemoryOrderLinks" )
+
+    for mod in moduleLst:
+        dprintln(loadUnicodeString(mod.BaseDllName))
+
+
+def run():
+
+    while True:
+
+        if isKernelDebugging():
+            dprintln( "not a user debugging" )
+            break 
+        
+        if is64bitSystem():
+            listModuleFromLdr64()
+        else:
+            listModuleFromLdr()
+
+        break
+
+if __name__ == "__main__":
+    run()
