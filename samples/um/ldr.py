@@ -15,15 +15,20 @@ def listModuleFromLdr64():
         name = typedVar( "ntdll!_UNICODE_STRING", mod.BaseDllName )  
         dprintln(loadWChars(name.Buffer, name.Length/2))
 
-    dprintln( "\n<u>32 bit modules:</u>", True)
+    try:
+    
+        peb32 = typedVar( "ntdll32!_PEB", getCurrentProcess() - pageSize() )
 
-    peb32 = typedVar( "ntdll32!_PEB", getCurrentProcess() - pageSize() )
+        dprintln( "\n<u>32 bit modules:</u>", True)
 
-    moduleLst = typedVarList( peb32.Ldr.deref().InLoadOrderModuleList, "ntdll32!_LDR_DATA_TABLE_ENTRY", "InMemoryOrderLinks" )
+        moduleLst = typedVarList( peb32.Ldr.deref().InLoadOrderModuleList, "ntdll32!_LDR_DATA_TABLE_ENTRY", "InMemoryOrderLinks" )
 
-    for mod in moduleLst:
-        name = typedVar( "ntdll32!_UNICODE_STRING", mod.BaseDllName )  
-        dprintln(loadWChars(name.Buffer, name.Length/2))
+        for mod in moduleLst:
+            name = typedVar( "ntdll32!_UNICODE_STRING", mod.BaseDllName )  
+            dprintln(loadWChars(name.Buffer, name.Length/2))
+
+    except BaseException:
+        pass
 
 def listModuleFromLdr():
 
