@@ -41,6 +41,10 @@ class TypedVarTest( unittest.TestCase ):
                              target.module.offset("g_structTest") )
         self.assertEqual( 500, tv3.m_field1 )
 
+        tv4 = pykd.typedVar( pykd.ptrTo( target.module.type("structTest") ),
+                             target.module.offset("g_structTestPtr") )
+        self.assertEqual( 500, tv4.deref().m_field1 )
+
     def testConst(self):
         self.assertEqual( True, target.module.typedVar( "g_constBoolValue" ) )
         self.assertEqual( 0x5555, target.module.typedVar( "g_constNumValue" ) )
