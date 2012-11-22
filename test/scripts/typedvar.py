@@ -31,6 +31,16 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( -4, target.module.typedVar( "g_longValue" ) )
         self.assertEqual( -8, target.module.typedVar( "g_longlongValue" ) )
 
+    def testPtrTo(self):
+        tv1 = target.module.typedVar( "g_ulonglongValue" )
+        tv2 = pykd.typedVar( pykd.ptrTo(tv1.type()), 
+                             target.module.offset("g_pUlonglongValue") )
+        self.assertEqual( tv1, tv2.deref() )
+
+        tv3 = pykd.typedVar( pykd.ptrTo( target.module.type("structTest") ).deref(),
+                             target.module.offset("g_structTest") )
+        self.assertEqual( 500, tv3.m_field1 )
+
     def testConst(self):
         self.assertEqual( True, target.module.typedVar( "g_constBoolValue" ) )
         self.assertEqual( 0x5555, target.module.typedVar( "g_constNumValue" ) )

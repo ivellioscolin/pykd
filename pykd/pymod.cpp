@@ -280,6 +280,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Create empty union. Use append() method for building" );
     python::def( "pVoid", &PtrToVoid,
         "Create \"Void *\" type" );
+    python::def( "ptrTo", &PtrTo,
+        "Create pointer to target type" );
 
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )
