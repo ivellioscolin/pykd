@@ -17,6 +17,8 @@ class TypeInfoTest( unittest.TestCase ):
  
     def testCreateByName( self ):
         """ creating typeInfo by the type name """
+        self.assertEqual( "Int4B*", target.module.type("Int4B*").name() )
+        self.assertEqual( "Int4B*", pykd.typeInfo("Int4B*").name() )
         self.assertEqual( "structTest", target.module.type( "structTest" ).name() )
         self.assertEqual( "structTest**", target.module.type( "structTest**" ).name() )
         self.assertEqual( "Int4B[2][3]", target.module.type("Int4B[2][3]").name() )
