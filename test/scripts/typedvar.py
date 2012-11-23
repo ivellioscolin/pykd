@@ -32,18 +32,21 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( -8, target.module.typedVar( "g_longlongValue" ) )
 
     def testPtrTo(self):
-        tv1 = target.module.typedVar( "g_ulonglongValue" )
-        tv2 = pykd.typedVar( pykd.ptrTo(tv1.type()), 
-                             target.module.offset("g_pUlonglongValue") )
-        self.assertEqual( tv1, tv2.deref() )
+        tvBaseType = pykd.typedVar( pykd.typeInfo("UInt8B").ptrTo(), 
+                                    target.module.offset("g_pUlonglongValue") )
+        self.assertEqual( target.module.typedVar( "g_ulonglongValue" ),
+                          tvBaseType.deref() )
 
-        tv3 = pykd.typedVar( pykd.ptrTo( target.module.type("structTest") ).deref(),
-                             target.module.offset("g_structTest") )
-        self.assertEqual( 500, tv3.m_field1 )
+        tvDiaStruct = pykd.typedVar( target.module.type("structTest").ptrTo(),
+                                     target.module.offset("g_structTestPtr") )
+        self.assertEqual( 500, tvDiaStruct.deref().m_field1 )
 
-        tv4 = pykd.typedVar( pykd.ptrTo( target.module.type("structTest") ),
-                             target.module.offset("g_structTestPtr") )
-        self.assertEqual( 500, tv4.deref().m_field1 )
+        customStructTest = pykd.createStruct("customStructTest")
+        customStructTest.append("m_field0", pykd.typeInfo("UInt4B"))
+        customStructTest.append("m_field1", pykd.typeInfo("UInt8B"))
+        tvCustomStruct = pykd.typedVar( customStructTest.ptrTo(),
+                                        target.module.offset("g_structTestPtr") )
+        self.assertEqual( 500, tvCustomStruct.deref().m_field1 )
 
     def testConst(self):
         self.assertEqual( True, target.module.typedVar( "g_constBoolValue" ) )
@@ -64,7 +67,7 @@ class TypedVarTest( unittest.TestCase ):
         
         self.assertEqual( pykd.sizeof("g_structTest"), tv1.sizeof() )
         self.assertEqual( pykd.sizeof("g_testArray"), tv2.sizeof() )
-        self.assertEqual( pykd.sizeof("g_ucharValue"), 1 )        
+        self.assertEqual( pykd.sizeof("g_ucharValue"), 1 )
 
     def testByAddress( self ):
         tv1 = target.module.typedVar( "structTest", target.module.g_structTest )

@@ -8,6 +8,14 @@ namespace pykd {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+CustomTypeBase::CustomTypeBase(const std::string &name, ULONG pointerSize) 
+    : UdtFieldColl(name)
+{
+    m_ptrSize = pointerSize ? pointerSize : ptrSize();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 void CustomTypeBase::throwIfFiledExist(const std::string &fieldName)
 {
     bool fieldExist = false;
@@ -61,9 +69,12 @@ void CustomTypeBase::throwIfTypeRecursiveImpl(TypeInfoPtr type)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr CustomStruct::create(const std::string &name, ULONG alignReq /*= 0*/)
+TypeInfoPtr CustomStruct::create(
+    const std::string &name,
+    ULONG alignReq /*= 0*/,
+    ULONG pointerSize /*= 0*/)
 {
-    return TypeInfoPtr( new CustomStruct(name, alignReq) );
+    return TypeInfoPtr( new CustomStruct(name, alignReq, pointerSize) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -93,9 +104,9 @@ void CustomStruct::appendField(const std::string &fieldName, TypeInfoPtr fieldTy
 
 ////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr CustomUnion::create(const std::string &name)
+TypeInfoPtr CustomUnion::create(const std::string &name, ULONG pointerSize /*= 0*/)
 {
-    return TypeInfoPtr( new CustomUnion(name) );
+    return TypeInfoPtr( new CustomUnion(name, pointerSize) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,13 +140,6 @@ void CustomUnion::appendField(const std::string &fieldName, TypeInfoPtr fieldTyp
 TypeInfoPtr PtrToVoid()
 {
     return TypeInfoPtr( new PointerTypeInfo(ptrSize()) );
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-TypeInfoPtr PtrTo(TypeInfoPtr type)
-{
-    return TypeInfoPtr( new PointerTypeInfo(type, ptrSize()) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

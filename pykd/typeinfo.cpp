@@ -602,6 +602,13 @@ TypeInfoPtr TypeInfo::getRecurciveComplexType( TypeInfoPtr &lowestType, std::str
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+TypeInfoPtr TypeInfo::ptrTo()
+{
+    return TypeInfoPtr( new PointerTypeInfo(shared_from_this(), m_ptrSize) );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 ULONG64 TypeInfo::getStaticOffset()
 {
     if ( !m_staticMember )

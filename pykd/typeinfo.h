@@ -162,6 +162,8 @@ public:
         throw TypeException( getName(), "type is not is not extensible" );
     }
 
+    TypeInfoPtr ptrTo();
+
     virtual ULONG getAlignReq() {
         return 1;
     }

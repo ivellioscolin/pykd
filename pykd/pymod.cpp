@@ -60,7 +60,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, getSourceFile, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBp_, setSoftwareBp, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 
-BOOST_PYTHON_FUNCTION_OVERLOADS( CustomStruct_create, CustomStruct::create, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( CustomStruct_create, CustomStruct::create, 1, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( CustomUnion_create, CustomUnion::create, 1, 2 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, TypeInfo::findSymbol, 1, 2 );
 
@@ -274,14 +275,11 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "appendSymbolPath", &appendSymbolPath, "Append current symbol path");
 
     // custom types
-    python::def( "createStruct", &CustomStruct::create, CustomStruct_create( python::args( "name", "align" ), 
+    python::def( "createStruct", &CustomStruct::create, CustomStruct_create( python::args( "name", "align", "ptrSize" ), 
         "Create empty structure. Use append() method for building" ) );
-    python::def( "createUnion", &CustomUnion::create,
-        "Create empty union. Use append() method for building" );
-    python::def( "pVoid", &PtrToVoid,
-        "Create \"Void *\" type" );
-    python::def( "ptrTo", &PtrTo,
-        "Create pointer to target type" );
+    python::def( "createUnion", &CustomUnion::create, CustomUnion_create( python::args( "name", "ptrSize" ), 
+        "Create empty union. Use append() method for building" ) );
+    python::def( "pVoid", &PtrToVoid, "Create \"Void*\" type" );
 
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )
@@ -391,6 +389,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "asMap", &TypeInfo::asMap )
         .def( "deref", &TypeInfo::deref )
         .def( "append", &TypeInfo::appendField )
+        .def( "ptrTo", &TypeInfo::ptrTo )
         .def( "__str__", &TypeInfo::print )
         .def( "__getattr__", &TypeInfo::getField )
         .def("__len__", &TypeInfo::getElementCount )

@@ -16,7 +16,7 @@ class CustomTypeBase : public UdtFieldColl
 {
     typedef UdtFieldColl Base;
 protected:
-    CustomTypeBase(const std::string &name) : UdtFieldColl(name) {}
+    CustomTypeBase(const std::string &name, ULONG pointerSize);
 
     void throwIfFiledExist(const std::string &fieldName);
     void throwIfTypeRecursive(TypeInfoPtr type);
@@ -31,11 +31,11 @@ class CustomStruct : public CustomTypeBase
 {
     typedef CustomTypeBase Base;
 public:
-    static TypeInfoPtr create(const std::string &name, ULONG align = 0);
+    static TypeInfoPtr create(const std::string &name, ULONG align = 0, ULONG pointerSize = 0);
 
 protected:
-    CustomStruct(const std::string &name, ULONG align)
-        : Base(name), m_name(name), m_align(align) 
+    CustomStruct(const std::string &name, ULONG align, ULONG pointerSize)
+        : Base(name, pointerSize), m_name(name), m_align(align) 
     {
     }
 
@@ -62,10 +62,13 @@ class CustomUnion : public CustomTypeBase
 {
     typedef CustomTypeBase Base;
 public:
-    static TypeInfoPtr create(const std::string &name);
+    static TypeInfoPtr create(const std::string &name, ULONG pointerSize = 0);
 
 protected:
-    CustomUnion(const std::string &name) : Base(name) {}
+    CustomUnion(const std::string &name, ULONG pointerSize) 
+        : Base(name, pointerSize)
+    {
+    }
 
     virtual ULONG getSize() override;
 
@@ -82,10 +85,6 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 TypeInfoPtr PtrToVoid();
-
-////////////////////////////////////////////////////////////////////////////////
-
-TypeInfoPtr PtrTo(TypeInfoPtr type);
 
 ////////////////////////////////////////////////////////////////////////////////
 
