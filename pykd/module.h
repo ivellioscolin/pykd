@@ -24,6 +24,14 @@ public:
     static
     ModulePtr loadModuleByOffset( ULONG64 offset );
 
+    static
+    void onUnloadModule( ULONG64 offset );
+
+private:
+
+    typedef std::list<ModulePtr>  ModuleList;
+    static ModuleList m_moduleList;
+
 public:
 
     Module(const std::string &name );

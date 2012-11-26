@@ -8,12 +8,58 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ModulePtr Module::loadModuleByName( const std::string  &moduleName ) {
-    return ModulePtr( new Module( moduleName ) );
+Module::ModuleList Module::m_moduleList;
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ModulePtr Module::loadModuleByName( const std::string  &moduleName ) 
+{
+
+    ModuleList::iterator  it;
+    for ( it = m_moduleList.begin(); it != m_moduleList.end(); ++it )
+    {
+        if ( (*it)->m_name == moduleName )
+            return *it;
+    }
+
+    ModulePtr   modPtr = ModulePtr( new Module( moduleName ) );
+
+    m_moduleList.push_back( modPtr );
+
+    return modPtr;
 };
 
-ModulePtr Module::loadModuleByOffset( ULONG64  offset ) {
-    return ModulePtr( new Module( offset ) );
+/////////////////////////////////////////////////////////////////////////////////////
+
+ModulePtr Module::loadModuleByOffset( ULONG64  offset ) 
+{
+    ModuleList::iterator  it;
+    for ( it = m_moduleList.begin(); it != m_moduleList.end(); ++it )
+    {
+        if ( (*it)->m_base <= offset && offset < (*it)->m_base + (*it)->m_size )
+            return *it;
+    }
+
+    ModulePtr   modPtr = ModulePtr( new Module( offset ) );
+
+    m_moduleList.push_back( modPtr );
+
+    return modPtr;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+void Module::onUnloadModule( ULONG64 offset )
+{
+    ModuleList::iterator  it;
+    for ( it = m_moduleList.begin(); it != m_moduleList.end(); ++it )
+    {
+        if ( (*it)->m_base == offset )
+        {
+            m_moduleList.erase( it );
+            return;
+        }
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

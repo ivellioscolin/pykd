@@ -132,6 +132,8 @@ private:
 
     virtual DEBUG_CALLBACK_RESULT OnBreakpoint( ULONG bpId );
 
+    virtual DEBUG_CALLBACK_RESULT OnModuleUnload( ULONG64 offset, const std::string &name );
+
 private:
 
     typedef std::map<ULONG, python::object>  BpMap;
