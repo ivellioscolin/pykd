@@ -8,58 +8,20 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-Module::ModuleList Module::m_moduleList;
+Module::SymbolSessionCache  Module::m_symSessionCache;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 ModulePtr Module::loadModuleByName( const std::string  &moduleName ) 
 {
-
-    ModuleList::iterator  it;
-    for ( it = m_moduleList.begin(); it != m_moduleList.end(); ++it )
-    {
-        if ( (*it)->m_name == moduleName )
-            return *it;
-    }
-
-    ModulePtr   modPtr = ModulePtr( new Module( moduleName ) );
-
-    m_moduleList.push_back( modPtr );
-
-    return modPtr;
+    return ModulePtr( new Module( moduleName ) );
 };
 
 /////////////////////////////////////////////////////////////////////////////////////
 
 ModulePtr Module::loadModuleByOffset( ULONG64  offset ) 
 {
-    ModuleList::iterator  it;
-    for ( it = m_moduleList.begin(); it != m_moduleList.end(); ++it )
-    {
-        if ( (*it)->m_base <= offset && offset < (*it)->m_base + (*it)->m_size )
-            return *it;
-    }
-
-    ModulePtr   modPtr = ModulePtr( new Module( offset ) );
-
-    m_moduleList.push_back( modPtr );
-
-    return modPtr;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-void Module::onUnloadModule( ULONG64 offset )
-{
-    ModuleList::iterator  it;
-    for ( it = m_moduleList.begin(); it != m_moduleList.end(); ++it )
-    {
-        if ( (*it)->m_base == offset )
-        {
-            m_moduleList.erase( it );
-            return;
-        }
-    }
+    return  ModulePtr( new Module( offset ) );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -93,38 +55,92 @@ SymbolSessionPtr& Module::getSymSession()
     if (m_symSession)
         return m_symSession;
 
+    SymbolMapKey cacheKey = { m_size, m_timeDataStamp, m_checkSum };
+    SymbolSessionCache::iterator found = m_symSessionCache.find( cacheKey );
+    if ( found != m_symSessionCache.end() )
+    {
+        m_symSession = found->second;
+        return m_symSession;
+    }
+
     try
     {
-        m_symSession = loadSymbolFile(m_base, m_imageName, m_symfile);
+        m_symSession = loadSymbolFile( m_base, m_imageName, m_symfile);
     }
-    catch(const SymbolException &e)
+    catch(const SymbolException &)
     {
-        DBG_UNREFERENCED_LOCAL_VARIABLE(e);
     }
     if (m_symSession)
+    {
+        m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
         return m_symSession;
+    }
 
     // TODO: read image file path and load using IDiaReadExeAtOffsetCallback
 
     m_symfile = getModuleSymbolFileName(m_base);
-    if (!m_symfile.empty())
-    {
-        try
-        {
-            m_symSession = loadSymbolFile(m_symfile, m_base);
-        }
-        catch(const SymbolException &e)
-        {
-            DBG_UNREFERENCED_LOCAL_VARIABLE(e);
-        }
-        if (m_symSession)
-            return m_symSession;
+    if (m_symfile.empty())
+         throw SymbolException( "failed to find symbol file" );
 
-        m_symfile.clear();
+    try
+    {
+        m_symSession = loadSymbolFile(m_symfile, m_base);
     }
+    catch(const SymbolException&)
+    {
+    }
+
+    if (m_symSession)
+    {
+        m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
+        return m_symSession;
+    }
+
+    m_symfile.clear();
 
     throw SymbolException( "failed to load symbol file" );
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+    //      std::string             m_symfile;
+    //ULONG64                 m_base;
+    //ULONG                   m_size;
+    //ULONG                   m_timeDataStamp;
+    //ULONG                   m_checkSum;
+
+    //try
+    //{
+    //    m_symSession = loadSymbolFile(m_base, m_imageName, m_symfile);
+    //}
+    //catch(const SymbolException &e)
+    //{
+    //    DBG_UNREFERENCED_LOCAL_VARIABLE(e);
+    //}
+    //if (m_symSession)
+    //    return m_symSession;
+
+    //// TODO: read image file path and load using IDiaReadExeAtOffsetCallback
+
+    //m_symfile = getModuleSymbolFileName(m_base);
+    //if (!m_symfile.empty())
+    //{
+    //    try
+    //    {
+    //        m_symSession = loadSymbolFile(m_symfile, m_base);
+    //    }
+    //    catch(const SymbolException &e)
+    //    {
+    //        DBG_UNREFERENCED_LOCAL_VARIABLE(e);
+    //    }
+    //    if (m_symSession)
+    //        return m_symSession;
+
+    //    m_symfile.clear();
+    //}
+
+    //throw SymbolException( "failed to load symbol file" );
 
 /////////////////////////////////////////////////////////////////////////////////////
 

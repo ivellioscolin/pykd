@@ -58,15 +58,6 @@ DEBUG_CALLBACK_RESULT EventHandlerImpl::OnBreakpoint( ULONG bpId )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-DEBUG_CALLBACK_RESULT EventHandlerImpl::OnModuleUnload( ULONG64 offset, const std::string &name )
-{
-    Module::onUnloadModule( offset );
-
-    return DebugCallbackNoChange;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 };  // namespace pykd
 
 

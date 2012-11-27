@@ -24,13 +24,33 @@ public:
     static
     ModulePtr loadModuleByOffset( ULONG64 offset );
 
-    static
-    void onUnloadModule( ULONG64 offset );
-
 private:
 
-    typedef std::list<ModulePtr>  ModuleList;
-    static ModuleList m_moduleList;
+    struct SymbolMapKey{
+        ULONG  size;
+        ULONG  timeStamp;
+        ULONG  checkSum;
+
+        bool operator < ( const SymbolMapKey& key ) const
+        {
+            if ( size < key.size )
+                return true;
+            if ( size > key.size )
+                return false;
+
+            if ( timeStamp < key.timeStamp )
+                return true;
+            if ( timeStamp > key.timeStamp )
+                return false;
+
+            return checkSum < key.checkSum;
+        }
+    };
+
+    typedef std::map<SymbolMapKey,SymbolSessionPtr>  SymbolSessionCache;
+    static SymbolSessionCache m_symSessionCache;
+
+    SymbolSessionPtr getFromCache();
 
 public:
 
