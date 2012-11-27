@@ -6,6 +6,7 @@
 
 #include "dbgengine.h"
 #include "bpoint.h"
+#include "dbgexcept.h"
 
 namespace pykd {
 
@@ -62,7 +63,7 @@ private:
                 return pythonHandler(arg1);
             }
             catch (const python::error_already_set &)  {
-                //onHandlerException();
+                printException();
             }
         }
         return DebugCallbackNoChange;
@@ -77,7 +78,7 @@ private:
                 return pythonHandler(arg1,arg2);
             }
             catch (const python::error_already_set &)  {
-                //onHandlerException();
+                printException();
             }
         }
         return DebugCallbackNoChange;
@@ -91,12 +92,13 @@ private:
                 return pythonHandler();
             }
             catch (const python::error_already_set &) {
-                //onHandlerException();
+                printException();
             }
         }
 
         return DebugCallbackNoChange;
     }
+
 }; 
 
 typedef boost::shared_ptr<EventHandlerWrap> EventHandlerPtr;

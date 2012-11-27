@@ -50,6 +50,7 @@ DEBUG_CALLBACK_RESULT EventHandlerImpl::OnBreakpoint( ULONG bpId )
         return DEBUG_CALLBACK_RESULT(retVal);
     }
     catch (const python::error_already_set &) {
+        printException();
     }
 
     return DebugCallbackBreak;

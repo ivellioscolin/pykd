@@ -208,9 +208,6 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
 
         global["globalEventHandler"] = EventHandlerPtr( new EventHandlerImpl() );
 
-        // импортируем модуль обработки исключений ( нужен для вывода traceback а )
-        python::object       tracebackModule = python::import("traceback");
-
         // разбор параметров
         typedef  boost::escaped_list_separator<char>    char_separator_t;
         typedef  boost::tokenizer< char_separator_t >   char_tokenizer_t;  
@@ -262,27 +259,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
         }
         catch( boost::python::error_already_set const & )
         {
-            // ошибка в скрипте
-            PyObject    *errtype = NULL, *errvalue = NULL, *traceback = NULL;
-
-            PyErr_Fetch( &errtype, &errvalue, &traceback );
-
-            PyErr_NormalizeException( &errtype, &errvalue, &traceback );
-
-            std::wstringstream       sstr;
-
-            python::object   lst = 
-                python::object( tracebackModule.attr("format_exception" ) )( 
-                    python::handle<>( errtype ),
-                    python::handle<>( python::allow_null( errvalue ) ),
-                    python::handle<>( python::allow_null( traceback ) ) );
-
-            sstr << std::endl << std::endl;
-
-            for ( long i = 0; i < python::len(lst); ++i )
-                sstr << std::wstring( python::extract<std::wstring>(lst[i]) ) << std::endl;
-
-            eprintln( sstr.str() );
+            printException();
         }
     }
     catch(...)

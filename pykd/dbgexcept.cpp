@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "dbgexcept.h"
-//#include "diawrapper.h"
+#include "dbgengine.h"
 
 namespace pykd {
 
@@ -17,4 +17,35 @@ python::handle<> exceptPyType<AddSyntheticSymbolException>::pyExceptType;
 python::handle<> exceptPyType<ImplementException>::pyExceptType;
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+void printException()
+{
+    // ошибка в скрипте
+    PyObject  *errtype = NULL, *errvalue = NULL, *traceback = NULL;
+
+    PyErr_Fetch( &errtype, &errvalue, &traceback );
+
+    PyErr_NormalizeException( &errtype, &errvalue, &traceback );
+
+    python::object  tracebackModule = python::import("traceback");
+
+    std::wstringstream  sstr;
+
+    python::object   lst = 
+        python::object( tracebackModule.attr("format_exception" ) )( 
+            python::handle<>( errtype ),
+            python::handle<>( python::allow_null( errvalue ) ),
+            python::handle<>( python::allow_null( traceback ) ) );
+
+    sstr << std::endl << std::endl;
+
+    for ( long i = 0; i < python::len(lst); ++i )
+        sstr << std::wstring( python::extract<std::wstring>(lst[i]) ) << std::endl;
+
+    eprintln( sstr.str() );
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }; // end namespace pykd
