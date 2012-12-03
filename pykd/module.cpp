@@ -244,6 +244,8 @@ Module::getTypedVarByName( const std::string &symName )
 TypedVarPtr 
 Module::getTypedVarByTypeName( const std::string &typeName, ULONG64 offset )
 {
+    offset = addr64(offset);
+
     TypeInfoPtr typeInfo = getTypeByName( typeName );
 
     return TypedVar::getTypedVar(typeInfo, VarDataMemory::factory(offset) );
