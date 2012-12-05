@@ -1172,7 +1172,7 @@ void setCurrentProcess( ULONG64 processAddr )
 
     HRESULT     hres;
 
-    processAddr = addr64(processAddr);
+    processAddr = addr64NoSafe(processAddr);
     hres = g_dbgEng->system->SetImplicitProcessDataOffset( processAddr );
     if ( FAILED( hres ) )
         throw DbgException( "IDebugSystemObjects2::SetImplicitProcessDataOffset  failed" );
@@ -1186,7 +1186,7 @@ void setImplicitThread( ULONG64 threadAddr )
 
     HRESULT  hres;
 
-    threadAddr = addr64(threadAddr);
+    threadAddr = addr64NoSafe(threadAddr);
     hres = g_dbgEng->system->SetImplicitThreadDataOffset( threadAddr );
     if ( FAILED( hres ) )
         throw DbgException( "IDebugSystemObjects2::SetImplicitThreadDataOffset  failed" );

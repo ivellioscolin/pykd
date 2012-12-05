@@ -5,6 +5,7 @@ namespace pykd {
 ///////////////////////////////////////////////////////////////////////////////////
 
 ULONG64 addr64( ULONG64 offset );
+ULONG64 addr64NoSafe( ULONG64 addr );
 void readMemory( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr = FALSE, ULONG *readed = NULL );
 bool readMemoryUnsafe( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr = FALSE, ULONG *readed = NULL );
 bool isVaValid( ULONG64 addr );
