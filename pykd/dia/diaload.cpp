@@ -124,25 +124,17 @@ public:
         /* [in] */ DWORD cbData,
         /* [out] */ DWORD *pcbData,
         /* [size_is][out] */ BYTE *pbData
-    ) override {
-
-        try
-        {
-            readMemory(
+    ) override 
+    {
+            if ( readMemoryUnsafe(
                 m_loadBase + relativeVirtualAddress,
                 pbData,
                 cbData,
                 FALSE,
-                pcbData);
+                pcbData) )
+                    return S_OK;
 
-            return S_OK;
-        }
-        catch( const MemoryException &except )
-        {
-            DBG_UNREFERENCED_LOCAL_VARIABLE(except);
-        }
-
-        return S_FALSE;
+        return E_FAIL; //S_FALSE;
     }
 };
 

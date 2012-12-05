@@ -11,7 +11,7 @@ class DiaLoadCallback2 : public IDiaLoadCallback2 {
     std::string *m_openedSymbolFile;
 public:
     DiaLoadCallback2(std::string *openedSymbolFile = NULL) 
-        : m_nRefCount(1), m_openedSymbolFile(openedSymbolFile)
+        : m_nRefCount(0), m_openedSymbolFile(openedSymbolFile)
     {
     }
 

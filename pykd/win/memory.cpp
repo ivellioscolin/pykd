@@ -68,6 +68,9 @@ void readMemory( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr, ULONG
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
+    if ( readed )
+        *readed = 0;
+
     HRESULT hres;
     if ( phyAddr == false )
     {
