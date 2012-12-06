@@ -48,6 +48,7 @@ class ModuleInfo:
 
         for cls in  self.classes:
             cls.methods = sorted( [ item for item in cls.__dict__.values() if type(item).__name__ == "function" ], key=lambda x: x.__name__ ) 
+            cls.properties = sorted( [ item for item in cls.__dict__.items() if type(item[1]).__name__ == "property" ], key=lambda x: x[0] )
 
 
 def buildDoc( ioStream, formatter, apiInfo ):
@@ -75,16 +76,32 @@ def buildDoc( ioStream, formatter, apiInfo ):
         ioStream.write( formatter.header3( "Class " + cls.__name__ ) )
         if cls.__doc__ != None:
             ioStream.write( formatter.escapeMarkup( cls.__doc__)  + formatter.endl() )
+         
+        if cls.properties:
+            ioStream.write( formatter.header4( "Properties:") )            
+            for p in cls.properties:  
+                if p[1].__doc__ != None:          
+                    ioStream.write( formatter.bulletItem( formatter.link( p[0],  cls.__name__ + "." + p[0]) ) )                  
 
-        for m in cls.methods:
-            if m.__doc__ != None:
-                ioStream.write( formatter.bulletItem( formatter.link( m.__name__,  cls.__name__ + "." + m.__name__) ) )
+        if  cls.methods:
+            ioStream.write( formatter.header4( "Methods:") )                 
+            for m in cls.methods:
+                if m.__doc__ != None:
+                    ioStream.write( formatter.bulletItem( formatter.link( m.__name__,  cls.__name__ + "." + m.__name__) ) )
+        
+        if cls.properties:
+            for p in cls.properties:  
+                if p.__doc__ != None:
+                    ioStream.write( formatter.anchor( cls.__name__ + "." + p[0] ) )
+                    ioStream.write( formatter.header4( formatter.escapeMarkup( "Property  " + cls.__name__  + "."  +  p[0] ) ) )
+                    ioStream.write( formatter.escapeMarkup( p[1].__doc__ ) + formatter.endl() )                     
 
-        for m in cls.methods:
-            if m.__doc__ != None:
-                ioStream.write( formatter.anchor( cls.__name__ + "." + m.__name__ ) )
-                ioStream.write( formatter.header4( formatter.escapeMarkup( cls.__name__  + "."  + m.__name__ ) ) )
-                ioStream.write( formatter.escapeMarkup( m.__doc__ ) + formatter.endl() )
+        if  cls.methods:
+            for m in cls.methods:
+                if m.__doc__ != None:
+                   ioStream.write( formatter.anchor( cls.__name__ + "." + m.__name__ ) )
+                   ioStream.write( formatter.header4( formatter.escapeMarkup( "Method  " + cls.__name__  + "."  + m.__name__ ) ) )
+                   ioStream.write( formatter.escapeMarkup( m.__doc__ ) + formatter.endl() )
 
 
 def main():
