@@ -19,7 +19,6 @@
 #include "cpureg.h"
 #include "disasm.h"
 #include "stkframe.h"
-#include "localvar.h"
 #include "bpoint.h"
 
 #include "win/dbgio.h"
@@ -245,9 +244,14 @@ BOOST_PYTHON_MODULE( pykd )
         "Set current processor mode by string (X86, ARM, IA64 or X64)" );
 
     // stack and local variables
-    python::def( "getCurrentStack", &getCurrentStack,
+    python::def( "getStack", &getCurrentStack,
         "Return a current stack as a list of stackFrame objects" );
-    python::def( "getLocals", &getLocals, "Get list of local variables" );
+    python::def( "getFrame", &getCurrentStackFrame,
+        "Return a current stack frame" );
+    python::def( "getLocals", &getLocals, 
+        "Get list of local variables" );
+    python::def( "getParams", &getParams, 
+        "Get list of function arguments" );
 
     // breakpoints
     python::def( "setBp", &setSoftwareBp, setSoftwareBp_( python::args( "offset", "callback" ),
@@ -426,7 +430,13 @@ BOOST_PYTHON_MODULE( pykd )
             .def( "name", &CpuReg::name, "The name of the regsiter" )
             .def( "index", &CpuReg::index, "The index of thr register" );
 
-    python::class_<StackFrame>( "stackFrame", 
+    python::class_<ScopeVars,ScopeVarsPtr,boost::noncopyable>( "locals",
+        "Class for access to local vars",  python::no_init  )
+            .def("__len__", &ScopeVars::getVarCount )
+            .def("__getitem__", &ScopeVars::getVarByIndex )
+            .def("__getitem__", &ScopeVars::getVarByName );
+
+    python::class_<StackFrame, StackFramePtr,boost::noncopyable>( "stackFrame", 
          "Class representing a frame of the call stack", python::no_init )
         .def_readonly( "instructionOffset", &StackFrame::m_instructionOffset,
             "Return a frame's instruction offset" )
@@ -438,8 +448,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a frame's stack offset" )
         .def_readonly( "frameNumber", &StackFrame::m_frameNumber,
             "Return a frame's number" )
-        .def( "getLocals", &StackFrame::getLocals,
-             "Get list of local variables for this stack frame" )
+        .add_property( "locals", &StackFrame::getLocals, 
+            "Get list of local variables for this stack frame" )
+        .add_property( "params", &StackFrame::getParams,
+            "Get list of function params" )
         .def( "__str__", &StackFrame::print,
             "Return stacks frame as a string");
 

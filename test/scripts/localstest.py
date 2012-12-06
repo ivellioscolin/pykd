@@ -35,10 +35,9 @@ class LocalVarsTest(unittest.TestCase):
             testEnumWindowsProc1Locals(self, pykd.getLocals())
 
             pykd.go() # targetapp!EnumWindowsProc1 -> targetapp!functionCalledFromEnumWindowsProc1
-            testEnumWindowsProc1Locals(self, pykd.getCurrentStack()[1].getLocals())
+            testEnumWindowsProc1Locals(self, pykd.getStack()[1].locals )
 
             pykd.go() # targetapp!EnumWindowsProc1 -> targetapp!EnumWindowsProc2
             locals = pykd.getLocals()
             self.assertEqual( len(locals), 2 )
-            locValues = locals.values()
-            self.assertTrue( locValues[0] == 7 or locValues[1] == 7 )
+            self.assertTrue( locals[0] == 7 or locals[1] == 7 )

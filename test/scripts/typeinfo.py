@@ -80,6 +80,13 @@ class TypeInfoTest( unittest.TestCase ):
             self.assertEqual("Int9B", target.module.type( "Int9B" ).name() )
         except pykd.SymbolException:
             pass
+            
+    def testBaseTypePtr(self):
+        self.assertEqual("Int1B*", target.module.type( "Int1B*" ).name() )
+        self.assertEqual("Int1B", target.module.type( "Int1B*" ).deref().name() )
+        
+    def testBaseTypeArray(self):
+        self.assertEqual("Int4B[20]", target.module.type( "Int4B[20]" ).name() )
 
     def testName( self ):
         ti1 = target.module.type( "classChild" )
@@ -198,7 +205,12 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertNotEqual( 0, ti.m_stdstr.staticOffset() )
         
     def testUdtSubscribe(self):
-        tv = pykd.typeInfo( "g_virtChild" )
-        self.assertEqual( 5, len(tv) )
-        for field in tv:
+        ti = pykd.typeInfo( "g_virtChild" )
+        self.assertEqual( 5, len(ti) )
+        for field in ti:
              str( field )
+             
+    def testStructNullSize(self):
+        ti = target.module.type("structNullSize")
+        self.assertEqual( 0, len(ti) )
+        

@@ -84,6 +84,16 @@ struct structTest {
     structTest* m_field4;
 };
 
+struct structNullSize {
+};
+
+structNullSize* g_nullSizeArray = 0;
+
+struct structAbstract;
+typedef struct structAbstract  *pstructAbstract;
+
+pstructAbstract g_structAbstract = 0;
+
 structWithBits g_structWithBits = { 4, 1, 3};
 
 structTest      g_structTest = { 0, 500, true, 1, NULL };
@@ -434,6 +444,9 @@ void FuncWithName0()
     std::cout << g_fieldSameNameStruct.baseStruct2::m_field;
 
     std::cout << g_structTypeDef.m_field0;
+
+    std::cout << g_nullSizeArray;
+    std::cout << g_structAbstract;
 
     //std::cout << g_virtChild.VirtualBaseClass1::m_baseField;
 }
