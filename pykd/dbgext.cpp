@@ -95,6 +95,7 @@ private:
 
 
     static int quit(void *) {
+        eprintln(L"CTRL+BREAK");
         PyErr_SetString( PyExc_SystemExit, "" );
         return -1;
     }

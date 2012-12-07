@@ -27,6 +27,9 @@ void printException()
 
     PyErr_NormalizeException( &errtype, &errvalue, &traceback );
 
+    if ( errtype == PyExc_SystemExit )
+        return;
+
     python::object  tracebackModule = python::import("traceback");
 
     std::wstringstream  sstr;
