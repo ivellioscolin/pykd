@@ -23,7 +23,11 @@ DbgPythonPath::DbgPythonPath()
  
 bool DbgPythonPath::getFullFileName(const std::string &fileName, std::string &fullFileName) const
 {
-    bool fileHasPyExt = fileName.rfind(".py") == fileName.length() - 3;
+    bool fileHasPyExt = false;
+
+    if ( fileName.length() > 3 )
+        fileHasPyExt = fileName.rfind(".py") == fileName.length() - 3;
+    
     fullFileName = fileName;
 
     if (!fileHasPyExt)
