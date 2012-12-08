@@ -21,7 +21,7 @@ public:
     template<typename T>
     std::string operator()(T i ) const {
         std::stringstream   sstr;
-        sstr << std::hex <<  i;
+        sstr << std::hex << "0x" << i;
         return sstr.str();
     }
 };

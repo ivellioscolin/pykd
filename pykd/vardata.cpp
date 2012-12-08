@@ -53,7 +53,7 @@ void VarDataMemory::read(PVOID buffer, ULONG length, ULONG offset /*= 0*/) const
 
 ULONG64 VarDataMemory::readPtr( ULONG ptrSize ) const
 {
-    return ptrSize == 4 ? ptrDWord( m_addr ) : ptrQWord( m_addr );
+    return addr64( ptrSize == 4 ? ptrDWord( m_addr ) : ptrQWord( m_addr ) );
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -100,9 +100,9 @@ void VarDataConst::read(PVOID buffer, ULONG length, ULONG offset /*= 0*/) const
 
 ULONG64 VarDataConst::readPtr( ULONG ptrSize  ) const
 {
-    return ptrSize == 4 ? 
+    return addr64( ptrSize == 4 ? 
         boost::apply_visitor( VariantToULong64(), m_value ) : 
-        boost::apply_visitor( VariantToULong(), m_value );
+        boost::apply_visitor( VariantToULong(), m_value ) );
 }
 
 //////////////////////////////////////////////////////////////////////////////////
