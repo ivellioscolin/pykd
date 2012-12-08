@@ -69,6 +69,8 @@ struct STACK_FRAME_DESC {
 
 void getStackTrace(std::vector<STACK_FRAME_DESC> &frames);
 
+void getStackTraceWow64(std::vector<STACK_FRAME_DESC> &frames); 
+
 // callback events
 
 enum DEBUG_CALLBACK_RESULT {

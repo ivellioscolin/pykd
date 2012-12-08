@@ -750,6 +750,15 @@ void getStackTrace(std::vector<STACK_FRAME_DESC> &frames)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void getStackTraceWow64(std::vector<STACK_FRAME_DESC> &frames)
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    frames.resize(0);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 std::string processorToStr(ULONG processorMode)
 {
     switch( processorMode )

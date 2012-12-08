@@ -136,6 +136,8 @@ StackFramePtr getCurrentStackFrame();
 
 python::list getCurrentStack();
 
+python::list getCurrentStackWow64();
+
 ScopeVarsPtr getLocals();
 
 ScopeVarsPtr getParams();

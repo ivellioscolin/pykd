@@ -246,6 +246,8 @@ BOOST_PYTHON_MODULE( pykd )
     // stack and local variables
     python::def( "getStack", &getCurrentStack,
         "Return a current stack as a list of stackFrame objects" );
+    python::def( "getStackWow64", &getCurrentStackWow64,
+        "Return a stack for wow64 context as a list of stackFrame objects" );
     python::def( "getFrame", &getCurrentStackFrame,
         "Return a current stack frame" );
     python::def( "getLocals", &getLocals, 

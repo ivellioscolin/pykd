@@ -365,6 +365,24 @@ python::list getCurrentStack()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+python::list getCurrentStackWow64()
+{
+    std::vector<STACK_FRAME_DESC> frames; 
+    getStackTraceWow64( frames );
+
+    python::list frameList;
+
+    for ( ULONG i = 0; i < frames.size(); ++i )
+    {
+        python::object  frameObj( StackFramePtr( new StackFrame( frames.at(i) ) ) );
+        frameList.append( frameObj );
+    }
+
+    return frameList; 
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 StackFramePtr getCurrentStackFrame()
 {
     std::vector<STACK_FRAME_DESC> frames; 
