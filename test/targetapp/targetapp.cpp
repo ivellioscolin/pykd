@@ -197,6 +197,8 @@ listStruct  g_listItem1 = { 1 };
 listStruct  g_listItem2 = { 2 };
 listStruct  g_listItem3 = { 3 };
 
+LIST_ENTRY entry1;
+LIST_ENTRY entry2;
 
 struct listStruct1;
 
@@ -595,6 +597,9 @@ int _tmain(int argc, _TCHAR* argv[])
         InsertTailList( &g_listHead, &g_listItem1.listEntry );
         InsertTailList( &g_listHead, &g_listItem2.listEntry );
         InsertTailList( &g_listHead, &g_listItem3.listEntry );
+
+        entry1.Flink = &entry2;
+        entry2.Flink = &entry1;
 
         g_listHead1 = &g_listItem11;
         g_listItem11.next = &g_listItem12;

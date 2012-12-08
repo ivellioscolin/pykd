@@ -289,3 +289,13 @@ class TypedVarTest( unittest.TestCase ):
         for field in tv:
              str( field )
       
+    def testDeadlockList(self):
+    
+       lst = []
+       entry = pykd.typedVar("entry1").Flink
+       for i in range( 0, 100000 ):
+           lst.append(entry)
+           entry = entry.deref().Flink
+
+
+       
