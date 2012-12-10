@@ -726,16 +726,25 @@ ULONG64 getRegInstructionPointer()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void getStackTrace(std::vector<STACK_FRAME_DESC> &frames)
+static void buildStacksFrames(
+    std::vector<STACK_FRAME_DESC> &frames,
+    ULONG64 frameOffset = 0,
+    ULONG64 stackOffset = 0,
+    ULONG64 instructionOffset = 0)
 {
-    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
-
-    HRESULT hres;
     ULONG   filledFrames = 1024;
     std::vector<DEBUG_STACK_FRAME> dbgFrames(filledFrames);
-    hres = g_dbgEng->control->GetStackTrace( 0, 0, 0, &dbgFrames[0], filledFrames, &filledFrames);
-    if ( FAILED( hres ) )
-        throw DbgException( "IDebugControl::GetStackTrace  failed" );
+
+    HRESULT hres = 
+        g_dbgEng->control->GetStackTrace(
+            frameOffset,
+            stackOffset,
+            instructionOffset,
+            &dbgFrames[0],
+            filledFrames,
+            &filledFrames);
+    if (S_OK != hres)
+        throw DbgException( "IDebugControl::GetStackTrace", hres );
 
     frames.resize(filledFrames);
     for ( ULONG i = 0; i < filledFrames; ++i )
@@ -750,11 +759,121 @@ void getStackTrace(std::vector<STACK_FRAME_DESC> &frames)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void getStackTrace(std::vector<STACK_FRAME_DESC> &frames)
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    frames.resize(0);
+
+    buildStacksFrames(frames);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+static void ReadWow64Context(WOW64_CONTEXT &Context)
+{
+    // 
+    //  *** undoc ***
+    // !wow64exts.r
+    // http://www.woodmann.com/forum/archive/index.php/t-11162.html
+    // http://www.nynaeve.net/Code/GetThreadWow64Context.cpp
+    // 
+
+    ULONG64 teb64Address;
+    HRESULT hres = g_dbgEng->system->GetCurrentThreadTeb(&teb64Address);
+    if (S_OK != hres)
+        throw DbgException( "IDebugSystemObjects::GetCurrentThreadTeb", hres);
+
+    // ? @@C++(#FIELD_OFFSET(nt!_TEB64, TlsSlots))
+    // hardcoded in !wow64exts.r (6.2.8250.0)
+    static const ULONG teb64ToTlsOffset = 0x01480;
+    static const ULONG WOW64_TLS_CPURESERVED = 1;
+    ULONG64 cpuAreaAddress;
+    ULONG readedBytes;
+
+    bool readRes;
+    readRes = 
+        readMemoryUnsafeNoSafe(
+            teb64Address + teb64ToTlsOffset + (sizeof(ULONG64) * WOW64_TLS_CPURESERVED),
+            &cpuAreaAddress,
+            sizeof(cpuAreaAddress),
+            false,
+            &readedBytes);
+    if (!readRes || readedBytes != sizeof(cpuAreaAddress))
+        throw DbgException( "IDebugDataSpaces::ReadVirtual", hres);
+
+    // CPU Area is:
+    // +00 unknown ULONG
+    // +04 WOW64_CONTEXT struct
+    static const ULONG cpuAreaToWow64ContextOffset = sizeof(ULONG);
+    readRes =
+        readMemoryUnsafeNoSafe(
+            cpuAreaAddress + cpuAreaToWow64ContextOffset,
+            &Context,
+            sizeof(Context),
+            false,
+            &readedBytes);
+    if (!readRes || readedBytes != sizeof(Context))
+        throw DbgException( "IDebugDataSpaces::ReadVirtual", hres);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+class AutoRevertEffectiveProcessorType
+{
+public:
+    AutoRevertEffectiveProcessorType() 
+        : m_processType(IMAGE_FILE_MACHINE_UNKNOWN)
+    {
+    }
+
+    ~AutoRevertEffectiveProcessorType()
+    {
+        if (IMAGE_FILE_MACHINE_UNKNOWN != m_processType)
+            BOOST_VERIFY(S_OK == g_dbgEng->control->SetEffectiveProcessorType(m_processType));
+    }
+
+    void to(ULONG processType)  { m_processType = processType; }
+private:
+    ULONG m_processType;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
 void getStackTraceWow64(std::vector<STACK_FRAME_DESC> &frames)
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
     frames.resize(0);
+
+    ULONG processorType;
+    HRESULT hres = g_dbgEng->control->GetActualProcessorType(&processorType);
+    if (S_OK != hres)
+        throw DbgException( "IDebugControl::GetActualProcessorType", hres );
+    if (IMAGE_FILE_MACHINE_AMD64 != processorType)
+        throw DbgException( "Only for WOW64 processor mode" );
+
+    hres = g_dbgEng->control->GetEffectiveProcessorType(&processorType);
+    if (S_OK != hres)
+        throw DbgException( "IDebugControl::GetEffectiveProcessorType", hres );
+
+    AutoRevertEffectiveProcessorType autoRevertEffectiveProcessorType;
+    if (IMAGE_FILE_MACHINE_I386 != processorType)
+    {
+        if (IMAGE_FILE_MACHINE_AMD64 != processorType)
+            throw DbgException( "Only for WOW64 processor mode" );
+
+        hres = g_dbgEng->control->SetEffectiveProcessorType(IMAGE_FILE_MACHINE_I386);
+        if (S_OK != hres)
+            throw DbgException( "IDebugControl::SetEffectiveProcessorType", hres );
+
+        autoRevertEffectiveProcessorType.to(IMAGE_FILE_MACHINE_AMD64);
+    }
+
+    WOW64_CONTEXT Context;
+    ReadWow64Context(Context);
+
+    buildStacksFrames(frames, Context.Ebp, Context.Esp, Context.Eip);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -95,10 +95,8 @@ void readMemory( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr, ULONG
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-bool readMemoryUnsafe( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr, ULONG *readed )
+bool readMemoryUnsafeNoSafe( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr, ULONG *readed )
 {
-    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
-
     HRESULT hres;
     if ( phyAddr == false )
     {
@@ -118,6 +116,14 @@ bool readMemoryUnsafe( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr,
     }
 
     return hres == S_OK;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+bool readMemoryUnsafe( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr, ULONG *readed )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+    return readMemoryUnsafeNoSafe(offset, buffer, length, phyAddr, readed);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

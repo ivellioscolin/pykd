@@ -8,6 +8,7 @@ ULONG64 addr64( ULONG64 offset );
 ULONG64 addr64NoSafe( ULONG64 addr );
 void readMemory( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr = FALSE, ULONG *readed = NULL );
 bool readMemoryUnsafe( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr = FALSE, ULONG *readed = NULL );
+bool readMemoryUnsafeNoSafe( ULONG64 offset, PVOID buffer, ULONG length, bool phyAddr = FALSE, ULONG *readed = NULL );
 bool isVaValid( ULONG64 addr );
 bool compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr = FALSE );
 

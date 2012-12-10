@@ -37,6 +37,7 @@ static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 
 ////////////////////////////////////////////////////////////////////////////////
 
+BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_, detachProcess, 0, 1 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, dprint, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, dprintln, 1, 2 );
@@ -90,8 +91,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Start process for debugging"); 
     python::def( "attachProcess", &attachProcess,
         "Attach debugger to a exsisting process" );
-    python::def( "detachProcess", &detachProcess, 
-        "Stop process debugging"); 
+    python::def( "detachProcess", &detachProcess, detachProcess_( boost::python::args( "pid" ),
+        "Stop process debugging") ); 
     python::def( "killProcess", &terminateProcess,
         "Stop debugging and terminate current process" );
     python::def( "loadDump", &loadDump,
