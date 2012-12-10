@@ -170,7 +170,7 @@ std::string  BasicTypedVar::printValue()
 
     try {
     
-        sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );
+        sstr << boost::apply_visitor( VariantToHex(), getValue() );
         sstr << " (" << boost::apply_visitor( VariantToStr(), getValue() ) << ")";
 
     } 
@@ -217,7 +217,7 @@ std::string  PtrTypedVar::printValue()
 
     try {
 
-        sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );
+        sstr << boost::apply_visitor( VariantToHex(), getValue() );
 
     }
     catch( MemoryException& )
@@ -425,7 +425,7 @@ std::string  BitFieldVar::printValue()
 
     try
     {   
-        sstr << "0x" << boost::apply_visitor( VariantToHex(), getValue() );
+        sstr << boost::apply_visitor( VariantToHex(), getValue() );
         sstr << " (" << boost::apply_visitor( VariantToStr(), getValue() ) << ")";
     }
     catch( MemoryException& )
