@@ -287,7 +287,7 @@ SymbolPtr Module::getSymbolByVa( ULONG64 offset, ULONG symTag, LONG* displacment
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
-std::string Module::getSymbolNameByVa( ULONG64 offset )
+std::string Module::getSymbolNameByVa( ULONG64 offset, bool showDisplacement )
 {
     offset = addr64(offset);
 
@@ -302,10 +302,13 @@ std::string Module::getSymbolNameByVa( ULONG64 offset )
 
     sstr << sym->getName();
 
-    if ( displacement > 0 && displacement )
-        sstr << '+' << std::hex << displacement;
-    else if ( displacement < 0 )
-        sstr << '-' << std::hex << -displacement;
+    if ( showDisplacement )
+    {
+        if ( displacement > 0 && displacement )
+            sstr << '+' << std::hex << displacement;
+        else if ( displacement < 0 )
+            sstr << '-' << std::hex << -displacement;
+    }
 
     return sstr.str();
 }

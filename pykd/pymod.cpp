@@ -66,6 +66,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, TypeInfo::findSymbol, 1, 2 );
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_enumSymbols, Module::enumSymbols, 0, 1 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_enumTypes, Module::enumTypes, 0, 1 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_findSymbol, Module::getSymbolNameByVa, 1, 2 );
 
 
 BOOST_PYTHON_MODULE( pykd )
@@ -208,7 +209,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Return source file name, line and displacement by the specified offset" ) );
     python::def( "getOffset", &TypeInfo::getOffset,
         "Return traget virtual address for specified symbol" );
-    python::def( "findSymbol", &TypeInfo::findSymbol, findSymbol_( python::args( "offset", "safe"),
+    python::def( "findSymbol", &TypeInfo::findSymbol, findSymbol_( python::args( "offset", "safe", "showDisplacement"),
         "Find symbol by the target virtual memory offset" ) );
     python::def( "sizeof", &TypeInfo::getSymbolSize,
         "Return a size of the type or variable" );
@@ -350,8 +351,8 @@ BOOST_PYTHON_MODULE( pykd )
              "Return the full path to the module's symbol information" )
         .def("offset", &Module::getSymbolOffset,
             "Return offset of the symbol" )
-        .def("findSymbol", &Module::getSymbolNameByVa,
-            "Return symbol name by virtual address" )
+        .def("findSymbol", &Module::getSymbolNameByVa, Module_findSymbol( python::args("offset", "showDisplacement"),
+            "Return symbol name by virtual address" ) )
         .def("rva", &Module::getSymbolRva,
             "Return rva of the symbol" )
         .def("sizeof", &Module::getSymbolSize,

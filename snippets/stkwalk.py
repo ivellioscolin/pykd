@@ -2,6 +2,8 @@
 from pykd import *
 from optparse import OptionParser
 from fnmatch import fnmatch
+import traceback
+import sys
 
 nt = None
 
@@ -9,27 +11,30 @@ class PrintOptions:
     def __init__(self):
         self.ignoreNotActiveThread = True
         self.ignoreNotActiveProcess = True
+        self.showWow64stack = True
 
-def applayThreadFilter( thread,moduleFilter):
+def applayThreadFilter(thread,moduleFilter,funcFilter,printopt):
+
+    if not moduleFilter and not funcFilter:
+        return True
 
     try:
         setImplicitThread(thread)
-        
+       
         stk = getStack()
         
-        moduleLst = set()
         for frame in stk:
             m = module( frame.instructionOffset )
-            if moduleFilter( m, m.name() ):
-                moduleLst.add(m)
-           
-        if len(moduleLst)==0:
-            return False
+            if moduleFilter and moduleFilter( m, m.name() ):
+                return True
+            sym = m.findSymbol( frame.instructionOffset, showDisplacement = False )
+            if funcFilter and funcFilter( sym ):
+                return True            
 
     except BaseException:
-        return False
+        pass
         
-    return True        
+    return False
     
         
 def printThread(process,thread,printopt):
@@ -53,11 +58,11 @@ def printThread(process,thread,printopt):
 
     
     
-def printProcess(process,processFilter,moduleFilter,printopt):
+def printProcess(process,processFilter,moduleFilter,funcFilter,printopt):
 
     processName = loadCStr( process.ImageFileName )
      
-    if not processFilter(process, process.UniqueProcessId, processName ):
+    if processFilter and not processFilter(process, process.UniqueProcessId, processName ):
         return
     
     try:
@@ -68,7 +73,7 @@ def printProcess(process,processFilter,moduleFilter,printopt):
         threadLst = nt.typedVarList(process.ThreadListHead, "_ETHREAD", "ThreadListEntry")
         filteredThreadLst = []
         for thread in threadLst:
-            if applayThreadFilter( thread, moduleFilter ):
+            if applayThreadFilter( thread, moduleFilter, funcFilter, printopt ):
                 filteredThreadLst.append( thread )
                 
         if filteredThreadLst == []:
@@ -104,17 +109,24 @@ def main():
         help="process filter: boolean expression with python syntax" )
     parser.add_option("-m", "--module", dest="modulefilter", 
         help="module filter: boolean expression with python syntax" )
+    parser.add_option("-f", "--function", dest="funcfilter",
+        help="function filter: boolean expression with python syntax" )
+    
     
     (options, args) = parser.parse_args()
      
-    processFilter =  lambda process, pid, name: True
-    moduleFilter = lambda module, name: True
-     
+    processFilter = None
+    moduleFilter = None
+    funcFilter = None
+    
     if options.processfilter:
         processFilter = lambda process, pid, name: eval( options.processfilter )
         
     if options.modulefilter:
         moduleFilter = lambda module, name: eval(options.modulefilter)
+        
+    if options.funcfilter:
+        funcFilter = lambda name: eval( options.funcfilter)
         
     printopt = PrintOptions()
            
@@ -123,7 +135,7 @@ def main():
 
     processLst = nt.typedVarList( nt.PsActiveProcessHead, "_EPROCESS", "ActiveProcessLinks")  
     for process in processLst:
-        printProcess( process, processFilter, moduleFilter, printopt )  
+        printProcess( process, processFilter, moduleFilter, funcFilter, printopt )  
             
     setCurrentProcess(currentProcess)
     setImplicitThread(currentThread)

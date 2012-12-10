@@ -30,19 +30,21 @@ def printDeltaStat():
     for i in range( 0, len(stk) -1 ):
     
         try:
-            mname = module( stk[i].returnOffset ).name()
+            mod = module( stk[i].returnOffset )
         except BaseException:
             continue    
   
         delta = stk[i+1].frameOffset - stk[i].frameOffset
         if delta > 0:
        
-            if mname in moduleLst:
-                moduleLst[mname] = moduleLst[mname] + delta
+            moduleName = mod.name()
+       
+            if moduleName in moduleLst:
+                moduleLst[moduleName] = moduleLst[moduleName] + delta
             else:
-                moduleLst[mname] = delta
+                moduleLst[moduleName] = delta
                 
-            func = findSymbol( stk[i].returnOffset )
+            func = moduleName + "!" + mod.findSymbol( stk[i].returnOffset, showDisplacement = False )
 
             if func in funcLst:
                 funcLst[func] = funcLst[func] + delta
@@ -79,7 +81,11 @@ def printDeltaStack():
     
     for i in range( 0, len(stk) -1 ):
         dprint( "%12s\t" % long( stk[i+1].frameOffset - stk[i].frameOffset) )
-        dprintln( findSymbol( stk[i].returnOffset ) )
+        try:
+            mod = module( stk[i].returnOffset )
+            dprintln( "%s!%s"% ( mod.name(), mod.findSymbol( stk[i].returnOffset, showDisplacement = False ) ) )
+        except BaseException:
+            dprintln( findSymbol( stk[i].returnOffset ) )        
 
 def main():
 

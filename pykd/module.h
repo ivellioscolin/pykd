@@ -125,7 +125,7 @@ public:
 
     SymbolPtr getSymbolByVa( ULONG64 offset, ULONG symTag, LONG* displacemnt = NULL );
 
-    std::string getSymbolNameByVa( ULONG64 offset );
+    std::string getSymbolNameByVa( ULONG64 offset, bool showDisplacement = true );
 
     void getSourceLine( ULONG64 offset, std::string &fileName, ULONG &lineNo, LONG &displacement );
 
