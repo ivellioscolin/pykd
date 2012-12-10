@@ -210,7 +210,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Return source file name, line and displacement by the specified offset" ) );
     python::def( "getOffset", &TypeInfo::getOffset,
         "Return traget virtual address for specified symbol" );
-    python::def( "findSymbol", &TypeInfo::findSymbol, findSymbol_( python::args( "offset", "safe", "showDisplacement"),
+    python::def( "findSymbol", &TypeInfo::findSymbol, findSymbol_( python::args( "offset", "safe"),
         "Find symbol by the target virtual memory offset" ) );
     python::def( "sizeof", &TypeInfo::getSymbolSize,
         "Return a size of the type or variable" );
