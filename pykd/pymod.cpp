@@ -28,7 +28,6 @@ using namespace pykd;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-
 static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 #ifdef _DEBUG
     " <DBG>"
@@ -464,6 +463,42 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__str__", &StackFrame::print,
             "Return stacks frame as a string");
 
+    python::class_< ExceptionInfo, ExceptionInfoPtr, boost::noncopyable >(
+        "exceptionInfo", "Exception information", python::no_init )
+        .def_readonly( "FirstChance", &ExceptionInfo::FirstChance,
+            "Specifies whether this exception has been previously encountered")
+        .def_readonly( "ExceptionCode", &ExceptionInfo::ExceptionCode,
+            "The reason the exception occurred")
+        .def_readonly( "ExceptionFlags", &ExceptionInfo::ExceptionFlags,
+            "The exception flags")
+        .def_readonly( "ExceptionRecord", &ExceptionInfo::ExceptionRecord,
+            "A pointer to an associated EXCEPTION_RECORD structure")
+        .def_readonly( "ExceptionAddress", &ExceptionInfo::ExceptionAddress,
+            "The address where the exception occurred")
+        .add_property( "Parameters", &ExceptionInfo::getParameters,
+            "An array of additional arguments that describe the exception")
+        .def( "__str__", &ExceptionInfo::print,
+            "Return object as a string");
+
+    python::enum_<EVENT_TYPE>("eventType", "Type of debug event")
+        .value("Breakpoint", EventTypeBreakpoint)
+        .value("Exception", EventTypeException)
+        .value("CreateThread", EventTypeCreateThread)
+        .value("ExitThread", EventTypeExitThread)
+        .value("CreateProcess", EventTypeCreateProcess)
+        .value("ExitProcess", EventTypeExitProcess)
+        .value("LoadModule", EventTypeLoadModule)
+        .value("UnloadModule", EventTypeUnloadModule)
+        .value("SystemError", EventTypeSystemError)
+        .value("SessionStatus", EventTypeSessionStatus)
+        .value("ChangeDebuggeeState", EventTypeChangeDebuggeeState)
+        .value("ChangeEngineState", EventTypeChangeEngineState)
+        .value("ChangeSymbolState", EventTypeChangeSymbolState)
+        .export_values();
+
+    python::def( "lastEvent", &getLastEventType, "Return type of last event: eventType" );
+    python::def( "lastException", &getLastExceptionInfo, "Return data of last exception event: exceptionInfo" );
+
     python::class_<Disasm>("disasm", "Class disassemble a processor instructions" )
         .def( python::init<>( "constructor" ) )
         .def( python::init<ULONG64>( boost::python::args("offset"), "constructor" ) )
@@ -477,20 +512,26 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "ea", &Disasm::ea, "Return effective address for last disassembled instruction or 0" )
         .def( "reset", &Disasm::reset, "Reset current offset to begin" );
 
+    python::enum_<DEBUG_CALLBACK_RESULT>("eventResult", "Return value of event handler")
+        .value("Proceed", DebugCallbackProceed)
+        .value("NoChange", DebugCallbackNoChange)
+        .value("Break", DebugCallbackBreak)
+        .export_values();
+
     python::class_<EventHandlerWrap, EventHandlerPtr, boost::noncopyable>(
         "eventHandler", "Base class for overriding and handling debug notifications" )
         .def( "onBreakpoint", &EventHandlerWrap::OnBreakpoint,
             "Triggered breakpoint event. Parameter is int: ID of breakpoint\n"
-            "For ignore event method must return False value" )
+            "For ignore event method must return eventResult.noChange" )
         .def( "onModuleLoad", &EventHandlerWrap::OnModuleLoad,
             "Triggered module load event. Parameter are long: module base, string: module name\n"
-            "For ignore event method must return False value" )
+            "For ignore event method must return eventResult.noChange" )
         .def( "onModuleUnload", &EventHandlerWrap::OnModuleUnload,
             "Triggered module unload event. Parameter are  long: module base, string: module name\n"
-            "For ignore event method must return False value" )
+            "For ignore event method must return eventResult.noChange" )
         .def( "onException", &EventHandlerWrap::OnException,
-            "Triggered exception event. Parameters are long: exception address, long: exception code\n"
-            "For ignore event method must return False value" );
+            "Triggered exception event. Parameter - exceptionInfo\n"
+            "For ignore event method must return eventResult.noChange" );
 
     // wrapper for standart python exceptions
     python::register_exception_translator<PyException>( &PyException::exceptionTranslate );
@@ -498,6 +539,7 @@ BOOST_PYTHON_MODULE( pykd )
     pykd::exception<DbgException>( "BaseException", "Pykd base exception class" );
     pykd::exception<MemoryException,DbgException>( "MemoryException", "Target memory access exception class" );
     //pykd::exception<WaitEventException,DbgException>( "WaitEventException", "Debug interface access exception" );
+    pykd::exception<WrongEventTypeException,DbgException>( "WaitEventException", "Debug interface access exception" );
     pykd::exception<SymbolException,DbgException>( "SymbolException", "Symbol exception" );
     //pykd::exception<pyDia::Exception,SymbolException>( "DiaException", "Debug interface access exception" );
     pykd::exception<TypeException,SymbolException>( "TypeException", "type exception" );

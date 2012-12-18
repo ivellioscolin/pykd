@@ -1137,7 +1137,7 @@ HRESULT STDMETHODCALLTYPE DebugEngine::Breakpoint(
     {
         PyThread_StateSave pyThreadSave( it->pystate );
 
-        DEBUG_CALLBACK_RESULT  ret = it->callback->OnBreakpoint( id );
+        DEBUG_CALLBACK_RESULT ret = it->callback->OnBreakpoint( id );
 
         result = ret != DebugCallbackNoChange ? ret : result;
     }
@@ -1250,7 +1250,9 @@ HRESULT STDMETHODCALLTYPE DebugEngine::Exception(
     {
         PyThread_StateSave pyThreadSave( it->pystate );
 
-        DEBUG_CALLBACK_RESULT  ret = it->callback->OnException( Exception->ExceptionAddress, Exception->ExceptionCode );
+        DEBUG_CALLBACK_RESULT  ret = it->callback->OnException( 
+            ExceptionInfoPtr( new ExceptionInfo(FirstChance, *Exception) ) 
+        );
 
         result = ret != DebugCallbackNoChange ? ret : result;
     }

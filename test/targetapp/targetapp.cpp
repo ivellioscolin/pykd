@@ -537,6 +537,15 @@ int doLoadUnload()
 
     return 0;
 }
+////////////////////////////////////////////////////////////////////////////////
+
+int doAccessViolation()
+{
+    char *p = (char *)6;
+    *p = 12;
+
+    return 0;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -648,6 +657,9 @@ int _tmain(int argc, _TCHAR* argv[])
             // run with parameters
             if ( !_tcsicmp(argv[1], _T("-testLoadUnload")) )
                 return doLoadUnload();
+
+            if ( !_tcsicmp(argv[1], _T("-testAccessViolation")) )
+                return doAccessViolation();
 
             if ( !_tcsicmp(argv[1], _T("-testEnumWindows")) )
             {

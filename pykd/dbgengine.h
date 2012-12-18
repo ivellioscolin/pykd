@@ -80,14 +80,52 @@ enum DEBUG_CALLBACK_RESULT {
     DebugCallbackMax = 3
 };
 
+struct ExceptionInfo {
+
+    bool FirstChance;
+
+    ULONG ExceptionCode; /* NTSTATUS */
+    ULONG ExceptionFlags;
+    ULONG64 ExceptionRecord;
+    ULONG64 ExceptionAddress;
+
+    std::vector<ULONG64> Parameters;
+
+    ExceptionInfo(ULONG FirstChance, const EXCEPTION_RECORD64 &Exception);
+
+    python::list getParameters() const;
+    std::string print() const;
+};
+typedef boost::shared_ptr< ExceptionInfo > ExceptionInfoPtr;
 
 struct DEBUG_EVENT_CALLBACK {
 
     virtual DEBUG_CALLBACK_RESULT OnBreakpoint( ULONG bpId ) = 0;
     virtual DEBUG_CALLBACK_RESULT OnModuleLoad( ULONG64 offset, const std::string &name ) = 0;
     virtual DEBUG_CALLBACK_RESULT OnModuleUnload( ULONG64 offset, const std::string &name ) = 0;
-    virtual DEBUG_CALLBACK_RESULT OnException( ULONG64 offset, ULONG code ) = 0;
+    virtual DEBUG_CALLBACK_RESULT OnException( ExceptionInfoPtr exceptInfo ) = 0;
 };
+
+enum EVENT_TYPE {
+    EventTypeBreakpoint             = 0x0001,
+    EventTypeException              = 0x0002,
+    EventTypeCreateThread           = 0x0004,
+    EventTypeExitThread             = 0x0008,
+    EventTypeCreateProcess          = 0x0010,
+    EventTypeExitProcess            = 0x0020,
+    EventTypeLoadModule             = 0x0040,
+    EventTypeUnloadModule           = 0x0080,
+    EventTypeSystemError            = 0x0100,
+    EventTypeSessionStatus          = 0x0200,
+    EventTypeChangeDebuggeeState    = 0x0400,
+    EventTypeChangeEngineState      = 0x0800,
+    EventTypeChangeSymbolState      = 0x1000,
+
+    EventTypeMax,
+};
+
+EVENT_TYPE getLastEventType();
+ExceptionInfoPtr getLastExceptionInfo();
 
 void eventRegisterCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
 void eventRemoveCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );

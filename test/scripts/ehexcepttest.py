@@ -1,136 +1,46 @@
-"""Debug events handler: test exceptions and debug breaks"""
+"""Exception event test"""
 
 import unittest
 import target
 import pykd
+import testutils
 
-class BreakExceptionHandler(pykd.eventHandler):
+class ExceptionHandler(pykd.eventHandler):
     """Track load/unload module implementation"""
-    def __init__(self, client):
-        pykd.eventHandler.__init__(self, client)
-
-        self.client = client
-
-        self.wasSecondChance = False
-
-        self.wasBreakpoint = False
-        self.wasBreakpointIds = []
-
-        self.bpLastModuleName = ""
-        self.bpCount = 0
-
-        self.firstChanceAccessAddresses = []
-        self.secondChanceAccessAddresses = []
-
-    def onBreakpoint(self, bpId):
-        """Breakpoint handler"""
-        self.wasBreakpoint = True
-        self.wasBreakpointIds.append( bpId )
-        return pykd.DEBUG_STATUS_BREAK
-
-    def onException(self, exceptParams):
-        """Exception handler"""
-
-        self.wasSecondChance = not exceptParams["FirstChance"]
-
-        if exceptParams["Code"] == pykd.EXCEPTION_ACCESS_VIOLATION:
-            if self.wasSecondChance:
-                self.secondChanceAccessAddresses.append( exceptParams["Parameters"][1] )
-            else:
-                self.firstChanceAccessAddresses.append( exceptParams["Parameters"][1] )
-        elif exceptParams["Code"] == pykd.EXCEPTION_BREAKPOINT:
-            self.bpCount += 1
-
-        return pykd.DEBUG_STATUS_BREAK
-
-class BpHandlerTestResult:
-    """ Breakpoint handler test results"""
     def __init__(self):
-        self.wasCodeBp = None
-        self.wasDataBp = None
+        pykd.eventHandler.__init__(self)
+        self.accessViolationOccured = False
 
-bpHandlerTestResult = BpHandlerTestResult()
+    def onException(self, exceptInfo):
+        """Exception handler"""
+        self.accessViolationOccured = exceptInfo.ExceptionCode == 0xC0000005
 
-def codeBpHandler(bpId):
-    """ Handler of software breakpoint """
-    bpHandlerTestResult.wasCodeBp = bpId
+        if self.accessViolationOccured:
+            self.param0 = exceptInfo.Parameters[0]
+            self.param1 = exceptInfo.Parameters[1]
+            return pykd.eventResult.Break
 
-def dataBpHandler(bpId):
-    """ Handler of hardware breakpoint """
-    bpHandlerTestResult.wasDataBp = bpId
-    return pykd.DEBUG_STATUS_NO_CHANGE
+        return pykd.eventResult.NoChange
 
-class EhExceptionBreakpointTest(unittest.TestCase):
-    """Unit tests of exceptions end breakpoint handling"""
+class EhExceptionTest(unittest.TestCase):
+    """Exception event test"""
 
-    def testBreakpointException(self):
-        """Start new process and track exceptions/breakpoints"""
-        testClient = pykd.createDbgClient()
-        testClient.startProcess( target.appPath + " -testExceptions" )
+    def testException(self):
+        """Start new process and track exceptions"""
+        _locProcessId = pykd.startProcess( target.appPath + " -testAccessViolation" )
+        with testutils.ContextCallIt( testutils.KillProcess(_locProcessId) ) as killStartedProcess :
+            exceptionHandler = ExceptionHandler()
 
-        targetMod = testClient.loadModule( "targetapp" )
+            while not exceptionHandler.accessViolationOccured:
+                pykd.go()
 
-        bpIdSoftware = testClient.setBp( targetMod.offset("changeValueForAccessTesting"),
-                                         codeBpHandler )
+            self.assertEqual( pykd.lastEvent(), pykd.eventType.Exception )
 
-        allBp = testClient.getAllBp()
-        self.assertEqual( 1, len( allBp ) )
-        self.assertTrue( bpIdSoftware in allBp )
+            self.assertTrue( exceptionHandler.accessViolationOccured )
+            self.assertEqual( exceptionHandler.param0, 1 )  # write
+            self.assertEqual( exceptionHandler.param1, 6 )  # addr
 
-        hwBpIsNotSet = True
-# kd> ba e 1 <some_address>
-#         ^ Unable to set breakpoint error
-# The system resets thread contexts after the process
-# breakpoint so hardware breakpoints cannot be set.
-# Go to the executable's entry point and set it then.
-
-        # raw_input("Press <ENTER>....")
-
-        breakExceptionHandler = BreakExceptionHandler( testClient )
-        while not breakExceptionHandler.wasSecondChance:
-            testClient.go()
-            if hwBpIsNotSet:
-                hwBpIsNotSet = False
-                bpIdHwExecute = testClient.setBp( targetMod.offset("readValueForAccessTesting"),
-                                                  1, pykd.DEBUG_BREAK_EXECUTE )
-
-                bpIdHwWrite = testClient.setBp( targetMod.offset("g_valueForAccessTesting1"),
-                                                1, pykd.DEBUG_BREAK_WRITE, dataBpHandler )
-
-                bpIdHwRead = testClient.setBp( targetMod.offset("g_valueForAccessTesting2"),
-                                               1, pykd.DEBUG_BREAK_READ )
-
-                self.assertTrue( bpIdSoftware != bpIdHwExecute and 
-                                 bpIdHwExecute != bpIdHwWrite and
-                                 bpIdHwWrite != bpIdHwRead )
-
-                allBp = testClient.getAllBp()
-                self.assertEqual( 4, len( allBp ) )
-
-                self.assertTrue( bpIdSoftware in allBp )
-                self.assertTrue( bpIdHwExecute in allBp )
-                self.assertTrue( bpIdHwWrite in allBp )
-                self.assertTrue( bpIdHwRead in allBp )
-
-
-        self.assertEqual( [2, 3], breakExceptionHandler.firstChanceAccessAddresses  )
-
-        self.assertEqual( 3, breakExceptionHandler.bpCount ) # main and 2 in doExeptions
-
-        self.assertEqual( [3, ], breakExceptionHandler.secondChanceAccessAddresses )
-
-        self.assertTrue( breakExceptionHandler.wasBreakpoint )
-
-        self.assertTrue( bpIdSoftware in breakExceptionHandler.wasBreakpointIds )
-        self.assertTrue( bpIdHwExecute in breakExceptionHandler.wasBreakpointIds )
-        self.assertTrue( bpIdHwWrite in breakExceptionHandler.wasBreakpointIds )
-        self.assertTrue( bpIdHwRead in breakExceptionHandler.wasBreakpointIds )
-
-        testClient.removeBp(bpIdHwRead)
-        self.assertEqual( 3, len( testClient.getAllBp() ) )
-
-        testClient.removeBp()
-        self.assertEqual( 0, len( testClient.getAllBp() ) )
-
-        self.assertEqual( bpHandlerTestResult.wasCodeBp, bpIdSoftware )
-        self.assertTrue( bpHandlerTestResult.wasDataBp, bpIdHwWrite )
+            exceptInfo = pykd.lastException()
+            self.assertEqual( exceptInfo.ExceptionCode, 0xC0000005 )
+            self.assertEqual( exceptionHandler.param0, exceptInfo.Parameters[0] )
+            self.assertEqual( exceptionHandler.param1, exceptInfo.Parameters[1] )

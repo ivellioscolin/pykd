@@ -143,7 +143,7 @@ public:
 
 private:
 
-    std::string buildDesc( const std::string &typeName, const std::string  &errorStr )
+    static std::string buildDesc( const std::string &typeName, const std::string  &errorStr )
     {
         std::stringstream   sstr;
         sstr << typeName << " : " << errorStr;
@@ -171,7 +171,7 @@ private:
         
     ULONG64             m_targetAddress;
 
-    std::string buildDesc( ULONG64 addr, bool phyAddr )
+    static std::string buildDesc( ULONG64 addr, bool phyAddr )
     {
         std::stringstream   sstr;
         if ( phyAddr )
@@ -195,10 +195,30 @@ public:
     }
 
 private:
-    std::string buildDesc(HRESULT hres) {
+    static std::string buildDesc(HRESULT hres) {
         std::stringstream sstream;
         sstream << "Add synthetic symbol faield\n";
         sstream << "HRESULT 0x" << std::hex << hres;
+        return sstream.str();
+    }
+};
+
+
+/////////////////////////////////////////////////////////////////////////////////
+
+class WrongEventTypeException : public DbgException
+{
+public:
+
+    WrongEventTypeException(ULONG eventType) 
+       : DbgException( buildDesc(eventType) )
+        {}
+
+private:
+    static std::string buildDesc(ULONG eventType) {
+        std::stringstream sstream;
+        sstream << "Unknown/not compatible debug event type: 0x";
+        sstream << std::hex << eventType;
         return sstream.str();
     }
 };
@@ -215,7 +235,7 @@ public:
 
 private:
 
-    std::string buildDesc( const std::string &file, int line, const std::string &msg )
+    static std::string buildDesc( const std::string &file, int line, const std::string &msg )
     {
         std::stringstream sstream;
         sstream << "File: " << file << " Line: " << line << "  " << msg;

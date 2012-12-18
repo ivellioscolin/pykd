@@ -21,6 +21,7 @@ import typedvar
 import regtest
 import localstest
 import customtypestest
+import ehexcepttest
 
 class StartProcessWithoutParamsTest(unittest.TestCase):
     def testStart(self):
@@ -44,13 +45,14 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
                 unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
                 unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
-                unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
                 unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
                 unittest.TestLoader().loadTestsFromTestCase( customtypestest.CustomTypesTest ),
                 # ^^^
                 unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest ),
 
-                unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
+                unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionTest ),
             ] ) 
     else:
        return unittest.TestSuite(
