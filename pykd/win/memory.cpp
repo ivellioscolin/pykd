@@ -203,4 +203,50 @@ std::wstring loadWStr( ULONG64 offset )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+void findMemoryRegion( ULONG64 beginOffset, ULONG64 *startOffset, ULONG64* length )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    beginOffset = addr64NoSafe(beginOffset);
+
+    HRESULT  hres =  g_dbgEng->dataspace->GetNextDifferentlyValidOffsetVirtual( beginOffset, startOffset );
+
+    if ( FAILED(hres) )
+        throw DbgException( "IDebugDataSpaces4::GetNextDifferentlyValidOffsetVirtual failed" );
+
+    *startOffset =  addr64NoSafe(*startOffset);
+
+    MEMORY_BASIC_INFORMATION64  meminfo = {};
+
+    hres = g_dbgEng->dataspace->QueryVirtual( *startOffset, &meminfo );
+
+    if ( FAILED(hres) )
+       throw MemoryException( *startOffset );
+
+    *length = meminfo.RegionSize;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+ULONG getVaProtect( ULONG64 offset )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    offset = addr64NoSafe(offset);
+
+    MEMORY_BASIC_INFORMATION64  meminfo = {};
+
+    HRESULT  hres =
+        g_dbgEng->dataspace->QueryVirtual( offset,&meminfo );
+
+    if ( FAILED(hres) )
+       throw MemoryException( offset );
+
+    return meminfo.Protect;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+
+
 }; //namespace pykd

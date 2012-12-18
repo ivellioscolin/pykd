@@ -147,6 +147,11 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "compareMemory", &compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
         "Compare two memory buffers by virtual or physical addresses" ) );
 
+    python::def( "findMemoryRegion", &findMemoryRegionPy,
+        "Return address of begining valid memory region nearest to offset" );
+    python::def( "getVaProtect", &getVaProtect,
+        "Return memory attributes" );
+
     python::def( "ptrByte", &ptrByte,
         "Read an unsigned 1-byte integer from the target memory" );
     python::def( "ptrWord", &ptrWord,
