@@ -779,10 +779,51 @@ static void ReadWow64Context(WOW64_CONTEXT &Context)
     // http://www.nynaeve.net/Code/GetThreadWow64Context.cpp
     // 
 
+    HRESULT     hres;
+    ULONG       debugClass, debugQualifier;
+    
+    hres = g_dbgEng->control->GetDebuggeeType( &debugClass, &debugQualifier );
+    
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
+         
     ULONG64 teb64Address;
-    HRESULT hres = g_dbgEng->system->GetCurrentThreadTeb(&teb64Address);
-    if (S_OK != hres)
-        throw DbgException( "IDebugSystemObjects::GetCurrentThreadTeb", hres);
+
+    if ( debugClass == DEBUG_CLASS_KERNEL )
+    {
+        DEBUG_VALUE  debugValue = {};
+        ULONG        remainderIndex = 0;
+
+        hres = g_dbgEng->control->EvaluateWide( 
+            L"@@C++(#FIELD_OFFSET(nt!_KTHREAD, Teb))",
+            DEBUG_VALUE_INT64,
+            &debugValue,
+            &remainderIndex );
+            
+        if ( FAILED( hres ) )
+            throw  DbgException( "IDebugControl::Evaluate  failed" );
+            
+        ULONG64 tebOffset = debugValue.I64;
+
+        hres = g_dbgEng->system->GetImplicitThreadDataOffset(&teb64Address);
+        if (S_OK != hres)
+            throw DbgException( "IDebugSystemObjects::GetImplicitThreadDataOffset", hres);
+
+        ULONG readedBytes;
+
+        readMemoryUnsafeNoSafe(
+            teb64Address + tebOffset,
+            &teb64Address,
+            sizeof(teb64Address),
+            false,
+            &readedBytes);
+    }
+    else
+    {
+        hres = g_dbgEng->system->GetImplicitThreadDataOffset(&teb64Address);
+        if (S_OK != hres)
+            throw DbgException( "IDebugSystemObjects::GetImplicitThreadDataOffset", hres);
+    }
 
     // ? @@C++(#FIELD_OFFSET(nt!_TEB64, TlsSlots))
     // hardcoded in !wow64exts.r (6.2.8250.0)
