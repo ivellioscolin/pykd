@@ -32,6 +32,7 @@ def applayThreadFilter(thread,moduleFilter,funcFilter,printopt):
                 return True            
 
     except BaseException:
+        print "applayThreadFilter except"
         pass
         
     return False
@@ -48,9 +49,17 @@ def printThread(process,thread,printopt):
         for frame in stk:
             dprintln( findSymbol( frame.instructionOffset ) )
             
-        dprintln("")                
+        if is64bitSystem():
+            stk = getStackWow64()
+            for frame in stk:
+                dprintln( findSymbol( frame.instructionOffset ) )     
+                                 
+        dprintln("")                     
         
     except BaseException:
+     
+        print "except"
+    
         if not printopt.ignoreNotActiveThread:
             dprintln( "Thread %x, Process: %s" % ( thread, loadCStr( process.ImageFileName ) ) )     
             dprintln( "Failed to switch into thread context\n")
