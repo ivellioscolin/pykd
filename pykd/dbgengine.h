@@ -141,6 +141,7 @@ ULONG64 getCurrentProcess();
 ULONG64 getImplicitThread();
 void setCurrentProcess( ULONG64 processAddr );
 void setImplicitThread( ULONG64 threadAddr );
+void getAllProcessThreads( std::vector<ULONG64> &threadsArray );
 
 // Symbol path
 std::string getSymbolPath();

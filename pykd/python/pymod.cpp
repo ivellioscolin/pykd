@@ -21,13 +21,14 @@
 #include "stkframe.h"
 #include "bpoint.h"
 #include "eventhandler.h"
+#include "pysupport.h"
 
 #include "win/dbgio.h"
 #include "win/windbg.h"
 
 using namespace pykd;
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 #ifdef _DEBUG
@@ -281,6 +282,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Set current process by address" );
     python::def( "setImplicitThread", &setImplicitThread, 
         "Set implicit thread for current process" );
+    python::def( "getProcessThreads", &pysupport::getProcessThreads,
+        "Get all process's threads ( user mode only )" );
     
     // symbol path
     python::def( "getSymbolPath", &getSymbolPath, "Returns current symbol path");

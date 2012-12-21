@@ -1365,6 +1365,61 @@ void setImplicitThread( ULONG64 threadAddr )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void getAllProcessThreads( std::vector<ULONG64> &threadsArray )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+    ULONG       debugClass, debugQualifier;
+    
+    hres = g_dbgEng->control->GetDebuggeeType( &debugClass, &debugQualifier );
+    
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
+         
+    if  ( debugClass != DEBUG_CLASS_USER_WINDOWS )
+        throw DbgException( "getAllProcessThreads routine only for usermode" );
+
+    ULONG  threadsNumber = 0;
+
+    hres = g_dbgEng->system->GetNumberThreads( &threadsNumber );
+    if ( FAILED(hres) )
+        throw DbgException( "IDebugSystemObjects::GetNumberThreads failed" );
+
+    std::vector<ULONG>  ids(threadsNumber);
+
+    hres = g_dbgEng->system->GetThreadIdsByIndex( 0, threadsNumber, &ids[0], NULL );
+    if ( FAILED(hres) )
+        throw DbgException( "IDebugSystemObjects::GetThreadIdsByIndex failed" );
+
+    ULONG  currentThreadId;
+    hres = g_dbgEng->system->GetCurrentThreadId( &currentThreadId );
+    if ( FAILED(hres) )
+        throw DbgException( "IDebugSystemObjects::GetCurrentThreadId failed" );
+
+    threadsArray.resize( threadsNumber );
+    for ( size_t i = 0; i < threadsNumber; ++i )
+    {
+        hres = g_dbgEng->system->SetCurrentThreadId( ids[i] );
+        if ( FAILED(hres) )
+        {   
+            g_dbgEng->system->SetCurrentThreadId( currentThreadId );
+            throw DbgException( "IDebugSystemObjects::SetCurrentThreadId failed" );
+        }
+
+        hres = g_dbgEng->system->GetCurrentThreadTeb( &threadsArray[i] );
+        if ( FAILED(hres) )
+        {   
+            g_dbgEng->system->SetCurrentThreadId( currentThreadId );
+            throw DbgException( "IDebugSystemObjects::GetCurrentThreadTeb failed" );
+        }
+    }
+
+     g_dbgEng->system->SetCurrentThreadId( currentThreadId );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 ULONG64 loadExtension(const std::wstring &extPath )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
