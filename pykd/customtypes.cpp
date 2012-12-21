@@ -1,22 +1,30 @@
 
 #include "stdafx.h"
 #include "customtypes.h"
+#include "dbgexcept.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace pykd {
 
+
 ////////////////////////////////////////////////////////////////////////////////
 
-CustomTypeBase::CustomTypeBase(const std::string &name, ULONG pointerSize) 
-    : UdtFieldColl(name)
+TypeInfoPtr TypeBuilder::createStruct(  const std::string &name, ULONG align )
 {
-    m_ptrSize = pointerSize ? pointerSize : ptrSize();
+    return TypeInfoPtr( new CustomStruct( name, m_ptrSize, align ? align : m_ptrSize ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void CustomTypeBase::throwIfFiledExist(const std::string &fieldName)
+TypeInfoPtr TypeBuilder::createUnion( const std::string &name, ULONG align )
+{
+   return TypeInfoPtr( new CustomUnion( name, m_ptrSize, align ? align : m_ptrSize ) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void CustomBase::throwIfFiledExist(const std::string &fieldName)
 {
     bool fieldExist = false;
     try
@@ -24,29 +32,22 @@ void CustomTypeBase::throwIfFiledExist(const std::string &fieldName)
         lookupField(fieldName);
         fieldExist = true;
     }
-    catch (const TypeException &except)
+    catch (const TypeException&)
     {
-        DBG_UNREFERENCED_PARAMETER(except);
     }
+
     if (fieldExist)
         throw TypeException(getName(), "duplicate field name: " + fieldName);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void CustomTypeBase::throwIfTypeRecursive(TypeInfoPtr type)
+void CustomBase::throwIfTypeRecursive(TypeInfoPtr type)
 {
     if (type->is(this))
-        throw TypeException(getName(), "wrong type of field");
+        throw TypeException(getName(), "recursive type definition");
 
-    return throwIfTypeRecursiveImpl(type);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-void CustomTypeBase::throwIfTypeRecursiveImpl(TypeInfoPtr type)
-{
-    if (type->isEnum())
+    if ( !type->isUserDefined() )
         return;
 
     try
@@ -58,7 +59,7 @@ void CustomTypeBase::throwIfTypeRecursiveImpl(TypeInfoPtr type)
             if (fileldType->is(this))
                 throw TypeException(getName(), "wrong type of field");
 
-            throwIfTypeRecursiveImpl(fileldType);
+            throwIfTypeRecursive(fileldType);
         }
     }
     catch (const TypeException &except)
@@ -69,78 +70,188 @@ void CustomTypeBase::throwIfTypeRecursiveImpl(TypeInfoPtr type)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr CustomStruct::create(
-    const std::string &name,
-    ULONG alignReq /*= 0*/,
-    ULONG pointerSize /*= 0*/)
+void CustomStruct::appendField(const std::string &fieldName, TypeInfoPtr &fieldType )
 {
-    return TypeInfoPtr( new CustomStruct(name, alignReq, pointerSize) );
+    throwIfFiledExist(fieldName);
+    throwIfTypeRecursive(fieldType);
+
+    CustomUdtField  *field = new CustomUdtField( fieldType, fieldName );
+
+    ULONG fieldSize = fieldType->getSize();
+    ULONG offset = m_size;
+    ULONG align = fieldSize < m_align ? fieldSize : m_align;
+
+    offset += offset % align > 0 ? align - offset % align : 0;
+
+    field->setOffset( offset );
+
+    m_size = offset + fieldSize;
+
+    m_fields.push_back( UdtFieldPtr( field ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ULONG CustomStruct::getSize()
+void CustomUnion::appendField(const std::string &fieldName, TypeInfoPtr &fieldType )
 {
-    if (Base::empty())
-        return 0;
+    throwIfFiledExist(fieldName);
+    throwIfTypeRecursive(fieldType);
 
-    UdtUtils::Field &field = Base::last();
-    return field.m_offset + field.m_type->getSize();
+    CustomUdtField  *field = new CustomUdtField( fieldType, fieldName );
+
+    ULONG fieldSize = fieldType->getSize();
+
+    m_size = fieldSize > m_size ? fieldSize : m_size;
+
+    m_fields.push_back( UdtFieldPtr( field ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void CustomStruct::appendField(const std::string &fieldName, TypeInfoPtr fieldType)
-{
-    Base::throwIfFiledExist(fieldName);
-    Base::throwIfTypeRecursive(fieldType);
 
-    ULONG offset = getSize();
-    offset += offset % (m_align ? m_align : fieldType->getAlignReq());
-    Base::push_back(
-        UdtUtils::Field(offset, fieldName, fieldType)
-    );
-}
 
-////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr CustomUnion::create(const std::string &name, ULONG pointerSize /*= 0*/)
-{
-    return TypeInfoPtr( new CustomUnion(name, pointerSize) );
-}
 
-////////////////////////////////////////////////////////////////////////////////
 
-ULONG CustomUnion::getSize()
-{
-    ULONG size = 0;
-    for (ULONG i = 0; i < getFieldCount(); ++i)
-    {
-        ULONG fieldSize = lookupField(i).m_type->getSize();
-        if (fieldSize > size)
-            size = fieldSize;
-    }
-    return size;
-}
 
-////////////////////////////////////////////////////////////////////////////////
 
-void CustomUnion::appendField(const std::string &fieldName, TypeInfoPtr fieldType)
-{
-    Base::throwIfFiledExist(fieldName);
-    Base::throwIfTypeRecursive(fieldType);
 
-    Base::push_back(
-        UdtUtils::Field(0, fieldName, fieldType)
-    );
-}
 
-////////////////////////////////////////////////////////////////////////////////
-
-TypeInfoPtr PtrToVoid()
-{
-    return TypeInfoPtr( new PointerTypeInfo(ptrSize()) );
-}
+//////////////////////////////////////////////////////////////////////////////////
+//
+//CustomTypeBase::CustomTypeBase(const std::string &name, ULONG pointerSize) 
+//    : UdtFieldColl(name)
+//{
+//    m_ptrSize = pointerSize ? pointerSize : ptrSize();
+//}
+//
+//////////////////////////////////////////////////////////////////////////////////
+//
+//void CustomTypeBase::throwIfFiledExist(const std::string &fieldName)
+//{
+//    bool fieldExist = false;
+//    try
+//    {
+//        lookupField(fieldName);
+//        fieldExist = true;
+//    }
+//    catch (const TypeException &except)
+//    {
+//        DBG_UNREFERENCED_PARAMETER(except);
+//    }
+//    if (fieldExist)
+//        throw TypeException(getName(), "duplicate field name: " + fieldName);
+//}
+//
+//////////////////////////////////////////////////////////////////////////////////
+//
+//void CustomTypeBase::throwIfTypeRecursive(TypeInfoPtr type)
+//{
+//    if (type->is(this))
+//        throw TypeException(getName(), "wrong type of field");
+//
+//    return throwIfTypeRecursiveImpl(type);
+//}
+//
+//////////////////////////////////////////////////////////////////////////////////
+//
+//void CustomTypeBase::throwIfTypeRecursiveImpl(TypeInfoPtr type)
+//{
+//    if (type->isEnum())
+//        return;
+//
+//    try
+//    {
+//        const ULONG fields = type->getFieldCount();
+//        for (ULONG i = 0; i < fields; ++i)
+//        {
+//            TypeInfoPtr fileldType = type->getFieldByIndex(i);
+//            if (fileldType->is(this))
+//                throw TypeException(getName(), "wrong type of field");
+//
+//            throwIfTypeRecursiveImpl(fileldType);
+//        }
+//    }
+//    catch (const TypeException &except)
+//    {
+//        DBG_UNREFERENCED_PARAMETER(except);
+//    }
+//}
+//
+//////////////////////////////////////////////////////////////////////////////////
+//
+//TypeInfoPtr CustomStruct::create(
+//    const std::string &name,
+//    ULONG alignReq /*= 0*/,
+//    ULONG pointerSize /*= 0*/)
+//{
+//    return TypeInfoPtr( new CustomStruct(name, alignReq, pointerSize) );
+//}
+//
+//////////////////////////////////////////////////////////////////////////////////
+//
+//ULONG CustomStruct::getSize()
+//{
+//    if (Base::empty())
+//        return 0;
+//
+//    UdtUtils::Field &field = Base::last();
+//    return field.m_offset + field.m_type->getSize();
+//}
+//
+//////////////////////////////////////////////////////////////////////////////////
+//
+//void CustomStruct::appendField(const std::string &fieldName, TypeInfoPtr fieldType)
+//{
+//    Base::throwIfFiledExist(fieldName);
+//    Base::throwIfTypeRecursive(fieldType);
+//
+//    ULONG offset = getSize();
+//    offset += offset % (m_align ? m_align : fieldType->getAlignReq());
+//    Base::push_back(
+//        UdtUtils::Field(offset, fieldName, fieldType)
+//    );
+//}
+//
+//////////////////////////////////////////////////////////////////////////////////
+//
+//TypeInfoPtr CustomUnion::create(const std::string &name, ULONG pointerSize /*= 0*/)
+//{
+//    return TypeInfoPtr( new CustomUnion(name, pointerSize) );
+//}
+//
+//////////////////////////////////////////////////////////////////////////////////
+//
+//ULONG CustomUnion::getSize()
+//{
+//    ULONG size = 0;
+//    for (ULONG i = 0; i < getFieldCount(); ++i)
+//    {
+//        ULONG fieldSize = lookupField(i).m_type->getSize();
+//        if (fieldSize > size)
+//            size = fieldSize;
+//    }
+//    return size;
+//}
+//
+//////////////////////////////////////////////////////////////////////////////////
+//
+//void CustomUnion::appendField(const std::string &fieldName, TypeInfoPtr fieldType)
+//{
+//    Base::throwIfFiledExist(fieldName);
+//    Base::throwIfTypeRecursive(fieldType);
+//
+//    Base::push_back(
+//        UdtUtils::Field(0, fieldName, fieldType)
+//    );
+//}
+//
+//////////////////////////////////////////////////////////////////////////////////
+//
+//TypeInfoPtr PtrToVoid()
+//{
+//    return TypeInfoPtr( new PointerTypeInfo(ptrSize()) );
+//}
 
 ////////////////////////////////////////////////////////////////////////////////
 

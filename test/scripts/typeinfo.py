@@ -109,7 +109,6 @@ class TypeInfoTest( unittest.TestCase ):
 
         ti2 = target.module.type( "struct2" )
         self.assertTrue( ti2.fieldOffset("m_union") >= ti2.m_struct.size() )
-        self.assertEqual( ti2.fieldOffset("m_union"), ti2.fieldOffset("m_union.m_value") )
         self.assertEqual( 0, ti2.m_union.fieldOffset("m_value") )
 
     def testSize( self ):
@@ -199,10 +198,14 @@ class TypeInfoTest( unittest.TestCase ):
 
     def testStaticField(self):
         ti = pykd.typeInfo( "g_classChild" )
-        self.assertNotEqual( 0, ti.m_staticField.staticOffset() )
-        if not ti.m_staticConst.staticOffset():
+        self.assertNotEqual( 0, ti.staticOffset( "m_staticField" ) )
+        self.assertNotEqual( 0, ti.staticOffset("m_stdstr") )
+        if not ti.staticOffset("m_staticConst"):
             self.assertFalse( "MS DIA bug: https://connect.microsoft.com/VisualStudio/feedback/details/737430" )
-        self.assertNotEqual( 0, ti.m_stdstr.staticOffset() )
+            
+    def testVfnTable(self):
+        ti = pykd.typeInfo( "g_classChild" )
+        self.assertTrue( hasattr( ti, "__VFN_table" ) )
         
     def testUdtSubscribe(self):
         ti = pykd.typeInfo( "g_virtChild" )
@@ -213,4 +216,9 @@ class TypeInfoTest( unittest.TestCase ):
     def testStructNullSize(self):
         ti = target.module.type("structNullSize")
         self.assertEqual( 0, len(ti) )
+        
+    def testDerefName(self):
+        entry = pykd.typedVar("entry1").Flink
+        self.assertEqual( "_LIST_ENTRY*", entry.type().name() )
+        
         

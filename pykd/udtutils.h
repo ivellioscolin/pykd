@@ -6,64 +6,266 @@
 #include <string>
 #include <vector>
 
+#include "symengine.h"
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 namespace pykd {
 
-///////////////////////////////////////////////////////////////////////////////////
+class UdtField;
+typedef boost::shared_ptr<UdtField>  UdtFieldPtr;
 
 class TypeInfo;
 typedef boost::shared_ptr<TypeInfo>  TypeInfoPtr;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-namespace UdtUtils {
+class UdtField
+{
 
-///////////////////////////////////////////////////////////////////////////////////
+public:
 
-struct Field {
-    Field( ULONG offset, const std::string &name, TypeInfoPtr type )
-        : m_offset(offset), m_name(name), m_type(type)
-    {}
-
-    bool operator ==(const std::string &name) const {
-        return m_name == name;
+    const std::string& getName() const
+    {
+        return m_name;
     }
 
-    ULONG m_offset;
-    std::string m_name;
-    TypeInfoPtr m_type;
+    const std::string& getVirtualBaseClassName() const 
+    {
+        return m_virtualBaseName;
+    }
+
+    ULONG getOffset() const
+    {
+        return m_offset;
+    }
+
+    void setOffset( ULONG offset ) 
+    {
+         m_offset = offset;
+    }
+
+    bool isVirtualMember() const 
+    {
+        return m_virtualMember;
+    }
+
+    bool isStaticMember() const
+    {
+        return m_staticMember;
+    }
+
+    ULONG64 getStaticOffset() const
+    {
+        return m_staticOffset;
+    }
+
+    void setStaticOffset( ULONG64 staticOffset)
+    {
+        m_staticMember = true;
+        m_staticOffset = staticOffset;
+    }
+
+    void getVirtualDisplacement( ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize )
+    {
+       virtualBasePtr = m_virtualBasePtr;
+       virtualDispIndex = m_virtualDispIndex;
+       virtualDispSize = m_virtualDispSize;
+    }
+
+    void setVirtualDisplacement( ULONG virtualBasePtr, ULONG virtualDispIndex, ULONG virtualDispSize )
+    {
+         m_virtualMember = true;
+         m_virtualBasePtr = virtualBasePtr;
+         m_virtualDispIndex = virtualDispIndex;
+         m_virtualDispSize = virtualDispSize;
+    }
+
+    virtual TypeInfoPtr getTypeInfo() = 0;
+
+protected:
+
+    UdtField( const std::string  &name ) :
+         m_name( name ),
+         m_offset( 0 ),
+         m_virtualMember( false ),
+         m_staticMember( false ),
+         m_virtualBasePtr( 0 ),
+         m_virtualDispIndex( 0 ),
+         m_virtualDispSize( 0 )
+         {}
+
+    std::string  m_name;
+
+    std::string  m_virtualBaseName;
+
+    ULONG  m_offset;
+
+    ULONG64  m_staticOffset;
+
+    bool  m_staticMember;
+
+    bool  m_virtualMember;
+
+    ULONG  m_virtualBasePtr;
+    ULONG  m_virtualDispIndex;
+    ULONG  m_virtualDispSize;
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class FieldCollection : public std::vector< Field > {
-    typedef std::vector< Field > Base;
+class SymbolUdtField : public UdtField 
+{
 public:
-    FieldCollection(const std::string &baseTypeName) : m_baseTypeName(baseTypeName)
-    {}
 
-    const Field &lookup(ULONG index) const;
-    const Field &lookup(const std::string &name) const;
+    SymbolUdtField( const SymbolPtr &sym, const std::string& name ) :
+        UdtField( name ),
+        m_symbol( sym )
+        {}
 
-    const std::string &getName() const {
-        return m_baseTypeName;
+    SymbolPtr& getSymbol() {
+        return m_symbol;
     }
 
 private:
-    std::string m_baseTypeName;
+
+    virtual TypeInfoPtr getTypeInfo();
+
+    SymbolPtr  m_symbol;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ULONG getFieldOffsetRecirsive(TypeInfoPtr typeInfo, const std::string &fieldName);
+class CustomUdtField : public UdtField
+{
+public:
+
+    CustomUdtField( const TypeInfoPtr &typeInfo, const std::string& name ) :
+        UdtField( name ),
+        m_type( typeInfo )
+        {}
+
+private:
+
+    virtual TypeInfoPtr getTypeInfo() {
+        return m_type;
+    }
+
+    TypeInfoPtr  m_type;
+};
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-}   // namespace UdtUtils
+class FieldCollection 
+{
+public:
+
+    const UdtFieldPtr &lookup(ULONG index) const;
+    const UdtFieldPtr &lookup(const std::string &name) const;
+
+    UdtFieldPtr &lookup(ULONG index);
+    UdtFieldPtr &lookup(const std::string &name);
+
+    void push_back( const UdtFieldPtr& field ) {
+        m_fields.push_back( field );
+    }
+
+    ULONG count() const {
+        return static_cast<ULONG>( m_fields.size() );
+    }
+
+private:
+
+    typedef std::vector<UdtFieldPtr>  FieldList;
+    FieldList  m_fields;
+};
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+ULONG getFieldOffsetRecursive(TypeInfoPtr typeInfo, const std::string &fieldName);
+
+///////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+//
+//namespace UdtUtils {
+//
+/////////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//
+//
+//
+//
+//struct Field {
+//
+//    Field( ULONG offset, const std::string &name, SymbolPtr &symbol, SymbolPtr &baseVirtClass = SymbolPtr(),
+//        ULONG virtualBasePtr = 0, ULONG virtualDispIndex = 0, ULONG virtualDispSize  = 0 ) :
+//         m_offset(offset), 
+//         m_name(name),
+//         m_symbol(symbol),
+//         m_baseVirtClass( baseVirtClass ),
+//         m_virtualBasePtr( virtualBasePtr ),
+//         m_virtualDispIndex( virtualDispIndex ),
+//         m_virtualDispSize( virtualDispSize )
+//         {}
+//
+//    bool operator ==(const std::string &name) const {
+//        return m_name == name;
+//    }
+//
+//    ULONG  m_offset;
+//    std::string  m_name;
+//    SymbolPtr  m_symbol;
+//    SymbolPtr  m_baseVirtClass;
+//    ULONG  m_virtualBasePtr;
+//    ULONG  m_virtualDispIndex;
+//    ULONG  m_virtualDispSize;
+//};
+//
+/////////////////////////////////////////////////////////////////////////////////////
+//
+//class FieldCollection : public std::vector< Field > {
+//    typedef std::vector< Field > Base;
+//public:
+//    FieldCollection(const std::string &baseTypeName) : m_baseTypeName(baseTypeName)
+//    {}
+//
+//    const Field &lookup(ULONG index) const;
+//    const Field &lookup(const std::string &name) const;
+//
+//    Field &lookup(ULONG index);
+//    Field &lookup(const std::string &name);
+//
+//    const std::string &getName() const {
+//        return m_baseTypeName;
+//    }
+//
+//private:
+//    std::string m_baseTypeName;
+//};
+//
+/////////////////////////////////////////////////////////////////////////////////////
+//
+//ULONG getFieldOffsetRecursive(TypeInfoPtr typeInfo, const std::string &fieldName);
+//
+/////////////////////////////////////////////////////////////////////////////////////
+//
+//}   // namespace UdtUtils
+//
+/////////////////////////////////////////////////////////////////////////////////////
 
 }   // namespace pykd
-
-///////////////////////////////////////////////////////////////////////////////////

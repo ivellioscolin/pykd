@@ -52,15 +52,12 @@ public:
 public:
 
     TypeInfo() :
-        m_staticOffset( 0 ),
         m_constant( false ),
-        m_staticMember( false ),
-        m_virtualMember( false ),
-        m_virtualBasePtr( 0 ),
-        m_virtualDispIndex( 0 ),
-        m_virtualDispSize( 0 ),
         m_ptrSize( 0 )
         {}
+
+    virtual ~TypeInfo()
+    {}
 
     virtual std::string print() {
         std::stringstream   sstr;
@@ -85,7 +82,7 @@ public:
         throw TypeException( getName(), "type is not a struct" ); 
     }
 
-    virtual ULONG getFieldOffsetByNameRecirsive( const std::string &fieldName ) {
+    virtual ULONG getFieldOffsetByNameRecursive( const std::string &fieldName ) {
         throw TypeException( getName(), "type is not a struct" ); 
     }
     virtual ULONG getFieldOffsetByNameNotRecursively( const std::string &fieldName ) {
@@ -97,6 +94,46 @@ public:
     }
 
     virtual ULONG getFieldCount() {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
+    virtual bool isStaticMember( const std::string& fieldName )
+    {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
+    virtual bool isStaticMemberByIndex( ULONG index )
+    {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
+    virtual ULONG64 getStaticOffsetByName( const std::string& fieldName ) 
+    {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
+    virtual ULONG64 getStaticOffsetByIndex( ULONG index ) 
+    {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
+    virtual bool isVirtualMember( const std::string& fieldName )
+    {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
+    virtual bool isVirtualMemberByIndex( ULONG index ) 
+    {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
+    virtual void getVirtualDisplacement( const std::string& fieldName, ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize )
+    {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
+    virtual void getVirtualDisplacementByIndex( ULONG index, ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize )
+    {
         throw TypeException( getName(), "type is not a struct" ); 
     }
 
@@ -158,8 +195,8 @@ public:
         throw PyException( PyExc_TypeError, "object is unsubscriptable");  
     }
 
-    virtual void appendField(const std::string &fieldName, TypeInfoPtr fieldType) {
-        throw TypeException( getName(), "type is not is not extensible" );
+    virtual void appendField(const std::string &fieldName, TypeInfoPtr &fieldType) {
+        throw TypeException( getName(), "type is not is not editable" );
     }
 
     TypeInfoPtr ptrTo();
@@ -176,42 +213,6 @@ public:
     bool isConstant() const
     {
        return  m_constant == true;
-    }
-
-    bool isStaticMember() const
-    {
-       return  m_staticMember == true;
-    }
-
-    bool isVirtualMember() const 
-    {
-        return m_virtualMember == true;
-    }
-
-    void setStaticOffset( ULONG64 offset ) {
-        m_staticOffset = offset; 
-        m_staticMember = true;
-    }
-
-    void setVirtualBase( TypeInfoPtr virtualBase, LONG virtualBasePtr, ULONG virtualDispIndex, ULONG virtualDispSize )
-    {
-        m_virtualMember = true;
-        m_virtualBaseType = virtualBase;
-        m_virtualBasePtr = virtualBasePtr;
-        m_virtualDispIndex = virtualDispIndex;
-        m_virtualDispSize = virtualDispSize;
-    }
-
-    ULONG64 getStaticOffset();
-
-    void getVirtualDisplacement( ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize ) {
-        virtualBasePtr = m_virtualBasePtr;
-        virtualDispIndex = m_virtualDispIndex;
-        virtualDispSize = m_virtualDispSize;
-    };
-
-    TypeInfoPtr getVirtualBase() {
-        return m_virtualBaseType;
     }
 
     bool is(TypeInfo *rhs) const {
@@ -232,23 +233,9 @@ protected:
     static
     TypeInfoPtr getRecurciveComplexType( TypeInfoPtr &lowestType, std::string &suffix, ULONG ptrSize );
 
-    ULONG64     m_staticOffset;
-
     bool        m_constant;
 
-    bool        m_staticMember;
-
-    bool        m_virtualMember;
-
     BaseTypeVariant  m_constantValue;
-
-    LONG        m_virtualBasePtr;
-
-    ULONG       m_virtualDispIndex;
-
-    ULONG       m_virtualDispSize;
-
-    TypeInfoPtr m_virtualBaseType;
 
     ULONG       m_ptrSize;
 };
@@ -323,40 +310,60 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class UdtFieldColl : public TypeInfo
+class UdtTypeInfoBase : public TypeInfo
 {
 protected:
     virtual std::string getName() {
-        return m_fields.getName();
+       return m_name;
     }
 
     virtual TypeInfoPtr getField( const std::string &fieldName ) {
-        return lookupField(fieldName).m_type;
+        return lookupField(fieldName)->getTypeInfo();
     }
 
     virtual TypeInfoPtr getFieldByIndex( ULONG index ) {
-        return lookupField(index).m_type;
+        return lookupField(index)->getTypeInfo();
     }
 
     virtual std::string getFieldNameByIndex( ULONG index ) {
-        return lookupField(index).m_name;
+        return lookupField(index)->getName();
     }
 
-    virtual ULONG getFieldOffsetByNameRecirsive( const std::string &fieldName ) {
-        return UdtUtils::getFieldOffsetRecirsive( shared_from_this(), fieldName );
+    virtual ULONG getFieldOffsetByNameRecursive( const std::string &fieldName ) {
+        return  getFieldOffsetRecursive( shared_from_this(), fieldName );
     }
 
     virtual ULONG getFieldOffsetByNameNotRecursively( const std::string &fieldName ) {
-        return lookupField(fieldName).m_offset;
+        return lookupField(fieldName)->getOffset();
     }
 
     virtual ULONG getFieldOffsetByIndex( ULONG index ) {
-        return lookupField(index).m_offset;
+        return lookupField(index)->getOffset();
+    }
+
+    virtual bool isStaticMember( const std::string& fieldName ) {
+        return lookupField(fieldName)->isStaticMember();
+    }
+
+    virtual bool isStaticMemberByIndex( ULONG index ) {
+        return lookupField(index)->isStaticMember();
+    }
+
+    virtual ULONG64 getStaticOffsetByName( const std::string& fieldName ) {
+        return lookupField(fieldName)->getStaticOffset();
+    }
+
+    virtual ULONG64 getStaticOffsetByIndex( ULONG index ) {
+        return lookupField(index)->getStaticOffset();
     }
 
     virtual ULONG getFieldCount() {
-        refreshFields();
-        return (ULONG)m_fields.size();
+        if ( !m_fieldsGot )
+        {
+            refreshFields();
+            m_fieldsGot = true;
+        }
+        return m_fields.count();
     }
 
     virtual ULONG getElementCount() {
@@ -375,42 +382,70 @@ protected:
 
     virtual ULONG getAlignReq() override;
 
-protected:
-    UdtFieldColl(const std::string &typeName) : m_fields(typeName) {}
-
-    virtual void refreshFields() {}
-    virtual std::string getTypeString() const = 0;
-
-    bool empty() const {
-        return m_fields.empty();
+    virtual bool isVirtualMember( const std::string& fieldName )
+    {
+        return lookupField(fieldName)->isVirtualMember();
     }
 
-    void push_back(const UdtUtils::Field &field) {
+    virtual bool isVirtualMemberByIndex( ULONG index ) 
+    { 
+        return lookupField(index)->isVirtualMember();
+    }
+
+    virtual void getVirtualDisplacement( const std::string& fieldName, ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize );
+    virtual void getVirtualDisplacementByIndex( ULONG index, ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize );
+
+protected:
+
+    UdtTypeInfoBase(const std::string &typeName) : 
+         m_name(typeName),
+         m_fieldsGot( false )
+         {}
+
+    virtual void refreshFields() {}
+
+    void push_back(const UdtFieldPtr &field) {
         m_fields.push_back(field);
     }
 
     template <typename T>
-    const UdtUtils::Field &lookupField( T index) {
-        refreshFields();
+    const UdtFieldPtr &lookupField( T index)const {
+        if ( !m_fieldsGot )
+        {
+            refreshFields();
+            m_fieldsGot = true;
+        }
         return m_fields.lookup(index);
     }
 
-    UdtUtils::Field &last(){
-        return *m_fields.rbegin();
+    template <typename T>
+    UdtFieldPtr &lookupField( T index) {
+        if ( !m_fieldsGot )
+        {
+            refreshFields();
+            m_fieldsGot = true;
+        }
+        return m_fields.lookup(index);
     }
 
-private:
-    UdtUtils::FieldCollection m_fields;
+protected:
+
+    bool m_fieldsGot;
+
+    FieldCollection  m_fields;
+
+    std::string  m_name;
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class UdtTypeInfo : public UdtFieldColl
+class UdtTypeInfo : public UdtTypeInfoBase
 {
 public:
 
     UdtTypeInfo (SymbolPtr &symbol ) :
-        UdtFieldColl( symbol->getName() ),
+        UdtTypeInfoBase( symbol->getName() ),
         m_dia( symbol )
     {
     }
@@ -422,10 +457,6 @@ protected:
     void getVirtualFields();
 
     virtual void refreshFields() override;
-
-    virtual std::string getTypeString() const override {
-        return "struct/class";
-    }
 
     void getFields( 
         SymbolPtr &rootSym, 

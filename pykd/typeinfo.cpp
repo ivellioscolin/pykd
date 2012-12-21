@@ -609,51 +609,39 @@ TypeInfoPtr TypeInfo::ptrTo()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-ULONG64 TypeInfo::getStaticOffset()
-{
-    if ( !m_staticMember )
-        throw TypeException( getName(), "This is not a static member" );
-
-    return m_staticOffset;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-std::string UdtFieldColl::print()
+std::string UdtTypeInfoBase::print()
 {
     std::stringstream  sstr;
 
-    sstr << getTypeString() << ": " << getName() << " Size: 0x" << std::hex << getSize() << " (" << std::dec << getSize() << ")" << std::endl;
+    sstr << "class/struct " << ": " << getName() << " Size: 0x" << std::hex << getSize() << " (" << std::dec << getSize() << ")" << std::endl;
     
     ULONG       fieldCount = getFieldCount();
 
     for ( ULONG i = 0; i < fieldCount; ++i )
     {
-        const UdtUtils::Field &udtField = lookupField(i);
-        TypeInfoPtr     fieldType = udtField.m_type;
+        UdtFieldPtr&  udtField = lookupField(i);
 
-        if ( fieldType->isStaticMember() )
-        {   
-            sstr << "   =" << std::right << std::setw(10) << std::setfill('0') << std::hex << fieldType->getStaticOffset();
-            sstr << " " << std::left << std::setw(18) << std::setfill(' ') << udtField.m_name << ':';
-        }
-        else
-        if ( fieldType->isVirtualMember() )
+        if ( udtField->isStaticMember() )
         {
-            ULONG virtualBasePtr, virtualDispIndex, virtualDispSize;
-            fieldType->getVirtualDisplacement( virtualBasePtr, virtualDispIndex, virtualDispSize );
-
-            sstr << "   virtual base " <<  fieldType->getVirtualBase()->getName();
-            sstr << " +" << std::right << std::setw(4) << std::setfill('0') << std::hex << udtField.m_offset;
-            sstr << " " << udtField.m_name << ':';
+            sstr << "   =" << std::right << std::setw(10) << std::setfill('0') << std::hex << udtField->getStaticOffset();
+            sstr << " " << std::left << std::setw(18) << std::setfill(' ') << udtField->getName() << ':';
         }
         else
         {
-            sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << udtField.m_offset;
-            sstr << " " << std::left << std::setw(24) << std::setfill(' ') << udtField.m_name << ':';
+            if ( udtField->isVirtualMember() )
+            {
+                sstr << "   virtual base " << udtField->getVirtualBaseClassName();
+                sstr << " +" << std::right << std::setw(4) << std::setfill('0') << std::hex << udtField->getOffset();
+                sstr << " " << udtField->getName() << ':';
+            }
+            else
+            {
+                sstr << "   +" << std::right << std::setw(4) << std::setfill('0') << std::hex << udtField->getOffset();
+                sstr << " " << std::left << std::setw(24) << std::setfill(' ') << udtField->getName() << ':';
+            }
         }
 
-        sstr << " " << std::left << fieldType->getName();
+        sstr << " " << std::left << udtField->getTypeInfo()->getName();
         sstr << std::endl;
     }
 
@@ -662,14 +650,40 @@ std::string UdtFieldColl::print()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-ULONG UdtFieldColl::getAlignReq()
+ULONG UdtTypeInfoBase::getAlignReq()
 {
-    ULONG alignReq = 1;
-    const ULONG fieldCount = getFieldCount();
-    for ( ULONG i = 0; i < fieldCount; ++i )
-        alignReq = max(alignReq, lookupField(i).m_type->getAlignReq());
+    //ULONG alignReq = 1;
+    //const ULONG fieldCount = getFieldCount();
+    //for ( ULONG i = 0; i < fieldCount; ++i )
+    //    alignReq = max(alignReq, lookupField(i).m_type->getAlignReq());
 
-    return alignReq;
+    //return alignReq;
+
+    throw ImplementException( __FILE__, __LINE__, "TODO" );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+void UdtTypeInfoBase::getVirtualDisplacement( const std::string& fieldName, ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize )
+{
+    const UdtFieldPtr &field = lookupField(fieldName);
+
+    if ( !field->isVirtualMember() )
+        throw TypeException( getName(), "field is not a virtual member" );
+
+    field->getVirtualDisplacement( virtualBasePtr, virtualDispIndex, virtualDispSize );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+void  UdtTypeInfoBase::getVirtualDisplacementByIndex( ULONG index, ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize )
+{
+    const UdtFieldPtr &field = lookupField(index);
+
+    if ( !field->isVirtualMember() )
+        throw TypeException( getName(), "field is not a virtual member" );
+
+    field->getVirtualDisplacement( virtualBasePtr, virtualDispIndex, virtualDispSize );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -700,52 +714,34 @@ void UdtTypeInfo::getFields(
         else
         if ( symTag == SymTagData )
         {
-            TypeInfoPtr     ti = TypeInfo::getTypeInfo( childSym );
+            SymbolUdtField  *fieldPtr = new SymbolUdtField( childSym, childSym->getName() );
 
-            ULONG fieldOffset = 0;
             switch ( childSym->getDataKind() )
             {
             case DataIsMember:
-
-                if ( baseVirtualSym  )
-                {
-                    ti->setVirtualBase( 
-                        TypeInfo::getTypeInfo(baseVirtualSym),
-                        virtualBasePtr,
-                        virtualDispIndex, 
-                        virtualDispSize );
-                }
-
-                fieldOffset = startOffset + childSym->getOffset();
+                fieldPtr->setOffset( startOffset + childSym->getOffset() );
                 break;
-
             case DataIsStaticMember:
-                ti->setStaticOffset( childSym->getVa() );
+                fieldPtr->setStaticOffset( childSym->getVa() );
                 break;
             }
 
-            UdtFieldColl::push_back(
-                UdtUtils::Field( fieldOffset, childSym->getName(), ti )
-            );
+            if ( baseVirtualSym )
+                fieldPtr->setVirtualDisplacement( virtualBasePtr, virtualDispIndex, virtualDispSize );
+
+            m_fields.push_back( UdtFieldPtr( fieldPtr ) );
         }
         else
         if ( symTag == SymTagVTable )
         {
-            TypeInfoPtr     ti = TypeInfo::getTypeInfo( childSym );
+            SymbolUdtField  *fieldPtr = new SymbolUdtField( childSym, "__VFN_table" );
+
+            fieldPtr->setOffset( startOffset + childSym->getOffset() );
 
             if ( baseVirtualSym )
-            {
-                ti->setVirtualBase( 
-                    TypeInfo::getTypeInfo(baseVirtualSym),
-                    virtualBasePtr,
-                    virtualDispIndex, 
-                    virtualDispSize );    
-               
-            }
+                fieldPtr->setVirtualDisplacement( virtualBasePtr, virtualDispIndex, virtualDispSize );
 
-            UdtFieldColl::push_back( 
-                UdtUtils::Field( startOffset + childSym->getOffset(), "__VFN_table", ti )
-            ); 
+            m_fields.push_back( UdtFieldPtr( fieldPtr ) );
         }
     }  
 }
@@ -777,11 +773,8 @@ void UdtTypeInfo::getVirtualFields()
 
 void UdtTypeInfo::refreshFields()
 {
-    if ( UdtFieldColl::empty() )
-    {
-        getFields( m_dia, SymbolPtr() );
-        getVirtualFields();
-    }
+    getFields( m_dia, SymbolPtr() );
+    getVirtualFields();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

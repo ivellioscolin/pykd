@@ -34,8 +34,8 @@ public:
         return m_size;
     }
 
-    ULONG getFieldOffsetByNameRecirsive(const std::string &fieldName) {
-        return m_typeInfo->getFieldOffsetByNameRecirsive(fieldName);
+    ULONG getFieldOffsetByNameRecursive(const std::string &fieldName) {
+        return m_typeInfo->getFieldOffsetByNameRecursive(fieldName);
     }
 
     TypeInfoPtr
@@ -86,6 +86,9 @@ public:
 protected:
 
     TypedVar ( const TypeInfoPtr& typeInfo, VarDataPtr varData );
+
+    virtual ~TypedVar()
+    {}
 
     TypeInfoPtr             m_typeInfo;
 
@@ -171,12 +174,13 @@ protected:
     virtual TypedVarPtr getField( const std::string &fieldName );
 
     virtual ULONG getElementCount() {
-        return m_typeInfo->getFieldCount();                
+        return m_typeInfo->getFieldCount();
     }
 
     virtual python::object getElementByIndex( ULONG  index );
 
-    LONG getVirtualBaseDisplacement( TypeInfoPtr& typeInfo );
+    LONG getVirtualBaseDisplacement( const std::string &fieldName );
+    LONG getVirtualBaseDisplacementByIndex( ULONG index );
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

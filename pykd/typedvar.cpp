@@ -265,21 +265,23 @@ UdtTypedVar::getField( const std::string &fieldName )
 {
     TypeInfoPtr fieldType = m_typeInfo->getField( fieldName );
 
-    if ( fieldType->isStaticMember() )
+    if ( m_typeInfo->isStaticMember(fieldName) )
     {
-        if ( fieldType->getStaticOffset() == 0 )
+        ULONG64  staticOffset = m_typeInfo->getStaticOffsetByName( fieldName );
+
+        if ( staticOffset == 0 )
             throw ImplementException( __FILE__, __LINE__, "Fix ME");
 
-        return  TypedVar::getTypedVar( fieldType, VarDataMemory::factory(fieldType->getStaticOffset() ) );
+        return  TypedVar::getTypedVar( fieldType, VarDataMemory::factory(staticOffset) );
     }
 
     ULONG   fieldOffset = 0;
 
-    fieldOffset = m_typeInfo->getFieldOffsetByNameRecirsive(fieldName);
+    fieldOffset = m_typeInfo->getFieldOffsetByNameRecursive(fieldName);
 
-    if ( fieldType->isVirtualMember() )
+    if ( m_typeInfo->isVirtualMember( fieldName ) )
     {
-        fieldOffset += getVirtualBaseDisplacement( fieldType );
+        fieldOffset += getVirtualBaseDisplacement( fieldName );
     }
 
     return  TypedVar::getTypedVar( fieldType, m_varData->fork(fieldOffset) );
@@ -290,23 +292,27 @@ UdtTypedVar::getField( const std::string &fieldName )
 python::object
 UdtTypedVar::getElementByIndex( ULONG  index )
 {
-    TypeInfoPtr     fieldType = m_typeInfo->getFieldByIndex(index);
+    TypeInfoPtr fieldType = m_typeInfo->getFieldByIndex( index );
 
-    if ( fieldType->isStaticMember() )
+    if ( m_typeInfo->isStaticMemberByIndex(index) )
     {
-        if ( fieldType->getStaticOffset() == 0 )
+        ULONG64  staticOffset = m_typeInfo->getStaticOffsetByIndex( index );
+
+        if ( staticOffset == 0 )
             throw ImplementException( __FILE__, __LINE__, "Fix ME");
 
-        return python::make_tuple(
+        return python::make_tuple( 
             m_typeInfo->getFieldNameByIndex(index), 
-            TypedVar::getTypedVar(fieldType, VarDataMemory::factory(fieldType->getStaticOffset() ) ) );
+            TypedVar::getTypedVar( fieldType, VarDataMemory::factory(staticOffset) ) );
     }
 
-    ULONG   fieldOffset = m_typeInfo->getFieldOffsetByIndex(index);
+    ULONG   fieldOffset = 0;
 
-    if ( fieldType->isVirtualMember() )
+    fieldOffset = m_typeInfo->getFieldOffsetByIndex(index);
+
+    if ( m_typeInfo->isVirtualMemberByIndex( index ) )
     {
-        fieldOffset += getVirtualBaseDisplacement( fieldType );
+        fieldOffset += getVirtualBaseDisplacementByIndex( index );
     }
 
     return python::make_tuple( 
@@ -316,12 +322,30 @@ UdtTypedVar::getElementByIndex( ULONG  index )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-LONG UdtTypedVar::getVirtualBaseDisplacement( TypeInfoPtr& typeInfo )
+LONG UdtTypedVar::getVirtualBaseDisplacement( const std::string &fieldName )
 {
     ULONG virtualBasePtr, virtualDispIndex, virtualDispSize;
-    typeInfo->getVirtualDisplacement( virtualBasePtr, virtualDispIndex, virtualDispSize );
+    m_typeInfo->getVirtualDisplacement( fieldName, virtualBasePtr, virtualDispIndex, virtualDispSize );
 
-    ULONG64     vbtableOffset = m_varData->fork( virtualBasePtr )->readPtr( typeInfo->ptrSize() );
+    ULONG64     vbtableOffset = m_varData->fork( virtualBasePtr )->readPtr( m_typeInfo->ptrSize() );
+
+    VarDataPtr   vbtable = VarDataMemory::factory(vbtableOffset);
+
+    LONG   displacement = 0;
+
+    vbtable->read( &displacement, sizeof(displacement), virtualDispIndex*virtualDispSize );
+
+    return virtualBasePtr + displacement;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+LONG UdtTypedVar::getVirtualBaseDisplacementByIndex( ULONG index )
+{
+    ULONG virtualBasePtr, virtualDispIndex, virtualDispSize;
+    m_typeInfo->getVirtualDisplacementByIndex( index, virtualBasePtr, virtualDispIndex, virtualDispSize );
+
+    ULONG64     vbtableOffset = m_varData->fork( virtualBasePtr )->readPtr( m_typeInfo->ptrSize() );
 
     VarDataPtr   vbtable = VarDataMemory::factory(vbtableOffset);
 
@@ -345,21 +369,23 @@ std::string UdtTypedVar::print()
         TypeInfoPtr     fieldType = m_typeInfo->getFieldByIndex(i);
         TypedVarPtr     fieldVar;
 
-        if ( fieldType->isStaticMember() )
+        if ( m_typeInfo->isStaticMemberByIndex(i) )
         {
-            if ( fieldType->getStaticOffset() != 0 )
-               fieldVar = TypedVar::getTypedVar( fieldType, VarDataMemory::factory( fieldType->getStaticOffset() ) );
+            ULONG64  staticOffset = m_typeInfo->getStaticOffsetByIndex(i);
 
-            sstr << "   =" << std::right << std::setw(10) << std::setfill('0') << std::hex << fieldType->getStaticOffset();
+            if ( staticOffset != 0 )
+                fieldVar = TypedVar::getTypedVar( fieldType, VarDataMemory::factory( staticOffset ) );
+
+            sstr << "   =" << std::right << std::setw(10) << std::setfill('0') << std::hex << staticOffset;
             sstr << " " << std::left << std::setw(18) << std::setfill(' ') << m_typeInfo->getFieldNameByIndex(i) << ':';
         }
         else
         {
             ULONG   fieldOffset = m_typeInfo->getFieldOffsetByIndex(i);
 
-            if ( fieldType->isVirtualMember() )
+            if ( m_typeInfo->isVirtualMemberByIndex( i ) )
             {
-                fieldOffset += getVirtualBaseDisplacement( fieldType );
+                fieldOffset += getVirtualBaseDisplacementByIndex( i );
             }
 
             fieldVar = TypedVar::getTypedVar( fieldType, m_varData->fork(fieldOffset) );
@@ -514,7 +540,7 @@ TypedVarPtr containingRecordByType( ULONG64 addr, const TypeInfoPtr &typeInfo, c
 {
     addr = addr64(addr); 
 
-    VarDataPtr varData = VarDataMemory::factory( addr - typeInfo->getFieldOffsetByNameRecirsive(fieldName) );
+    VarDataPtr varData = VarDataMemory::factory( addr - typeInfo->getFieldOffsetByNameRecursive(fieldName) );
 
     return TypedVar::getTypedVar( typeInfo, varData );
 }
@@ -549,7 +575,7 @@ python::list getTypedVarListByType( ULONG64 listHeadAddress, const TypeInfoPtr &
 
     if ( fieldTypeInfo->getName() == ( typeInfo->getName() + "*" ) )
     {
-        for( entryAddress = ptrFunc( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrFunc( entryAddress + typeInfo->getFieldOffsetByNameRecirsive(listEntryName) ) )
+        for( entryAddress = ptrFunc( listHeadAddress ); addr64(entryAddress) != listHeadAddress && entryAddress != NULL; entryAddress = ptrFunc( entryAddress + typeInfo->getFieldOffsetByNameRecursive(listEntryName) ) )
             lst.append( TypedVar::getTypedVarByTypeInfo( typeInfo, entryAddress ) );
     }
     else

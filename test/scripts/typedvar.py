@@ -41,11 +41,10 @@ class TypedVarTest( unittest.TestCase ):
                                      target.module.offset("g_structTestPtr") )
         self.assertEqual( 500, tvDiaStruct.deref().m_field1 )
 
-        customStructTest = pykd.createStruct("customStructTest")
+        customStructTest = pykd.typeBuilder().createStruct("customStructTest", 4)
         customStructTest.append("m_field0", pykd.typeInfo("UInt4B"))
         customStructTest.append("m_field1", pykd.typeInfo("UInt8B"))
-        tvCustomStruct = pykd.typedVar( customStructTest.ptrTo(),
-                                        target.module.offset("g_structTestPtr") )
+        tvCustomStruct = pykd.typedVar( customStructTest.ptrTo(), target.module.offset("g_structTestPtr") )
         self.assertEqual( 500, tvCustomStruct.deref().m_field1 )
 
     def testConst(self):

@@ -10,33 +10,58 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 namespace pykd {
-namespace UdtUtils {
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-const Field &FieldCollection::lookup(ULONG index) const
+const UdtFieldPtr& FieldCollection::lookup(ULONG index) const
 {
-    if (index >= Base::size())
-        throw PyException( PyExc_IndexError, m_baseTypeName + " index out of range" );
-    return at(index);
+    if (index >= m_fields.size() )
+        throw PyException( PyExc_IndexError, "index out of range" );
+
+    return m_fields[index];
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-const Field &FieldCollection::lookup(const std::string &name) const
+const UdtFieldPtr& FieldCollection::lookup(const std::string &name) const
 {
-    Base::const_reverse_iterator it = 
-        std::find(Base::rbegin(), Base::rend(), name);
+    FieldList::const_reverse_iterator it;
+    for ( it = m_fields.rbegin(); it !=  m_fields.rend(); ++it )
+    {
+        if ( (*it)->getName() == name )
+            return *it;
+    }
 
-    if ( it == Base::rend() )
-        throw TypeException( m_baseTypeName, name + ": field not found" );
+    throw TypeException( "",  "field not found" );
+}
 
-    return *it;
+/////////////////////////////////////////////////////////////////////////////////////
+
+UdtFieldPtr &FieldCollection::lookup(ULONG index)
+{
+    if (index >= m_fields.size() )
+        throw PyException( PyExc_IndexError, "index out of range" );
+
+    return m_fields[index];
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+UdtFieldPtr &FieldCollection::lookup(const std::string &name)
+{
+    FieldList::reverse_iterator it;
+    for ( it = m_fields.rbegin(); it !=  m_fields.rend(); ++it )
+    {
+        if ( (*it)->getName() == name )
+            return *it;
+    }
+
+    throw TypeException( "",  "field not found" );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ULONG getFieldOffsetRecirsive(TypeInfoPtr typeInfo, const std::string &fieldName)
+ULONG getFieldOffsetRecursive(TypeInfoPtr typeInfo, const std::string &fieldName)
 {
     // "m_field1.m_field2" -> ["m_field1", "m_field2"]
     typedef boost::char_separator<char> CharSep;
@@ -59,7 +84,10 @@ ULONG getFieldOffsetRecirsive(TypeInfoPtr typeInfo, const std::string &fieldName
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-}   // namespace UdtUtils
+TypeInfoPtr SymbolUdtField::getTypeInfo()
+{
+    return TypeInfo::getTypeInfo(m_symbol);
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 

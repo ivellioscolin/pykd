@@ -69,7 +69,7 @@ class ModuleTest( unittest.TestCase ):
         self.assertTrue( re.search('targetapp\\.cpp', fileName ) )
         self.assertEqual( 2, displacement )
         fileName, lineNo, displacement = pykd.getSourceLine()
-        self.assertEqual( 644, lineNo )
+        self.assertEqual( 653, lineNo )
 
     def testEnumSymbols( self ):
         lst = target.module.enumSymbols()

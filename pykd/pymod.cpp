@@ -20,6 +20,7 @@
 #include "disasm.h"
 #include "stkframe.h"
 #include "bpoint.h"
+#include "eventhandler.h"
 
 #include "win/dbgio.h"
 #include "win/windbg.h"
@@ -59,10 +60,10 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, getSourceFile, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBp_, setSoftwareBp, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 
-BOOST_PYTHON_FUNCTION_OVERLOADS( CustomStruct_create, CustomStruct::create, 1, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( CustomUnion_create, CustomUnion::create, 1, 2 );
-
 BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, TypeInfo::findSymbol, 1, 2 );
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( TypeBuilder_createStruct, TypeBuilder::createStruct, 1, 2 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( TypeBuilder_createUnion, TypeBuilder::createUnion, 1, 2 );
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_enumSymbols, Module::enumSymbols, 0, 1 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_enumTypes, Module::enumTypes, 0, 1 );
@@ -286,12 +287,12 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "setSymbolPath", &setSymbolPath, "Set current symbol path");
     python::def( "appendSymbolPath", &appendSymbolPath, "Append current symbol path");
 
-    // custom types
-    python::def( "createStruct", &CustomStruct::create, CustomStruct_create( python::args( "name", "align", "ptrSize" ), 
-        "Create empty structure. Use append() method for building" ) );
-    python::def( "createUnion", &CustomUnion::create, CustomUnion_create( python::args( "name", "ptrSize" ), 
-        "Create empty union. Use append() method for building" ) );
-    python::def( "pVoid", &PtrToVoid, "Create \"Void*\" type" );
+    //// custom types
+    //python::def( "createStruct", &CustomStruct::create, CustomStruct_create( python::args( "name", "align", "ptrSize" ), 
+    //    "Create empty structure. Use append() method for building" ) );
+    //python::def( "createUnion", &CustomUnion::create, CustomUnion_create( python::args( "name", "ptrSize" ), 
+    //    "Create empty union. Use append() method for building" ) );
+    //python::def( "pVoid", &PtrToVoid, "Create \"Void*\" type" );
 
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )
@@ -393,8 +394,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__init__", python::make_constructor(TypeInfo::getTypeInfoByName ) )
         .def( "name", &TypeInfo::getName )
         .def( "size", &TypeInfo::getSize )
-        .def( "staticOffset", &TypeInfo::getStaticOffset )
-        .def( "fieldOffset", &TypeInfo::getFieldOffsetByNameRecirsive )
+        .def( "staticOffset", &TypeInfo::getStaticOffsetByName )
+        .def( "fieldOffset", &TypeInfo::getFieldOffsetByNameRecursive )
         .def( "bitOffset", &TypeInfo::getBitOffset )
         .def( "bitWidth", &TypeInfo::getBitWidth )
         .def( "field", &TypeInfo::getField )
@@ -416,7 +417,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return virtual address" )
         .def("sizeof", &TypedVar::getSize,
             "Return size of a variable in the target memory" )
-        .def("fieldOffset", &TypedVar::getFieldOffsetByNameRecirsive,
+        .def("fieldOffset", &TypedVar::getFieldOffsetByNameRecursive,
             "Return target field offset" )
         .def("field", &TypedVar::getField,
             "Return field of structure as an object attribute" )
@@ -432,6 +433,29 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__len__", &TypedVar::getElementCount )
         .def("__getitem__", &TypedVar::getElementByIndex )
         .def("__getitem__", &TypedVar::getElementByIndexPtr );
+
+    python::class_<TypeBuilder>("typeBuilder",
+        "Class for building dynamically defined types", boost::python::no_init  )
+        .def( python::init<ULONG>() )
+        .def( python::init<>() )
+        .add_property( "UInt1B", &TypeBuilder::getUInt1B )
+        .add_property( "UInt2B", &TypeBuilder::getUInt2B )
+        .add_property( "UInt4B", &TypeBuilder::getUInt4B )
+        .add_property( "UInt8B", &TypeBuilder::getUInt8B )
+        .add_property( "Int1B", &TypeBuilder::getInt1B )
+        .add_property( "Int2B", &TypeBuilder::getInt2B )
+        .add_property( "Int4B", &TypeBuilder::getInt4B )
+        .add_property( "Int8B", &TypeBuilder::getInt8B )
+        .add_property( "Long", &TypeBuilder::getLong )
+        .add_property( "ULong", &TypeBuilder::getLong )
+        .add_property( "Bool", &TypeBuilder::getLong )
+        .add_property( "Char", &TypeBuilder::getLong )
+        .add_property( "WChar", &TypeBuilder::getLong )
+        .add_property( "VoidPtr", &TypeBuilder::getVoidPtr )
+        .def( "createStruct", &TypeBuilder::createStruct, TypeBuilder_createStruct( python::args( "name", "align" ),
+            "create custom struct" ) )
+        .def( "createUnion", &TypeBuilder::createUnion, TypeBuilder_createUnion( python::args( "name", "align" ),
+            "create custom union" ) );
 
     python::class_<CpuReg, python::bases<intBase> >( 
         "cpuReg", "CPU regsiter class", boost::python::no_init )
