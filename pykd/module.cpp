@@ -103,47 +103,6 @@ SymbolSessionPtr& Module::getSymSession()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-
-    //      std::string             m_symfile;
-    //ULONG64                 m_base;
-    //ULONG                   m_size;
-    //ULONG                   m_timeDataStamp;
-    //ULONG                   m_checkSum;
-
-    //try
-    //{
-    //    m_symSession = loadSymbolFile(m_base, m_imageName, m_symfile);
-    //}
-    //catch(const SymbolException &e)
-    //{
-    //    DBG_UNREFERENCED_LOCAL_VARIABLE(e);
-    //}
-    //if (m_symSession)
-    //    return m_symSession;
-
-    //// TODO: read image file path and load using IDiaReadExeAtOffsetCallback
-
-    //m_symfile = getModuleSymbolFileName(m_base);
-    //if (!m_symfile.empty())
-    //{
-    //    try
-    //    {
-    //        m_symSession = loadSymbolFile(m_symfile, m_base);
-    //    }
-    //    catch(const SymbolException &e)
-    //    {
-    //        DBG_UNREFERENCED_LOCAL_VARIABLE(e);
-    //    }
-    //    if (m_symSession)
-    //        return m_symSession;
-
-    //    m_symfile.clear();
-    //}
-
-    //throw SymbolException( "failed to load symbol file" );
-
-/////////////////////////////////////////////////////////////////////////////////////
-
 SymbolPtr& Module::getSymScope()
 {
     return getSymSession()->getSymbolScope();

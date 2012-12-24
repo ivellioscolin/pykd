@@ -1002,6 +1002,9 @@ void getStackTraceWow64(std::vector<STACK_FRAME_DESC> &frames)
     if (S_OK != hres)
         throw DbgException( "IDebugControl::GetEffectiveProcessorType", hres );
 
+    WOW64_CONTEXT Context;
+    ReadWow64Context(Context);
+
     AutoRevertEffectiveProcessorType autoRevertEffectiveProcessorType;
     if (IMAGE_FILE_MACHINE_I386 != processorType)
     {
@@ -1015,10 +1018,28 @@ void getStackTraceWow64(std::vector<STACK_FRAME_DESC> &frames)
         autoRevertEffectiveProcessorType.to(IMAGE_FILE_MACHINE_AMD64);
     }
 
-    WOW64_CONTEXT Context;
-    ReadWow64Context(Context);
+    ULONG   filledFrames = 1024;
+    std::vector<DEBUG_STACK_FRAME> dbgFrames(filledFrames);
 
-    buildStacksFrames(frames, Context.Ebp, Context.Esp, Context.Eip);
+    hres = g_dbgEng->control->GetContextStackTrace(
+        &Context,
+        sizeof(Context),
+        &dbgFrames[0],
+        filledFrames,
+        NULL,
+        filledFrames*sizeof(Context),
+        sizeof(Context),
+        &filledFrames );
+
+    frames.resize(filledFrames);
+    for ( ULONG i = 0; i < filledFrames; ++i )
+    {
+        frames[i].number = dbgFrames[i].FrameNumber;
+        frames[i].instructionOffset = dbgFrames[i].InstructionOffset;
+        frames[i].returnOffset = dbgFrames[i].ReturnOffset;
+        frames[i].frameOffset = dbgFrames[i].FrameOffset;
+        frames[i].stackOffset = dbgFrames[i].StackOffset;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

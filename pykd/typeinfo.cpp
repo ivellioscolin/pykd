@@ -95,7 +95,7 @@ std::string TypeInfo::findSymbol( ULONG64 offset, bool safe)
         catch( DbgException& )
         {
             std::stringstream sstr;
-            sstr <<  module->getName() << '!' << std::hex << ( offset - module->getBase() );
+            sstr <<  module->getName() << '+' << std::hex << ( offset - module->getBase() );
             return sstr.str();
         }
 
