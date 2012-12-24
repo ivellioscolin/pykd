@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include <boost\algorithm\string\case_conv.hpp>
+#include <iomanip>
 
 #include "win/dbgeng.h"
 #include "win/dbgio.h"
@@ -541,7 +542,110 @@ ULONG getModuleCheckSum( ULONG64 baseOffset )
     return moduleParam.Checksum;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+void getModuleFileVersion( ULONG64 baseOffset, USHORT &majorHigh, USHORT &majorLow, USHORT &minorHigh, USHORT &minorLow )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    VS_FIXEDFILEINFO  fileInfo={};
+
+    HRESULT  hres;
+
+    hres = g_dbgEng->symbols->GetModuleVersionInformation( 
+        DEBUG_ANY_ID,
+        baseOffset,
+        "\\",
+        (PVOID)&fileInfo,
+        sizeof(fileInfo),
+        NULL );
+
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugSymbol2::GetModuleVersionInformation  failed" ); 
+
+    majorHigh = HIWORD(fileInfo.dwFileVersionMS);
+    majorLow = LOWORD(fileInfo.dwFileVersionMS); 
+    minorHigh =  HIWORD(fileInfo.dwFileVersionLS);
+    minorLow = LOWORD(fileInfo.dwFileVersionLS);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::string getModuleVersionInfo( ULONG64 baseOffset, const std::string &value )
+{
+    struct LANGANDCODEPAGE {
+        WORD wLanguage;
+        WORD wCodePage;
+    };
+
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+
+    ULONG codePagesSize = 0;
+
+    hres = g_dbgEng->symbols->GetModuleVersionInformation( 
+        DEBUG_ANY_ID,
+        baseOffset,
+        "\\VarFileInfo\\Translation",
+        NULL,
+        0,
+        &codePagesSize );
+
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugSymbol2::GetModuleVersionInformation  failed" ); 
+
+    size_t codePageNum = codePagesSize / sizeof(LANGANDCODEPAGE);
+
+    std::vector<LANGANDCODEPAGE> codePages(codePageNum);
+
+    hres = g_dbgEng->symbols->GetModuleVersionInformation( 
+        DEBUG_ANY_ID,
+        baseOffset,
+        "\\VarFileInfo\\Translation",
+        &codePages[0],
+        codePagesSize,
+        NULL );
+
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugSymbol2::GetModuleVersionInformation  failed" );
+
+    ULONG productNameLength = 0;
+
+    std::stringstream  sstr;
+    sstr << "\\StringFileInfo\\" << std::hex 
+            << std::setw(4) << std::setfill('0') <<  codePages[0].wLanguage 
+            << std::setw(4) << std::setfill('0') << codePages[0].wCodePage 
+            << "\\" << value;
+
+    ULONG  valueLength;
+
+    g_dbgEng->symbols->GetModuleVersionInformation( 
+        DEBUG_ANY_ID,
+        baseOffset,
+        sstr.str().c_str(),
+        NULL,
+        0,
+        &valueLength );
+
+    std::vector<char>  valueStr(valueLength);
+
+    hres = g_dbgEng->symbols->GetModuleVersionInformation( 
+        DEBUG_ANY_ID,
+        baseOffset,
+        sstr.str().c_str(),
+        &valueStr[0],
+        valueLength,
+        NULL );
+
+    if ( hres == S_OK )
+        return std::string( &valueStr[0] );
+
+    return "";
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 ULONG ptrSize()
 {
@@ -1462,6 +1566,7 @@ std::string callExtension( ULONG64 extHandle, const std::wstring command, const 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
 
 
 } // end pykd namespace

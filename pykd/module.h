@@ -137,6 +137,10 @@ public:
 
     std::string print();
 
+    std::string queryVersion( const std::string &value);
+
+    python::tuple getVersion();
+
 private:
 
     SymbolPtr& getSymScope();

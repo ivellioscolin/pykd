@@ -389,6 +389,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
         .def("timestamp",&Module::getTimeDataStamp,
             "Return a low 32 bits of the time stamp of the image: IMAGE_FILE_HEADER.TimeDateStamp" )
+        .def("queryVersion", &Module::queryVersion,
+            "Return string from the module's version resources" )
+        .def("getVersion",  &Module::getVersion,
+            "Return tuple of the module's file version" )
         .def("__getattr__", &Module::getSymbolOffset,
             "Return address of the symbol" )
         .def( "__str__", &Module::print );

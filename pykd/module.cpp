@@ -397,4 +397,21 @@ python::list Module::enumTypes( const std::string  &mask )
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+std::string Module::queryVersion( const std::string &value) {
+     return getModuleVersionInfo( m_base, value );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+python::tuple Module::getVersion()
+{
+    USHORT a1,a2,a3,a4;
+    getModuleFileVersion( m_base, a1,a2,a3,a4 );
+
+    return python::make_tuple(a1,a2,a3,a4);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 }; // end of namespace pykd
