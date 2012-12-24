@@ -50,22 +50,28 @@ def printThread(process,thread,printopt):
             dprintln( findSymbol( frame.instructionOffset ) )
             
         if is64bitSystem():
-            stk = getStackWow64()
-            for frame in stk:
-                dprintln( findSymbol( frame.instructionOffset ) )     
-                                 
-        dprintln("")                     
-        
+            processorMode = getProcessorMode()
+            try:
+                setProcessorMode("X86")
+                dbgCommand( ".reload /user" )
+                stk = getStackWow64()
+                dprintln("\nWOW64 stack")
+                for frame in stk:
+                    dprintln( findSymbol( frame.instructionOffset ) )     
+            except BaseException:
+                pass         
+            setProcessorMode(processorMode)            
+         
+            dprintln("")
+         
     except BaseException:
-     
-        print "except"
     
         if not printopt.ignoreNotActiveThread:
             dprintln( "Thread %x, Process: %s" % ( thread, loadCStr( process.ImageFileName ) ) )     
             dprintln( "Failed to switch into thread context\n")
             dprintln("")    
 
-    
+       
     
 def printProcess(process,processFilter,moduleFilter,funcFilter,printopt):
 
