@@ -112,6 +112,9 @@ SymbolPtr& Module::getSymScope()
 
 void Module::reloadSymbols()
 {
+    SymbolMapKey cacheKey = { m_size, m_timeDataStamp, m_checkSum };
+    m_symSessionCache.erase( cacheKey );
+
     m_symSession.reset();
     getSymSession();
 }
