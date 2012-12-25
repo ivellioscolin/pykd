@@ -69,8 +69,8 @@ struct STACK_FRAME_DESC {
     ULONG64 stackOffset;
 };
 
+void getCurrentFrame(STACK_FRAME_DESC &frame );
 void getStackTrace(std::vector<STACK_FRAME_DESC> &frames);
-
 void getStackTraceWow64(std::vector<STACK_FRAME_DESC> &frames); 
 
 // callback events

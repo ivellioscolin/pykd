@@ -347,6 +347,167 @@ ULONG StackFrame::getParamCount()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+python::object  StackFrame::getLocalByIndex( ULONG index )
+{
+    ModulePtr mod = Module::loadModuleByOffset( m_instructionOffset);
+
+    LONG displacemnt;
+    SymbolPtr func = mod->getSymbolByVa( m_instructionOffset, SymTagFunction, &displacemnt );
+
+#ifdef _DEBUG
+    std::string funcName;
+    funcName = func->getName();
+#endif  // _DEBUG
+
+    if (!IsInDebugRange(func, static_cast<ULONG>( m_instructionOffset - mod->getBase())))
+    {
+        throw DbgException("is not debug range");
+    }
+
+    // find var in current scope
+    SymbolPtrList symList = func->findChildren(SymTagData);
+    SymbolPtrList::iterator itVar = symList.begin();
+    SymbolPtr symVar;
+    ULONG i = 0;
+    for (; itVar != symList.end(); ++itVar, ++i)
+    {
+        if ( i == index )
+        {
+            symVar = *itVar;
+            break;
+        }
+    }
+
+    if ( itVar == symList.end() )
+    {
+        // find inners scopes
+        SymbolPtrList scopeList = func->findChildren(SymTagBlock);
+        SymbolPtrList::iterator itScope = scopeList.begin();
+
+        ULONG ipRva = static_cast<ULONG>( m_instructionOffset - mod->getBase());
+
+        for (; itScope != scopeList.end() && !symVar; ++itScope)
+        {
+            SymbolPtr scope = *itScope;
+            ULONG scopeRva = scope->getRva();
+            if (scopeRva <= ipRva && (scopeRva + scope->getSize()) > ipRva)
+            {
+                SymbolPtrList symList = scope->findChildren(SymTagData);
+                SymbolPtrList::iterator itVar = symList.begin();
+
+                for (; itVar != symList.end(); ++itVar, ++i)
+                {
+                    if ( i == index )
+                    {
+                        symVar = *itVar;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    if ( !symVar )
+        throw DbgException("local var not found");
+
+    ULONG64 varAddr;
+    const LocationType locType = static_cast<LocationType>(symVar->getLocType());
+    switch (locType)
+    {
+    case LocIsStatic:
+        varAddr = mod->getBase() + symVar->getRva();
+        break;
+
+    case LocIsRegRel:
+        {
+            RegRealativeId rri;
+            rri = static_cast<RegRealativeId>(symVar->getRegRealativeId());
+            varAddr = getValue(rri, symVar->getOffset());
+        }
+        break;
+
+    default:
+        BOOST_ASSERT(LocIsEnregistered == locType);
+        throw DbgException("");
+    }
+
+    TypeInfoPtr typeInfo = TypeInfo::getTypeInfo(symVar);
+    TypedVarPtr typedVar = TypedVar::getTypedVarByTypeInfo(typeInfo, varAddr);
+    typedVar->setDataKind( symVar->getDataKind() );
+
+    return python::object( typedVar );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+python::object StackFrame::getParamByIndex( ULONG index )
+{
+    ModulePtr mod = Module::loadModuleByOffset( m_instructionOffset);
+
+    LONG displacemnt;
+    SymbolPtr func = mod->getSymbolByVa( m_instructionOffset, SymTagFunction, &displacemnt );
+
+#ifdef _DEBUG
+    std::string funcName;
+    funcName = func->getName();
+#endif  // _DEBUG
+
+    if (!IsInDebugRange(func, static_cast<ULONG>( m_instructionOffset - mod->getBase())))
+    {
+        throw DbgException("is not debug range");
+    }
+
+    // find var in current scope
+    SymbolPtrList symList = func->findChildren(SymTagData);
+    SymbolPtrList::iterator itVar = symList.begin();
+    SymbolPtr symVar;
+    for ( ULONG i = 0; itVar != symList.end(); ++itVar )
+    {
+        if ( (*itVar)->getDataKind() == DataIsParam  )
+        {
+            if ( i == index )
+            {
+                symVar = *itVar;
+                break;
+            }
+
+            i++;
+        }
+    }
+
+    if ( !symVar )
+        throw DbgException("local var not found");
+
+    ULONG64 varAddr;
+    const LocationType locType = static_cast<LocationType>(symVar->getLocType());
+    switch (locType)
+    {
+    case LocIsStatic:
+        varAddr = mod->getBase() + symVar->getRva();
+        break;
+
+    case LocIsRegRel:
+        {
+            RegRealativeId rri;
+            rri = static_cast<RegRealativeId>(symVar->getRegRealativeId());
+            varAddr = getValue(rri, symVar->getOffset());
+        }
+        break;
+
+    default:
+        BOOST_ASSERT(LocIsEnregistered == locType);
+        throw DbgException("");
+    }
+
+    TypeInfoPtr typeInfo = TypeInfo::getTypeInfo(symVar);
+    TypedVarPtr typedVar = TypedVar::getTypedVarByTypeInfo(typeInfo, varAddr);
+    typedVar->setDataKind( symVar->getDataKind() );
+
+    return python::object( typedVar );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 python::list getCurrentStack()
 {
     std::vector<STACK_FRAME_DESC> frames; 
@@ -385,9 +546,9 @@ python::list getCurrentStackWow64()
 
 StackFramePtr getCurrentStackFrame()
 {
-    std::vector<STACK_FRAME_DESC> frames; 
-    getStackTrace( frames );
-    return StackFramePtr( new StackFrame( frames[0] ) );
+    STACK_FRAME_DESC frame; 
+    getCurrentFrame( frame );
+    return StackFramePtr( new StackFrame( frame ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

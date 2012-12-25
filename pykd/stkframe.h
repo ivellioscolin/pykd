@@ -46,13 +46,9 @@ public:
 
     python::object getParamByName( const std::string& name );
 
-    python::object getLocalByIndex( ULONG index ){
-        return python::long_(0);
-    }
+    python::object getLocalByIndex( ULONG index );
 
-    python::object getParamByIndex( ULONG index ){
-        return python::long_(0);
-    }
+    python::object getParamByIndex( ULONG index );
 
 public:
 
@@ -126,7 +122,7 @@ private:
     }
 
     python::object getVarByIndex(ULONG index) const {
-        return python::long_(0L);
+        return m_frame->getParamByIndex(index);
     }
 };
 

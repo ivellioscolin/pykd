@@ -23,6 +23,7 @@ def testEnumWindowsProc1Locals(testCase, locals):
     testCase.assertEqual( DataIsStaticLocal, locals["staticVar"].dataKind() )
 
     testCase.assertEqual( locals["dwProccessId"] + 1, locals["staticVar"] )
+    
 
 class LocalVarsTest(unittest.TestCase):
     def testLocalVariable(self):
@@ -41,3 +42,8 @@ class LocalVarsTest(unittest.TestCase):
             locals = pykd.getLocals()
             self.assertEqual( len(locals), 2 )
             self.assertTrue( locals[0] == 7 or locals[1] == 7 )
+            
+            funcParams = pykd.getParams()
+            self.assertEqual( len(funcParams), 2 )
+            self.assertTrue( funcParams[0] == 7 or funcParams[1] == 7 )
+            

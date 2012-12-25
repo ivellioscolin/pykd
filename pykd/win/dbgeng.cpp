@@ -863,6 +863,33 @@ static void buildStacksFrames(
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void getCurrentFrame(STACK_FRAME_DESC &frame )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+
+    frame.number = 0;
+    
+    hres = g_dbgEng->registers->GetInstructionOffset2( DEBUG_REGSRC_FRAME, &frame.instructionOffset );
+    if ( FAILED(hres) )
+        throw DbgException( "IDebugRegisters2::GetInstructionOffset2", hres );
+
+    hres = g_dbgEng->control->GetReturnOffset( &frame.returnOffset );
+    if ( FAILED(hres) )
+        throw DbgException( "IDebugControl::GetReturnOffset", hres );
+
+    hres = g_dbgEng->registers->GetFrameOffset2( DEBUG_REGSRC_FRAME, &frame.frameOffset );
+    if ( FAILED(hres) )
+        throw DbgException( "IDebugRegisters2::GetFrameOffset2", hres );
+
+    hres = g_dbgEng->registers->GetStackOffset2( DEBUG_REGSRC_FRAME, &frame.stackOffset );
+    if ( FAILED(hres) )
+        throw DbgException( "IDebugRegisters2::GetStackOffset2", hres );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 void getStackTrace(std::vector<STACK_FRAME_DESC> &frames)
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
