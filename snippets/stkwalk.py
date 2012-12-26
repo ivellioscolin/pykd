@@ -45,7 +45,7 @@ def printThread(process,thread,printopt):
         
         stk = getStack()
            
-        dprintln( "Thread %x, Process: %s" % ( thread, loadCStr( process.ImageFileName ) ) )                 
+        dprintln( "Thread %x, Process: %s (%x)" % ( thread, loadCStr( process.ImageFileName ), process )  )                 
         for frame in stk:
             dprintln( findSymbol( frame.instructionOffset ) )
             
@@ -62,7 +62,7 @@ def printThread(process,thread,printopt):
                 pass         
             setProcessorMode(processorMode)            
          
-            dprintln("")
+        dprintln("")
          
     except BaseException:
     
@@ -81,7 +81,8 @@ def printProcess(process,processFilter,moduleFilter,funcFilter,printopt):
         return
     
     try:
-        setCurrentProcess(process)
+        #setCurrentProcess(process)
+        dbgCommand(".process /p %x" % process )
         
         dbgCommand( ".reload /user" )
         

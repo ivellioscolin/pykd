@@ -91,7 +91,7 @@ def buildDoc( ioStream, formatter, apiInfo ):
         
         if cls.properties:
             for p in cls.properties:  
-                if p.__doc__ != None:
+                if p[1].__doc__ != None:
                     ioStream.write( formatter.anchor( cls.__name__ + "." + p[0] ) )
                     ioStream.write( formatter.header4( formatter.escapeMarkup( "Property  " + cls.__name__  + "."  +  p[0] ) ) )
                     ioStream.write( formatter.escapeMarkup( p[1].__doc__ ) + formatter.endl() )                     
