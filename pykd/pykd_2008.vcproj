@@ -625,6 +625,10 @@
 				RelativePath=".\dia\diawrapper.h"
 				>
 			</File>
+			<File
+				RelativePath=".\dia\symexport.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="python"
