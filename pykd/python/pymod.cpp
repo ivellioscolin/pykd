@@ -399,19 +399,32 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::class_<TypeInfo, TypeInfoPtr, python::bases<intBase>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
         .def("__init__", python::make_constructor(TypeInfo::getTypeInfoByName ) )
-        .def( "name", &TypeInfo::getName )
-        .def( "size", &TypeInfo::getSize )
-        .def( "staticOffset", &TypeInfo::getStaticOffsetByName )
-        .def( "fieldOffset", &TypeInfo::getFieldOffsetByNameRecursive )
-        .def( "bitOffset", &TypeInfo::getBitOffset )
-        .def( "bitWidth", &TypeInfo::getBitWidth )
-        .def( "field", &TypeInfo::getField )
-        .def( "asMap", &TypeInfo::asMap )
-        .def( "deref", &TypeInfo::deref )
-        .def( "append", &TypeInfo::appendField )
-        .def( "ptrTo", &TypeInfo::ptrTo )
-        .def( "arrayOf", &TypeInfo::arrayOf )
-        .def( "__str__", &TypeInfo::print )
+        .def( "name", &TypeInfo::getName,
+            "Return type name" )
+        .def( "size", &TypeInfo::getSize,
+            "Return type size" )
+        .def( "staticOffset", &TypeInfo::getStaticOffsetByName,
+            "Return offset of the static field" )
+        .def( "fieldOffset", &TypeInfo::getFieldOffsetByNameRecursive,
+            "Return offset of the nonstatic field" )
+        .def( "bitOffset", &TypeInfo::getBitOffset,
+            "Return bit field's offset" )
+        .def( "bitWidth", &TypeInfo::getBitWidth,
+            "Return bit field's length" )
+        .def( "field", &TypeInfo::getField,
+            "Return field's type" )
+        .def( "asMap", &TypeInfo::asMap,
+            "Return type as python dict ( for enum types )" )
+        .def( "deref", &TypeInfo::deref,
+            "Return type of pointer" )
+        .def( "append", &TypeInfo::appendField,
+            "Add a new field to custom defined struct" )
+        .def( "ptrTo", &TypeInfo::ptrTo,
+            "Return pointer to the type" )
+        .def( "arrayOf", &TypeInfo::arrayOf,
+            "Return array of the type" )
+        .def( "__str__", &TypeInfo::print,
+            "Return typa as a printable string" )
         .def( "__getattr__", &TypeInfo::getField )
         .def("__len__", &TypeInfo::getElementCount )
         .def("__getitem__", &TypeInfo::getElementByIndex );
