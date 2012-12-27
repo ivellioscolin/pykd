@@ -201,6 +201,8 @@ public:
 
     TypeInfoPtr ptrTo();
 
+    TypeInfoPtr arrayOf( ULONG count );
+
     virtual ULONG getAlignReq() {
         return 1;
     }

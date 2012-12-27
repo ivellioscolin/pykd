@@ -609,6 +609,13 @@ TypeInfoPtr TypeInfo::ptrTo()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+TypeInfoPtr TypeInfo::arrayOf( ULONG count )
+{
+    return TypeInfoPtr( new ArrayTypeInfo(shared_from_this(), count ) );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 std::string UdtTypeInfoBase::print()
 {
     std::stringstream  sstr;

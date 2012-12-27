@@ -482,10 +482,10 @@ std::string getModuleSymbolFileName( ULONG64 baseOffset )
 
     if (!*moduleInfo.LoadedPdbName)
     {
-        std::wstring  param = L"/f ";
-        param += moduleInfo.ImageName;
+        std::wstringstream sstr;
+        sstr << L"/f \"" << moduleInfo.ImageName << L"\"";
 
-        hres = g_dbgEng->symbols->ReloadWide( param.c_str() );
+        hres = g_dbgEng->symbols->ReloadWide( sstr.str().c_str() );
         if ( FAILED( hres ) )
             throw DbgException("IDebugSymbols::Reload failed" );
 

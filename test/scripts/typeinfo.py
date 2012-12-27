@@ -221,4 +221,11 @@ class TypeInfoTest( unittest.TestCase ):
         entry = pykd.typedVar("entry1").Flink
         self.assertEqual( "_LIST_ENTRY*", entry.type().name() )
         
+    def testPtrTo(self):        
+        ti = pykd.typeInfo("UInt8B").ptrTo()
+        self.assertTrue( "UInt8B*", ti.name() )
+                
+    def testArrayOf(self):
+        ti = pykd.typeInfo("UInt8B").arrayOf(10)
+        self.assertTrue( "UInt8B[10]", ti.name() )      
         

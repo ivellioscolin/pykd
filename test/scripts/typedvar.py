@@ -46,6 +46,17 @@ class TypedVarTest( unittest.TestCase ):
         customStructTest.append("m_field1", pykd.typeInfo("UInt8B"))
         tvCustomStruct = pykd.typedVar( customStructTest.ptrTo(), target.module.offset("g_structTestPtr") )
         self.assertEqual( 500, tvCustomStruct.deref().m_field1 )
+        
+    def testArrayOf(self):
+        arrayType = pykd.typeInfo("UInt8B").arrayOf(5)
+        arrayVar = pykd.typedVar( arrayType, target.module.offset("ulonglongArray") )
+        self.assertEqual( 0xFF, arrayVar[1] )
+        self.assertEqual( 0xFFFFFFFFFFFFFFFF, arrayVar[4] )        
+
+        arrayStructType = pykd.typeInfo("structTest").arrayOf(2) 
+        arrayStructVar = pykd.typedVar( arrayStructType, target.module.offset("g_testArray") )
+        self.assertEqual( True, arrayStructVar[0].m_field2 )
+        self.assertEqual( 1, arrayStructVar[1].m_field3 ) 
 
     def testConst(self):
         self.assertEqual( True, target.module.typedVar( "g_constBoolValue" ) )
