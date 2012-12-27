@@ -14,14 +14,23 @@ class PrintOptions:
         self.showWow64stack = True
         self.showIP = True
         self.showSP = True
+        self.showUnique = False
 
-def applayThreadFilter(thread,threadFilter,moduleFilter,funcFilter,printopt):
+def applayThreadFilter(thread,threadFilter,moduleFilter,funcFilter,printopt,stackHashes):
+
+    filterMatch = False
 
     if not moduleFilter and not funcFilter and not threadFilter:
-        return True
-
-    if threadFilter and threadFilter( thread.Tcb, thread.Cid.UniqueThread ):
-        return True
+        if printopt.showUnique == False: 
+            return True
+        else:
+            filterMatch = True
+    
+    if  threadFilter and threadFilter( thread.Tcb, thread.Cid.UniqueThread ):
+        if printopt.showUnique  == False:
+            return True
+        else:
+            filterMatch = True
         
     try:
     
@@ -29,13 +38,59 @@ def applayThreadFilter(thread,threadFilter,moduleFilter,funcFilter,printopt):
        
         stk = getStack()
         
+        strStack = ""
+        
         for frame in stk:
             m = module( frame.instructionOffset )
-            if moduleFilter and moduleFilter( m, m.name() ):
-                return True
+            if filterMatch == False and moduleFilter and moduleFilter( m, m.name() ):
+                filterMatch = True
+                if printopt.showUnique  == False:
+                    return False
+                
             sym = m.findSymbol( frame.instructionOffset, showDisplacement = False )
-            if funcFilter and funcFilter( sym ):
-                return True            
+            if filterMatch == False and funcFilter and funcFilter( sym ):
+                filterMatch = True 
+                if printopt.showUnique  == False:
+                    return False
+            
+            if printopt.showUnique  == True:
+                strStack += sym
+                
+        if is64bitSystem():
+            processorMode = getProcessorMode()
+            try:
+                setProcessorMode("X86")
+                dbgCommand( ".reload /user" )
+                stk = getStackWow64()
+                for frame in stk:
+                    m = module( frame.instructionOffset )
+                    if filterMatch == False and moduleFilter and moduleFilter( m, m.name() ):
+                        filterMatch = True
+                        if printopt.showUnique  == False:
+                            return False
+                
+                    sym = m.findSymbol( frame.instructionOffset, showDisplacement = False )
+                    if filterMatch == False and funcFilter and funcFilter( sym ):
+                        filterMatch = True 
+                        if printopt.showUnique  == False:
+                            return False
+            
+                    if printopt.showUnique  == True:
+                        strStack += sym
+            except BaseException:
+                pass         
+            setProcessorMode(processorMode)                          
+
+        if printopt.showUnique  == False or filterMatch == False:
+            return filterMatch
+            
+        hashStack = hash( strStack )
+        if hashStack in stackHashes:
+            return False
+            
+        stackHashes.add( hashStack )
+
+        return True
 
     except BaseException:
         pass
@@ -66,7 +121,6 @@ def printThread(process,thread,printopt):
             processorMode = getProcessorMode()
             try:
                 setProcessorMode("X86")
-                dbgCommand( ".reload /user" )
                 stk = getStackWow64()
                 dprintln("\nWOW64 stack")
                 for frame in stk:
@@ -97,21 +151,21 @@ def printProcess(process,processFilter,threadFilter,moduleFilter,funcFilter,prin
         #setCurrentProcess(process)
         dbgCommand(".process /p %x" % process )
        
-        dbgCommand( ".reload /user" )
-
-        reloadWow64 = False        
+        dbgCommand( ".reload /user" )   
         
         threadLst = nt.typedVarList(process.ThreadListHead, "_ETHREAD", "ThreadListEntry")
         filteredThreadLst = []
+        stackHashes = set()
+        
         for thread in threadLst:     
-            if applayThreadFilter( thread, threadFilter, moduleFilter, funcFilter, printopt ):
+            if applayThreadFilter( thread, threadFilter, moduleFilter, funcFilter, printopt, stackHashes ):
                 filteredThreadLst.append( thread )
                 
         if filteredThreadLst == []:
             return        
 
         dprintln( "Process %x" %  process )
-        dprintln( "Name: %s" %  processName )
+        dprintln( "Name: %s  Pid: %#x" %  ( processName, process.UniqueProcessId ) )
         dprintln( "" )            
 
         for thread in filteredThreadLst:
@@ -144,7 +198,8 @@ def main():
         help="function filter: boolean expression with python syntax" )
     parser.add_option("-t", "--thread", dest="threadfilter",
         help="thread filter: boolean expresion with python syntax" )    
-    
+    parser.add_option("-u", "--unique", action="store_true", dest="uniquestack",
+        help="show only unique stacks" )    
     
     (options, args) = parser.parse_args()
      
@@ -166,6 +221,7 @@ def main():
         threadFilter = lambda thread, tid: eval( options.threadfilter)
         
     printopt = PrintOptions()
+    printopt.showUnique = True if options.uniquestack else False
            
     currentProcess = getCurrentProcess()
     currentThread = getImplicitThread()
