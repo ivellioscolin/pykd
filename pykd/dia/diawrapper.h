@@ -228,7 +228,7 @@ public:
         m_session( session )
         {}
 
-    SymbolPtr& getSymbolScope() {
+    SymbolPtr getSymbolScope() {
         return m_globalSymbol;
     }
 

@@ -161,7 +161,7 @@ class SymbolSession {
 
 public:
 
-    virtual SymbolPtr& getSymbolScope() = 0;
+    virtual SymbolPtr getSymbolScope() = 0;
 
     virtual SymbolPtr findByRva( ULONG rva, ULONG symTag = SymTagNull, LONG* displacement = NULL ) = 0;
 
@@ -183,6 +183,8 @@ SymbolSessionPtr loadSymbolFile(
 
 void setSymSrvDir(const std::wstring &symSrvDirectory);
 
-////////////////////////////////////////////////////////////////////////////////
+SymbolSessionPtr loadSymbolFromExports(ULONGLONG loadBase); 
 
-}; // end pykd endpoint
+///////////////////////////////////////////////////////////////////////////////
+
+}; // end pykd namespace

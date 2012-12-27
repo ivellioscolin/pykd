@@ -55,11 +55,14 @@ SymbolSessionPtr& Module::getSymSession()
     if (m_symSession)
         return m_symSession;
 
-    SymbolMapKey cacheKey = { m_size, m_timeDataStamp, m_checkSum };
+    SymbolMapKey cacheKey = { m_name, m_size, m_timeDataStamp, m_checkSum };
     SymbolSessionCache::iterator found = m_symSessionCache.find( cacheKey );
     if ( found != m_symSessionCache.end() )
     {
         m_symSession = found->second;
+        if ( !m_symSession )
+            throw SymbolException( "failed to load symbol file" );
+
         return m_symSession;
     }
 
@@ -79,12 +82,27 @@ SymbolSessionPtr& Module::getSymSession()
     // TODO: read image file path and load using IDiaReadExeAtOffsetCallback
 
     m_symfile = getModuleSymbolFileName(m_base);
-    if (m_symfile.empty())
-         throw SymbolException( "failed to find symbol file" );
+    if (!m_symfile.empty() )
+    {
+        try
+        {
+            m_symSession = loadSymbolFile(m_symfile, m_base);
+        }
+        catch(const SymbolException&)
+        {
+        }
+
+        if (m_symSession)
+        {
+            m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
+            return m_symSession;
+        }
+    }
 
     try
     {
-        m_symSession = loadSymbolFile(m_symfile, m_base);
+        m_symSession = loadSymbolFromExports(m_base);
+        m_symfile = "export symbols";
     }
     catch(const SymbolException&)
     {
@@ -96,14 +114,14 @@ SymbolSessionPtr& Module::getSymSession()
         return m_symSession;
     }
 
-    m_symfile.clear();
+    m_symSessionCache.insert( std::make_pair( cacheKey, SymbolSessionPtr() ) );
 
     throw SymbolException( "failed to load symbol file" );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-SymbolPtr& Module::getSymScope()
+SymbolPtr Module::getSymScope()
 {
     return getSymSession()->getSymbolScope();
 }
@@ -112,7 +130,7 @@ SymbolPtr& Module::getSymScope()
 
 void Module::reloadSymbols()
 {
-    SymbolMapKey cacheKey = { m_size, m_timeDataStamp, m_checkSum };
+    SymbolMapKey cacheKey = { m_name, m_size, m_timeDataStamp, m_checkSum };
     m_symSessionCache.erase( cacheKey );
 
     m_symSession.reset();

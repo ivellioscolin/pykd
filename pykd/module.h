@@ -27,12 +27,18 @@ public:
 private:
 
     struct SymbolMapKey{
+        std::string name;
         ULONG  size;
         ULONG  timeStamp;
         ULONG  checkSum;
 
         bool operator < ( const SymbolMapKey& key ) const
         {
+            if ( name < key.name )
+                return true;
+            if ( name > key.name )
+                return false;
+
             if ( size < key.size )
                 return true;
             if ( size > key.size )
@@ -143,7 +149,7 @@ public:
 
 private:
 
-    SymbolPtr& getSymScope();
+    SymbolPtr getSymScope();
 
     SymbolSessionPtr& getSymSession();
 
