@@ -12,13 +12,19 @@ class PrintOptions:
         self.ignoreNotActiveThread = True
         self.ignoreNotActiveProcess = True
         self.showWow64stack = True
+        self.showIP = True
+        self.showSP = True
 
-def applayThreadFilter(thread,moduleFilter,funcFilter,printopt):
+def applayThreadFilter(thread,threadFilter,moduleFilter,funcFilter,printopt):
 
-    if not moduleFilter and not funcFilter:
+    if not moduleFilter and not funcFilter and not threadFilter:
         return True
 
+    if threadFilter and threadFilter( thread.Tcb, thread.Cid.UniqueThread ):
+        return True
+        
     try:
+    
         setImplicitThread(thread)
        
         stk = getStack()
@@ -32,10 +38,17 @@ def applayThreadFilter(thread,moduleFilter,funcFilter,printopt):
                 return True            
 
     except BaseException:
-        print "applayThreadFilter except"
         pass
         
     return False
+    
+def printFrame(frame, printopt):
+    if printopt.showIP:
+        dprint( "%016x\t" % frame.instructionOffset )
+    if printopt.showSP:
+        dprint( "%016x\t" % frame.stackOffset )  
+    
+    dprintln( findSymbol( frame.instructionOffset ) )     
     
         
 def printThread(process,thread,printopt):
@@ -47,7 +60,7 @@ def printThread(process,thread,printopt):
            
         dprintln( "Thread %x, Process: %s (%x)" % ( thread, loadCStr( process.ImageFileName ), process )  )                 
         for frame in stk:
-            dprintln( findSymbol( frame.instructionOffset ) )
+            printFrame(frame, printopt)
             
         if is64bitSystem():
             processorMode = getProcessorMode()
@@ -57,7 +70,7 @@ def printThread(process,thread,printopt):
                 stk = getStackWow64()
                 dprintln("\nWOW64 stack")
                 for frame in stk:
-                    dprintln( findSymbol( frame.instructionOffset ) )     
+                    printFrame(frame, printopt)
             except BaseException:
                 pass         
             setProcessorMode(processorMode)            
@@ -73,7 +86,7 @@ def printThread(process,thread,printopt):
 
        
     
-def printProcess(process,processFilter,moduleFilter,funcFilter,printopt):
+def printProcess(process,processFilter,threadFilter,moduleFilter,funcFilter,printopt):
 
     processName = loadCStr( process.ImageFileName )
      
@@ -83,13 +96,15 @@ def printProcess(process,processFilter,moduleFilter,funcFilter,printopt):
     try:
         #setCurrentProcess(process)
         dbgCommand(".process /p %x" % process )
-        
+       
         dbgCommand( ".reload /user" )
+
+        reloadWow64 = False        
         
         threadLst = nt.typedVarList(process.ThreadListHead, "_ETHREAD", "ThreadListEntry")
         filteredThreadLst = []
-        for thread in threadLst:
-            if applayThreadFilter( thread, moduleFilter, funcFilter, printopt ):
+        for thread in threadLst:     
+            if applayThreadFilter( thread, threadFilter, moduleFilter, funcFilter, printopt ):
                 filteredThreadLst.append( thread )
                 
         if filteredThreadLst == []:
@@ -127,6 +142,8 @@ def main():
         help="module filter: boolean expression with python syntax" )
     parser.add_option("-f", "--function", dest="funcfilter",
         help="function filter: boolean expression with python syntax" )
+    parser.add_option("-t", "--thread", dest="threadfilter",
+        help="thread filter: boolean expresion with python syntax" )    
     
     
     (options, args) = parser.parse_args()
@@ -134,6 +151,7 @@ def main():
     processFilter = None
     moduleFilter = None
     funcFilter = None
+    threadFilter = None
     
     if options.processfilter:
         processFilter = lambda process, pid, name: eval( options.processfilter )
@@ -144,6 +162,9 @@ def main():
     if options.funcfilter:
         funcFilter = lambda name: eval( options.funcfilter)
         
+    if options.threadfilter:
+        threadFilter = lambda thread, tid: eval( options.threadfilter)
+        
     printopt = PrintOptions()
            
     currentProcess = getCurrentProcess()
@@ -151,7 +172,7 @@ def main():
 
     processLst = nt.typedVarList( nt.PsActiveProcessHead, "_EPROCESS", "ActiveProcessLinks")  
     for process in processLst:
-        printProcess( process, processFilter, moduleFilter, funcFilter, printopt )  
+        printProcess( process, processFilter, threadFilter, moduleFilter, funcFilter, printopt )  
             
     setCurrentProcess(currentProcess)
     setImplicitThread(currentThread)
