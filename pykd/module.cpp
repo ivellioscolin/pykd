@@ -81,22 +81,22 @@ SymbolSessionPtr& Module::getSymSession()
 
     // TODO: read image file path and load using IDiaReadExeAtOffsetCallback
 
-    m_symfile = getModuleSymbolFileName(m_base);
-    if (!m_symfile.empty() )
+    try
     {
-        try
+        m_symfile = getModuleSymbolFileName(m_base);
+        if (!m_symfile.empty() )
         {
             m_symSession = loadSymbolFile(m_symfile, m_base);
         }
-        catch(const SymbolException&)
-        {
-        }
+    }
+    catch(const DbgException&)
+    {
+    }
 
-        if (m_symSession)
-        {
-            m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
-            return m_symSession;
-        }
+    if (m_symSession)
+    {
+        m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
+        return m_symSession;
     }
 
     try
