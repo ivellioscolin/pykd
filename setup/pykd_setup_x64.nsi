@@ -6,6 +6,8 @@
 !define PRODUCT_ARCH "x64"
 
 # When changing Python vesion don't forget to update ProductCode appropriately
+!define PYTHON_VERSION "2.6"
+!define PYTHON_URL_BASE "http://python.org/ftp/python/2.6.6/"
 !define PYTHON_INSTALLER "python-2.6.6.amd64.msi"
 !define PYTHON_PRODUCT_CODE "{6151CF20-0BD8-4023-A4A0-6A86DCFE58E6}"
 

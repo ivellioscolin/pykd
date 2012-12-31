@@ -22,12 +22,9 @@ SetCompressor LZMA
 # General
 #------------------------------------------------------------------------------
 
-!define PYTHON_VERSION "2.6"
-!define PYTHON_URL_BASE "http://python.org/ftp/python/2.6.6/"
-
 !define PRODUCT_SHORT_NAME "pykd"
 !define PRODUCT_FULL_NAME  "Python extension for WinDbg"
-!define PRODUCT_VERSION "0.1.0.14"
+!define PRODUCT_VERSION "0.2.0.11"
 !define PRODUCT_URL  "http://pykd.codeplex.com/"
 !define PRODUCT_NAME_AND_VERSION "${PRODUCT_FULL_NAME} ${PRODUCT_ARCH} ${PRODUCT_VERSION}"
 !define PRODUCT_MANUFACTURER "PyKd Team"
@@ -38,9 +35,11 @@ SetCompressor LZMA
     !define ARCH "x86"
 !endif
 
+!define BINARIES_DIR "${PRODUCT_SHORT_NAME}-${PRODUCT_VERSION}-python-${PYTHON_VERSION}\${PRODUCT_ARCH}"
+
 # Main Install settings
 Name "${PRODUCT_NAME_AND_VERSION}"
-OutFile "${PRODUCT_SHORT_NAME}_${PRODUCT_ARCH}_${PRODUCT_VERSION}_setup.exe"
+OutFile "${PRODUCT_SHORT_NAME}-${PRODUCT_VERSION}-${PRODUCT_ARCH}-python-${PYTHON_VERSION}-setup.exe"
 
 BrandingText "${PRODUCT_FULL_NAME}"
 
@@ -189,12 +188,8 @@ Section "${PRODUCT_SHORT_NAME} ${PRODUCT_ARCH}" sec_pykd
 
     DetailPrint "Extracting extension..."
     SetOutPath "$INSTDIR"
-
-    !if ${PRODUCT_ARCH} == "x64"
-        File ".\binaries\x64\pykd.pyd"
-    !else
-        File ".\binaries\x86\pykd.pyd"
-    !endif
+    
+    File ".\${BINARIES_DIR}\pykd.pyd"
 SectionEnd
 
 Section "Snippets" sec_snippets
@@ -241,11 +236,8 @@ Section "Visual C++ 2008 SP1 (${PRODUCT_ARCH}) runtime" sec_vcruntime
     DetailPrint "Installing Microsoft Visual C++ 2008 SP1 (${PRODUCT_ARCH}) runtime library..."
 
     SetOutPath "$TEMP"
-    !if ${PRODUCT_ARCH} == "x64"
-        File ".\binaries\x64\vcredist_${PRODUCT_ARCH}.exe"
-    !else
-        File ".\binaries\x86\vcredist_${PRODUCT_ARCH}.exe"
-    !endif
+    
+    File ".\${BINARIES_DIR}\vcredist_${PRODUCT_ARCH}.exe"
     
     ExecWait "$TEMP\vcredist_${PRODUCT_ARCH}.exe"
     ${IfNot} ${Errors}
