@@ -89,7 +89,7 @@ BOOST_PYTHON_MODULE( pykd )
     // Manage debug target 
 
     python::def( "startProcess", &startProcess,
-        "Start process for debugging"); 
+        "Start process for debugging" ); 
     python::def( "attachProcess", &attachProcess,
         "Attach debugger to a exsisting process" );
     python::def( "detachProcess", &detachProcess, detachProcess_( boost::python::args( "pid" ),
@@ -470,10 +470,10 @@ BOOST_PYTHON_MODULE( pykd )
         .add_property( "Int4B", &TypeBuilder::getInt4B )
         .add_property( "Int8B", &TypeBuilder::getInt8B )
         .add_property( "Long", &TypeBuilder::getLong )
-        .add_property( "ULong", &TypeBuilder::getLong )
-        .add_property( "Bool", &TypeBuilder::getLong )
-        .add_property( "Char", &TypeBuilder::getLong )
-        .add_property( "WChar", &TypeBuilder::getLong )
+        .add_property( "ULong", &TypeBuilder::getULong )
+        .add_property( "Bool", &TypeBuilder::getBool )
+        .add_property( "Char", &TypeBuilder::getChar )
+        .add_property( "WChar", &TypeBuilder::getWChar )
         .add_property( "VoidPtr", &TypeBuilder::getVoidPtr )
         .def( "createStruct", &TypeBuilder::createStruct, TypeBuilder_createStruct( python::args( "name", "align" ),
             "create custom struct" ) )

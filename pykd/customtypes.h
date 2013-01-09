@@ -30,7 +30,7 @@ public:
     TypeInfoPtr getInt4B() { return TypeInfo::getBaseTypeInfo( "Int4B" ); }
     TypeInfoPtr getInt8B() { return TypeInfo::getBaseTypeInfo( "Int8B" ); }
     TypeInfoPtr getLong() { return TypeInfo::getBaseTypeInfo( "Long" ); }
-    TypeInfoPtr getULong() { return TypeInfo::getBaseTypeInfo( "Ulong" ); }
+    TypeInfoPtr getULong() { return TypeInfo::getBaseTypeInfo( "ULong" ); }
     TypeInfoPtr getBool() { return TypeInfo::getBaseTypeInfo( "Bool" ); }
     TypeInfoPtr getChar() { return TypeInfo::getBaseTypeInfo( "Char" ); }
     TypeInfoPtr getWChar() { return TypeInfo::getBaseTypeInfo( "WChar" ); }

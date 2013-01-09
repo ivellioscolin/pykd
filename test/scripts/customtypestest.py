@@ -79,3 +79,24 @@ class CustomTypesTest(unittest.TestCase):
         except pykd.TypeException:
             exceptionRised = True
         self.assertTrue(exceptionRised)
+        
+    def testBasicType(self):
+        tb = pykd.typeBuilder()
+        self.assertEqual( 1, tb.UInt1B.size() )
+        self.assertEqual( 2, tb.UInt2B.size() )
+        self.assertEqual( 4, tb.UInt4B.size() )
+        self.assertEqual( 8, tb.UInt8B.size() )
+        self.assertEqual( 1, tb.Int1B.size() )
+        self.assertEqual( 2, tb.Int2B.size() )
+        self.assertEqual( 4, tb.Int4B.size() )
+        self.assertEqual( 8, tb.Int8B.size() )
+        self.assertEqual( 1, tb.Bool.size() )
+        self.assertEqual( 1, tb.Char.size() )
+        self.assertEqual( 2, tb.WChar.size() )
+        self.assertEqual( 4, tb.Long.size() )
+        self.assertEqual( 4, tb.ULong.size() )
+        
+    def testVoidPtr(self):
+        self.assertEqual( 4, pykd.typeBuilder(4).VoidPtr.size() )
+        self.assertEqual( 8, pykd.typeBuilder(8).VoidPtr.size() )
+        self.assertEqual( pykd.ptrSize(), pykd.typeBuilder().VoidPtr.size() )

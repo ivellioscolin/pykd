@@ -80,8 +80,7 @@ def buildDoc( ioStream, formatter, apiInfo ):
         if cls.properties:
             ioStream.write( formatter.header4( "Properties:") )            
             for p in cls.properties:  
-                if p[1].__doc__ != None:          
-                    ioStream.write( formatter.bulletItem( formatter.link( p[0],  cls.__name__ + "." + p[0]) ) )                  
+                ioStream.write( formatter.bulletItem( formatter.link( p[0],  cls.__name__ + "." + p[0]) ) )                  
 
         if  cls.methods:
             ioStream.write( formatter.header4( "Methods:") )                 
