@@ -12,6 +12,7 @@ void detachProcess( ULONG processId = -1);
 void terminateProcess( ULONG processId = -1);
 
 void loadDump( const std::wstring &fileName );
+void writeDump( const std::wstring &fileNamem, bool smallDump );
 
 bool isDumpAnalyzing();
 bool isKernelDebugging();

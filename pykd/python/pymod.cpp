@@ -104,6 +104,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if kernel dubugging is running" );
     python::def( "isWindbgExt", &WindbgGlobalSession::isInit,
         "Check if script works in windbg context" );
+    python::def( "writeDump", &writeDump,
+        "Write memory dump" );
 
     python::def( "breakin", &debugBreak,
         "Break into debugger" );

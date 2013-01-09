@@ -144,6 +144,32 @@ void loadDump( const std::wstring &fileName )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+void writeDump( const std::wstring &fileName, bool smallDump )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+
+    ULONG       debugClass, debugQualifier;
+    
+    hres = g_dbgEng->control->GetDebuggeeType( &debugClass, &debugQualifier );
+    
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetDebuggeeType  failed" );   
+
+    hres = g_dbgEng->client->WriteDumpFileWide(
+        fileName.c_str(), 
+        NULL,
+        smallDump ? DEBUG_DUMP_SMALL : ( debugClass == DEBUG_CLASS_KERNEL ? DEBUG_DUMP_FULL : DEBUG_DUMP_DEFAULT ),
+        DEBUG_FORMAT_DEFAULT,
+        NULL );
+
+    if ( FAILED(hres) )
+        throw DbgException( "IDebugClient4::WriteDumpFileWide failed" );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 bool isDumpAnalyzing()
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
