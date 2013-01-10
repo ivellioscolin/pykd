@@ -45,9 +45,9 @@ class CustomTypesTest(unittest.TestCase):
         # print myType
 
     def testCommonUnion(self):
-    
+
         tb = pykd.typeBuilder()
-    
+        
         myType = tb.createUnion("MyCustomStruct")
         myType.append( "m_uint1", tb.UInt1B )
         myType.append( "m_uint4", tb.UInt4B )
@@ -57,6 +57,24 @@ class CustomTypesTest(unittest.TestCase):
         self.assertTrue( myType.fieldOffset("m_uint1") == 0 )
         self.assertTrue( myType.fieldOffset("m_uint4") == 0 )
         self.assertTrue( myType.fieldOffset("m_uint2") == 0 )
+
+    def testEmptyType(self):
+        tb = pykd.typeBuilder()
+
+        myEmptyStruct1 = tb.createStruct("EmptyStruct1")
+        self.assertEqual( 0, myEmptyStruct1.size() )
+
+        myEmptyStruct1.append("m_emptyStruct2", tb.createStruct("EmptyStruct2"))
+        self.assertEqual( 0, myEmptyStruct1.size() )
+
+        myEmptyUnion1 = tb.createUnion("EmptyUnion1")
+        self.assertEqual( 0, myEmptyUnion1.size() )
+
+        myEmptyStruct1.append("m_emptyUnion2", myEmptyUnion1)
+        self.assertEqual( 0, myEmptyStruct1.size() )
+
+        myEmptyUnion1.append("m_emptyStruct3", tb.createStruct("EmptyStruct3"))
+        self.assertEqual( 0, myEmptyUnion1.size() )
 
     def testDupFieldName(self):
     
@@ -95,7 +113,7 @@ class CustomTypesTest(unittest.TestCase):
         self.assertEqual( 2, tb.WChar.size() )
         self.assertEqual( 4, tb.Long.size() )
         self.assertEqual( 4, tb.ULong.size() )
-        
+
     def testVoidPtr(self):
         self.assertEqual( 4, pykd.typeBuilder(4).VoidPtr.size() )
         self.assertEqual( 8, pykd.typeBuilder(8).VoidPtr.size() )

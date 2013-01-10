@@ -81,7 +81,8 @@ void CustomStruct::appendField(const std::string &fieldName, TypeInfoPtr &fieldT
     ULONG offset = m_size;
     ULONG align = fieldSize < m_align ? fieldSize : m_align;
 
-    offset += offset % align > 0 ? align - offset % align : 0;
+    if (align)
+        offset += offset % align > 0 ? align - offset % align : 0;
 
     field->setOffset( offset );
 
