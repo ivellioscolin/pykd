@@ -118,3 +118,7 @@ class CustomTypesTest(unittest.TestCase):
         self.assertEqual( 4, pykd.typeBuilder(4).VoidPtr.size() )
         self.assertEqual( 8, pykd.typeBuilder(8).VoidPtr.size() )
         self.assertEqual( pykd.ptrSize(), pykd.typeBuilder().VoidPtr.size() )
+        self.assertEqual( 4, pykd.typeBuilder(4).UInt1B.ptrTo().size() )
+        self.assertEqual( 8, pykd.typeBuilder(8).UInt1B.ptrTo().size() )
+        self.assertEqual( pykd.ptrSize(), pykd.typeBuilder().UInt1B.ptrTo().size() )
+

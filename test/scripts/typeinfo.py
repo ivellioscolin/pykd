@@ -224,7 +224,8 @@ class TypeInfoTest( unittest.TestCase ):
     def testPtrTo(self):        
         ti = pykd.typeInfo("UInt8B").ptrTo()
         self.assertTrue( "UInt8B*", ti.name() )
-                
+        self.assertNotEqual( 0, ti.size() )
+        
     def testArrayOf(self):
         ti = pykd.typeInfo("UInt8B").arrayOf(10)
         self.assertTrue( "UInt8B[10]", ti.name() )      
