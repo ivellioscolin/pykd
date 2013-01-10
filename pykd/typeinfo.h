@@ -41,7 +41,7 @@ public:
     TypeInfoPtr  getTypeInfo( SymbolPtr &symbol );
 
     static
-    TypeInfoPtr  getBaseTypeInfo( const std::string &name );
+    TypeInfoPtr  getBaseTypeInfo( const std::string &name, ULONG pointerSize );
 
     static
     TypeInfoPtr  getBaseTypeInfo( SymbolPtr &symbol ); 
@@ -248,9 +248,11 @@ template<typename T>
 class TypeInfoWrapper : public TypeInfo
 {
 public:    
-    TypeInfoWrapper( const std::string &name ) :
-      m_name(name)
-      {}
+    TypeInfoWrapper( const std::string &name, ULONG pointerSize )
+        : m_name(name)
+    {
+        m_ptrSize = pointerSize;
+    }
 
 private:
 

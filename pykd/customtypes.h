@@ -21,19 +21,19 @@ public:
         m_ptrSize = pointerSize ? pointerSize : ptrSize();
     }
 
-    TypeInfoPtr getUInt1B() { return TypeInfo::getBaseTypeInfo( "UInt1B" ); }
-    TypeInfoPtr getUInt2B() { return TypeInfo::getBaseTypeInfo( "UInt2B" ); }
-    TypeInfoPtr getUInt4B() { return TypeInfo::getBaseTypeInfo( "UInt4B" ); }
-    TypeInfoPtr getUInt8B() { return TypeInfo::getBaseTypeInfo( "UInt8B" ); }
-    TypeInfoPtr getInt1B() { return TypeInfo::getBaseTypeInfo( "Int1B" ); }
-    TypeInfoPtr getInt2B() { return TypeInfo::getBaseTypeInfo( "Int2B" ); }
-    TypeInfoPtr getInt4B() { return TypeInfo::getBaseTypeInfo( "Int4B" ); }
-    TypeInfoPtr getInt8B() { return TypeInfo::getBaseTypeInfo( "Int8B" ); }
-    TypeInfoPtr getLong() { return TypeInfo::getBaseTypeInfo( "Long" ); }
-    TypeInfoPtr getULong() { return TypeInfo::getBaseTypeInfo( "ULong" ); }
-    TypeInfoPtr getBool() { return TypeInfo::getBaseTypeInfo( "Bool" ); }
-    TypeInfoPtr getChar() { return TypeInfo::getBaseTypeInfo( "Char" ); }
-    TypeInfoPtr getWChar() { return TypeInfo::getBaseTypeInfo( "WChar" ); }
+    TypeInfoPtr getUInt1B() { return TypeInfo::getBaseTypeInfo( "UInt1B", m_ptrSize ); }
+    TypeInfoPtr getUInt2B() { return TypeInfo::getBaseTypeInfo( "UInt2B", m_ptrSize ); }
+    TypeInfoPtr getUInt4B() { return TypeInfo::getBaseTypeInfo( "UInt4B", m_ptrSize ); }
+    TypeInfoPtr getUInt8B() { return TypeInfo::getBaseTypeInfo( "UInt8B", m_ptrSize ); }
+    TypeInfoPtr getInt1B() { return TypeInfo::getBaseTypeInfo( "Int1B", m_ptrSize ); }
+    TypeInfoPtr getInt2B() { return TypeInfo::getBaseTypeInfo( "Int2B", m_ptrSize ); }
+    TypeInfoPtr getInt4B() { return TypeInfo::getBaseTypeInfo( "Int4B", m_ptrSize ); }
+    TypeInfoPtr getInt8B() { return TypeInfo::getBaseTypeInfo( "Int8B", m_ptrSize ); }
+    TypeInfoPtr getLong() { return TypeInfo::getBaseTypeInfo( "Long", m_ptrSize ); }
+    TypeInfoPtr getULong() { return TypeInfo::getBaseTypeInfo( "ULong", m_ptrSize ); }
+    TypeInfoPtr getBool() { return TypeInfo::getBaseTypeInfo( "Bool", m_ptrSize ); }
+    TypeInfoPtr getChar() { return TypeInfo::getBaseTypeInfo( "Char", m_ptrSize ); }
+    TypeInfoPtr getWChar() { return TypeInfo::getBaseTypeInfo( "WChar", m_ptrSize ); }
 
     TypeInfoPtr getVoidPtr() { 
         return TypeInfoPtr( new PointerTypeInfo(m_ptrSize) );

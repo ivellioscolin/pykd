@@ -46,7 +46,7 @@ TypeInfoPtr TypeInfo::getTypeInfoByName( const std::string &typeName )
     std::string     symName;
 
     if ( TypeInfo::isBaseType( typeName ) )
-        return TypeInfo::getBaseTypeInfo( typeName );
+        return TypeInfo::getBaseTypeInfo( typeName, pykd::ptrSize() );
 
     splitSymName( typeName, moduleName, symName );
 
@@ -63,7 +63,7 @@ ULONG64 TypeInfo::getSymbolSize( const std::string &fullName )
     std::string     symName;
 
     if ( TypeInfo::isBaseType( fullName ) )
-        return TypeInfo::getBaseTypeInfo( fullName )->getSize();
+        return TypeInfo::getBaseTypeInfo( fullName, pykd::ptrSize() )->getSize();
 
     splitSymName( fullName, moduleName, symName );
 
@@ -120,6 +120,13 @@ ULONG64 TypeInfo::getOffset( const std::string &fullName )
     ModulePtr   module = Module::loadModuleByName( moduleName );
 
     return module->getSymbolOffset( symName );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+inline ULONG getTypePointerSize( SymbolPtr &typeSym )
+{
+    return (typeSym->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -185,7 +192,7 @@ TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &typeSym )
     }
 
     if ( ptr )
-        ptr->m_ptrSize = (typeSym->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
+        ptr->m_ptrSize = getTypePointerSize(typeSym);
 
     return ptr;
 }
@@ -208,7 +215,7 @@ TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &symScope, const std::string &symN
 
     if ( pos == std::string::npos )
     {
-        TypeInfoPtr    basePtr = getBaseTypeInfo( symName );
+        TypeInfoPtr    basePtr = getBaseTypeInfo( symName, getTypePointerSize(symScope) );
         if ( basePtr != 0 )
             return basePtr;
 
@@ -252,56 +259,56 @@ TypeInfo::isBaseType( const std::string &symName )
 }
 
 TypeInfoPtr 
-TypeInfo::getBaseTypeInfo( const std::string &symName )
+TypeInfo::getBaseTypeInfo( const std::string &symName, ULONG pointerSize )
 {
     boost::cmatch    baseMatchResult;
 
     if ( boost::regex_match( symName.c_str(), baseMatchResult, baseMatch ) )
     {
         if ( baseMatchResult[1].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<char>("Char") );
+            return TypeInfoPtr( new TypeInfoWrapper<char>("Char", pointerSize) );
 
         if ( baseMatchResult[2].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<wchar_t>("WChar") );
+            return TypeInfoPtr( new TypeInfoWrapper<wchar_t>("WChar", pointerSize) );
 
         if ( baseMatchResult[3].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<char>("Int1B") );
+            return TypeInfoPtr( new TypeInfoWrapper<char>("Int1B", pointerSize) );
 
         if ( baseMatchResult[4].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<unsigned char>("UInt1B") );
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned char>("UInt1B", pointerSize) );
 
         if ( baseMatchResult[5].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<short>("Int2B") );
+            return TypeInfoPtr( new TypeInfoWrapper<short>("Int2B", pointerSize) );
 
         if ( baseMatchResult[6].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<unsigned short>("UInt2B") );
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned short>("UInt2B", pointerSize) );
 
         if ( baseMatchResult[7].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<long>("Int4B") );
+            return TypeInfoPtr( new TypeInfoWrapper<long>("Int4B", pointerSize) );
 
         if ( baseMatchResult[8].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<unsigned long>("UInt4B") );
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned long>("UInt4B", pointerSize) );
 
         if ( baseMatchResult[9].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<__int64>("Int8B") );
+            return TypeInfoPtr( new TypeInfoWrapper<__int64>("Int8B", pointerSize) );
 
         if ( baseMatchResult[10].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<unsigned __int64>("UInt8B") );
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned __int64>("UInt8B", pointerSize) );
 
         if ( baseMatchResult[11].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<long>("Long") );
+            return TypeInfoPtr( new TypeInfoWrapper<long>("Long", pointerSize) );
 
         if ( baseMatchResult[12].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<unsigned long>("ULong") );
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned long>("ULong", pointerSize) );
 
         if ( baseMatchResult[13].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<float>("Float") );
+            return TypeInfoPtr( new TypeInfoWrapper<float>("Float", pointerSize) );
 
         if ( baseMatchResult[14].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<bool>("Bool") );
+            return TypeInfoPtr( new TypeInfoWrapper<bool>("Bool", pointerSize) );
 
         if ( baseMatchResult[15].matched )
-            return TypeInfoPtr( new TypeInfoWrapper<double>("Double") );
+            return TypeInfoPtr( new TypeInfoWrapper<double>("Double", pointerSize) );
    }
 
     return TypeInfoPtr();
@@ -319,7 +326,7 @@ TypeInfo::getBaseTypeInfo( SymbolPtr &symbol )
         std::stringstream   sstr;
         sstr << symName << symbol->getSize() << "B";
 
-        return getBaseTypeInfo( sstr.str() );
+        return getBaseTypeInfo( sstr.str(), getTypePointerSize(symbol) );
     }
 
     if ( symName == "Float" && symbol->getSize() == 8  )
@@ -327,7 +334,7 @@ TypeInfo::getBaseTypeInfo( SymbolPtr &symbol )
         symName = "Double";
     }
 
-    return getBaseTypeInfo( symName );
+    return getBaseTypeInfo( symName, getTypePointerSize(symbol) );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -401,7 +408,7 @@ PointerTypeInfo::PointerTypeInfo( SymbolPtr &symScope, const std::string &symNam
     {
         m_derefType.swap( TypeInfoPtr() );
     }
-    m_size = (symScope->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
+    m_size = getTypePointerSize(symScope);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -531,7 +538,7 @@ static const boost::regex symbolMatch("^([\\*]*)([^\\(\\)\\*\\[\\]]*)([\\(\\)\\*
 
 TypeInfoPtr TypeInfo::getComplexType( SymbolPtr &symScope, const std::string &symName )
 {
-    ULONG  ptrSize = (symScope->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
+    ULONG  ptrSize = getTypePointerSize(symScope);
 
     boost::cmatch    matchResult;
 
@@ -540,7 +547,7 @@ TypeInfoPtr TypeInfo::getComplexType( SymbolPtr &symScope, const std::string &sy
 
     std::string  innerSymName = std::string( matchResult[2].first, matchResult[2].second );
 
-    TypeInfoPtr    basePtr = getBaseTypeInfo( innerSymName );
+    TypeInfoPtr    basePtr = getBaseTypeInfo( innerSymName, getTypePointerSize(symScope) );
     if ( basePtr != 0 )
     {
         return getRecurciveComplexType( basePtr, std::string( matchResult[3].first, matchResult[3].second ), ptrSize );
