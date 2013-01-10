@@ -104,7 +104,7 @@ SymbolSessionPtr& Module::getSymSession()
         m_symSession = loadSymbolFromExports(m_base);
         m_symfile = "export symbols";
     }
-    catch(const SymbolException&)
+    catch(const DbgException&)
     {
     }
 
