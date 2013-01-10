@@ -199,6 +199,14 @@ TypedVarPtr PtrTypedVar::deref()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+TypedVarPtr PtrTypedVar::getField( const std::string &fieldName )
+{
+    TypedVarPtr  derefPtr = deref();
+    return derefPtr->getField( fieldName );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 std::string PtrTypedVar::print()
 {
     std::stringstream   sstr;

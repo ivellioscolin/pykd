@@ -219,6 +219,10 @@ class TypedVarTest( unittest.TestCase ):
             self.assertTrue(False)
         except pykd.BaseException: 
             pass
+            
+    def testSkipDeref(self):
+        tv = target.module.typedVar( "g_structTest1" )
+        self.assertEqual( tv.m_field4.deref().m_field1, tv.m_field4.m_field1 )
 
     def testUnNamedStruct(self):
         tv = target.module.typedVar( "g_unNamedStruct" )
@@ -267,7 +271,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertTrue( str(target.module.typedVar( "g_unTypedPtrToFunction" ) ) )
         
     def testNotValidPrint(self):
-        types = ("structTest", ) #, "ULong[100]", "Ulong*" )
+        types = ("structTest", "ULong[100]", "ULong*" )
         for ti in types:
             self.assertTrue( str(pykd.typedVar( target.module.type(ti), 0 ) ) )
     

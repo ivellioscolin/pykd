@@ -134,6 +134,8 @@ public:
 
     virtual BaseTypeVariant getValue();
 
+    virtual TypedVarPtr getField( const std::string &fieldName );
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
