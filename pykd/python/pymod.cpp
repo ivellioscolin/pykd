@@ -64,7 +64,6 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, TypeInfo::findSymbol, 1, 2 );
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( TypeBuilder_createStruct, TypeBuilder::createStruct, 1, 2 );
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( TypeBuilder_createUnion, TypeBuilder::createUnion, 1, 2 );
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_enumSymbols, Module::enumSymbols, 0, 1 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_enumTypes, Module::enumTypes, 0, 1 );
@@ -292,13 +291,6 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "setSymbolPath", &setSymbolPath, "Set current symbol path");
     python::def( "appendSymbolPath", &appendSymbolPath, "Append current symbol path");
 
-    //// custom types
-    //python::def( "createStruct", &CustomStruct::create, CustomStruct_create( python::args( "name", "align", "ptrSize" ), 
-    //    "Create empty structure. Use append() method for building" ) );
-    //python::def( "createUnion", &CustomUnion::create, CustomUnion_create( python::args( "name", "ptrSize" ), 
-    //    "Create empty union. Use append() method for building" ) );
-    //python::def( "pVoid", &PtrToVoid, "Create \"Void*\" type" );
-
     python::class_<intBase>( "intBase", "intBase", python::no_init )
         .def( python::init<python::object&>() )
         .def( "__eq__", &intBase::eq )
@@ -476,9 +468,9 @@ BOOST_PYTHON_MODULE( pykd )
         .add_property( "WChar", &TypeBuilder::getWChar )
         .add_property( "VoidPtr", &TypeBuilder::getVoidPtr )
         .def( "createStruct", &TypeBuilder::createStruct, TypeBuilder_createStruct( python::args( "name", "align" ),
-            "create custom struct" ) )
-        .def( "createUnion", &TypeBuilder::createUnion, TypeBuilder_createUnion( python::args( "name", "align" ),
-            "create custom union" ) );
+            "Create custom struct" ) )
+        .def( "createUnion", &TypeBuilder::createUnion, 
+            "Create custom union" );
 
     python::class_<CpuReg, python::bases<intBase> >( 
         "cpuReg", "CPU regsiter class", boost::python::no_init )

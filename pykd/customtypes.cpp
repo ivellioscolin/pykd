@@ -17,9 +17,9 @@ TypeInfoPtr TypeBuilder::createStruct(  const std::string &name, ULONG align )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr TypeBuilder::createUnion( const std::string &name, ULONG align )
+TypeInfoPtr TypeBuilder::createUnion( const std::string &name )
 {
-   return TypeInfoPtr( new CustomUnion( name, m_ptrSize, align ? align : m_ptrSize ) );
+    return TypeInfoPtr( new CustomUnion( name, m_ptrSize, m_ptrSize ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -41,7 +41,7 @@ public:
 
     TypeInfoPtr createStruct( const std::string &name, ULONG align = 0 );
 
-    TypeInfoPtr createUnion( const std::string &name, ULONG align = 0);
+    TypeInfoPtr createUnion( const std::string &name);
 
 private:
 
