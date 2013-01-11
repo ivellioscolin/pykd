@@ -19,7 +19,7 @@ void disasmAssemblay( ULONG64 offset, const std::string &instruction, ULONG64 &n
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void disasmDisassembly( ULONG64 offset, std::string &instruction, ULONG64 &nextOffset )
+void disasmDisassembly( ULONG64 offset, std::string &instruction, ULONG64 &nextOffset, ULONG64 &ea )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
@@ -39,6 +39,10 @@ void disasmDisassembly( ULONG64 offset, std::string &instruction, ULONG64 &nextO
 
     if ( FAILED( hres ) )
         throw DbgException( "IDebugControl::Disassemble failed" );
+
+    hres = g_dbgEng->control->GetDisassembleEffectiveOffset(&ea);
+    if ( FAILED( hres ) )
+        ea = 0;
 
     instruction = std::string( buffer, disasmSize - 2);
 }

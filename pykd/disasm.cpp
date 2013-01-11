@@ -10,6 +10,7 @@ namespace pykd {
 /////////////////////////////////////////////////////////////////////////////////
 
 Disasm::Disasm( ULONG64 offset )
+    : m_ea(0)
 {
     m_beginOffset = addr64(offset);
 
@@ -27,7 +28,7 @@ void Disasm::doDisasm()
 {
     ULONG64     endOffset = 0;
 
-    disasmDisassembly( m_currentOffset, m_disasm, endOffset );
+    disasmDisassembly( m_currentOffset, m_disasm, endOffset, m_ea );
 
     m_length = (ULONG)(endOffset - m_currentOffset);
 }
