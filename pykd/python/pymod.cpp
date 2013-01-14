@@ -104,7 +104,7 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "isWindbgExt", &WindbgGlobalSession::isInit,
         "Check if script works in windbg context" );
     python::def( "writeDump", &writeDump,
-        "Write memory dump" );
+        "Create memory dump file" );
 
     python::def( "breakin", &debugBreak,
         "Break into debugger" );
