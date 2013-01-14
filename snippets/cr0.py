@@ -12,7 +12,7 @@ def cr0( value = 0 ):
 
     dprintln( "CR0: %x (" % value + "".join( [  (  value & ( 1 << ( 31 - i ) ) ) and "1" or "0" for i in range(0,32) ] ) + ")" )
     
-    for i in range (0, 31):
+    for i in range (0, 32):
         bits = { 0 : "PE", 1 : "MP", 2 : "EM", 3 : "TS", 4 : "ET", 5 : "NE", 16 : "WP", 18 : "AM", 29 : "NW", 30 : "CD", 31 : "PG"  }
         if ( ( 1 << ( 31 -i ) ) & value ) and 31-i in bits:
             dprint( " " + bits[31-i] )   
