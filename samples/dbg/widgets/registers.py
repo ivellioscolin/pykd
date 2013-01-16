@@ -14,12 +14,13 @@ class RegisterWidget( DebugWidget ):
     def updateView(self):
 
         s = ""
-
+        
         try:
             i = 0
             while True:
                 reg = pykd.reg(i)
-                s += "%s    %x ( %d )\r\n" % ( reg.name(), reg, reg )
+                #print str(reg)
+                s += "%s    %x ( %d )\r\n" % ( reg.name(), long(reg), long(reg) )
                 i += 1
 
         except pykd.BaseException:
