@@ -72,6 +72,9 @@ void CustomBase::throwIfTypeRecursive(TypeInfoPtr type)
 
 void CustomStruct::appendField(const std::string &fieldName, TypeInfoPtr &fieldType )
 {
+    if ( !fieldType )
+         throw DbgException( "typeInfo can not be None" );
+
     throwIfFiledExist(fieldName);
     throwIfTypeRecursive(fieldType);
 
