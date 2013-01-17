@@ -57,11 +57,12 @@ class CustomBase : public UdtTypeInfoBase
 protected:
     
     CustomBase( const std::string &name, ULONG pointerSize, ULONG align ) :
-        UdtTypeInfoBase( name ),
-        m_size( 0 ),
-        m_ptrSize( pointerSize ),
-        m_align( align )
-        {}
+        UdtTypeInfoBase( name )
+        {
+            m_ptrSize = pointerSize;
+            m_align = align;
+            m_size = 0;
+        }
 
     void throwIfFiledExist(const std::string &fieldName);
     void throwIfTypeRecursive(TypeInfoPtr type);
@@ -74,11 +75,7 @@ protected:
 
 protected:
 
-    ULONG  m_ptrSize;
-
     ULONG  m_align;
-
-    std::string  m_name;
 
     ULONG  m_size;
 };
