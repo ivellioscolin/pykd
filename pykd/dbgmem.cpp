@@ -130,6 +130,28 @@ LONG64 ptrSignMWord( ULONG64 offset )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+double ptrSingleFloat( ULONG64 offset )
+{
+    float  val = 0;
+    
+    readMemory( offset, &val, sizeof(val), false );
+
+    return val;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+double ptrDoubleFloat( ULONG64 offset )
+{
+    double  val = 0;
+    
+    readMemory( offset, &val, sizeof(val), false );
+
+    return val;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 template<typename T>
 struct PyListType
 {
@@ -213,6 +235,20 @@ python::list loadSignDWords( ULONG64 offset, ULONG count, bool phyAddr )
 python::list loadSignQWords( ULONG64 offset, ULONG count, bool phyAddr )
 {
     return loadArray<__int64>( offset, count, phyAddr );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+python::list loadFloats(  ULONG64 offset, ULONG count, bool phyAddr )
+{
+    return loadArray<float>( offset, count, phyAddr );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+python::list loadDoubles(  ULONG64 offset, ULONG count, bool phyAddr )
+{
+    return loadArray<double>( offset, count, phyAddr );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

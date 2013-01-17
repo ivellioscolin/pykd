@@ -36,6 +36,9 @@ SHORT g_shortValue = -2;
 LONG g_longValue = -4;
 LONGLONG g_longlongValue = -8;
 
+float g_float = 5.123456f;
+double g_double = 5.1234567891;
+
 std::string g_string;
 
 struct structWithBits {
@@ -114,6 +117,8 @@ unsigned long ulongArray[] = {0, 0xFF, 0x8000, 0x80000000, 0xFFFFFFFF };
 long longArray[] = {0, -10, -2000, -100000, 0xFFFFFFFF };
 unsigned __int64 ulonglongArray[] = {0, 0xFF, 0xFFFFFFFF, 0x8000000000000000, 0xFFFFFFFFFFFFFFFF };
 long long longlongArray[] = {0, -10, -2000, -100000, -10000000000 };
+float floatArray[] = { 1.0f, 2.001f, -3.0004f };
+double doubleArray[] = { 1.0, 2.0000001, -3.0000004 };
 
 int intMatrix[2][3] = { { 0, 1, 2}, { 3, 4, 5 } };
 int intMatrix2[2][3] = { { 0, 1, 2}, { 3, 4, 5 } };
@@ -421,6 +426,8 @@ void FuncWithName0()
     std::cout << ushortArray[2];
     std::cout << ulongArray[2];
     std::cout << ulonglongArray[2];
+    std::cout << floatArray[2];
+    std::cout << doubleArray[2];
 
     std::cout << intMatrix[1][1];
     std::cout << strArray[0];
@@ -449,6 +456,9 @@ void FuncWithName0()
 
     std::cout << g_nullSizeArray;
     std::cout << g_structAbstract;
+
+    std::cout << g_float;
+    std::cout << g_double;
 
     //std::cout << g_virtChild.VirtualBaseClass1::m_baseField;
 }

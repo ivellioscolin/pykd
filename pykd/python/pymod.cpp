@@ -53,6 +53,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignBytes_, loadSignBytes, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords_, loadSignWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadFloats_, loadFloats, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadDoubles_, loadDoubles, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, compareMemory, 3, 4 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, getSourceLine, 0, 1 );
@@ -176,9 +178,13 @@ BOOST_PYTHON_MODULE( pykd )
         "Read an signed mashine's word wide integer from the target memory" );
     python::def( "ptrPtr", (ULONG64(*)(ULONG64))&ptrPtr,
         "Read an pointer value from the target memory" );
+    python::def( "ptrFloat", &ptrSingleFloat,
+        "Read a float with single precision from the target memory" );
+   python::def( "ptrDouble", &ptrDoubleFloat,
+        "Read a float with single precision from the target memory" );
 
     python::def( "loadBytes", &loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
-        "Read the block of the target's memory and return it as liat of unsigned bytes" ) );
+        "Read the block of the target's memory and return it as list of unsigned bytes" ) );
     python::def( "loadWords", &loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of unsigned shorts" ) );
     python::def( "loadDWords", &loadDWords, loadDWords_( python::args( "offset", "count", "phyAddr" ),
@@ -209,6 +215,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Return list of pointers, each points to next" );
     python::def( "loadPtrs", &loadPtrArray,
         "Read the block of the target's memory and return it as a list of pointers" );
+    python::def( "loadFloats", &loadFloats, loadFloats_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of floats" ) );
+    python::def( "loadDoubles", &loadDoubles, loadDoubles_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of doubles" ) );
 
     // types and vaiables
     python::def( "getSourceFile", &getSourceFile, getSourceFile_( python::args( "offset"),

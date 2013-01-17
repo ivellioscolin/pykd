@@ -28,6 +28,9 @@ LONG64 ptrSignQWord( ULONG64 offset );
 LONG64 ptrSignMWord( ULONG64 offset );
 ULONG64 ptrPtr( ULONG64 offset );
 
+double ptrSingleFloat( ULONG64 offset );
+double ptrDoubleFloat( ULONG64 offset );
+
 python::list loadBytes( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 python::list loadWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 python::list loadDWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
@@ -36,6 +39,9 @@ python::list loadSignBytes( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 python::list loadSignWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 python::list loadSignDWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 python::list loadSignQWords( ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+
+python::list loadFloats(  ULONG64 offset, ULONG count, bool phyAddr = FALSE );
+python::list loadDoubles(  ULONG64 offset, ULONG count, bool phyAddr = FALSE );
 
 python::list loadPtrList( ULONG64 offset );
 python::list loadPtrArray( ULONG64 offset, ULONG  number );

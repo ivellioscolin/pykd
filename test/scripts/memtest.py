@@ -5,6 +5,7 @@
 import unittest
 import target
 import pykd
+import math
 
 class MemoryTest( unittest.TestCase ):
 
@@ -104,4 +105,20 @@ class MemoryTest( unittest.TestCase ):
             pykd.loadSignBytes( 0xDEADBEEF, 5 )
         except pykd.MemoryException:
             self.assertTrue( True )
-
+            
+    def testPtrFloat(self):
+        self.assertTrue( math.fabs( pykd.ptrFloat( target.module.g_float) - 5.123456 ) < 0.001 )
+        self.assertTrue( math.fabs( pykd.ptrDouble( target.module.g_double) - 5.1234567891 ) < 0.0000001 )
+        
+    def testLoadFloats(self):
+       testArray = [ 1.0, 2.001, -3.0004 ];
+       readArray = pykd.loadFloats( target.module.floatArray, 3 );
+       for i in range(0,3):
+           self.assertTrue( math.fabs( testArray[i] - readArray[i]  ) < 0.001 )
+           
+    def testLoadDoubles(self):
+       testArray = [ 1.0, 2.0000001, -3.0000004 ];
+       readArray = pykd.loadDoubles( target.module.doubleArray, 3 );
+       print readArray
+       for i in range(0,3):
+           self.assertTrue( math.fabs( testArray[i] - readArray[i]  ) < 0.0000001 )
