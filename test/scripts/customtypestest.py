@@ -121,4 +121,13 @@ class CustomTypesTest(unittest.TestCase):
         self.assertEqual( 4, pykd.typeBuilder(4).UInt1B.ptrTo().size() )
         self.assertEqual( 8, pykd.typeBuilder(8).UInt1B.ptrTo().size() )
         self.assertEqual( pykd.ptrSize(), pykd.typeBuilder().UInt1B.ptrTo().size() )
+        
+    def testPtrToCustomType(self):
+        tb = pykd.typeBuilder()
+        mySubStruct =tb.createStruct("MySubCustomStruct")
+        mySubStruct.append( "m_uint1", tb.UInt1B )
+        mySubStruct.append( "m_uint2", tb.UInt2B )
+        mySubStructPtr = mySubStruct.ptrTo()
+        self.assertEqual( pykd.ptrSize(), mySubStructPtr.size() )
+
 
