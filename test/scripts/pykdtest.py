@@ -45,13 +45,13 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
                 unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
                 unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
-                #unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
+                unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
                 unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
                 unittest.TestLoader().loadTestsFromTestCase( customtypestest.CustomTypesTest ),
                 # ^^^
                 unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest ),
 
-                #unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
+                unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
                 unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionTest ),
             ] ) 
     else:
@@ -71,3 +71,7 @@ if __name__ == "__main__":
     #print "Test module: %s" % target.appPath
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
+    #unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite("typedvar.TypedVarTest.testAmbiguousFieldAccess") )
+    
+    raw_input(">")
+#

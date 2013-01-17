@@ -119,6 +119,5 @@ class MemoryTest( unittest.TestCase ):
     def testLoadDoubles(self):
        testArray = [ 1.0, 2.0000001, -3.0000004 ];
        readArray = pykd.loadDoubles( target.module.doubleArray, 3 );
-       print readArray
        for i in range(0,3):
            self.assertTrue( math.fabs( testArray[i] - readArray[i]  ) < 0.0000001 )

@@ -20,7 +20,7 @@ class TypedVarTest( unittest.TestCase ):
         
         tv = pykd.typedVar( "g_structTest" )
         tv = pykd.typedVar( target.moduleName + "!g_structTest" )
-
+        
     def testBaseTypes(self):
         self.assertEqual( 1, target.module.typedVar( "g_ucharValue" ) )
         self.assertEqual( 2, target.module.typedVar( "g_ushortValue" ) )
@@ -311,5 +311,8 @@ class TypedVarTest( unittest.TestCase ):
            lst.append(entry)
            entry = entry.deref().Flink
 
-
-       
+    def testWrongArgs(self):
+        self.assertRaises( pykd.BaseException, pykd.typedVar, None, 0 )
+        self.assertRaises( pykd.BaseException, pykd.typedVarList, target.module.g_listHead1, None, "next" )
+        self.assertRaises( pykd.BaseException, pykd.typedVarArray, target.module.g_testArray, None, 2 )
+        self.assertRaises( pykd.BaseException, pykd.containingRecord, target.module.offset( "g_structTest" ), None, "m_field2" )

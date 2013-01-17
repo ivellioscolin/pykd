@@ -10,8 +10,11 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-TypedVarPtr   TypedVar::getTypedVar(  const TypeInfoPtr& typeInfo, VarDataPtr varData )
+TypedVarPtr   TypedVar::getTypedVar( const TypeInfoPtr& typeInfo, VarDataPtr varData )
 {
+    if ( !typeInfo )
+        throw DbgException( "typeInfo can not be None" );
+
     TypedVarPtr     tv;
 
     if ( typeInfo->isBasicType() )
@@ -546,6 +549,9 @@ TypedVarPtr containingRecordByName( ULONG64 offset, const std::string &typeName,
 
 TypedVarPtr containingRecordByType( ULONG64 addr, const TypeInfoPtr &typeInfo, const std::string &fieldName )
 {
+    if ( !typeInfo )
+        throw DbgException( "typeInfo can not be None" );
+
     addr = addr64(addr); 
 
     VarDataPtr varData = VarDataMemory::factory( addr - typeInfo->getFieldOffsetByNameRecursive(fieldName) );
@@ -571,6 +577,9 @@ python::list getTypedVarListByTypeName( ULONG64 listHeadAddress, const std::stri
 
 python::list getTypedVarListByType( ULONG64 listHeadAddress, const TypeInfoPtr &typeInfo, const std::string &listEntryName )
 {
+    if ( !typeInfo )
+        throw DbgException( "typeInfo can not be None" );
+
     python::list    lst;
 
     listHeadAddress = addr64( listHeadAddress );
@@ -613,6 +622,9 @@ python::list getTypedVarArrayByTypeName( ULONG64 addr, const std::string  &typeN
 
 python::list getTypedVarArrayByType( ULONG64 offset, const TypeInfoPtr &typeInfo, ULONG number )
 {
+    if ( !typeInfo )
+        throw DbgException( "typeInfo can not be None" );
+
     offset = addr64(offset); 
        
     python::list     lst;
