@@ -35,6 +35,8 @@ void eprintln( const std::wstring &str );
 ULONG ptrSize();
 bool is64bitSystem();
 ULONG getPageSize();
+ULONG getSystemUptime();
+ULONG getCurrentTime();
 
 //manage debug module
 ULONG64 findModuleBase( const std::string &moduleName );

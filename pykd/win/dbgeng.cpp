@@ -721,6 +721,38 @@ ULONG getPageSize()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+ULONG getSystemUptime()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+    ULONG  time;
+
+    hres = g_dbgEng->control->GetCurrentSystemUpTime( &time );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl2::GetCurrentSystemUpTime", hres );
+
+    return time;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ULONG getCurrentTime()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+    ULONG  time;
+
+    hres = g_dbgEng->control->GetCurrentTimeDate( &time );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl2::GetCurrentTimeDate", hres );
+
+    return time;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 ULONG64 loadMSR( ULONG  msr )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );

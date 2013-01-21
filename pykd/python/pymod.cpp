@@ -142,6 +142,10 @@ BOOST_PYTHON_MODULE( pykd )
        "Check if target system has 64 address space" );
     python::def( "pageSize", &getPageSize,
         "Get the page size for the currently executing processor context" );
+    python::def( "systemUptime", &getSystemUptime,
+        "Return the number of seconds the computer has been running" );
+    python::def( "currentTime", &getCurrentTime,
+        "Return the number of seconds since the beginning of 1970" );
 
     // Manage target memory access
     python::def( "addr64", &addr64,
