@@ -215,7 +215,7 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
 
         std::string                 argsStr( args );
 
-        char_tokenizer_t            token( argsStr , char_separator_t( "", " \t", "\"" ) );
+        char_tokenizer_t            token( argsStr , char_separator_t( "", " \t", "\"\'" ) );
         std::vector<std::string>    argsList;
 
         for ( char_tokenizer_t::iterator   it = token.begin(); it != token.end(); ++it )
