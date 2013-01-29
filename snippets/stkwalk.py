@@ -25,8 +25,8 @@ def applayThreadFilter(thread,threadFilter,moduleFilter,funcFilter,printopt,stac
             return True
         else:
             filterMatch = True
-    
-    if  threadFilter and threadFilter( thread.Tcb, thread.Cid.UniqueThread ):
+  
+    if threadFilter and threadFilter( thread.Tcb, thread.Cid.UniqueThread ):
         if printopt.showUnique  == False:
             return True
         else:
@@ -45,13 +45,13 @@ def applayThreadFilter(thread,threadFilter,moduleFilter,funcFilter,printopt,stac
             if filterMatch == False and moduleFilter and moduleFilter( m, m.name() ):
                 filterMatch = True
                 if printopt.showUnique  == False:
-                    return False
+                    return True
                 
             sym = m.findSymbol( frame.instructionOffset, showDisplacement = False )
             if filterMatch == False and funcFilter and funcFilter( sym ):
                 filterMatch = True 
                 if printopt.showUnique  == False:
-                    return False
+                    return True
             
             if printopt.showUnique  == True:
                 strStack += sym
@@ -67,13 +67,13 @@ def applayThreadFilter(thread,threadFilter,moduleFilter,funcFilter,printopt,stac
                     if filterMatch == False and moduleFilter and moduleFilter( m, m.name() ):
                         filterMatch = True
                         if printopt.showUnique  == False:
-                            return False
+                            return True
                 
                     sym = m.findSymbol( frame.instructionOffset, showDisplacement = False )
                     if filterMatch == False and funcFilter and funcFilter( sym ):
                         filterMatch = True 
                         if printopt.showUnique  == False:
-                            return False
+                            return True
             
                     if printopt.showUnique  == True:
                         strStack += sym
@@ -162,7 +162,7 @@ def printProcess(process,processFilter,threadFilter,moduleFilter,funcFilter,prin
                 filteredThreadLst.append( thread )
                 
         if filteredThreadLst == []:
-            return        
+            return     
 
         dprintln( "Process %x" %  process )
         dprintln( "Name: %s  Pid: %#x" %  ( processName, process.UniqueProcessId ) )
