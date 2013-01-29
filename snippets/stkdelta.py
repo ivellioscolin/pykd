@@ -8,7 +8,7 @@ def printThreadInfo():
     
     thread = nt.typedVar( "_KTHREAD", getImplicitThread() )
     
-    stackPointer = reg("rsp") if is64bitSystem() else reg("esp")
+    stackPointer = addr64( reg("rsp") if is64bitSystem() else reg("esp") )
     
     dprintln("")    
     
