@@ -49,4 +49,20 @@ void disasmDisassembly( ULONG64 offset, std::string &instruction, ULONG64 &nextO
 
 ///////////////////////////////////////////////////////////////////////////////
 
+ULONG64 getNearInstruction( ULONG64 offset, LONG delta )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+    ULONG64  nearOffset;
+
+    hres = g_dbgEng->control->GetNearInstruction( offset, delta, &nearOffset );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetNearInstruction", hres );
+
+    return nearOffset;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // end pykd namespace

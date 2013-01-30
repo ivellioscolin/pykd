@@ -23,6 +23,14 @@ public:
         return disassemble();
     }
 
+    std::string jumprel(LONG delta) {
+        m_currentOffset = getNearInstruction(delta);
+        doDisasm();
+        return disassemble();
+    }
+
+    ULONG64 getNearInstruction( LONG delta );
+
     std::string  reset() {
         m_currentOffset = m_beginOffset;
         doDisasm();

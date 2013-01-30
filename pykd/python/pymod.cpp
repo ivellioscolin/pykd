@@ -563,7 +563,11 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "length", &Disasm::length, "Return current instruction length" )
         .def( "instruction", &Disasm::instruction, "Returm current disassembled instruction" )
         .def( "ea", &Disasm::ea, "Return effective address for last disassembled instruction or 0" )
-        .def( "reset", &Disasm::reset, "Reset current offset to begin" );
+        .def( "reset", &Disasm::reset, "Reset current offset to begin" )
+        .def( "findOffset", &Disasm::getNearInstruction, "Return the location of a processor instruction relative to a given location" )
+        .def( "jump", &Disasm::jump, "Change current instruction" )
+        .def( "jumprel", &Disasm::jumprel, "Change current instruction" );
+
 
     python::enum_<DEBUG_CALLBACK_RESULT>("eventResult", "Return value of event handler")
         .value("Proceed", DebugCallbackProceed)
