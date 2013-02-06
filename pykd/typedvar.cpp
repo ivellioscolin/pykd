@@ -586,7 +586,7 @@ python::list getTypedVarListByType( ULONG64 listHeadAddress, const TypeInfoPtr &
 
     ULONG64                 entryAddress = 0;
 
-    TypeInfoPtr             fieldTypeInfo = typeInfo->getField( listEntryName );
+    TypeInfoPtr             fieldTypeInfo = typeInfo->getFieldRecursive( listEntryName );
 
     ULONG64 (*ptrFunc)(ULONG64) = fieldTypeInfo->ptrSize() == 4 ? &ptrDWord : &ptrQWord;
 

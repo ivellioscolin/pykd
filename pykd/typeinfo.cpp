@@ -623,6 +623,53 @@ TypeInfoPtr TypeInfo::arrayOf( ULONG count )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+ULONG UdtTypeInfoBase::getFieldOffsetByNameRecursive( const std::string &fieldName )
+{
+    // "m_field1.m_field2" -> ["m_field1", "m_field2"]
+    typedef boost::char_separator<char> CharSep;
+    boost::tokenizer< CharSep > tokenizer(fieldName, CharSep("."));
+    if (tokenizer.begin() == tokenizer.end())
+        throw TypeException( getName(), fieldName + ": invalid field name");
+
+    ULONG fieldOffset = 0;
+
+    TypeInfoPtr typeInfo = shared_from_this();
+
+    boost::tokenizer< CharSep >::iterator it = tokenizer.begin();
+    for (; it != tokenizer.end(); ++it)
+    {
+        const std::string &name = *it;
+        fieldOffset += typeInfo->getFieldOffsetByNameNotRecursively(name);
+        typeInfo = typeInfo->getField(name);
+    }
+
+    return fieldOffset;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+TypeInfoPtr UdtTypeInfoBase::getFieldRecursive(const std::string &fieldName )
+{
+    // "m_field1.m_field2" -> ["m_field1", "m_field2"]
+    typedef boost::char_separator<char> CharSep;
+    boost::tokenizer< CharSep > tokenizer(fieldName, CharSep("."));
+    if (tokenizer.begin() == tokenizer.end())
+        throw TypeException( getName(), fieldName + ": invalid field name");
+
+    TypeInfoPtr typeInfo = shared_from_this();
+
+    boost::tokenizer< CharSep >::iterator it = tokenizer.begin();
+    for (; it != tokenizer.end(); ++it)
+    {
+        const std::string &name = *it;
+        typeInfo = typeInfo->getField(name);
+    }
+
+    return typeInfo;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 std::string UdtTypeInfoBase::print()
 {
     std::stringstream  sstr;

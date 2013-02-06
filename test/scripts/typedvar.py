@@ -150,6 +150,10 @@ class TypedVarTest( unittest.TestCase ):
         tvl = pykd.typedVarList( target.module.g_listHead, target.module.type("listStruct"), "listEntry" )
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [1,2,3], [ tv.num for tv in tvl ] )
+        
+        tvl = pykd.typedVarList( target.module.g_listHead, target.module.type("listStruct"), "listEntry.Flink" )
+        self.assertEqual( 3, len( tvl ) )
+        self.assertEqual( [1,2,3], [ tv.num for tv in tvl ] )
 
         tvl = target.module.typedVarList( target.module.g_listHead1, "listStruct1", "next" )
         self.assertEqual( 3, len( tvl ) )

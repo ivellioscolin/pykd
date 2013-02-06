@@ -68,10 +68,5 @@ if __name__ == "__main__":
 
     target.appPath = sys.argv[1]
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
-    #print "Test module: %s" % target.appPath
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
-    #unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite("customtypestest.CustomTypesTest.testPtrToCustomType") )
-    
-    raw_input(">")
-#

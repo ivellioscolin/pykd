@@ -74,6 +74,10 @@ public:
         throw TypeException( getName(), "type is not a struct" ); 
     }
 
+    virtual TypeInfoPtr getFieldRecursive(const std::string &fieldName ) {
+        throw TypeException( getName(), "type is not a struct" ); 
+    }
+
     virtual TypeInfoPtr getFieldByIndex( ULONG index ) {
         throw TypeException( getName(), "type is not a struct" ); 
     }
@@ -85,6 +89,7 @@ public:
     virtual ULONG getFieldOffsetByNameRecursive( const std::string &fieldName ) {
         throw TypeException( getName(), "type is not a struct" ); 
     }
+
     virtual ULONG getFieldOffsetByNameNotRecursively( const std::string &fieldName ) {
         throw TypeException( getName(), "type is not a struct" ); 
     }
@@ -333,9 +338,9 @@ protected:
         return lookupField(index)->getName();
     }
 
-    virtual ULONG getFieldOffsetByNameRecursive( const std::string &fieldName ) {
-        return  getFieldOffsetRecursive( shared_from_this(), fieldName );
-    }
+    virtual ULONG getFieldOffsetByNameRecursive( const std::string &fieldName );
+
+    virtual TypeInfoPtr getFieldRecursive(const std::string &fieldName );
 
     virtual ULONG getFieldOffsetByNameNotRecursively( const std::string &fieldName ) {
         return lookupField(fieldName)->getOffset();
