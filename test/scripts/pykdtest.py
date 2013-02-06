@@ -71,7 +71,7 @@ if __name__ == "__main__":
     #print "Test module: %s" % target.appPath
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
-    #unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite("typedvar.TypedVarTest.testAmbiguousFieldAccess") )
+    #unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite("customtypestest.CustomTypesTest.testPtrToCustomType") )
     
     raw_input(">")
 #
