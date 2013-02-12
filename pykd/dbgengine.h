@@ -132,6 +132,17 @@ enum EVENT_TYPE {
 EVENT_TYPE getLastEventType();
 ExceptionInfoPtr getLastExceptionInfo();
 
+
+struct BUG_CHECK_DATA
+{
+    ULONG code;
+    ULONG64 arg1;
+    ULONG64 arg2;
+    ULONG64 arg3;
+    ULONG64 arg4;
+};
+void readBugCheckData(BUG_CHECK_DATA &bugCheckData);
+
 void eventRegisterCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
 void eventRemoveCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
 

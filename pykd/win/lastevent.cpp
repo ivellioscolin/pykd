@@ -91,6 +91,19 @@ ExceptionInfoPtr getLastExceptionInfo()
     );
 }
 
+void readBugCheckData(BUG_CHECK_DATA &bugCheckData)
+{
+    HRESULT hres = 
+        g_dbgEng->control->ReadBugCheckData(
+            &bugCheckData.code,
+            &bugCheckData.arg1,
+            &bugCheckData.arg2,
+            &bugCheckData.arg3,
+            &bugCheckData.arg4);
+    if (S_OK != hres)
+        throw DbgException("IDebugControl::GetLastEventInformation", hres);
+}
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////

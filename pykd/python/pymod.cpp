@@ -549,8 +549,13 @@ BOOST_PYTHON_MODULE( pykd )
         .value("ChangeSymbolState", EventTypeChangeSymbolState)
         .export_values();
 
-    python::def( "lastEvent", &getLastEventType, "Return type of last event: eventType" );
-    python::def( "lastException", &getLastExceptionInfo, "Return data of last exception event: exceptionInfo" );
+    python::def( "lastEvent", &getLastEventType,
+        "Return type of last event: eventType" );
+    python::def( "lastException", &getLastExceptionInfo,
+        "Return data of last exception event: exceptionInfo" );
+    python::def( "bugCheckData", &pysupport::getBugCheckData,
+        "Function reads the kernel bug check code and related parameters\n"
+        "And return tuple: (code, arg1, arg2, arg3, arg4)" );
 
     python::class_<Disasm>("disasm", "Class disassemble a processor instructions" )
         .def( python::init<>( "constructor" ) )

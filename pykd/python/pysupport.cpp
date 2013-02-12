@@ -25,6 +25,13 @@ python::list getProcessThreads()
     return threadsLst;
 }
 
+python::tuple getBugCheckData()
+{
+    BUG_CHECK_DATA bugCheckData;
+    readBugCheckData(bugCheckData);
+    return python::make_tuple(bugCheckData.code, bugCheckData.arg1, bugCheckData.arg2, bugCheckData.arg3, bugCheckData.arg4);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } } //pykd::support namespace end

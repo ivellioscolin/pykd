@@ -9,6 +9,8 @@ namespace pysupport {
 
 python::list getProcessThreads();
 
+python::tuple getBugCheckData();
+
 } } //pykd::support namespace end
 
 ///////////////////////////////////////////////////////////////////////////////
