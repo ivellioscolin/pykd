@@ -12,6 +12,9 @@ def findHanle(objaddr):
     for process in processList:
 
         dprintln( "search in process %x " % process.UniqueProcessId +  "".join( [chr(i) for i in process.ImageFileName if i != 0] ) )
+        
+        if process.ObjectTable == 0:
+            continue
 
         objects = ntobj.getListByHandleTable( process.ObjectTable )
         for obj in objects:

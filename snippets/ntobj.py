@@ -28,12 +28,20 @@ from pykd import *
 
 nt = module("nt")
 
+# optimization
+OBJECT_HEADER = nt.type("_OBJECT_HEADER")
+HANDLE_TABLE_ENTRY = nt.type("_HANDLE_TABLE_ENTRY")
+OBJECT_DIRECTORY_ENTRY = nt.type("_OBJECT_DIRECTORY_ENTRY")
+OBJECT_HEADER_NAME_INFO = nt.type("_OBJECT_HEADER_NAME_INFO")
+
+
+
 def getTypeWin7(p):
   """
   Get object header by object pointer
   Implementation for Win7+
   """
-  objHeader = nt.containingRecord(p, "_OBJECT_HEADER", "Body")
+  objHeader = containingRecord(p, OBJECT_HEADER, "Body")
   tableTypeIndex = nt.ObTypeIndexTable
   return ptrPtr(tableTypeIndex + (ptrSize() * objHeader.TypeIndex))
 
@@ -42,7 +50,7 @@ def getTypeLegacy(p):
   Get object header by object pointer
   Implementation for before Win7
   """
-  objHeader = nt.containingRecord(p, "_OBJECT_HEADER", "Body")
+  objHeader = containingRecord(p, OBJECT_HEADER, "Body")
   return objHeader.Type
 
 # Select platform-specific function for getting object header
@@ -59,28 +67,28 @@ def getObjectNameInfoFromHeader(p):
   """
   Get object name information from field NameInfoOffset of object header
   """
-  objHeader = nt.containingRecord(p, "_OBJECT_HEADER", "Body")
+  objHeader = containingRecord(p, OBJECT_HEADER, "Body")
   if (0 == objHeader.NameInfoOffset):
     return None
-  return nt.typedVar("_OBJECT_HEADER_NAME_INFO", objHeader.getAddress() - objHeader.NameInfoOffset)
+  return typedVar(OBJECT_HEADER_NAME_INFO, objHeader.getAddress() - objHeader.NameInfoOffset)
 
 def getObjectNameInfoFromInfoMask(p):
   """
   Get object name information from field NameInfoOffset of object header
   """
-  objHeader = nt.containingRecord(p, "_OBJECT_HEADER", "Body")
+  objHeader = containingRecord(p, OBJECT_HEADER, "Body")
   if (0 == (objHeader.InfoMask & 2)):
     return None
   offsetNameInfo = ptrByte( nt.ObpInfoMaskToOffset + (objHeader.InfoMask & 3) )
   if (0 == offsetNameInfo):
     return None
-  return nt.typedVar("_OBJECT_HEADER_NAME_INFO", objHeader.getAddress() - offsetNameInfo)
+  return typedVar(OBJECT_HEADER_NAME_INFO, objHeader.getAddress() - offsetNameInfo)
 
 
 # Select platform-specific function for getting name of object
 getObjectNameInfo = None
 try:
-  nt.type("_OBJECT_HEADER").NameInfoOffset
+  OBJECT_HEADER.NameInfoOffset
   getObjectNameInfo = getObjectNameInfoFromHeader
 except TypeException:
   getObjectNameInfo = getObjectNameInfoFromInfoMask
@@ -149,7 +157,7 @@ def getListByHandleTable(tableHandles=None, objTypeAddr=0, containHeaders=True):
     if (0 == entryHandle):
       return 0
   
-    HandleEntry = nt.typedVar("_HANDLE_TABLE_ENTRY", entryHandle)
+    HandleEntry = typedVar( HANDLE_TABLE_ENTRY, entryHandle)
     if (0xFFFFFFFE == HandleEntry.NextFreeTableEntry):
       return 0
 
@@ -158,7 +166,7 @@ def getListByHandleTable(tableHandles=None, objTypeAddr=0, containHeaders=True):
       return 0
 
     if (containHeader):
-      objHeader = nt.typedVar("_OBJECT_HEADER", p)
+      objHeader = typedVar( OBJECT_HEADER, p)
       p = objHeader.Body.getAddress()
     return p
 
@@ -250,7 +258,7 @@ def getListByDirectoryObject(p, objTypeAddr=0):
   for i in range(0, NUMBER_HASH_BUCKETS):
     bucket = ptrPtr( p + (i * ptrSize()) )
     while bucket:
-      bucketVar = nt.typedVar("_OBJECT_DIRECTORY_ENTRY", bucket)
+      bucketVar = typedVar( OBJECT_DIRECTORY_ENTRY, bucket)
       if objTypeAddr and (getType(bucketVar.Object) ==  objTypeAddr):
         result.append(bucketVar.Object)
       elif (not objTypeAddr):
