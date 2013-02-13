@@ -407,6 +407,7 @@ protected:
 protected:
 
     UdtTypeInfoBase(const std::string &typeName) : 
+         m_fields(typeName),
          m_name(typeName),
          m_fieldsGot( false )
          {}

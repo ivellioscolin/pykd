@@ -850,12 +850,12 @@ TypeInfoPtr EnumTypeInfo::getField( const std::string &fieldName )
 TypeInfoPtr EnumTypeInfo::getFieldByIndex( ULONG index ) 
 {
     if ( index >= m_dia->getChildCount() )
-        throw TypeException( m_dia->getName(), ": field not found" );
+         throw PyException( PyExc_IndexError, "index out of range" );
 
     SymbolPtr field = m_dia->getChildByIndex(index);
 
     if ( !field )
-        throw TypeException( m_dia->getName(), ": field not found" );   
+         throw PyException( PyExc_IndexError, "index out of range" );
     
     return TypeInfo::getTypeInfo( m_dia, field->getName() );
 }
@@ -865,12 +865,12 @@ TypeInfoPtr EnumTypeInfo::getFieldByIndex( ULONG index )
 std::string EnumTypeInfo::getFieldNameByIndex( ULONG index )
 {
     if ( index >= m_dia->getChildCount() )
-        throw TypeException( m_dia->getName(), ": field not found" );
+         throw PyException( PyExc_IndexError, "index out of range" );
 
     SymbolPtr field = m_dia->getChildByIndex(index);
 
     if ( !field )
-        throw TypeException( m_dia->getName(), ": field not found" );   
+         throw PyException( PyExc_IndexError, "index out of range" );
 
     return field->getName();
 }

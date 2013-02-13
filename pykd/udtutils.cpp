@@ -32,7 +32,10 @@ const UdtFieldPtr& FieldCollection::lookup(const std::string &name) const
             return *it;
     }
 
-    throw TypeException( "",  "field not found" );
+    std::stringstream   sstr;
+    sstr << "field \"" << name << " not found";
+
+    throw TypeException( m_name, sstr.str() );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

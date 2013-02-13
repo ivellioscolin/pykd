@@ -161,6 +161,10 @@ class FieldCollection
 {
 public:
 
+    FieldCollection( const std::string &name ) :
+      m_name( name )
+      {}
+
     const UdtFieldPtr &lookup(ULONG index) const;
     const UdtFieldPtr &lookup(const std::string &name) const;
 
@@ -179,6 +183,7 @@ private:
 
     typedef std::vector<UdtFieldPtr>  FieldList;
     FieldList  m_fields;
+    std::string  m_name;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
