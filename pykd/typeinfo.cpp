@@ -126,7 +126,11 @@ ULONG64 TypeInfo::getOffset( const std::string &fullName )
 
 inline ULONG getTypePointerSize( SymbolPtr &typeSym )
 {
-    return (typeSym->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
+    ULONG symTag = typeSym->getSymTag();
+    if ( symTag != SymTagPointerType )
+        return (typeSym->getMachineType() == IMAGE_FILE_MACHINE_AMD64) ? 8 : 4;
+
+    return (ULONG)typeSym->getSize();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -155,12 +159,10 @@ TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &typeSym )
             break;
         }
 
-       ptr = getTypeInfo( typeSym->getType() );
-       break;
+       return getTypeInfo( typeSym->getType() );
 
     case SymTagBaseType:
-        ptr = getBaseTypeInfo( typeSym );
-        break;
+        return getBaseTypeInfo( typeSym );
 
     case SymTagUDT:
     case SymTagBaseClass:
@@ -172,8 +174,7 @@ TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &typeSym )
         break;
 
     case SymTagPointerType:   
-        ptr = TypeInfoPtr( new PointerTypeInfo( typeSym ) );
-        break;
+        return TypeInfoPtr( new PointerTypeInfo( typeSym ) );
 
     case SymTagVTable:
         ptr = TypeInfoPtr( new PointerTypeInfo( typeSym->getType() ) );

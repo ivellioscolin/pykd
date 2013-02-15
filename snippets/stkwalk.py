@@ -153,7 +153,7 @@ def printProcess(process,processFilter,threadFilter,moduleFilter,funcFilter,prin
        
         dbgCommand( ".reload /user" )   
         
-        threadLst = nt.typedVarList(process.ThreadListHead, "_ETHREAD", "ThreadListEntry")
+        threadLst = nt.typedVarList(process.ThreadListHead, "_ETHREAD", "ThreadListEntry.Flink")
         filteredThreadLst = []
         stackHashes = set()
         
@@ -226,7 +226,7 @@ def main():
     currentProcess = getCurrentProcess()
     currentThread = getImplicitThread()
 
-    processLst = nt.typedVarList( nt.PsActiveProcessHead, "_EPROCESS", "ActiveProcessLinks")  
+    processLst = nt.typedVarList( nt.PsActiveProcessHead, "_EPROCESS", "ActiveProcessLinks.Flink")  
     for process in processLst:
         printProcess( process, processFilter, threadFilter, moduleFilter, funcFilter, printopt )  
             
