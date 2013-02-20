@@ -394,7 +394,9 @@ PointerTypeInfo::PointerTypeInfo( SymbolPtr &symbol  )
             break;
         }
     }
+
     m_size = (ULONG)symbol->getSize();
+    m_ptrSize = m_size;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
