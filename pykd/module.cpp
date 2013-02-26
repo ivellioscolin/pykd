@@ -121,6 +121,18 @@ SymbolSessionPtr& Module::getSymSession()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+ULONG64 Module::prepareVa(ULONG64 offset)
+{
+    offset = addr64(offset);
+
+    if ( offset < m_base || offset > getEnd() )
+        throw DbgException( "address is out of the module space" );
+
+    return offset;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 SymbolPtr Module::getSymScope()
 {
     return getSymSession()->getSymbolScope();
@@ -189,10 +201,7 @@ std::string Module::print()
 TypedVarPtr 
 Module::getTypedVarByAddr( ULONG64 offset )
 {
-    offset = addr64(offset);
-
-    if ( offset < m_base || offset > getEnd() )
-        throw DbgException( "address is out of the module space" );
+    offset = prepareVa(offset);
 
     SymbolPtr symVar = getSymSession()->findByRva( (ULONG)(offset - m_base ) );
 
@@ -224,7 +233,7 @@ Module::getTypedVarByName( const std::string &symName )
 TypedVarPtr 
 Module::getTypedVarByTypeName( const std::string &typeName, ULONG64 offset )
 {
-    offset = addr64(offset);
+    offset = prepareVa(offset);
 
     TypeInfoPtr typeInfo = getTypeByName( typeName );
 
@@ -258,21 +267,16 @@ python::list Module::getTypedVarListByTypeName( ULONG64 listHeadAddress, const s
 
 SymbolPtr Module::getSymbolByVa( ULONG64 offset, ULONG symTag, LONG* displacment )
 {
-    offset = addr64(offset);
-
-    if ( offset < m_base || offset > getEnd() )
-        throw DbgException( "address is out of the module space" );
+    offset = prepareVa(offset);
 
    return getSymSession()->findByRva( (ULONG)(offset - m_base ), symTag, displacment );
 }
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 std::string Module::getSymbolNameByVa( ULONG64 offset, bool showDisplacement )
 {
-    offset = addr64(offset);
-
-    if ( offset < m_base || offset > getEnd() )
-        throw DbgException( "address is out of the module space" );
+    offset = prepareVa(offset);
 
     LONG displacement = 0;
 
@@ -291,6 +295,23 @@ std::string Module::getSymbolNameByVa( ULONG64 offset, bool showDisplacement )
     }
 
     return sstr.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+std::string Module::getStrictSymbolNameByVa( ULONG64 offset )
+{
+    offset = prepareVa(offset);
+
+    LONG displacement = 0;
+
+    const ULONG rva = (ULONG)(offset - m_base );
+    SymbolPtr sym = getSymSession()->findByRva( rva , SymTagNull, &displacement );
+
+    if (displacement || rva != sym->getRva())
+        throw SymbolException( "Not exact address of symbol" );
+
+    return sym->getName();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

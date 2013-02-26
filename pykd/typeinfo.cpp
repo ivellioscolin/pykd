@@ -173,7 +173,7 @@ TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &typeSym )
         ptr = TypeInfoPtr( new ArrayTypeInfo( typeSym ) );
         break;
 
-    case SymTagPointerType:   
+    case SymTagPointerType:
         return TypeInfoPtr( new PointerTypeInfo( typeSym ) );
 
     case SymTagVTable:

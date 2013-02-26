@@ -48,15 +48,20 @@ class ModuleTest( unittest.TestCase ):
         self.assertEqual( target.module.rva("FuncWithName0"), target.module.offset("FuncWithName0") - target.module.begin() )
         self.assertEqual( target.module.rva("FuncWithName0"), target.module.FuncWithName0 - target.module.begin() )
         self.assertEqual( target.module.rva("FuncWithName0"), pykd.getOffset( target.module.name() + "!FuncWithName0") - target.module.begin() )
-        
+
     def testFindSymbol( self ):
         self.assertEqual( "FuncWithName0", target.module.findSymbol( target.module.offset("FuncWithName0") ) )
         self.assertEqual( "_FuncWithName2", target.module.findSymbol( target.module.offset("_FuncWithName2") ) )
-        
+
         self.assertEqual( "_FuncWithName2+10", target.module.findSymbol( target.module.offset("_FuncWithName2") + 0x10 ) )
         self.assertEqual( "_FuncWithName2", target.module.findSymbol( target.module.offset("_FuncWithName2") + 0x10, showDisplacement = False ) )
-        
-        
+
+    def testGetSymbolName( self ):
+        vaFuncWithName0 = target.module.offset("FuncWithName0")
+        self.assertEqual( "FuncWithName0", target.module.getSymbolName(vaFuncWithName0) )
+        self.assertRaises( pykd.SymbolException, target.module.getSymbolName, vaFuncWithName0 + 1 )
+        self.assertRaises( pykd.SymbolException, target.module.getSymbolName, vaFuncWithName0 - 1 )
+
     def testType( self ):
         self.assertEqual( "structTest", target.module.type("structTest").name() );
         self.assertEqual( "structTest", target.module.type("g_structTest").name() );

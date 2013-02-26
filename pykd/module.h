@@ -133,6 +133,8 @@ public:
 
     std::string getSymbolNameByVa( ULONG64 offset, bool showDisplacement = true );
 
+    std::string getStrictSymbolNameByVa( ULONG64 offset );
+
     void getSourceLine( ULONG64 offset, std::string &fileName, ULONG &lineNo, LONG &displacement );
 
     std::string getSourceFile( ULONG64 offset );
@@ -148,6 +150,8 @@ public:
     python::tuple getVersion();
 
 private:
+
+    ULONG64 prepareVa(ULONG64 addr);
 
     SymbolPtr getSymScope();
 

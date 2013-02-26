@@ -370,6 +370,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return offset of the symbol" )
         .def("findSymbol", &Module::getSymbolNameByVa, Module_findSymbol( python::args("offset", "showDisplacement"),
             "Return symbol name by virtual address" ) )
+        .def("getSymbolName", &Module::getStrictSymbolNameByVa,
+            "Return symbol name by virtual address (without displacement)" )
         .def("rva", &Module::getSymbolRva,
             "Return rva of the symbol" )
         .def("sizeof", &Module::getSymbolSize,
