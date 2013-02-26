@@ -56,16 +56,15 @@ class ModuleTest( unittest.TestCase ):
         self.assertEqual( "_FuncWithName2+10", target.module.findSymbol( target.module.offset("_FuncWithName2") + 0x10 ) )
         self.assertEqual( "_FuncWithName2", target.module.findSymbol( target.module.offset("_FuncWithName2") + 0x10, showDisplacement = False ) )
 
-    def testGetSymbolName( self ):
+    def testFindSymbolAndDisp( self ):
         vaFuncWithName0 = target.module.offset("FuncWithName0")
-        self.assertEqual( "FuncWithName0", target.module.getSymbolName(vaFuncWithName0) )
-        self.assertRaises( pykd.SymbolException, target.module.getSymbolName, vaFuncWithName0 + 1 )
-        self.assertRaises( pykd.SymbolException, target.module.getSymbolName, vaFuncWithName0 - 1 )
+        self.assertEqual( ("FuncWithName0", 0), target.module.findSymbolAndDisp(vaFuncWithName0) )
+        self.assertEqual( ("FuncWithName0", 2), target.module.findSymbolAndDisp(vaFuncWithName0+2) )
 
     def testType( self ):
         self.assertEqual( "structTest", target.module.type("structTest").name() );
         self.assertEqual( "structTest", target.module.type("g_structTest").name() );
-        
+
     def testSourceFile( self ):
         fileName = pykd.getSourceFile(target.module.FuncWithName0 )
         self.assertTrue( re.search('targetapp\\.cpp', fileName ) )
