@@ -201,7 +201,7 @@ std::string Module::print()
 TypedVarPtr 
 Module::getTypedVarByAddr( ULONG64 offset )
 {
-    offset = prepareVa(offset);
+    offset = addr64(offset);
 
     SymbolPtr symVar = getSymSession()->findByRva( (ULONG)(offset - m_base ) );
 
@@ -233,7 +233,7 @@ Module::getTypedVarByName( const std::string &symName )
 TypedVarPtr 
 Module::getTypedVarByTypeName( const std::string &typeName, ULONG64 offset )
 {
-    offset = prepareVa(offset);
+    offset = addr64(offset);
 
     TypeInfoPtr typeInfo = getTypeByName( typeName );
 
