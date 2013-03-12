@@ -299,14 +299,13 @@ std::string Module::getSymbolNameByVa( ULONG64 offset, bool showDisplacement )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-python::tuple Module::getSymbolAndDispByVa( ULONG64 offset )
+void Module::getSymbolAndDispByVa( ULONG64 offset, std::string &symbolName, LONG &displacement)
 {
     offset = prepareVa(offset);
 
-    LONG displacement = 0;
     SymbolPtr sym = getSymSession()->findByRva( (ULONG)(offset - m_base ), SymTagNull, &displacement );
 
-    return python::make_tuple(sym->getName(), displacement);
+    symbolName = sym->getName();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

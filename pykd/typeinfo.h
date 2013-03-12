@@ -29,7 +29,10 @@ public:
     ULONG64 getSymbolSize( const std::string &symName );
 
     static
-    std::string findSymbol( ULONG64 offset, bool safe = true );
+    std::string findSymbol( ULONG64 offset, bool showDisplacement = true );
+
+    static
+    void findSymbolAndDisp( ULONG64 offset, std::string &symbolName, LONG &displacement );
 
     static
     ULONG64 getOffset( const std::string &symbolName );

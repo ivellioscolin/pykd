@@ -133,7 +133,7 @@ public:
 
     std::string getSymbolNameByVa( ULONG64 offset, bool showDisplacement = true );
 
-    python::tuple getSymbolAndDispByVa( ULONG64 offset );
+    void getSymbolAndDispByVa( ULONG64 offset, std::string &symbolName, LONG &displacement);
 
     void getSourceLine( ULONG64 offset, std::string &fileName, ULONG &lineNo, LONG &displacement );
 

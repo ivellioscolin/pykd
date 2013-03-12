@@ -2,6 +2,7 @@
 #include "pysupport.h"
 
 #include "dbgengine.h"
+#include "typeinfo.h"
 #include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,6 +32,27 @@ python::tuple getBugCheckData()
     readBugCheckData(bugCheckData);
     return python::make_tuple(bugCheckData.code, bugCheckData.arg1, bugCheckData.arg2, bugCheckData.arg3, bugCheckData.arg4);
 }
+
+python::tuple findSymbolAndDisp( ULONG64 offset )
+{
+    std::string  symbolName;
+    LONG  displacement;
+
+    pykd::TypeInfo::findSymbolAndDisp( offset, symbolName, displacement );
+
+    return python::make_tuple(symbolName,displacement);
+}
+
+python::tuple moduleFindSymbolAndDisp( pykd::Module &module, ULONG64 offset )
+{
+    std::string  symbolName;
+    LONG  displacement;
+
+    module.getSymbolAndDispByVa( offset, symbolName, displacement );
+
+    return python::make_tuple(symbolName,displacement);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 

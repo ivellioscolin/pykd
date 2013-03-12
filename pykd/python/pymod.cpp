@@ -231,8 +231,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Return source file name, line and displacement by the specified offset" ) );
     python::def( "getOffset", &TypeInfo::getOffset,
         "Return traget virtual address for specified symbol" );
-    python::def( "findSymbol", &TypeInfo::findSymbol, findSymbol_( python::args( "offset", "safe"),
+    python::def( "findSymbol", &TypeInfo::findSymbol, findSymbol_( python::args( "offset", "showDisplacement"),
         "Find symbol by the target virtual memory offset" ) );
+    python::def("findSymbolAndDisp", &pysupport::findSymbolAndDisp,
+        "Return tuple(symbol_name, displacement) by virtual address" );
     python::def( "sizeof", &TypeInfo::getSymbolSize,
         "Return a size of the type or variable" );
     python::def("typedVarList", &getTypedVarListByTypeName,
@@ -376,7 +378,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return offset of the symbol" )
         .def("findSymbol", &Module::getSymbolNameByVa, Module_findSymbol( python::args("offset", "showDisplacement"),
             "Return symbol name by virtual address" ) )
-        .def("findSymbolAndDisp", &Module::getSymbolAndDispByVa,
+        .def("findSymbolAndDisp", &pysupport::moduleFindSymbolAndDisp,
             "Return tuple(symbol_name, displacement) by virtual address" )
         .def("rva", &Module::getSymbolRva,
             "Return rva of the symbol" )

@@ -52,14 +52,19 @@ class ModuleTest( unittest.TestCase ):
     def testFindSymbol( self ):
         self.assertEqual( "FuncWithName0", target.module.findSymbol( target.module.offset("FuncWithName0") ) )
         self.assertEqual( "_FuncWithName2", target.module.findSymbol( target.module.offset("_FuncWithName2") ) )
-
+        self.assertEqual( "targetapp!FuncWithName0", pykd.findSymbol( target.module.offset("FuncWithName0") ) )
+        self.assertEqual( "targetapp!_FuncWithName2", pykd.findSymbol( target.module.offset("_FuncWithName2") ) )
         self.assertEqual( "_FuncWithName2+10", target.module.findSymbol( target.module.offset("_FuncWithName2") + 0x10 ) )
         self.assertEqual( "_FuncWithName2", target.module.findSymbol( target.module.offset("_FuncWithName2") + 0x10, showDisplacement = False ) )
+        self.assertEqual( "targetapp!_FuncWithName2+10", pykd.findSymbol( target.module.offset("_FuncWithName2") + 0x10 ) )
+        self.assertEqual( "targetapp!_FuncWithName2", pykd.findSymbol( target.module.offset("_FuncWithName2") + 0x10, showDisplacement = False ) )
 
     def testFindSymbolAndDisp( self ):
         vaFuncWithName0 = target.module.offset("FuncWithName0")
         self.assertEqual( ("FuncWithName0", 0), target.module.findSymbolAndDisp(vaFuncWithName0) )
         self.assertEqual( ("FuncWithName0", 2), target.module.findSymbolAndDisp(vaFuncWithName0+2) )
+        self.assertEqual( ("targetapp!FuncWithName0", 0), pykd.findSymbolAndDisp(vaFuncWithName0) )
+        self.assertEqual( ("targetapp!FuncWithName0", 2), pykd.findSymbolAndDisp(vaFuncWithName0+2) )
 
     def testType( self ):
         self.assertEqual( "structTest", target.module.type("structTest").name() );
