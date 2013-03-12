@@ -15,8 +15,6 @@ class ExceptionHandler(pykd.eventHandler):
 
         self.accessViolationOccured = exceptInfo.ExceptionCode == 0xC0000005
         
-        print exceptInfo
-        
         if self.accessViolationOccured:
             self.param0 = exceptInfo.Parameters[0]
             self.param1 = exceptInfo.Parameters[1]

@@ -1521,15 +1521,20 @@ HRESULT STDMETHODCALLTYPE DebugEngine::ChangeEngineState(
 
     HandlerList::iterator  it = m_handlers.begin();
 
-    for ( ; it != m_handlers.end(); ++it )
+    if ( ( ( Flags & DEBUG_CES_EXECUTION_STATUS ) != 0 ) &&
+         ( ( Argument & DEBUG_STATUS_INSIDE_WAIT ) == 0 ) &&
+         (ULONG)Argument != previousExecutionStatus )
     {
-        if ( ( Flags & DEBUG_CES_EXECUTION_STATUS ) != 0 &&
-             ( Argument & DEBUG_STATUS_INSIDE_WAIT ) == 0 )
+
+        for ( ; it != m_handlers.end(); ++it )
         {
+
             PyThread_StateSave pyThreadSave( it->pystate );
 
             it->callback->onExecutionStatusChange( (ULONG)Argument );
         }
+
+        previousExecutionStatus = (ULONG)Argument;
     }
 
     return S_OK;

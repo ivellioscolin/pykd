@@ -104,6 +104,10 @@ public:
     void registerCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
     void removeCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
 
+    DebugEngine() :
+        previousExecutionStatus( DebugStatusNoChange )
+        {}
+
 private:
 
     std::auto_ptr<DbgEngBind>    m_bind;
@@ -123,6 +127,8 @@ private:
 
     boost::recursive_mutex       m_handlerLock;
     HandlerList  m_handlers;
+
+    ULONG   previousExecutionStatus;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
