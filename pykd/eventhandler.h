@@ -26,6 +26,7 @@ private:
     virtual DEBUG_CALLBACK_RESULT OnModuleLoad( ULONG64 offset, const std::string &name ) = 0;
     virtual DEBUG_CALLBACK_RESULT OnModuleUnload( ULONG64 offset, const std::string &name ) = 0;
     virtual DEBUG_CALLBACK_RESULT OnException( ExceptionInfoPtr exceptInfo ) = 0;
+    virtual void onExecutionStatusChange( ULONG executionStatus ) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +53,27 @@ public:
         return handler("onException", exceptInfo );
     }
 
+    virtual void onExecutionStatusChange( ULONG executionStatus ) {
+        void_handler("onExecutionStatusChange", executionStatus );
+    }
+
+
 private:
+
+    template<typename Arg1Type>
+    void void_handler( const char* handlerName, Arg1Type arg1 )
+    {
+        if (python::override pythonHandler = get_override( handlerName ))
+        {
+            try {
+               pythonHandler(arg1);
+            }
+            catch (const python::error_already_set &)  {
+                printException();
+            }
+        }
+    }
+
 
     template<typename Arg1Type>
     DEBUG_CALLBACK_RESULT handler( const char* handlerName, Arg1Type arg1 )
@@ -60,7 +81,7 @@ private:
         if (python::override pythonHandler = get_override( handlerName ))
         {
             try {
-                return pythonHandler(arg1);
+                pythonHandler(arg1);
             }
             catch (const python::error_already_set &)  {
                 printException();

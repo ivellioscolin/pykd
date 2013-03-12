@@ -12,6 +12,9 @@ class handler( pykd.eventHandler ):
     def onException(self, param):
         self.counter += 1
         return pykd.DEBUG_STATUS_NO_CHANGE
+        
+    def onExecutionStatusChange(self,status):
+        print status
 
 class EventTest( unittest.TestCase ):
 

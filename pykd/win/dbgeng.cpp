@@ -1235,14 +1235,6 @@ ULONG breakPointSet( ULONG64 offset, bool hardware, ULONG size, ULONG accessType
         throw DbgException("IDebugBreakpoint::GetFlags", hres);
     }
 
-    bpFlags |= DEBUG_BREAKPOINT_ENABLED;
-    hres = bp->SetFlags(bpFlags);
-    if (S_OK != hres)
-    {
-        g_dbgEng->control->RemoveBreakpoint(bp);
-        throw DbgException("IDebugBreakpoint::SetFlags", hres);
-    }
-
     if ( hardware )
     {
         HRESULT hres = bp->SetDataParameters(size, accessType);
@@ -1251,6 +1243,14 @@ ULONG breakPointSet( ULONG64 offset, bool hardware, ULONG size, ULONG accessType
             g_dbgEng->control->RemoveBreakpoint(bp);
             throw DbgException("IDebugBreakpoint::SetDataParameters", hres);
         }
+    }
+
+    bpFlags |= DEBUG_BREAKPOINT_ENABLED | DEBUG_BREAKPOINT_GO_ONLY;
+    hres = bp->SetFlags(bpFlags);
+    if (S_OK != hres)
+    {
+        g_dbgEng->control->RemoveBreakpoint(bp);
+        throw DbgException("IDebugBreakpoint::SetFlags", hres);
     }
 
     ULONG  breakId;
@@ -1513,6 +1513,30 @@ HRESULT STDMETHODCALLTYPE DebugEngine::Exception(
 
 ///////////////////////////////////////////////////////////////////////////////
 
+HRESULT STDMETHODCALLTYPE DebugEngine::ChangeEngineState(
+    __in ULONG Flags,
+    __in ULONG64 Argument )
+{
+    boost::recursive_mutex::scoped_lock l(m_handlerLock);
+
+    HandlerList::iterator  it = m_handlers.begin();
+
+    for ( ; it != m_handlers.end(); ++it )
+    {
+        if ( ( Flags & DEBUG_CES_EXECUTION_STATUS ) != 0 &&
+             ( Argument & DEBUG_STATUS_INSIDE_WAIT ) == 0 )
+        {
+            PyThread_StateSave pyThreadSave( it->pystate );
+
+            it->callback->onExecutionStatusChange( (ULONG)Argument );
+        }
+    }
+
+    return S_OK;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 ULONG64
 getCurrentProcess()
 {
@@ -1527,6 +1551,24 @@ getCurrentProcess()
         
      return processAddr; 
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+ULONG getCurrentProcessId()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT      hres;
+    ULONG        pid;
+
+    hres = g_dbgEng->system->GetCurrentProcessSystemId( &pid );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSystemObjects2::GetCurrentProcessSystemId  failed" ); 
+        
+     return pid; 
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1543,6 +1585,22 @@ getImplicitThread()
         throw DbgException( "IDebugSystemObjects2::GetImplicitThreadDataOffset  failed" ); 
         
     return threadOffset;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ULONG getCurrentThreadId()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT      hres;
+    ULONG        tid;
+
+    hres = g_dbgEng->system->GetCurrentThreadSystemId( &tid );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugSystemObjects2::GetCurrentThreadSystemId  failed" ); 
+        
+     return tid; 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1672,8 +1730,6 @@ std::string callExtension( ULONG64 extHandle, const std::wstring command, const 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-
 
 } // end pykd namespace
 

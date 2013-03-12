@@ -22,6 +22,7 @@ import regtest
 import localstest
 import customtypestest
 import ehexcepttest
+import ehstatustest
 
 class StartProcessWithoutParamsTest(unittest.TestCase):
     def testStart(self):
@@ -53,6 +54,7 @@ def getTestSuite( singleName = "" ):
 
                 unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
                 unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionTest ),
+                unittest.TestLoader().loadTestsFromTestCase( ehstatustest.EhStatusTest ),
             ] ) 
     else:
        return unittest.TestSuite(
@@ -68,5 +70,5 @@ if __name__ == "__main__":
 
     target.appPath = sys.argv[1]
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
-
+    
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )

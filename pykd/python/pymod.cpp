@@ -299,6 +299,12 @@ BOOST_PYTHON_MODULE( pykd )
         "Set implicit thread for current process" );
     python::def( "getProcessThreads", &pysupport::getProcessThreads,
         "Get all process's threads ( user mode only )" );
+    python::def( "getCurrentProcessId", &getCurrentProcessId,
+        "Return PID of the current process ( user mode only )" );
+    python::def( "getCurrentThreadId", &getCurrentThreadId,
+        "Return TID of the current thread ( user mode only )" );
+
+
     
     // symbol path
     python::def( "getSymbolPath", &getSymbolPath, "Returns current symbol path");
@@ -582,6 +588,13 @@ BOOST_PYTHON_MODULE( pykd )
         .value("Break", DebugCallbackBreak)
         .export_values();
 
+    python::enum_<EXECUTION_STATUS>("executionStatus", "Execution Status")
+        .value("NoChange", DebugStatusNoChange )
+        .value("Go", DebugStatusGo )
+        .value("Break", DebugStatusBreak )
+        .value("NoDebuggee", DebugStatusNoDebuggee )
+        .export_values();
+
     python::class_<EventHandlerWrap, EventHandlerPtr, boost::noncopyable>(
         "eventHandler", "Base class for overriding and handling debug notifications" )
         .def( "onBreakpoint", &EventHandlerWrap::OnBreakpoint,
@@ -595,7 +608,10 @@ BOOST_PYTHON_MODULE( pykd )
             "For ignore event method must return eventResult.noChange" )
         .def( "onException", &EventHandlerWrap::OnException,
             "Triggered exception event. Parameter - exceptionInfo\n"
-            "For ignore event method must return eventResult.noChange" );
+            "For ignore event method must return eventResult.noChange" )
+         .def( "onExecutionStatusChange", &EventHandlerWrap::onExecutionStatusChange,
+            "Triggered execution status changed. Parameter - execution status.\n"
+            "There is no return value" );
 
     // wrapper for standart python exceptions
     python::register_exception_translator<PyException>( &PyException::exceptionTranslate );

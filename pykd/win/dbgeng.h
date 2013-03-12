@@ -55,6 +55,7 @@ public:
         *Mask |= DEBUG_EVENT_LOAD_MODULE;
         *Mask |= DEBUG_EVENT_UNLOAD_MODULE;
         *Mask |= DEBUG_EVENT_EXCEPTION;
+        *Mask |= DEBUG_EVENT_CHANGE_ENGINE_STATE;
         return S_OK;
     }
 
@@ -78,6 +79,10 @@ public:
     STDMETHOD(Exception)(
         __in PEXCEPTION_RECORD64 Exception,
         __in  ULONG FirstChance );
+
+    STDMETHOD(ChangeEngineState)(
+        __in ULONG Flags,
+        __in ULONG64 Argument );
 
     DbgEngBind*
     operator->() 

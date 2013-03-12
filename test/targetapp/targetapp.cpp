@@ -602,6 +602,16 @@ int doExeptions()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+int doChangeStatus()
+{
+    __debugbreak();
+    __debugbreak();
+
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 #include <map>
 
 std::map<int, bool> g_map;
@@ -680,6 +690,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
             if ( !_tcsicmp(argv[1], _T("-testExceptions")) )
                 return doExeptions();
+
+            if ( !_tcsicmp(argv[1], _T("-testChangeStatus")) )
+                return doChangeStatus();
         }
 
         __debugbreak();

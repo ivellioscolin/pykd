@@ -6,15 +6,17 @@ import pykd
 import testutils
 
 class ExceptionHandler(pykd.eventHandler):
-    """Track load/unload module implementation"""
     def __init__(self):
         pykd.eventHandler.__init__(self)
         self.accessViolationOccured = False
 
     def onException(self, exceptInfo):
         """Exception handler"""
-        self.accessViolationOccured = exceptInfo.ExceptionCode == 0xC0000005
 
+        self.accessViolationOccured = exceptInfo.ExceptionCode == 0xC0000005
+        
+        print exceptInfo
+        
         if self.accessViolationOccured:
             self.param0 = exceptInfo.Parameters[0]
             self.param1 = exceptInfo.Parameters[1]
@@ -27,7 +29,7 @@ class EhExceptionTest(unittest.TestCase):
 
     def testException(self):
         """Start new process and track exceptions"""
-        _locProcessId = pykd.startProcess( target.appPath + " -testAccessViolation" )
+        _locProcessId = pykd.startProcess( target.appPath + " -testExceptions" )
         with testutils.ContextCallIt( testutils.KillProcess(_locProcessId) ) as killStartedProcess :
             exceptionHandler = ExceptionHandler()
 
@@ -38,7 +40,7 @@ class EhExceptionTest(unittest.TestCase):
 
             self.assertTrue( exceptionHandler.accessViolationOccured )
             self.assertEqual( exceptionHandler.param0, 1 )  # write
-            self.assertEqual( exceptionHandler.param1, 6 )  # addr
+            self.assertEqual( exceptionHandler.param1, 2 )  # addr
 
             exceptInfo = pykd.lastException()
             self.assertEqual( exceptInfo.ExceptionCode, 0xC0000005 )

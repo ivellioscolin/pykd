@@ -109,6 +109,7 @@ struct DEBUG_EVENT_CALLBACK {
     virtual DEBUG_CALLBACK_RESULT OnModuleLoad( ULONG64 offset, const std::string &name ) = 0;
     virtual DEBUG_CALLBACK_RESULT OnModuleUnload( ULONG64 offset, const std::string &name ) = 0;
     virtual DEBUG_CALLBACK_RESULT OnException( ExceptionInfoPtr exceptInfo ) = 0;
+    virtual void onExecutionStatusChange( ULONG executionStatus ) = 0;
 };
 
 enum EVENT_TYPE {
@@ -133,6 +134,13 @@ EVENT_TYPE getLastEventType();
 ExceptionInfoPtr getLastExceptionInfo();
 
 
+enum EXECUTION_STATUS {
+    DebugStatusNoChange             = 0,
+    DebugStatusGo                   = 1,
+    DebugStatusBreak                = 6,
+    DebugStatusNoDebuggee           = 7
+};
+
 struct BUG_CHECK_DATA
 {
     ULONG code;
@@ -154,7 +162,9 @@ void breakPointRemoveAll();
 
 // processes end threads
 ULONG64 getCurrentProcess();
+ULONG getCurrentProcessId();
 ULONG64 getImplicitThread();
+ULONG getCurrentThreadId();
 void setCurrentProcess( ULONG64 processAddr );
 void setImplicitThread( ULONG64 threadAddr );
 void getAllProcessThreads( std::vector<ULONG64> &threadsArray );
