@@ -148,6 +148,15 @@ BOOL WINAPI DllMain(
     case DLL_PROCESS_DETACH:
         CoUninitialize();
         break;
+
+    case DLL_THREAD_ATTACH:
+        CoInitialize(NULL);
+        break;
+
+    case DLL_THREAD_DETACH:
+        CoUninitialize();
+        break;
+
     }
     return TRUE;
 }
