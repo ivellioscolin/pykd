@@ -6,6 +6,7 @@
 #include "win/dbgeng.h"
 #include "win/dbgio.h"
 #include "dbgexcept.h"
+#include "eventhandler.h"
 
 namespace pykd {
 
@@ -1538,6 +1539,32 @@ HRESULT STDMETHODCALLTYPE DebugEngine::ChangeEngineState(
     }
 
     return S_OK;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+DebugEngine::DbgEngBind* DebugEngine::operator->() 
+{
+    if ( m_bind.get() != NULL )
+        return m_bind.get();
+
+    CComPtr<IDebugClient4>   client = NULL;
+
+    HRESULT  hres = DebugCreate( __uuidof(IDebugClient4), (void **)&client );
+    if ( FAILED( hres ) )
+        throw DbgException("DebugCreate failed");
+
+    m_bind.reset(new DbgEngBind(client, this) );
+
+    python::object   main = boost::python::import("__main__");
+
+    python::object   main_namespace = main.attr("__dict__");
+
+    python::object   pykd = boost::python::import( "pykd" );
+
+    main_namespace["globalEventHandler"] = EventHandlerPtr( new EventHandlerImpl() );
+
+    return m_bind.get();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
