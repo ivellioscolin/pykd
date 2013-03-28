@@ -13,10 +13,21 @@ namespace pykd {
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+namespace
+{
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 class Impl : protected DEBUG_EVENT_CALLBACK {
 public:
-    Impl();
-    ~Impl();
+    Impl() {
+        eventRegisterCallbacks(this);
+    }
+    ~Impl() {
+        eventRemoveCallbacks(this);
+    }
 
     bool find(const SymCacheModuleKey &cacheKey, SymbolSessionPtr &symSession);
 
@@ -57,32 +68,6 @@ private:
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-Impl::Impl()
-{
-    eventRegisterCallbacks(this);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-Impl::~Impl()
-{
-    eventRemoveCallbacks(this);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-DEBUG_CALLBACK_RESULT Impl::OnModuleUnload( ULONG64 modBase, const std::string & )
-{
-    boost::recursive_mutex::scoped_lock l(m_base2KeyLock);
-    if (modBase)
-        m_base2Key.erase(modBase);
-    else
-        m_base2Key.clear();
-    return DebugCallbackNoChange;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
 void Impl::onSymbolsUnloaded(ULONG64 modBase)
 {
     if (!modBase)
@@ -107,25 +92,6 @@ void Impl::onSymbolsUnloaded(ULONG64 modBase)
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-namespace
-{
-
-Impl &getImpl()
-{
-    // construct after DebugEngine
-    static Impl g_Impl;
-    return g_Impl;
-}
-
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-bool findSymCacheEntry(const SymCacheModuleKey &cacheKey, SymbolSessionPtr &symSession)
-{
-    return getImpl().find(cacheKey, symSession);
-}
-
 bool Impl::find(const SymCacheModuleKey &cacheKey, SymbolSessionPtr &symSession)
 {
     boost::recursive_mutex::scoped_lock l(m_key2SymLock);
@@ -142,11 +108,6 @@ bool Impl::find(const SymCacheModuleKey &cacheKey, SymbolSessionPtr &symSession)
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void insertSymCacheEntry(ULONG64 modBase, const SymCacheModuleKey &cacheKey, SymbolSessionPtr symSession)
-{
-    return getImpl().insert(modBase, cacheKey, symSession);
-}
-
 void Impl::insert(ULONG64 modBase, const SymCacheModuleKey &cacheKey, SymbolSessionPtr symSession)
 {
     {
@@ -162,11 +123,6 @@ void Impl::insert(ULONG64 modBase, const SymCacheModuleKey &cacheKey, SymbolSess
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void eraseSymCacheEntry(const SymCacheModuleKey &cacheKey)
-{
-    return getImpl().erase(cacheKey);
-}
-
 void Impl::erase(const SymCacheModuleKey &cacheKey)
 {
     boost::recursive_mutex::scoped_lock l(m_key2SymLock);
@@ -175,15 +131,63 @@ void Impl::erase(const SymCacheModuleKey &cacheKey)
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void clearSymCache()
-{
-    return getImpl().clear();
-}
-
 void Impl::clear()
 {
     boost::recursive_mutex::scoped_lock l(m_key2SymLock);
     m_key2Sym.clear();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+DEBUG_CALLBACK_RESULT Impl::OnModuleUnload( ULONG64 modBase, const std::string & )
+{
+    boost::recursive_mutex::scoped_lock l(m_base2KeyLock);
+    if (modBase)
+        m_base2Key.erase(modBase);
+    else
+        m_base2Key.clear();
+    return DebugCallbackNoChange;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+Impl &getImpl()
+{
+    // construct after DebugEngine
+    static Impl g_Impl;
+    return g_Impl;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+bool findSymCacheEntry(const SymCacheModuleKey &cacheKey, SymbolSessionPtr &symSession)
+{
+    return getImpl().find(cacheKey, symSession);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+void insertSymCacheEntry(ULONG64 modBase, const SymCacheModuleKey &cacheKey, SymbolSessionPtr symSession)
+{
+    return getImpl().insert(modBase, cacheKey, symSession);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+void eraseSymCacheEntry(const SymCacheModuleKey &cacheKey)
+{
+    return getImpl().erase(cacheKey);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+void clearSymCache()
+{
+    return getImpl().clear();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
