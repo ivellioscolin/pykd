@@ -1558,9 +1558,6 @@ HRESULT STDMETHODCALLTYPE DebugEngine::StartInput(
 
     g_dbgEng->control->ReturnInput ( s.c_str() );
 
-    //python::object   sys = python::import( "sys" );
-    //python::object   sysstdin = sys.attr("stdin");
-    //sys.attr("stdin") = python::object( DbgIn() );
     return S_OK;
 }
 
