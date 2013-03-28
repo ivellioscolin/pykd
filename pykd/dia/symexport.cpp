@@ -420,17 +420,21 @@ public:
           m_exportDir = ExportSymbolDir::getExportSymbolDir(moduleBase);
       }
 
-    SymbolPtr getSymbolScope() {
+    virtual SymbolPtr getSymbolScope() {
         return SymbolPtr( m_exportDir );
     }
 
-    SymbolPtr findByRva( ULONG rva, ULONG symTag = SymTagNull, LONG* displacement = NULL ) {
+    virtual SymbolPtr findByRva( ULONG rva, ULONG symTag = SymTagNull, LONG* displacement = NULL ) {
         return m_exportDir->findByRva( rva, symTag, displacement );
     }
 
     virtual void getSourceLine( ULONG64 offset, std::string &fileName, ULONG &lineNo, LONG &displacement ) 
     {
         throw SymbolException( "there is no source file" );
+    }
+
+    virtual std::string getSymbolFileName() {
+        return std::string("export symbols");
     }
 
 private:

@@ -68,51 +68,46 @@ SymbolSessionPtr& Module::getSymSession()
 
     try
     {
-        m_symSession = loadSymbolFile( m_base, m_imageName, m_symfile);
+        m_symSession = loadSymbolFile( m_base, m_imageName);
+        if (m_symSession)
+        {
+            m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
+            return m_symSession;
+        }
     }
     catch(const SymbolException &)
-    {
-    }
-    if (m_symSession)
-    {
-        m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
-        return m_symSession;
-    }
+    {}
 
     // TODO: read image file path and load using IDiaReadExeAtOffsetCallback
 
     try
     {
-        m_symfile = getModuleSymbolFileName(m_base);
-        if (!m_symfile.empty() )
+        std::string symfile = getModuleSymbolFileName(m_base);
+        if (!symfile.empty() )
         {
-            m_symSession = loadSymbolFile(m_symfile, m_base);
+            m_symSession = loadSymbolFile(symfile, m_base);
+        }
+
+        if (m_symSession)
+        {
+            m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
+            return m_symSession;
         }
     }
     catch(const DbgException&)
-    {
-    }
-
-    if (m_symSession)
-    {
-        m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
-        return m_symSession;
-    }
+    {}
 
     try
     {
         m_symSession = loadSymbolFromExports(m_base);
-        m_symfile = "export symbols";
+        if (m_symSession)
+        {
+            m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
+            return m_symSession;
+        }
     }
     catch(const DbgException&)
-    {
-    }
-
-    if (m_symSession)
-    {
-        m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
-        return m_symSession;
-    }
+    {}
 
     m_symSessionCache.insert( std::make_pair( cacheKey, SymbolSessionPtr() ) );
 
@@ -189,7 +184,12 @@ std::string Module::print()
     sstr << "Module: " << m_name <<  std::endl;
     sstr << "Start: " << std::hex << m_base << " End: " << getEnd() << " Size: " << m_size << std::endl;
     sstr << "Image: " << m_imageName << std::endl;
-    sstr << "Symbols: " << m_symfile << std::endl;
+    if ( m_symSession )
+         sstr << "Symbols: " << m_symSession->getSymbolFileName() << std::endl;
+    else
+         sstr << "Symbols: not found" << std::endl;
+
+
     sstr << "Timestamp: " << m_timeDataStamp << std::endl;
     sstr << "Check Sum: " << m_checkSum << std::endl;
 

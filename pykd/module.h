@@ -82,7 +82,10 @@ public:
 
     std::string getSymFile() {
         prepareSymbolFile();
-        return m_symfile;
+        //return m_symfile;
+        if (m_symSession)
+            return m_symSession->getSymbolFileName();
+        return "";
     }
 
     std::string getImageName() const {
@@ -167,7 +170,6 @@ private:
 
     std::string             m_name;
     std::string             m_imageName;
-    std::string             m_symfile;
     ULONG64                 m_base;
     ULONG                   m_size;
     ULONG                   m_timeDataStamp;

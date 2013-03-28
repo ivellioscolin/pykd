@@ -166,6 +166,8 @@ public:
     virtual SymbolPtr findByRva( ULONG rva, ULONG symTag = SymTagNull, LONG* displacement = NULL ) = 0;
 
     virtual void getSourceLine( ULONG64 offset, std::string &fileName, ULONG &lineNo, LONG &displacement ) = 0;
+
+    virtual std::string getSymbolFileName() = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -177,7 +179,7 @@ SymbolSessionPtr loadSymbolFile(const std::string &filePath, ULONGLONG loadBase 
 SymbolSessionPtr loadSymbolFile(
     __in ULONGLONG loadBase,
     __in const std::string &executable,
-    __out std::string &loadedSymbolFile,
+    //__out std::string &loadedSymbolFile,
     __in_opt std::string symbolSearchPath = std::string()
 );
 

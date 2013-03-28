@@ -31,7 +31,8 @@ interface IDataProvider
 // Load debug symbols using DIA
 static SymbolSessionPtr createSession(
     IDataProvider &DataProvider,
-    ULONGLONG loadBase
+    ULONGLONG loadBase,
+    const std::string &symbolFileName
 )
 {
     HRESULT hres;
@@ -60,7 +61,7 @@ static SymbolSessionPtr createSession(
     if ( S_OK != hres )
         throw DiaException("Call IDiaSymbol::get_globalScope", hres);
 
-    return SymbolSessionPtr( new DiaSession( _session, _globalScope ) );
+    return SymbolSessionPtr( new DiaSession( _session, _globalScope, symbolFileName ) );
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -219,7 +220,7 @@ protected:
 SymbolSessionPtr  loadSymbolFile(const std::string &filePath, ULONGLONG loadBase )
 {
     diaLoad::DataFromPdb dataFromPdb(filePath);
-    return diaLoad::createSession(dataFromPdb, loadBase);
+    return diaLoad::createSession(dataFromPdb, loadBase, filePath);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -227,14 +228,13 @@ SymbolSessionPtr  loadSymbolFile(const std::string &filePath, ULONGLONG loadBase
 SymbolSessionPtr loadSymbolFile(
     __in ULONGLONG loadBase,
     __in const std::string &executable,
-    __out std::string &loadedSymbolFile,
     __in_opt std::string symbolSearchPath /*= std::string()*/
 )
 {
     diaLoad::DataForExeByRva dataForExeByRva(loadBase, executable, symbolSearchPath);
 
-    SymbolSessionPtr symSession = diaLoad::createSession(dataForExeByRva, loadBase);
-    loadedSymbolFile = dataForExeByRva.m_openedSymbolFile;
+    SymbolSessionPtr symSession = diaLoad::createSession(dataForExeByRva, loadBase, dataForExeByRva.m_openedSymbolFile);
+
     return symSession;
 }
 

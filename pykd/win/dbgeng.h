@@ -85,20 +85,6 @@ public:
         __in ULONG64 Argument );
 
     DbgEngBind* operator->();
-    //{
-    //    if ( m_bind.get() != NULL )
-    //        return m_bind.get();
-
-    //    CComPtr<IDebugClient4>   client = NULL;
-
-    //    HRESULT  hres = DebugCreate( __uuidof(IDebugClient4), (void **)&client );
-    //    if ( FAILED( hres ) )
-    //        throw DbgException("DebugCreate failed");
-
-    //    m_bind.reset(new DbgEngBind(client, this) );
-
-    //    return m_bind.get();
-    //}
 
     void registerCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
     void removeCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
