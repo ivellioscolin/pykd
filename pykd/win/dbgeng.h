@@ -4,6 +4,7 @@
 #include "dbgexcept.h"
 #include "pyaux.h"
 #include "eventhandler.h"
+#include "symsessioncache.h"
 
 #include <dbgeng.h>
 #include <dbghelp.h>
@@ -15,7 +16,6 @@ namespace pykd {
 class DebugEngine : private DebugBaseEventCallbacks, private IDebugInputCallbacks
 {
 public:
-
     struct DbgEngBind {
 
         CComQIPtr<IDebugClient4>  client;
@@ -78,6 +78,7 @@ public:
         *Mask |= DEBUG_EVENT_UNLOAD_MODULE;
         *Mask |= DEBUG_EVENT_EXCEPTION;
         *Mask |= DEBUG_EVENT_CHANGE_ENGINE_STATE;
+        *Mask |= DEBUG_EVENT_CHANGE_SYMBOL_STATE;
         return S_OK;
     }
 
@@ -106,6 +107,10 @@ public:
         __in ULONG Flags,
         __in ULONG64 Argument );
 
+    STDMETHOD(ChangeSymbolState)(
+        __in ULONG Flags,
+        __in ULONG64 Argument );
+
 
     STDMETHOD(StartInput)(
         __in ULONG BufferSize );
@@ -117,12 +122,12 @@ public:
     void registerCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
     void removeCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
 
+
     DebugEngine() :
         previousExecutionStatus( DebugStatusNoChange )
         {}
 
 private:
-
     std::auto_ptr<DbgEngBind>    m_bind;
 
     struct DebugEventContext 

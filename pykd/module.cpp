@@ -3,12 +3,9 @@
 #include "module.h"
 #include "dbgexcept.h"
 #include "vardata.h"
+#include "symsessioncache.h"
 
 namespace pykd {
-
-///////////////////////////////////////////////////////////////////////////////////
-
-Module::SymbolSessionCache  Module::m_symSessionCache;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -55,11 +52,9 @@ SymbolSessionPtr& Module::getSymSession()
     if (m_symSession)
         return m_symSession;
 
-    SymbolMapKey cacheKey = { m_name, m_size, m_timeDataStamp, m_checkSum };
-    SymbolSessionCache::iterator found = m_symSessionCache.find( cacheKey );
-    if ( found != m_symSessionCache.end() )
+    SymCacheModuleKey cacheKey = { m_name, m_size, m_timeDataStamp, m_checkSum };
+    if ( findSymCacheEntry( cacheKey, m_symSession ) )
     {
-        m_symSession = found->second;
         if ( !m_symSession )
             throw SymbolException( "failed to load symbol file" );
 
@@ -71,7 +66,7 @@ SymbolSessionPtr& Module::getSymSession()
         m_symSession = loadSymbolFile( m_base, m_imageName);
         if (m_symSession)
         {
-            m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
+            insertSymCacheEntry( m_base, cacheKey, m_symSession );
             return m_symSession;
         }
     }
@@ -90,7 +85,7 @@ SymbolSessionPtr& Module::getSymSession()
 
         if (m_symSession)
         {
-            m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
+            insertSymCacheEntry( m_base, cacheKey, m_symSession );
             return m_symSession;
         }
     }
@@ -102,15 +97,14 @@ SymbolSessionPtr& Module::getSymSession()
         m_symSession = loadSymbolFromExports(m_base);
         if (m_symSession)
         {
-            m_symSessionCache.insert( std::make_pair( cacheKey, m_symSession ) );
+            insertSymCacheEntry( m_base, cacheKey, m_symSession );
             return m_symSession;
         }
     }
     catch(const DbgException&)
     {}
 
-    m_symSessionCache.insert( std::make_pair( cacheKey, SymbolSessionPtr() ) );
-
+    insertSymCacheEntry( m_base, cacheKey, SymbolSessionPtr() );
     throw SymbolException( "failed to load symbol file" );
 }
 
@@ -137,8 +131,8 @@ SymbolPtr Module::getSymScope()
 
 void Module::reloadSymbols()
 {
-    SymbolMapKey cacheKey = { m_name, m_size, m_timeDataStamp, m_checkSum };
-    m_symSessionCache.erase( cacheKey );
+    SymCacheModuleKey cacheKey = { m_name, m_size, m_timeDataStamp, m_checkSum };
+    eraseSymCacheEntry( cacheKey );
 
     m_symSession.reset();
     getSymSession();

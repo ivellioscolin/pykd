@@ -27,6 +27,8 @@ private:
     virtual DEBUG_CALLBACK_RESULT OnModuleUnload( ULONG64 offset, const std::string &name ) = 0;
     virtual DEBUG_CALLBACK_RESULT OnException( ExceptionInfoPtr exceptInfo ) = 0;
     virtual void onExecutionStatusChange( ULONG executionStatus ) = 0;
+    virtual void onSymbolsLoaded(ULONG64 modBase) = 0;
+    virtual void onSymbolsUnloaded(ULONG64 modBase OPTIONAL) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -57,6 +59,13 @@ public:
         void_handler("onExecutionStatusChange", executionStatus );
     }
 
+    virtual void onSymbolsLoaded(ULONG64 modBase) {
+        void_handler("onSymbolsLoaded", modBase);
+    }
+
+    virtual void onSymbolsUnloaded(ULONG64 modBase OPTIONAL) {
+        void_handler("onSymbolsUnloaded", modBase);
+    }
 
 private:
 

@@ -611,9 +611,15 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "onException", &EventHandlerWrap::OnException,
             "Triggered exception event. Parameter - exceptionInfo\n"
             "For ignore event method must return eventResult.noChange" )
-         .def( "onExecutionStatusChange", &EventHandlerWrap::onExecutionStatusChange,
+        .def( "onExecutionStatusChange", &EventHandlerWrap::onExecutionStatusChange,
             "Triggered execution status changed. Parameter - execution status.\n"
-            "There is no return value" );
+            "There is no return value" )
+        .def( "onSymbolsLoaded", &EventHandlerWrap::onSymbolsLoaded,
+            "Triggered debug symbols loaded. Parameter - module base\n"
+            "There is no return value")
+        .def( "onSymbolsUnloaded", &EventHandlerWrap::onSymbolsUnloaded,
+            "Triggered debug symbols unloaded. Parameter - module base or 0 (all modules)\n"
+            "There is no return value");
 
     // wrapper for standart python exceptions
     python::register_exception_translator<PyException>( &PyException::exceptionTranslate );
