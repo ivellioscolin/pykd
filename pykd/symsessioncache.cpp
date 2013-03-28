@@ -112,7 +112,7 @@ namespace
 
 Impl &getImpl()
 {
-    // contruct after DebugEngine
+    // construct after DebugEngine
     static Impl g_Impl;
     return g_Impl;
 }
