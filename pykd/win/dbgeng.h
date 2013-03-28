@@ -12,7 +12,7 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class DebugEngine : private DebugBaseEventCallbacks 
+class DebugEngine : private DebugBaseEventCallbacks, private IDebugInputCallbacks
 {
 public:
 
@@ -43,6 +43,28 @@ public:
     };
 
     // IUnknown impls
+    // IUnknown.
+    STDMETHOD(QueryInterface)(
+        __in REFIID InterfaceId,
+        __out PVOID* Interface
+        )
+    {
+        *Interface = NULL;
+        if (IsEqualIID(InterfaceId, __uuidof(IUnknown)) ||
+            IsEqualIID(InterfaceId, __uuidof(IDebugEventCallbacks)) ||
+            IsEqualIID(InterfaceId,__uuidof(IDebugInputCallbacks)) 
+            )
+        {
+            *Interface = this;
+            return S_OK;
+        }
+        else
+        {
+            return E_NOINTERFACE;
+        }
+    }
+
+
     STDMETHOD_(ULONG, AddRef)() { return 1; }
     STDMETHOD_(ULONG, Release)() { return 1; }
 
@@ -83,6 +105,12 @@ public:
     STDMETHOD(ChangeEngineState)(
         __in ULONG Flags,
         __in ULONG64 Argument );
+
+
+    STDMETHOD(StartInput)(
+        __in ULONG BufferSize );
+
+    STDMETHOD(EndInput)();
 
     DbgEngBind* operator->();
 

@@ -1543,6 +1543,37 @@ HRESULT STDMETHODCALLTYPE DebugEngine::ChangeEngineState(
 
 ///////////////////////////////////////////////////////////////////////////////
 
+HRESULT STDMETHODCALLTYPE DebugEngine::StartInput(
+    __in ULONG BufferSize )
+{
+    std::string s = "";
+
+    {
+        PyThread_StateSave pyThreadSave( g_dbgEng->pystate );
+
+        python::object ret = python::eval( "raw_input(\"input>\")" );
+
+        s = python::extract<std::string>( ret );
+    }
+
+    g_dbgEng->control->ReturnInput ( s.c_str() );
+
+    //python::object   sys = python::import( "sys" );
+    //python::object   sysstdin = sys.attr("stdin");
+    //sys.attr("stdin") = python::object( DbgIn() );
+    return S_OK;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+HRESULT STDMETHODCALLTYPE DebugEngine::EndInput()
+{
+    return S_OK;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+
 DebugEngine::DbgEngBind* DebugEngine::operator->() 
 {
     if ( m_bind.get() != NULL )
@@ -1563,6 +1594,8 @@ DebugEngine::DbgEngBind* DebugEngine::operator->()
     python::object   pykd = boost::python::import( "pykd" );
 
     main_namespace["globalEventHandler"] = EventHandlerPtr( new EventHandlerImpl() );
+
+    client->SetInputCallbacks( this );
 
     return m_bind.get();
 }
