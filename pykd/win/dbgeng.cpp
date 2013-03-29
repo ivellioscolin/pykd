@@ -4,6 +4,7 @@
 
 #include "win/dbgeng.h"
 #include "win/dbgio.h"
+#include "win/windbg.h"
 #include "dbgexcept.h"
 #include "eventhandler.h"
 #include "symengine.h"
@@ -1309,15 +1310,18 @@ DebugEngine::DbgEngBind* DebugEngine::operator->()
 
     m_bind.reset(new DbgEngBind(client, this) );
 
-    python::object   main = boost::python::import("__main__");
+    if ( !WindbgGlobalSession::isInit() )
+    {
+        python::object   main = boost::python::import("__main__");
 
-    python::object   main_namespace = main.attr("__dict__");
+        python::object   main_namespace = main.attr("__dict__");
 
-    python::object   pykd = boost::python::import( "pykd" );
+        python::object   pykd = boost::python::import( "pykd" );
 
-    main_namespace["globalEventHandler"] = EventHandlerPtr( new EventHandlerImpl() );
+        main_namespace["globalEventHandler"] = EventHandlerPtr( new EventHandlerImpl() );
 
-    client->SetInputCallbacks( this );
+        client->SetInputCallbacks( this );
+    }
 
     return m_bind.get();
 }
