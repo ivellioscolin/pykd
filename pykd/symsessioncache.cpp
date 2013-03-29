@@ -7,6 +7,8 @@
 #include "dbgengine.h"
 #include "symsessioncache.h"
 
+#include <boost\thread\once.hpp>
+
 //////////////////////////////////////////////////////////////////////////////
 
 namespace pykd {
@@ -149,11 +151,18 @@ DEBUG_CALLBACK_RESULT Impl::OnModuleUnload( ULONG64 modBase, const std::string &
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+// construct after DebugEngine
+Impl *g_pImpl = NULL;
+boost::once_flag g_ImplInitialized = BOOST_ONCE_INIT;
+void initImpl()
+{
+    static Impl g_Impl;
+    g_pImpl = &g_Impl;
+}
 Impl &getImpl()
 {
-    // construct after DebugEngine
-    static Impl g_Impl;
-    return g_Impl;
+    boost::call_once(&initImpl, g_ImplInitialized);
+    return *g_pImpl;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
