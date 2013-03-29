@@ -615,7 +615,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Triggered execution status changed. Parameter - execution status.\n"
             "There is no return value" )
         .def( "onSymbolsLoaded", &EventHandlerWrap::onSymbolsLoaded,
-            "Triggered debug symbols loaded. Parameter - module base\n"
+            "Triggered debug symbols loaded. Parameter - module base or 0\n"
             "There is no return value")
         .def( "onSymbolsUnloaded", &EventHandlerWrap::onSymbolsUnloaded,
             "Triggered debug symbols unloaded. Parameter - module base or 0 (all modules)\n"
@@ -627,7 +627,7 @@ BOOST_PYTHON_MODULE( pykd )
     pykd::exception<DbgException>( "BaseException", "Pykd base exception class" );
     pykd::exception<MemoryException,DbgException>( "MemoryException", "Target memory access exception class" );
     //pykd::exception<WaitEventException,DbgException>( "WaitEventException", "Debug interface access exception" );
-    pykd::exception<WrongEventTypeException,DbgException>( "WaitEventException", "Debug interface access exception" );
+    pykd::exception<WrongEventTypeException,DbgException>( "WrongEventTypeException", "Unknown last event type" );
     pykd::exception<SymbolException,DbgException>( "SymbolException", "Symbol exception" );
     //pykd::exception<pyDia::Exception,SymbolException>( "DiaException", "Debug interface access exception" );
     pykd::exception<TypeException,SymbolException>( "TypeException", "type exception" );
