@@ -23,6 +23,7 @@ import localstest
 import customtypestest
 import ehexcepttest
 import ehstatustest
+import ehsymbolstest
 
 class StartProcessWithoutParamsTest(unittest.TestCase):
     def testStart(self):
@@ -55,6 +56,7 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
                 unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionTest ),
                 unittest.TestLoader().loadTestsFromTestCase( ehstatustest.EhStatusTest ),
+                unittest.TestLoader().loadTestsFromTestCase( ehsymbolstest.EhSymbolsTest ),
             ] ) 
     else:
        return unittest.TestSuite(
