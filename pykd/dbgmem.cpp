@@ -74,7 +74,8 @@ ULONG64 ptrMWord( ULONG64 offset )
 
 ULONG64 ptrPtr( ULONG64 offset )
 {
-    return ptrMWord( offset );
+    ULONG64 ptr = ptrMWord( offset );
+    return addr64( ptr );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
