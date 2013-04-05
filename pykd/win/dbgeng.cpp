@@ -1223,6 +1223,9 @@ HRESULT STDMETHODCALLTYPE DebugEngine::ChangeEngineState(
          ( ( Argument & DEBUG_STATUS_INSIDE_WAIT ) == 0 ) &&
          (ULONG)Argument != previousExecutionStatus )
     {
+        if ( previousExecutionStatus == DEBUG_STATUS_NO_DEBUGGEE &&
+             (ULONG)Argument != DEBUG_STATUS_GO )
+                return S_OK;
 
         for ( ; it != m_handlers.end(); ++it )
         {

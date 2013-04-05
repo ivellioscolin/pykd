@@ -11,13 +11,15 @@ class StatusChangeHandler(pykd.eventHandler):
         pykd.eventHandler.__init__(self)
         self.breakCount = 0
         self.goCount = 0
-        
-    
+        self.noDebuggee = 0
+            
     def onExecutionStatusChange(self, executionStatus):
         if executionStatus == pykd.executionStatus.Break:
-            self.breakCount = self.breakCount + 1
+            self.breakCount += 1
         if executionStatus == pykd.executionStatus.Go:
-            self.goCount = self.goCount + 1
+            self.goCount += 1
+        if executionStatus == pykd.executionStatus.NoDebuggee:
+            self.noDebuggee += 1
 
 
 class EhStatusTest(unittest.TestCase):
@@ -32,9 +34,15 @@ class EhStatusTest(unittest.TestCase):
         
             statusChangeHandler = StatusChangeHandler()
  
-            pykd.go()
-            pykd.go()
+            try:
+ 
+                while True:
+                     pykd.go()
+            except pykd.BaseException:
+                pass            
+              
 
             self.assertEqual( 2, statusChangeHandler.breakCount )
-            self.assertEqual( statusChangeHandler.breakCount, statusChangeHandler.goCount )
+            self.assertEqual( 1, statusChangeHandler.noDebuggee )
+            self.assertEqual( statusChangeHandler.breakCount + statusChangeHandler.noDebuggee , statusChangeHandler.goCount )
             
