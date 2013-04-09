@@ -24,7 +24,7 @@ ULONG64 findModuleBase( const std::string &moduleName )
 
     hres = g_dbgEng->symbols->GetModuleByModuleName( moduleName.c_str(), 0, NULL, &base );
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugSymbol::GetModuleByModuleName  failed" ); 
+        throw DbgException( "IDebugSymbol::GetModuleByModuleName", hres );
 
     return base;
 }
@@ -41,7 +41,7 @@ ULONG64 findModuleBase( ULONG64 offset )
 
     hres = g_dbgEng->symbols->GetModuleByOffset( offset, 0, &moduleIndex, &base );
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugSymbol::GetModuleByOffset failed" );
+        throw DbgException( "IDebugSymbol::GetModuleByOffset", hres );
 
     return base;
 }
@@ -85,7 +85,7 @@ std::string getModuleNameImpl( ULONG64 baseOffset )
         NULL );
 
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugSymbol::GetModuleNameString failed" );
+        throw DbgException( "IDebugSymbol::GetModuleNameString", hres );
 
     return std::string( moduleName );
 }
@@ -117,7 +117,7 @@ std::string getModuleImageName( ULONG64 baseOffset )
         NULL );
 
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugSymbol::GetModuleNameString failed" );
+        throw DbgException( "IDebugSymbol::GetModuleNameString", hres );
 
     return std::string( imageName );
 }
@@ -133,7 +133,7 @@ ULONG getModuleSizeImpl( ULONG64 baseOffset )
 
     hres = g_dbgEng->symbols->GetModuleParameters( 1, &baseOffset, 0, &moduleParam );
     if ( FAILED( hres ) )
-         throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );    
+         throw DbgException( "IDebugSymbol::GetModuleParameters", hres );
 
     return moduleParam.Size;
 }
@@ -168,7 +168,7 @@ std::string getModuleSymbolFileName( ULONG64 baseOffset )
         NULL );
 
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugAdvanced2::GetSymbolInformation failed" );
+        throw DbgException( "IDebugAdvanced2::GetSymbolInformation", hres );
 
     if (!*moduleInfo.LoadedPdbName)
     {
@@ -177,7 +177,7 @@ std::string getModuleSymbolFileName( ULONG64 baseOffset )
 
         hres = g_dbgEng->symbols->ReloadWide( sstr.str().c_str() );
         if ( FAILED( hres ) )
-            throw DbgException("IDebugSymbols::Reload failed" );
+            throw DbgException("IDebugSymbols::Reload", hres );
 
         hres = g_dbgEng->advanced->GetSymbolInformation(
             DEBUG_SYMINFO_IMAGEHLP_MODULEW64,
@@ -191,7 +191,7 @@ std::string getModuleSymbolFileName( ULONG64 baseOffset )
             NULL );
 
         if ( FAILED( hres ) )
-            throw DbgException( "IDebugAdvanced2::GetSymbolInformation failed" );
+            throw DbgException( "IDebugAdvanced2::GetSymbolInformation", hres );
     }
 
     char  pdbName[ 256 ];
@@ -211,7 +211,7 @@ ULONG getModuleTimeStampImpl( ULONG64 baseOffset )
 
     hres = g_dbgEng->symbols->GetModuleParameters( 1, &baseOffset, 0, &moduleParam );
     if ( FAILED( hres ) )
-         throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );
+         throw DbgException( "IDebugSymbol::GetModuleParameters", hres );
 
     return moduleParam.TimeDateStamp;
 }
@@ -236,7 +236,7 @@ ULONG getModuleCheckSumImpl( ULONG64 baseOffset )
 
     hres = g_dbgEng->symbols->GetModuleParameters( 1, &baseOffset, 0, &moduleParam );
     if ( FAILED( hres ) )
-         throw DbgException( "IDebugSymbol::GetModuleParameters  failed" );    
+         throw DbgException( "IDebugSymbol::GetModuleParameters", hres );
 
     return moduleParam.Checksum;
 }
@@ -248,6 +248,36 @@ ULONG getModuleCheckSum( ULONG64 baseOffset )
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
     return getModuleCheckSumImpl( baseOffset );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+namespace  {
+
+ULONG getModuleFlags(ULONG64 baseOffset)
+{
+    HRESULT hres;
+    DEBUG_MODULE_PARAMETERS moduleParam = { 0 };
+
+    hres = g_dbgEng->symbols->GetModuleParameters( 1, &baseOffset, 0, &moduleParam );
+    if ( FAILED( hres ) )
+         throw DbgException( "IDebugSymbol::GetModuleParameters", hres );
+
+    return moduleParam.Flags;
+}
+
+}
+
+bool isModuleUnloaded( ULONG64 baseOffset )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+    return !!(getModuleFlags(baseOffset) & DEBUG_MODULE_UNLOADED);
+}
+
+bool isModuleUserMode( ULONG64 baseOffset )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+    return !!(getModuleFlags(baseOffset) & DEBUG_MODULE_USER_MODE);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -269,7 +299,7 @@ void getModuleFileVersion( ULONG64 baseOffset, USHORT &majorHigh, USHORT &majorL
         NULL );
 
     if ( FAILED( hres ) )
-         throw DbgException( "IDebugSymbol2::GetModuleVersionInformation  failed" ); 
+         throw DbgException( "IDebugSymbol2::GetModuleVersionInformation", hres ); 
 
     majorHigh = HIWORD(fileInfo.dwFileVersionMS);
     majorLow = LOWORD(fileInfo.dwFileVersionMS); 
@@ -301,7 +331,7 @@ std::string getModuleVersionInfo( ULONG64 baseOffset, const std::string &value )
         &codePagesSize );
 
     if ( FAILED( hres ) )
-         throw DbgException( "IDebugSymbol2::GetModuleVersionInformation  failed" ); 
+         throw DbgException( "IDebugSymbol2::GetModuleVersionInformation", hres ); 
 
     size_t codePageNum = codePagesSize / sizeof(LANGANDCODEPAGE);
 
@@ -316,7 +346,7 @@ std::string getModuleVersionInfo( ULONG64 baseOffset, const std::string &value )
         NULL );
 
     if ( FAILED( hres ) )
-         throw DbgException( "IDebugSymbol2::GetModuleVersionInformation  failed" );
+         throw DbgException( "IDebugSymbol2::GetModuleVersionInformation", hres );
 
     ULONG productNameLength = 0;
 

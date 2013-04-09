@@ -27,10 +27,7 @@ Module::Module(const std::string &moduleName )
 {
     m_base = findModuleBase( moduleName );
     m_name = moduleName;
-    m_imageName = getModuleImageName( m_base );
-    m_timeDataStamp = getModuleTimeStamp( m_base );
-    m_checkSum = getModuleCheckSum( m_base );
-    m_size = getModuleSize( m_base );
+    completeConstruct();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -39,10 +36,19 @@ Module::Module(ULONG64 offset )
 {
     m_base = findModuleBase( addr64(offset) );
     m_name = getModuleName( m_base );
+    completeConstruct();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+void Module::completeConstruct()
+{
     m_imageName = getModuleImageName( m_base );
     m_timeDataStamp = getModuleTimeStamp( m_base );
     m_checkSum = getModuleCheckSum( m_base );
     m_size = getModuleSize( m_base );
+    m_unloaded = isModuleUnloaded( m_base );
+    m_userMode = isModuleUserMode( m_base );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -176,7 +182,8 @@ std::string Module::print()
     prepareSymbolFile();
 
     sstr << "Module: " << m_name <<  std::endl;
-    sstr << "Start: " << std::hex << m_base << " End: " << getEnd() << " Size: " << m_size << std::endl;
+    sstr << "Start: " << std::hex << m_base << " End: " << getEnd() << " Size: " << m_size;
+    sstr << (m_unloaded ? ", UNLOADED!" : "") << std::endl;
     sstr << "Image: " << m_imageName << std::endl;
     if ( m_symSession )
          sstr << "Symbols: " << m_symSession->getSymbolFileName() << std::endl;

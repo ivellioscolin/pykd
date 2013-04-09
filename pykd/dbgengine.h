@@ -48,6 +48,8 @@ ULONG getModuleSize( ULONG64 baseOffset );
 std::string getModuleSymbolFileName( ULONG64 baseOffset );
 ULONG getModuleTimeStamp( ULONG64 baseOffset );
 ULONG getModuleCheckSum( ULONG64 baseOffset );
+bool isModuleUnloaded( ULONG64 baseOffset );
+bool isModuleUserMode( ULONG64 baseOffset );
 std::string getModuleVersionInfo( ULONG64 baseOffset, const std::string &value );
 void getModuleFileVersion( ULONG64 baseOffset, USHORT &majorHigh, USHORT &majorLow, USHORT &minorHigh, USHORT &minorLow );
 

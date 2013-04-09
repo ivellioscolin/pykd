@@ -80,6 +80,14 @@ public:
         return m_timeDataStamp;
     }
 
+    bool isUnloaded() const {
+        return m_unloaded;
+    }
+
+    bool isUserMode() const {
+        return m_userMode;
+    }
+
     TypeInfoPtr getTypeByName( const std::string &typeName ) {
         return TypeInfo::getTypeInfo( boost::static_pointer_cast<Symbol>( getSymScope() ), typeName);
     }
@@ -119,6 +127,7 @@ public:
     python::tuple getVersion();
 
 private:
+    void completeConstruct();  // call from ctor
 
     ULONG64 prepareVa(ULONG64 addr);
 
@@ -140,6 +149,8 @@ private:
     ULONG                   m_size;
     ULONG                   m_timeDataStamp;
     ULONG                   m_checkSum;
+    bool                    m_unloaded;
+    bool                    m_userMode;
 
     SymbolSessionPtr        m_symSession;
 };

@@ -12,26 +12,30 @@ class ModuleTest( unittest.TestCase ):
     def testCtor( self ):
         self.assertEqual( target.module.name(), pykd.module(target.module.begin() ).name() )
         self.assertEqual( target.module.name(), pykd.module(target.module.name() ).name() )
-         
+
+    def testMiscellaneous( self ):
+        self.assertFalse( target.module.unloaded() )
+        self.assertTrue( target.module.um() )
+
     def testName( self ):
         self.assertEqual( target.moduleName, target.module.name() )
-        
+
     def testSize( self ):
         self.assertNotEqual( 0, target.module.size() )
         self.assertTrue( pykd.isValid( target.module.begin() + target.module.size() - 1) )
-         
+
     def testBegin( self ):
         self.assertNotEqual( 0, target.module.begin() )
         self.assertEqual( target.module.begin(), target.module )
         self.assertEqual( target.module.begin() + 100, target.module + 100 )
-             
+
     def testEnd( self ):
         self.assertEqual( target.module.size(), target.module.end() - target.module.begin() )
         self.assertTrue( pykd.isValid( target.module.end() - 1) )
-         
+
     def testPdb( self ):
        self.assertNotEqual( "", target.module.symfile() )
-         
+
     def testImage( self ):
        self.assertEqual( target.module.name() + ".exe", target.module.image() )
 
