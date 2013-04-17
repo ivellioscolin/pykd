@@ -275,6 +275,10 @@ struct StructWithNested {
         int m_nestedFiled;
     };
     int m_field;
+
+    struct {
+        int m_field2;
+    };
 };
 
 StructWithNested g_structWithNested;
