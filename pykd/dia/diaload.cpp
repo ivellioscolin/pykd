@@ -4,10 +4,11 @@
 
 #include "stdafx.h"
 #include "dbghelp.h"
-#include "dia/diawrapper.h"
-#include "win/utils.h"
+#include "dbgmem.h"
 #include "dbgengine.h"
-#include "diacallback.h"
+#include "win/utils.h"
+#include "dia/diasession.h"
+#include "dia/diacallback.h"
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -217,7 +218,7 @@ protected:
 
 //////////////////////////////////////////////////////////////////////////////////
 
-SymbolSessionPtr  loadSymbolFile(const std::string &filePath, ULONGLONG loadBase )
+SymbolSessionPtr loadSymbolFile(const std::string &filePath, ULONGLONG loadBase )
 {
     diaLoad::DataFromPdb dataFromPdb(filePath);
     return diaLoad::createSession(dataFromPdb, loadBase, filePath);

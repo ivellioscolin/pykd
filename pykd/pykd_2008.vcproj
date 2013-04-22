@@ -626,15 +626,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dia\diadecls.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dia\diaexcept.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dia\diaexcept.h"
+				>
+			</File>
+			<File
 				RelativePath=".\dia\diaload.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\dia\diawrapper.cpp"
+				RelativePath=".\dia\diasession.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\dia\diawrapper.h"
+				RelativePath=".\dia\diasession.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dia\diasymbol.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dia\diasymbol.h"
 				>
 			</File>
 			<File
