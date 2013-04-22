@@ -16,9 +16,10 @@ import target
 import intbase
 import memtest
 import moduletest
-import typeinfo 
+import typeinfo
 import typedvar
 import regtest
+import mspdbtest
 import localstest
 import customtypestest
 import ehexcepttest
@@ -53,6 +54,7 @@ def getTestSuite( singleName = "" ):
                 # ^^^
                 unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest ),
 
+                unittest.TestLoader().loadTestsFromTestCase( mspdbtest.MsPdbTest ),
                 unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
                 unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionTest ),
                 unittest.TestLoader().loadTestsFromTestCase( ehstatustest.EhStatusTest ),
