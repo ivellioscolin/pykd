@@ -186,15 +186,48 @@ std::string Module::print()
     sstr << (m_unloaded ? ", UNLOADED!" : "") << std::endl;
     sstr << "Image: " << m_imageName << std::endl;
     if ( m_symSession )
+    {
          sstr << "Symbols: " << m_symSession->getSymbolFileName() << std::endl;
+         std::string buildDesc = m_symSession->getBuildDescription();
+         if (!buildDesc.empty())
+            sstr << "\t" << buildDesc << std::endl;
+    }
     else
+    {
          sstr << "Symbols: not found" << std::endl;
+    }
 
 
     sstr << "Timestamp: " << m_timeDataStamp << std::endl;
     sstr << "Check Sum: " << m_checkSum << std::endl;
 
     return sstr.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+python::list Module::getUdts()
+{
+    SymbolPtrList symlst = getSymScope()->findChildren( SymTagUDT );
+
+    python::list lst;
+    for ( SymbolPtrList::iterator it = symlst.begin(); it != symlst.end(); ++it )
+        lst.append( (*it)->getName() );
+
+    return lst;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+python::list Module::getEnums()
+{
+    SymbolPtrList symlst = getSymScope()->findChildren( SymTagEnum );
+
+    python::list lst;
+    for ( SymbolPtrList::iterator it = symlst.begin(); it != symlst.end(); ++it )
+        lst.append( (*it)->getName() );
+
+    return lst;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -348,7 +381,7 @@ python::list Module::enumSymbols( const std::string  &mask)
 {
     python::list  lst;
 
-    SymbolPtrList  symlst = getSymScope()->findChildren( SymTagData, mask, true );
+    SymbolPtrList  symlst = getSymScope()->findChildren( SymTagData, mask );
 
     for ( SymbolPtrList::iterator it = symlst.begin(); it != symlst.end(); ++it )
     {
@@ -362,31 +395,11 @@ python::list Module::enumSymbols( const std::string  &mask)
         }
     }
 
-    symlst = getSymScope()->findChildren( SymTagFunction, mask, true );
+    symlst = getSymScope()->findChildren( SymTagFunction, mask );
 
     for ( SymbolPtrList::iterator it = symlst.begin(); it != symlst.end(); ++it )
     {
         lst.append( python::make_tuple( (*it)->getName(), (*it)->getVa() ) );
-    }
-
-    return lst;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-python::list Module::enumTypes( const std::string  &mask )
-{
-    python::list  lst;
-    int  tags[] = { SymTagUDT, SymTagEnum };
-
-    for ( size_t i = 0; i < sizeof(tags)/sizeof(tags[0]); ++i )
-    {
-        SymbolPtrList  symlst = getSymScope()->findChildren( tags[i], mask, true );
-
-        for ( SymbolPtrList::iterator it = symlst.begin(); it != symlst.end(); ++it )
-        {
-            lst.append( (*it)->getName() );
-        }
     }
 
     return lst;

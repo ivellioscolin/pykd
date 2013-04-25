@@ -123,8 +123,9 @@ enum RegRealativeId
 class Symbol {
 
 public:
-
-    virtual SymbolPtrList findChildren( ULONG symTag, const std::string &name = "", bool caseSensitive = FALSE ) = 0;
+    // > Applies a case-sensitive name match using asterisks (*) and 
+    // > question marks (?) as wildcards
+    virtual SymbolPtrList findChildren( ULONG symTag, const std::string &name = "") = 0;
     virtual ULONG getBaseType() = 0;
     virtual ULONG getBitPosition() = 0;
     virtual SymbolPtr getChildByIndex(ULONG _index ) = 0;
@@ -153,6 +154,8 @@ public:
     virtual bool isIndirectVirtualBaseClass() = 0;
     virtual bool isVirtualBaseClass() = 0;
     virtual ULONG getRegRealativeId() = 0;  // <- RegRealativeId
+
+    virtual std::string getBuildDescription() const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -168,6 +171,8 @@ public:
     virtual void getSourceLine( ULONG64 offset, std::string &fileName, ULONG &lineNo, LONG &displacement ) = 0;
 
     virtual std::string getSymbolFileName() = 0;
+
+    virtual std::string getBuildDescription() const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

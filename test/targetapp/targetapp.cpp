@@ -171,6 +171,15 @@ public:
         {}
 };
 
+struct YetAnotherChild_class : classBase
+{
+    int m_i;
+    YetAnotherChild_class() : m_i(0) {}
+    virtual void virtFunc() {}
+    virtual void virtFunc2() {}
+};
+
+
 int classChild::m_staticField = 200;
 
 classChild      g_classChild;
@@ -404,6 +413,9 @@ void FuncWithName0()
 {
     classChild _classChild;
     _classChild.baseMethod();
+
+    static volatile YetAnotherChild_class yetAnotherChild;
+    std::cout << yetAnotherChild.m_i;
 
     reinterpret_cast<classChild *>(&_classChild)->virtFunc2();
     std::cout << _classChild.m_childField2;

@@ -894,7 +894,7 @@ python::dict EnumTypeInfo::asMap()
 {
     python::dict            dct;
 
-    SymbolPtrList    symbolsList = m_dia->findChildren(SymTagData, "", TRUE );
+    SymbolPtrList    symbolsList = m_dia->findChildren(SymTagData);
 
     for ( SymbolPtrList::iterator  it = symbolsList.begin(); it != symbolsList.end(); it++ )
     {
@@ -916,7 +916,7 @@ std::string EnumTypeInfo::print()
 
     sstr << "enum: " << getName() << std::endl;
 
-   SymbolPtrList    symbolsList = m_dia->findChildren(SymTagData, "", true );
+   SymbolPtrList    symbolsList = m_dia->findChildren(SymTagData);
 
     for ( SymbolPtrList::iterator  it = symbolsList.begin(); it != symbolsList.end(); it++ )
     {

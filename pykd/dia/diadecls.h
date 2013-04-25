@@ -1,11 +1,11 @@
 #pragma once
 
 #include <dia2.h>
+#include <atltime.h>
 
 #include "symengine.h"
 
 #include "dia\diaexcept.h"
-
 
 namespace pykd {
 

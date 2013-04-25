@@ -9,6 +9,17 @@ namespace pykd {
 
 //////////////////////////////////////////////////////////////////////////////
 
+DiaSession::DiaSession( IDiaSession* session, IDiaSymbol *globalScope, const std::string symbolFile, LONGLONG loadSeconds )
+    : m_globalScope( globalScope )
+    , m_globalSymbol( DiaSymbol::fromGlobalScope( globalScope ) )
+    , m_session( session )
+    , m_symbolFileName( symbolFile )
+    , m_loadSeconds(loadSeconds)
+{
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 SymbolPtr DiaSession::findByRva( ULONG rva, ULONG symTag, LONG* pdisplacement )
 {
     DiaSymbolPtr child;
@@ -70,6 +81,19 @@ void DiaSession::getSourceLine( ULONG64 offset, std::string &fileName, ULONG &li
         throw DiaException("failed to find source line");
 
     displacement = (LONG)( (LONGLONG)offset - (LONGLONG)va );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::string DiaSession::getBuildDescription() const
+{
+    std::stringstream sstr;
+    sstr << "Load : ";
+    sstr << std::dec << m_loadSeconds;
+    sstr << " sec";
+
+    const std::string globalScopeDesc = m_globalSymbol->getBuildDescription();
+    return !globalScopeDesc.empty() ? sstr.str() + ", " + globalScopeDesc : sstr.str();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

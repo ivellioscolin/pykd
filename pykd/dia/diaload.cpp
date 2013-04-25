@@ -30,12 +30,14 @@ interface IDataProvider
 //////////////////////////////////////////////////////////////////////////////////
 
 // Load debug symbols using DIA
-static SymbolSessionPtr createSession(
+SymbolSessionPtr createSession(
     IDataProvider &DataProvider,
     ULONGLONG loadBase,
     const std::string &symbolFileName
 )
 {
+    const CTime startTime = CTime::GetCurrentTime();
+
     HRESULT hres;
     DiaDataSourcePtr dataSource;
 
@@ -62,7 +64,13 @@ static SymbolSessionPtr createSession(
     if ( S_OK != hres )
         throw DiaException("Call IDiaSymbol::get_globalScope", hres);
 
-    return SymbolSessionPtr( new DiaSession( _session, _globalScope, symbolFileName ) );
+    return SymbolSessionPtr( 
+        new DiaSession( 
+            _session,
+            _globalScope,
+            symbolFileName,
+            (CTime::GetCurrentTime() - startTime).GetTotalSeconds() )
+    );
 }
 
 //////////////////////////////////////////////////////////////////////////////////

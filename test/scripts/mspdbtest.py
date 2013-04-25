@@ -25,4 +25,5 @@ class MsPdbTest(unittest.TestCase):
     def testFindMethodOffset(self):
         """Lookup method offset by name"""
         with PeFileAsDumpLoader(  os.environ["WINDIR"] + r"\System32\ole32.dll" ) as loadedDump:
+            print "\n" + str( pykd.module("ole32") )
             self.assertNotEqual( 0, pykd.getOffset("ole32!CPackagerMoniker::AddRef") )

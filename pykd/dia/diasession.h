@@ -12,12 +12,7 @@ class DiaSession : public SymbolSession
 {
 public:
 
-    DiaSession( IDiaSession* session, IDiaSymbol *globalScope, const std::string symbolFile ) :
-        m_globalScope( globalScope ),
-        m_globalSymbol( DiaSymbol::fromGlobalScope( globalScope ) ),
-        m_session( session ),
-        m_symbolFileName( symbolFile )
-        {}
+    DiaSession( IDiaSession* session, IDiaSymbol *globalScope, const std::string symbolFile, LONGLONG loadSeconds );
 
     virtual SymbolPtr getSymbolScope() {
         return m_globalSymbol;
@@ -31,6 +26,8 @@ public:
         return m_symbolFileName;
     }
 
+    virtual std::string getBuildDescription() const;
+
 private:
 
     ULONG findRvaByName( const std::string &name );
@@ -39,7 +36,7 @@ private:
     SymbolPtr       m_globalSymbol;
     DiaSessionPtr   m_session;
     std::string     m_symbolFileName;
-
+    LONGLONG        m_loadSeconds;
 };
 
 ////////////////////////////////////////////////////////////////////////////

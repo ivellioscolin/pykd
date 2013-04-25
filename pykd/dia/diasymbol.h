@@ -2,6 +2,7 @@
 #pragma once
 
 #include "dia\diadecls.h"
+#include "dia\diapubsymcache.h"
 
 namespace pykd {
 
@@ -23,8 +24,7 @@ public:
 
     SymbolPtrList findChildren(
         ULONG symTag,
-        const std::string &name = "",
-        bool caseSensitive = FALSE
+        const std::string &name = ""
     );
 
     ULONGLONG getSize();
@@ -63,14 +63,11 @@ public:
 
     ULONG getDataKind();
 
-    //ULONG getRegisterId();
     virtual ULONG getRegRealativeId() override;
 
     ULONG getMachineType() {
         return m_machineType;
     }
-
-    //SymbolPtr getChildByName(const std::string &_name);
 
     ULONG getChildCount( ULONG symTag );
 
@@ -86,19 +83,13 @@ public:
     
     bool isConstant();
 
-    //std::string print();
-
-    //bool eq(Symbol &rhs);
-
     int getVirtualBasePointerOffset();
 
     ULONG getVirtualBaseDispIndex();
 
     ULONG getVirtualBaseDispSize();
 
-    //ULONG getSection();
-
-    void setLoadAddress( ULONGLONG baseAddress );
+    virtual std::string getBuildDescription() const;
 
 public:
     typedef std::pair<ULONG, const char *> ValueNameEntry;
@@ -128,8 +119,8 @@ protected:
     }
 
     DiaSymbolPtr m_symbol;
-
     DWORD m_machineType;
+    DiaPublicSymbolCachePtr m_publicSymbols;
 };
 
 

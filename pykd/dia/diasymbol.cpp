@@ -47,49 +47,50 @@ SymbolPtr DiaSymbol::fromGlobalScope( IDiaSymbol *_symbol )
     if (!machineType)
         machineType = IMAGE_FILE_MACHINE_I386;
 
-    return SymbolPtr( new DiaSymbol(DiaSymbolPtr(_symbol), machineType) );
+    std::auto_ptr< DiaSymbol > globalScope( new DiaSymbol(DiaSymbolPtr(_symbol), machineType) );
+    globalScope->m_publicSymbols.reset( new DiaPublicSymbolCache( _symbol ) );
+    return SymbolPtr( globalScope.release() );
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 
-SymbolPtrList  DiaSymbol::findChildren(
-        ULONG symTag,
-        const std::string &name,
-        bool caseSensitive
-    )
+SymbolPtrList DiaSymbol::findChildren(ULONG symTag, const std::string &name)
 {
     DiaEnumSymbolsPtr symbols;
     HRESULT hres;
 
-    if ( name.empty() )
-    {
-        hres = m_symbol->findChildren(
-            static_cast<enum ::SymTagEnum>(symTag),
-                NULL,
-                (caseSensitive ? nsCaseSensitive : nsCaseInsensitive) | nsfUndecoratedName | nsfRegularExpression,
-                &symbols);
+    const bool bFindAllNames = ( name.empty() || name == "*" );
 
+    if ( bFindAllNames )
+    {
+        hres = 
+            m_symbol->findChildren(
+                static_cast<enum ::SymTagEnum>(symTag),
+                NULL,
+                nsNone,
+                &symbols);
     }
     else
     {
-        hres = m_symbol->findChildren(
-            static_cast<enum ::SymTagEnum>(symTag),
+        hres = 
+            m_symbol->findChildren(
+                static_cast<enum ::SymTagEnum>(symTag),
                 toWStr(name),
-                (caseSensitive ? nsCaseSensitive : nsCaseInsensitive) | nsfUndecoratedName | nsfRegularExpression,
+                nsRegularExpression,
                 &symbols);
     }
 
     if (S_OK != hres)
-        throw DiaException("Call IDiaSymbol::findChildren", hres);
+        throw DiaException("IDiaSymbol::findChildren", hres);
 
     SymbolPtrList childList;
 
     DiaSymbolPtr child;
-    ULONG celt;
+    ULONG celt = 0;
     while ( SUCCEEDED(symbols->Next(1, &child, &celt)) && (celt == 1) )
     {
         childList.push_back( SymbolPtr( new DiaSymbol(child, m_machineType) ) );
-        child = NULL;
+        child.Release();
     }
 
     return childList;
@@ -167,7 +168,6 @@ SymbolPtr DiaSymbol::getChildByIndex(ULONG symTag, ULONG _index )
 
 SymbolPtr DiaSymbol::getChildByName(const std::string &name )
 {
-    // ищем прямое совпадение
     DiaEnumSymbolsPtr symbols;
     HRESULT hres = 
         m_symbol->findChildren(
@@ -181,8 +181,11 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &name )
     if (S_OK != hres)
         throw DiaException("Call IDiaEnumSymbols::get_Count", hres);
 
-    if (count >0 )
+    if (count > 0)
     {
+        if (count > 1)
+            throw SymbolException(name + "is ambiguous");
+
         DiaSymbolPtr child;
         hres = symbols->Item(0, &child);
         if (S_OK != hres)
@@ -191,6 +194,14 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &name )
         return SymbolPtr( new DiaSymbol(child, m_machineType) );
     }
 
+    if (m_publicSymbols)
+    {
+        DiaSymbolPtr publicSymbol = m_publicSymbols->lookup(name);
+        if (publicSymbol)
+            return SymbolPtr( new DiaSymbol(publicSymbol, m_machineType) );
+    }
+
+/* c++ c++ decoration is not supported
     // _имя
     std::string underscoreName;
     underscoreName += '_';
@@ -217,7 +228,7 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &name )
 
         return SymbolPtr( new DiaSymbol(child, m_machineType) );
     }
-    
+
     // _имя@парам
     std::string     pattern = "_";
     pattern += name;
@@ -250,7 +261,7 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &name )
 
         return SymbolPtr( new DiaSymbol(child, m_machineType) );
     }
-    
+*/
     throw DiaException(name + " is not found");
 }
 
@@ -319,20 +330,30 @@ ULONG DiaSymbol::getLocType()
 
 //////////////////////////////////////////////////////////////////////////////
 
-static const  boost::regex  stdcallMatch("^_(\\w+)(@\\d+)?$");
-static const  boost::regex  fastcallMatch("^@(\\w+)(@\\d+)?$");
-
 std::string DiaSymbol::getName()
 {
     HRESULT hres;
     BSTR bstrName = NULL;
+
+    hres = m_symbol->get_undecoratedNameEx( UNDNAME_NAME_ONLY, &bstrName);
+    if (S_OK == hres)
+    {
+        std::string name = autoBstr( bstrName ).asStr();
+        if (!name.empty())
+            return name;
+    }
+
+/* c++ decoration is not supported
+
+    static const  boost::regex  stdcallMatch("^_(\\w+)(@\\d+)?$");
+    static const  boost::regex  fastcallMatch("^@(\\w+)(@\\d+)?$");
 
     ULONG symTag;
     hres = m_symbol->get_symTag( &symTag );
 
     if ( FAILED( hres ) )
         throw DiaException("Call IDiaSymbol::get_symTag", hres);
-      
+
     if( symTag == SymTagData || symTag == SymTagFunction || symTag == SymTagPublicSymbol )
     {
         hres = m_symbol->get_undecoratedNameEx( UNDNAME_NAME_ONLY, &bstrName);
@@ -354,7 +375,7 @@ std::string DiaSymbol::getName()
             return retStr; 
         }
     }
-
+*/
     bstrName = callSymbol(get_name);
 
     return autoBstr( bstrName ).asStr();
@@ -496,6 +517,20 @@ ULONG DiaSymbol::getVirtualBaseDispSize()
     SymbolPtr baseTableType = SymbolPtr( new DiaSymbol( diaSymbol, m_machineType ) );
 
     return (ULONG)baseTableType->getType()->getSize();
+}
+
+std::string DiaSymbol::getBuildDescription() const 
+{
+    std::stringstream sstr;
+
+    if (m_publicSymbols)
+    {
+        sstr << "Public symbols cache build time: ";
+        sstr << std::dec << m_publicSymbols->getBuildTimeInSeconds();
+        sstr << " sec";
+    }
+
+    return sstr.str();
 }
 
 //////////////////////////////////////////////////////////////////////////////

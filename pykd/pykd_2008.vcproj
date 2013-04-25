@@ -642,6 +642,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dia\diapubsymcache.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dia\diapubsymcache.h"
+				>
+			</File>
+			<File
 				RelativePath=".\dia\diasession.cpp"
 				>
 			</File>

@@ -18,7 +18,7 @@ namespace pykd {
 class ExportSymbolBase : public Symbol
 {
 
-    virtual SymbolPtrList findChildren( ULONG symTag, const std::string &name = "", bool caseSensitive = FALSE )
+    virtual SymbolPtrList findChildren( ULONG symTag, const std::string &name = "" )
     {
         throw ImplementException( __FILE__, __LINE__, "TODO" );
     }
@@ -161,6 +161,10 @@ class ExportSymbolBase : public Symbol
     virtual ULONG getRegRealativeId()
     {
         throw ImplementException( __FILE__, __LINE__, "TODO" );
+    }
+
+    virtual std::string getBuildDescription() const {
+        return std::string();
     }
 };
 
@@ -435,6 +439,10 @@ public:
 
     virtual std::string getSymbolFileName() {
         return std::string("export symbols");
+    }
+
+    virtual std::string getBuildDescription() const {
+        return std::string();
     }
 
 private:

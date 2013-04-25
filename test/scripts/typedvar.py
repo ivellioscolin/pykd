@@ -11,16 +11,16 @@ class TypedVarTest( unittest.TestCase ):
     def testCtor( self ):
         tv = target.module.typedVar( "structTest", target.module.g_structTest )
         tv = target.module.typedVar( "g_structTest" )
-        
+
         tv = pykd.typedVar( "structTest", target.module.g_structTest )
         tv = pykd.typedVar( target.moduleName + "!structTest", target.module.g_structTest )
-        
+
         structTest = target.module.type( "structTest" )
         tv = pykd.typedVar( structTest, target.module.g_structTest )
-        
+
         tv = pykd.typedVar( "g_structTest" )
         tv = pykd.typedVar( target.moduleName + "!g_structTest" )
-        
+
     def testBaseTypes(self):
         self.assertEqual( 1, target.module.typedVar( "g_ucharValue" ) )
         self.assertEqual( 2, target.module.typedVar( "g_ushortValue" ) )
@@ -46,7 +46,7 @@ class TypedVarTest( unittest.TestCase ):
         customStructTest.append("m_field1", pykd.typeInfo("UInt8B"))
         tvCustomStruct = pykd.typedVar( customStructTest.ptrTo(), target.module.offset("g_structTestPtr") )
         self.assertEqual( 500, tvCustomStruct.deref().m_field1 )
-        
+
     def testArrayOf(self):
         arrayType = pykd.typeInfo("UInt8B").arrayOf(5)
         arrayVar = pykd.typedVar( arrayType, target.module.offset("ulonglongArray") )
@@ -74,7 +74,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 16 + pykd.ptrSize(), tv1.sizeof() )
         tv2 = target.module.typedVar( "structTest[2]", target.module.g_testArray )
         self.assertEqual( tv1.sizeof()*2, tv2.sizeof() )
-        
+
         self.assertEqual( pykd.sizeof("g_structTest"), tv1.sizeof() )
         self.assertEqual( pykd.sizeof("g_testArray"), tv2.sizeof() )
         self.assertEqual( pykd.sizeof("g_ucharValue"), 1 )
@@ -116,12 +116,12 @@ class TypedVarTest( unittest.TestCase ):
             self.assertTrue(False)
         except IndexError:
             self.assertTrue(True)
-            
+
     def testArrayFieldSlice(self): 
         tv = target.module.typedVar( "g_struct3" )
         self.assertEqual( 2, tv.m_arrayField[-1] )
         self.assertEqual( [ 0, 2 ], tv.m_arrayField[0:2] )
-        
+
     def testGlobalVar(self):
         self.assertEqual( 4, target.module.typedVar( "g_ulongValue" ) )
         self.assertEqual( 0x80000000, target.module.typedVar( "ulongArray" )[3] )
@@ -135,7 +135,7 @@ class TypedVarTest( unittest.TestCase ):
         off2 = target.module.offset( "g_structTest" )
         tv = target.module.containingRecord( off2 + off1, "structTest", "m_field2" )
         self.assertEqual( True, tv.m_field2 )
-        
+
     def testBitField(self):
         tv = target.module.typedVar("g_structWithBits")
         self.assertEqual( 4, tv.m_bit0_4 )
@@ -150,7 +150,7 @@ class TypedVarTest( unittest.TestCase ):
         tvl = pykd.typedVarList( target.module.g_listHead, target.module.type("listStruct"), "listEntry" )
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [1,2,3], [ tv.num for tv in tvl ] )
-        
+
         tvl = pykd.typedVarList( target.module.g_listHead, target.module.type("listStruct"), "listEntry.Flink" )
         self.assertEqual( 3, len( tvl ) )
         self.assertEqual( [1,2,3], [ tv.num for tv in tvl ] )
@@ -186,17 +186,17 @@ class TypedVarTest( unittest.TestCase ):
         tvl1 = target.module.typedVarArray( target.module.g_testArray, "structTest", 2 )
         tvl2 = pykd.typedVarArray( target.module.g_testArray, target.moduleName + "!structTest", 2 )
         self.assertEqual( tvl1, tvl2 )
-        
+
     def testEqual(self):
         tv1 = target.module.typedVar("g_structTest")
         tv2 = target.module.typedVar("intMatrix")
         self.assertEqual( tv1.m_field3, tv2[0][1] )
-        
+
     def testEnum(self):
         tv = target.module.typedVar("g_classChild")
         self.assertEqual( 3, tv.m_enumField )
         self.assertEqual( target.module.type("enumType").THREE, tv.m_enumField )
-        
+
     def testIndex(self):
         ind  = target.module.typedVar( "g_ucharValue" )
         self.assertEqual( 5, [0,5,10][ind] )
@@ -245,8 +245,7 @@ class TypedVarTest( unittest.TestCase ):
 
         self.assertRaises( pykd.TypeException, tv1.deref )
         self.assertRaises( pykd.TypeException, tv2.deref )
-        
-        
+
     def testTypeVarArg(self):
         tv1 = target.module.typedVar( "structTest", target.module.g_structTest )
         tv2 = target.module.typedVar( "structTest", tv1 )
@@ -278,7 +277,7 @@ class TypedVarTest( unittest.TestCase ):
         types = ("structTest", "ULong[100]", "ULong*" )
         for ti in types:
             self.assertTrue( str(pykd.typedVar( target.module.type(ti), 0 ) ) )
-    
+
     def testStaticField(self):
         tv = pykd.typedVar( "g_classChild" )
         self.assertEqual( 200, tv.m_staticField )
@@ -287,17 +286,15 @@ class TypedVarTest( unittest.TestCase ):
     def testAmbiguousFieldAccess(self):
         derivedFiledVal = pykd.loadCStr( pykd.typedVar( "g_fieldSameNameStruct" ).m_field )
         self.assertEqual( derivedFiledVal, "toaster" )
-        print target.module.type("fieldSameNameStruct")
-        
+
     def testDiamondVirtualInherit(self):
         tv = pykd.typedVar( "g_virtChild" )
         self.assertEqual( -100, tv.m_baseField )
-    
+
     def testDinkumwareMap(self):
         g_map = target.module.typedVar( "g_map" )
         self.assertEqual( 1, g_map._Mysize )
-        
-        
+
     def testUdtSubscribe(self):
         tv = pykd.typedVar( "g_virtChild" )
         self.assertEqual( 5, len(tv) )
@@ -306,9 +303,8 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( fieldVal, tv.m_baseField )
         for field in tv:
              str( field )
-      
+
     def testDeadlockList(self):
-    
        lst = []
        entry = pykd.typedVar("entry1").Flink
        for i in range( 0, 100000 ):
