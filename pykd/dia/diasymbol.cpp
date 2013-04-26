@@ -201,7 +201,8 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &name )
             return SymbolPtr( new DiaSymbol(publicSymbol, m_machineType) );
     }
 
-/* c++ c++ decoration is not supported
+    // FIXME: c++ decoration is not supported
+
     // _имя
     std::string underscoreName;
     underscoreName += '_';
@@ -261,7 +262,7 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &name )
 
         return SymbolPtr( new DiaSymbol(child, m_machineType) );
     }
-*/
+
     throw DiaException(name + " is not found");
 }
 
@@ -330,55 +331,43 @@ ULONG DiaSymbol::getLocType()
 
 //////////////////////////////////////////////////////////////////////////////
 
+static const  boost::regex  stdcallMatch("^_(\\w+)(@\\d+)?$");
+static const  boost::regex  fastcallMatch("^@(\\w+)(@\\d+)?$");
+
+//////////////////////////////////////////////////////////////////////////////
+
 std::string DiaSymbol::getName()
 {
-    HRESULT hres;
-    BSTR bstrName = NULL;
-
-    hres = m_symbol->get_undecoratedNameEx( UNDNAME_NAME_ONLY, &bstrName);
-    if (S_OK == hres)
-    {
-        std::string name = autoBstr( bstrName ).asStr();
-        if (!name.empty())
-            return name;
-    }
-
-/* c++ decoration is not supported
-
-    static const  boost::regex  stdcallMatch("^_(\\w+)(@\\d+)?$");
-    static const  boost::regex  fastcallMatch("^@(\\w+)(@\\d+)?$");
+    std::string name = autoBstr( callSymbol(get_name) ).asStr();
 
     ULONG symTag;
-    hres = m_symbol->get_symTag( &symTag );
-
+    HRESULT hres = m_symbol->get_symTag( &symTag );
     if ( FAILED( hres ) )
         throw DiaException("Call IDiaSymbol::get_symTag", hres);
 
-    if( symTag == SymTagData || symTag == SymTagFunction || symTag == SymTagPublicSymbol )
+    if ( symTag != SymTagData && symTag != SymTagFunction && symTag != SymTagPublicSymbol )
+        return name;
+
+    std::string undecoratedName;
     {
-        hres = m_symbol->get_undecoratedNameEx( UNDNAME_NAME_ONLY, &bstrName);
-        if ( FAILED( hres ) )
-            throw DiaException("Call IDiaSymbol::get_undecoratedNameEx", hres);
-
-        std::string  retStr = autoBstr( bstrName ).asStr();
-
-        if ( !retStr.empty() )
-        {
-            boost::cmatch  matchResult;
-
-            if ( boost::regex_match( retStr.c_str(), matchResult, stdcallMatch ) )
-                return std::string( matchResult[1].first, matchResult[1].second );
-
-            if ( boost::regex_match( retStr.c_str(), matchResult, fastcallMatch ) )
-                return std::string( matchResult[1].first, matchResult[1].second );
-    
-            return retStr; 
-        }
+        BSTR bstrUndecoratedName = NULL;
+        hres = m_symbol->get_undecoratedNameEx( UNDNAME_NAME_ONLY, &bstrUndecoratedName);
+        if (S_OK == hres)
+            undecoratedName = autoBstr( bstrUndecoratedName ).asStr();
     }
-*/
-    bstrName = callSymbol(get_name);
+    if ( undecoratedName.empty() )
+        return name;
 
-    return autoBstr( bstrName ).asStr();
+    // c++ decoration is not supported
+    boost::cmatch  matchResult;
+
+    if ( boost::regex_match( undecoratedName.c_str(), matchResult, stdcallMatch ) )
+        return std::string( matchResult[1].first, matchResult[1].second );
+
+    if ( boost::regex_match( undecoratedName.c_str(), matchResult, fastcallMatch ) )
+        return std::string( matchResult[1].first, matchResult[1].second );
+
+    return name;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
