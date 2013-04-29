@@ -594,6 +594,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\win\dbgps.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\win\lastevent.cpp"
 				>
 			</File>

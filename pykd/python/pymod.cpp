@@ -304,9 +304,9 @@ BOOST_PYTHON_MODULE( pykd )
         "Return PID of the current process ( user mode only )" );
     python::def( "getCurrentThreadId", &getCurrentThreadId,
         "Return TID of the current thread ( user mode only )" );
+    python::def( "getCurrentProcessExeName", &getCurrentProcessExecutableName,
+        "Return name of executable file loaded in the current process");
 
-
-    
     // symbol path
     python::def( "getSymbolPath", &getSymbolPath, "Returns current symbol path");
     python::def( "setSymbolPath", &setSymbolPath, "Set current symbol path");
