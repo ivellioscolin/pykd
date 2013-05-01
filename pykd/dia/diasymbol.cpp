@@ -367,7 +367,7 @@ std::string DiaSymbol::getName()
     if ( boost::regex_match( undecoratedName.c_str(), matchResult, fastcallMatch ) )
         return std::string( matchResult[1].first, matchResult[1].second );
 
-    return name;
+    return undecoratedName;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

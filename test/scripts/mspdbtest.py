@@ -8,22 +8,38 @@ class PeFileAsDumpLoader:
     """Load/unload PE-file from System as crash dump file"""
     def __init__(self, fileName):
         self._fileName = fileName
-        self._loaded = False
 
     def __enter__(self):
         pykd.loadDump(self._fileName)
-        self._loaded = True
 
     def __exit__(self, exc_type, exc_value, exc_tb):
-        if self._loaded:
-            pykd.detachProcess()
-            self._loaded = False
+        pykd.detachProcess()
 
 class MsPdbTest(unittest.TestCase):
     """Public Microsoft symbols tests"""
 
-    def testFindMethodOffset(self):
-        """Lookup method offset by name"""
-        with PeFileAsDumpLoader(  os.environ["WINDIR"] + r"\System32\ole32.dll" ) as loadedDump:
-            print "\n" + str( pykd.module("ole32") )
-            self.assertNotEqual( 0, pykd.getOffset("ole32!CPackagerMoniker::AddRef") )
+    def testSymbolNameAddress(self):
+        """Lookup symbol by name/address"""
+        with PeFileAsDumpLoader( os.path.join(os.environ["WINDIR"], r"System32\ole32.dll") ):
+            mod = pykd.module("ole32")
+            print "\n" + str( mod )
+
+            targetSymAddr = mod.offset("CPackagerMoniker::Create")
+            self.assertNotEqual( 0, targetSymAddr )
+            self.assertEqual( "CPackagerMoniker::Create", mod.findSymbol(targetSymAddr) )
+
+            targetSymAddr = mod.offset("CoInitialize")
+            self.assertNotEqual( 0, targetSymAddr )
+            self.assertEqual( "CoInitialize", mod.findSymbol(targetSymAddr) )
+
+        with PeFileAsDumpLoader( os.path.join(os.environ["WINDIR"], r"System32\authz.dll") ):
+            mod = pykd.module("authz")
+            print "\n" + str( mod )
+
+            targetSymAddr = mod.offset("AuthzpDefaultAccessCheck")
+            self.assertNotEqual( 0, targetSymAddr )
+            self.assertEqual( "AuthzpDefaultAccessCheck", mod.findSymbol(targetSymAddr) )
+
+            targetSymAddr = mod.offset("AuthzAccessCheck")
+            self.assertNotEqual( 0, targetSymAddr )
+            self.assertEqual( "AuthzAccessCheck", mod.findSymbol(targetSymAddr) )
