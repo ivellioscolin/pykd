@@ -31,6 +31,7 @@ class StartProcessWithoutParamsTest(unittest.TestCase):
         target.processId = pykd.startProcess( target.appPath )
         target.module = pykd.module( target.moduleName )
         target.module.reload();
+        print "\n" + str( pykd.getSystemVersion() )
         pykd.go()
 
 class TerminateProcessTest(unittest.TestCase):

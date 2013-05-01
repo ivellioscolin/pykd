@@ -339,6 +339,53 @@ ULONG getCurrentTime()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+SystemVersionPtr getSystemVersion()
+{
+    SystemVersionPtr sysVer( new SystemVersion );
+    ULONG kdMajor;
+
+    boost::scoped_array< CHAR > arrSpString( new CHAR[MAX_PATH + 1] );
+    memset(&arrSpString[0], 0, MAX_PATH + 1);
+
+    boost::scoped_array< CHAR > arrBuildString( new CHAR[MAX_PATH + 1] );
+    memset(&arrBuildString[0], 0, MAX_PATH + 1);
+
+    ULONG tmp;
+
+    HRESULT hres = 
+        g_dbgEng->control->GetSystemVersion(
+            &sysVer->platformId,
+            &kdMajor,
+            &sysVer->buildNumber,
+            &arrSpString[0],
+            MAX_PATH,
+            &tmp,
+            &tmp,
+            &arrBuildString[0],
+            MAX_PATH,
+            &tmp);
+    if (S_OK != hres)
+        throw DbgException("IDebugControl::GetSystemVersion", hres);
+
+    sysVer->buildString = &arrBuildString[0];
+    sysVer->servicePackString = &arrSpString[0];
+    sysVer->isCheckedBuild = 0xC == kdMajor;
+
+    hres = 
+        g_dbgEng->control->GetSystemVersionValues(
+            &sysVer->platformId,
+            &sysVer->win32Major,
+            &sysVer->win32Minor,
+            NULL,
+            NULL);
+    if (S_OK != hres)
+        throw DbgException("IDebugControl::GetSystemVersionValues", hres);
+
+    return sysVer;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 ULONG64 loadMSR( ULONG  msr )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );

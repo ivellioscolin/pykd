@@ -145,6 +145,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return the number of seconds the computer has been running" );
     python::def( "currentTime", &getCurrentTime,
         "Return the number of seconds since the beginning of 1970" );
+    python::def("getSystemVersion", &getSystemVersion,
+        "Return systemVersion");
 
     // Manage target memory access
     python::def( "addr64", &addr64,
@@ -531,6 +533,26 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__str__", &StackFrame::print,
             "Return stacks frame as a string");
 
+    python::class_< SystemVersion, SystemVersionPtr, boost::noncopyable >(
+        "systemVersion", "Operation system version", python::no_init)
+        .def_readonly( "platformId", &SystemVersion::platformId,
+            "Platform ID: VER_PLATFORM_WIN32_NT for NT-based Windows")
+        .def_readonly( "win32Major", &SystemVersion::win32Major,
+            "Major version number of the target's operating system")
+        .def_readonly( "win32Minor", &SystemVersion::win32Minor,
+            "Minor version number of the target's operating system")
+        .def_readonly( "buildNumber", &SystemVersion::buildNumber,
+            "Build number for the target's operating system")
+        .def_readonly( "buildString", &SystemVersion::buildString,
+            "String that identifies the build of the system")
+        .def_readonly( "servicePackString", &SystemVersion::servicePackString,
+            "String for the service pack level of the target computer")
+        .def_readonly( "isCheckedBuild", &SystemVersion::isCheckedBuild,
+            "Checked build flag")
+        .def("__str__", pysupport::printSystemVersion,
+            "Return object as a string");
+
+
     python::class_< ExceptionInfo, ExceptionInfoPtr, boost::noncopyable >(
         "exceptionInfo", "Exception information", python::no_init )
         .def_readonly( "FirstChance", &ExceptionInfo::FirstChance,
@@ -547,6 +569,8 @@ BOOST_PYTHON_MODULE( pykd )
             "An array of additional arguments that describe the exception")
         .def( "__str__", &ExceptionInfo::print,
             "Return object as a string");
+
+
 
     python::enum_<EVENT_TYPE>("eventType", "Type of debug event")
         .value("Breakpoint", EventTypeBreakpoint)

@@ -53,6 +53,21 @@ python::tuple moduleFindSymbolAndDisp( pykd::Module &module, ULONG64 offset )
     return python::make_tuple(symbolName,displacement);
 }
 
+std::string printSystemVersion(SystemVersionPtr sysVer)
+{
+    std::stringstream sstream;
+    if (VER_PLATFORM_WIN32_NT == sysVer->platformId)
+        sstream << "WIN32_NT";
+    else
+        sstream << "Platform ID: " << std::dec << sysVer->platformId;
+    sstream << " " << std::dec << sysVer->win32Major << "." << sysVer->win32Minor;
+    sstream << ", " << (sysVer->isCheckedBuild ? "checked" : "free") <<  " build: ";
+    sstream << std::dec << sysVer->buildNumber << ", " << sysVer->buildString;
+    if (!sysVer->servicePackString.empty())
+        sstream << " (" << sysVer->servicePackString << ")";
+
+    return sstream.str();
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

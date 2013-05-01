@@ -38,7 +38,20 @@ ULONG getPageSize();
 ULONG getSystemUptime();
 ULONG getCurrentTime();
 
-//manage debug module
+struct SystemVersion {
+    ULONG platformId;
+    ULONG win32Major;
+    ULONG win32Minor;
+    ULONG buildNumber;
+    std::string buildString;
+    std::string servicePackString;
+    bool isCheckedBuild;
+};
+typedef boost::shared_ptr< SystemVersion > SystemVersionPtr;
+
+SystemVersionPtr getSystemVersion();
+
+// manage debug module
 ULONG64 findModuleBase( const std::string &moduleName );
 ULONG64 findModuleBase( ULONG64 offset );
 ULONG64 findModuleBySymbol( const std::string &symbolName );
@@ -162,7 +175,6 @@ void eventRemoveCallbacks( const DEBUG_EVENT_CALLBACK *callbacks );
 ULONG breakPointSet( ULONG64 offset, bool hardware = false, ULONG size = 0, ULONG accessType = 0 );
 void breakPointRemove( ULONG id );
 void breakPointRemoveAll();
-
 
 // processes end threads
 ULONG64 getCurrentProcess();
