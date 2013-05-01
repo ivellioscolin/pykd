@@ -110,12 +110,16 @@ void debugGo()
     do {
         hres = g_dbgEng->control->WaitForEvent(DEBUG_WAIT_DEFAULT, INFINITE);
         if ( FAILED( hres ) )
-            throw DbgException( "IDebugControl::WaitForEvent failed" );
+        {
+            if (E_UNEXPECTED == hres)
+                throw WaitEventException();
+            throw DbgException( "IDebugControl::WaitForEvent", hres );
+        }
 
         hres = g_dbgEng->control->GetExecutionStatus( &currentStatus );
 
         if ( FAILED( hres ) )
-            throw  DbgException( "IDebugControl::GetExecutionStatus  failed" ); 
+            throw  DbgException( "IDebugControl::GetExecutionStatus", hres ); 
 
     } while( currentStatus != DEBUG_STATUS_BREAK && currentStatus != DEBUG_STATUS_NO_DEBUGGEE );
 }

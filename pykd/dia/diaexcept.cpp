@@ -89,6 +89,9 @@ std::string DiaException::makeFullDesc(const std::string &desc, HRESULT hres, ID
     _CASE_DIA_ERROR(SYMSRV_CACHE_FULL);
 
 #undef _CASE_DIA_ERROR
+
+    case S_FALSE: sstream << ": S_FALSE" << std::endl; break;
+
     default:
         {
             PCHAR errMessage = NULL;

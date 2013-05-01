@@ -40,9 +40,6 @@ class EhSymbolsTest(unittest.TestCase):
             pykd.dbgCommand(".reload /u")
             self.assertTrue( symbolsStateHandler.unloadAllModulesTrigged )
 
-            try:
-                while True:
-                    pykd.go()
-            except pykd.BaseException:
-                pass
+            self.assertRaises(pykd.WaitEventException, testutils.infGo)
+
             self.assertTrue( "iphlpapi" in symbolsStateHandler.modNames )

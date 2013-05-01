@@ -23,3 +23,8 @@ class KillProcess:
         pykd.killProcess( self.processId )
         pykd.detachProcess( self.processId )
 
+def infGo():
+    """Infinite pykd.go call"""
+    while True:
+        pykd.go()
+

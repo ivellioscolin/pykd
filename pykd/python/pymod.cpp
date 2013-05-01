@@ -655,7 +655,7 @@ BOOST_PYTHON_MODULE( pykd )
 
     pykd::exception<DbgException>( "BaseException", "Pykd base exception class" );
     pykd::exception<MemoryException,DbgException>( "MemoryException", "Target memory access exception class" );
-    //pykd::exception<WaitEventException,DbgException>( "WaitEventException", "Debug interface access exception" );
+    pykd::exception<WaitEventException,DbgException>( "WaitEventException", "None of the targets could generate events" );
     pykd::exception<WrongEventTypeException,DbgException>( "WrongEventTypeException", "Unknown last event type" );
     pykd::exception<SymbolException,DbgException>( "SymbolException", "Symbol exception" );
     //pykd::exception<pyDia::Exception,SymbolException>( "DiaException", "Debug interface access exception" );
