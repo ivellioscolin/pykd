@@ -408,7 +408,7 @@ python::object  StackFrame::getLocalByIndex( ULONG index )
     }
 
     if ( !symVar )
-        throw DbgException("local var not found");
+        throw PyException( PyExc_IndexError, "index out of range" );
 
     ULONG64 varAddr;
     const LocationType locType = static_cast<LocationType>(symVar->getLocType());
@@ -476,7 +476,7 @@ python::object StackFrame::getParamByIndex( ULONG index )
     }
 
     if ( !symVar )
-        throw DbgException("local var not found");
+        throw PyException( PyExc_IndexError, "index out of range" );
 
     ULONG64 varAddr;
     const LocationType locType = static_cast<LocationType>(symVar->getLocType());
