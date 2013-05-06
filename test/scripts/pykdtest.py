@@ -77,7 +77,5 @@ if __name__ == "__main__":
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
     
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
-    
-    #unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite("moduletest.ModuleTest.testFindSymbol") )
-    
-    raw_input()
+
+

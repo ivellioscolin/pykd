@@ -141,6 +141,10 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 4, tv.m_bit0_4 )
         self.assertEqual( 1, tv.m_bit5 )
         self.assertEqual( 3, tv.m_bit6_7 )
+        tv = target.module.typedVar("g_structWithSignBits")
+        self.assertEqual( 4, tv.m_bit0_4 )
+        self.assertEqual( -1, tv.m_bit5 )
+        self.assertEqual( -1, tv.m_bit6_7 )
 
     def testTypedVarList(self):
         tvl = target.module.typedVarList( target.module.g_listHead, "listStruct", "listEntry" )

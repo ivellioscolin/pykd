@@ -47,6 +47,13 @@ struct structWithBits {
     ULONG m_bit6_7  : 2;
 };
 
+struct structWitSignBits {
+    LONG m_bit0_4  : 5;
+    LONG m_bit5    : 1;
+    LONG m_bit6_7  : 2;
+};
+
+
 
 union unionTest {
     ULONG m_value;
@@ -98,6 +105,7 @@ typedef struct structAbstract  *pstructAbstract;
 pstructAbstract g_structAbstract = 0;
 
 structWithBits g_structWithBits = { 4, 1, 3};
+structWitSignBits g_structWithSignBits = { 4, 1, 3 };
 
 structTest      g_structTest = { 0, 500, true, 1, NULL };
 structTest      g_structTest1 = { 0, 500, true, 1, &g_structTest };
@@ -450,6 +458,7 @@ void FuncWithName0()
     std::cout << (*ptrIntMatrix)[0][1];
     std::cout << g_struct3.m_noArrayField;
     std::cout << g_structWithBits.m_bit5;
+    std::cout << g_structWithSignBits.m_bit5;
     std::cout << ptrStrArray;
     std::cout << g_structTest1.m_field2;
     std::cout << ptrIntMatrix1;
