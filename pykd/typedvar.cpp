@@ -432,23 +432,59 @@ BaseTypeVariant BitFieldVar::getValue()
 
     m_varData->read( &val, getSize() );
 
-    val >>= m_typeInfo->getBitOffset();
-    val &= ( 1 << m_typeInfo->getBitWidth() ) - 1;
-
-    switch ( m_typeInfo->getSize() )
+    if ( m_typeInfo->isSigned() )
     {
-    case 1:
-        return (ULONG)*(PUCHAR)&val;
+        ULONG width = m_typeInfo->getBitWidth();
 
-    case 2:
-        return (ULONG)*(PUSHORT)&val;
+        val >>= m_typeInfo->getBitOffset();
 
-    case 4:
-        return *(PULONG)&val;
+        if ( ( val & ( 1ULL << ( width -1 ) ) ) != 0 )
+        {
+            val |= ~( ( 1ULL << width ) - 1 );
+        }
+        else
+        {
+            val &= ( 1ULL << width ) - 1;
+        }
 
-    case 8:
-        return *(PULONG64)&val;
+        LONG64     signedVal = (LONG64)val;
+        
+        switch ( m_typeInfo->getSize() )
+        {
+        case 1:
+            return (LONG)signedVal;
+
+        case 2:
+            return (LONG)signedVal;
+
+        case 4:
+            return (LONG)signedVal;
+
+        case 8:
+            return signedVal;
+        }
     }
+    else
+    {
+        val >>= m_typeInfo->getBitOffset();
+        val &= ( 1 << m_typeInfo->getBitWidth() ) - 1;
+
+        switch ( m_typeInfo->getSize() )
+        {
+        case 1:
+            return (ULONG)*(PUCHAR)&val;
+
+        case 2:
+            return (ULONG)*(PUSHORT)&val;
+
+        case 4:
+            return *(PULONG)&val;
+
+        case 8:
+            return *(PULONG64)&val;
+        }
+    }
+
 
     throw DbgException( "failed get value " );
 }

@@ -351,6 +351,7 @@ BitFieldTypeInfo::BitFieldTypeInfo( SymbolPtr &symbol )
     TypeInfoPtr    typeInfo = TypeInfo::getBaseTypeInfo( symbol->getType() );
 
     m_size = (ULONG)typeInfo->getSize();
+    m_signed = typeInfo->isSigned();
 
     std::stringstream   sstr;
 

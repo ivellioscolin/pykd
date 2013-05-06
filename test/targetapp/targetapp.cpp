@@ -44,13 +44,13 @@ std::string g_string;
 struct structWithBits {
     ULONG m_bit0_4  : 5;
     ULONG m_bit5    : 1;
-    ULONG m_bit6_7  : 2;
+    ULONG m_bit6_8  : 3;
 };
 
 struct structWitSignBits {
     LONG m_bit0_4  : 5;
     LONG m_bit5    : 1;
-    LONG m_bit6_7  : 2;
+    LONG m_bit6_8  : 3;
 };
 
 
@@ -104,8 +104,8 @@ typedef struct structAbstract  *pstructAbstract;
 
 pstructAbstract g_structAbstract = 0;
 
-structWithBits g_structWithBits = { 4, 1, 3};
-structWitSignBits g_structWithSignBits = { 4, 1, 3 };
+structWithBits g_structWithBits = { 4, 1, 5};
+structWitSignBits g_structWithSignBits = { 4, 1, 5 };
 
 structTest      g_structTest = { 0, 500, true, 1, NULL };
 structTest      g_structTest1 = { 0, 500, true, 1, &g_structTest };

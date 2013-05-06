@@ -171,6 +171,10 @@ public:
         return false;
     }
 
+    virtual bool isSigned() {
+        throw TypeException( getName(), "type is not based" );
+    }
+
     virtual ULONG getCount() {
         throw TypeException( getName(), "type is not an array" );
     }
@@ -276,9 +280,18 @@ private:
         return true;
     }
 
-    std::string     m_name;
+    virtual bool isSigned() {
+        T t = static_cast<T>(-1);
+        return t < 0;
+    }
 
+    std::string     m_name;
 };
+
+template<>
+bool TypeInfoWrapper<bool>::isSigned() {
+    return false;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -312,8 +325,13 @@ public:
         return m_size;
     }
 
+    virtual bool isSigned() {
+        return m_signed;
+    }
+
 private:
 
+    bool            m_signed;
     ULONG           m_size;
     ULONG           m_bitWidth;
     ULONG           m_bitPos;
