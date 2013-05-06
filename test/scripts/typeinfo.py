@@ -121,11 +121,11 @@ class TypeInfoTest( unittest.TestCase ):
 
     def testBitField( self ):
         ti = target.module.type( "g_structWithBits" )
-        self.assertEqual( 0, ti.fieldOffset("m_bit6_7") )
-        self.assertEqual( 4, ti.m_bit6_7.size() )
-        self.assertEqual( "ULong:2", ti.m_bit6_7.name() )
-        self.assertEqual( 2, ti.m_bit6_7.bitWidth() )
-        self.assertEqual( 6, ti.m_bit6_7.bitOffset() )
+        self.assertEqual( 0, ti.fieldOffset("m_bit6_8") )
+        self.assertEqual( 4, ti.m_bit6_8.size() )
+        self.assertEqual( "ULong:3", ti.m_bit6_8.name() )
+        self.assertEqual( 3, ti.m_bit6_8.bitWidth() )
+        self.assertEqual( 6, ti.m_bit6_8.bitOffset() )
 
     def testEnum(self):
         ti = target.module.type("enumType")
