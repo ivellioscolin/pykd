@@ -1,7 +1,8 @@
 
 #include "stdafx.h"
 
-#include "dbghelp.h"
+#include <dbghelp.h>
+
 #include "dia/diasymbol.h"
 #include "win/utils.h"
 
@@ -173,7 +174,7 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &name )
         m_symbol->findChildren(
             ::SymTagNull,
             toWStr(name),
-            nsfCaseSensitive | nsfUndecoratedName,
+            nsfCaseSensitive,
             &symbols);
 
     LONG count;
