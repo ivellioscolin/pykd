@@ -117,10 +117,13 @@ class TypedVarTest( unittest.TestCase ):
         except IndexError:
             self.assertTrue(True)
 
-    def testArrayFieldSlice(self): 
+    def testArrayFieldSlice(self):
+        tv = target.module.typedVar( "g_struct3" )
+        self.assertEqual( [ 0, 2 ], tv.m_arrayField[0:2] )
+
+    def testArrayFieldSliceNegative(self):
         tv = target.module.typedVar( "g_struct3" )
         self.assertEqual( 2, tv.m_arrayField[-1] )
-        self.assertEqual( [ 0, 2 ], tv.m_arrayField[0:2] )
 
     def testGlobalVar(self):
         self.assertEqual( 4, target.module.typedVar( "g_ulongValue" ) )

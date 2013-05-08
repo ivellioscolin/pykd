@@ -18,12 +18,12 @@ class TypeInfoTest( unittest.TestCase ):
     def testCreateByName( self ):
         """ creating typeInfo by the type name """
         self.assertEqual( "Int4B*", target.module.type("Int4B*").name() )
-        self.assertEqual( "Int4B*", pykd.typeInfo("Int4B*").name() )
         self.assertEqual( "structTest", target.module.type( "structTest" ).name() )
         self.assertEqual( "structTest**", target.module.type( "structTest**" ).name() )
         self.assertEqual( "Int4B[2][3]", target.module.type("Int4B[2][3]").name() )
         self.assertEqual( "Int4B(*[4])[2][3]", target.module.type("Int4B(*[4])[2][3]").name() )
         self.assertEqual( "Int4B(*)[2][3]", target.module.type("Int4B((*))[2][3]").name() )
+        self.assertEqual( "Int4B*", pykd.typeInfo("Int4B*").name() )
 
     def testCreateBySymbol(self):
         """ creating typeInfo by the symbol name """
@@ -203,7 +203,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertNotEqual( 0, ti.staticOffset("m_stdstr") )
         if not ti.staticOffset("m_staticConst"):
             self.assertFalse( "MS DIA bug: https://connect.microsoft.com/VisualStudio/feedback/details/737430" )
-            
+
     def testVfnTable(self):
         ti = pykd.typeInfo( "g_classChild" )
         self.assertTrue( hasattr( ti, "__VFN_table" ) )

@@ -43,8 +43,8 @@ class CpuRegTest( unittest.TestCase ):
     def testFloatRegister(self):
         "TODO: support float point regsiters"
         self.assertRaises( pykd.BaseException, pykd.reg, "st0" )
-        
+
     def testMmxRegister(self):
         "TODO: support MMX regsiters"
         self.assertRaises( pykd.BaseException, pykd.reg, "mmx0" )
-        
+

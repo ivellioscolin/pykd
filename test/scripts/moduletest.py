@@ -91,7 +91,7 @@ class ModuleTest( unittest.TestCase ):
         self.assertEqual( 2, len(lst) )
         lst = target.module.enumSymbols( "g_const*Value")
         self.assertEqual( 2, len(lst) )
-        lst = target.module.enumSymbols( "*FuncWithName*")
+        lst = target.module.enumSymbols( "*FuncWithName?")
         self.assertEqual( 3, len(lst) )
         lst = target.module.enumSymbols( "*virtFunc*") 
         self.assertNotEqual( 0, len(lst) )

@@ -55,37 +55,45 @@ SymbolPtr DiaSymbol::fromGlobalScope( IDiaSymbol *_symbol )
 
 //////////////////////////////////////////////////////////////////////////////////
 
-SymbolPtrList DiaSymbol::findChildren(ULONG symTag, const std::string &name)
+DiaSymbol::SelectedChilds DiaSymbol::selectChildren(
+    ULONG symtag,
+    LPCOLESTR name,
+    DWORD compareFlags
+)
 {
+    BOOST_ASSERT(symtag < SymTagMax);
+
+    const bool findAll = 
+        ( !name || !*name || (name[0] == L'*' && name[1] == L'\0') );
+
     DiaEnumSymbolsPtr symbols;
-    HRESULT hres;
 
-    const bool bFindAllNames = ( name.empty() || name == "*" );
-
-    if ( bFindAllNames )
-    {
-        hres = 
-            m_symbol->findChildren(
-                static_cast<enum ::SymTagEnum>(symTag),
-                NULL,
-                nsNone,
-                &symbols);
-    }
-    else
-    {
-        hres = 
-            m_symbol->findChildren(
-                static_cast<enum ::SymTagEnum>(symTag),
-                toWStr(name),
-                nsRegularExpression,
-                &symbols);
-    }
+    HRESULT hres = 
+        m_symbol->findChildren(
+            static_cast<enum ::SymTagEnum>(symtag),
+            ( findAll ? NULL : name ),
+            ( findAll ? nsNone : compareFlags),
+            &symbols);
 
     if (S_OK != hres)
         throw DiaException("IDiaSymbol::findChildren", hres);
 
-    SymbolPtrList childList;
+    LONG count = 0;
+    hres = symbols->get_Count(&count);
+    if (S_OK != hres)
+        throw DiaException("IDiaEnumSymbols::get_Count", hres);
 
+    return SelectedChilds(symbols, count);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+SymbolPtrList DiaSymbol::findChildren(ULONG symTag, const std::string &name)
+{
+    DiaEnumSymbolsPtr symbols = 
+        selectChildren(symTag, toWStr(name), nsRegularExpression).first;
+
+    SymbolPtrList childList;
     DiaSymbolPtr child;
     ULONG celt = 0;
     while ( SUCCEEDED(symbols->Next(1, &child, &celt)) && (celt == 1) )
@@ -115,50 +123,22 @@ ULONG DiaSymbol::getBitPosition()
 
 ULONG DiaSymbol::getChildCount(ULONG symTag)
 {
-    DiaEnumSymbolsPtr symbols;
-    HRESULT hres = 
-        m_symbol->findChildren(
-            static_cast<enum ::SymTagEnum>(symTag),
-            NULL,
-            nsfCaseSensitive | nsfUndecoratedName,
-            &symbols);
-    if (S_OK != hres)
-        throw DiaException("Call IDiaSymbol::findChildren", hres);
-
-    LONG count;
-    hres = symbols->get_Count(&count);
-    if (S_OK != hres)
-        throw DiaException("Call IDiaEnumSymbols::get_Count", hres);
-
-    return count;
+    return selectChildren(symTag).second;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 SymbolPtr DiaSymbol::getChildByIndex(ULONG symTag, ULONG _index )
 {
-    DiaEnumSymbolsPtr symbols;
-    HRESULT hres = 
-        m_symbol->findChildren(
-            static_cast<enum ::SymTagEnum>(symTag),
-            NULL,
-            nsfCaseSensitive | nsfUndecoratedName,
-            &symbols);
-    if (S_OK != hres)
-        throw DiaException("Call IDiaSymbol::findChildren", hres);
+    SelectedChilds selected = selectChildren(symTag);
 
-    LONG count;
-    hres = symbols->get_Count(&count);
-    if (S_OK != hres)
-        throw DiaException("Call IDiaEnumSymbols::get_Count", hres);
-
-    if (LONG(_index) >= count)
+    if (LONG(_index) >= selected.second)
     {
         throw PyException( PyExc_IndexError, "Index out of range");
     }
 
     DiaSymbolPtr child;
-    hres = symbols->Item(_index, &child);
+    HRESULT hres = selected.first->Item(_index, &child);
     if (S_OK != hres)
         throw DiaException("Call IDiaEnumSymbols::Item", hres);
 
@@ -167,33 +147,12 @@ SymbolPtr DiaSymbol::getChildByIndex(ULONG symTag, ULONG _index )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-SymbolPtr DiaSymbol::getChildByName(const std::string &name )
+SymbolPtr DiaSymbol::getChildByName(const std::string &name)
 {
-    DiaEnumSymbolsPtr symbols;
-    HRESULT hres = 
-        m_symbol->findChildren(
-            ::SymTagNull,
-            toWStr(name),
-            nsfCaseSensitive,
-            &symbols);
+    SelectedChilds selected = selectChildren(::SymTagNull, toWStr(name), nsCaseSensitive);
 
-    LONG count;
-    hres = symbols->get_Count(&count);
-    if (S_OK != hres)
-        throw DiaException("Call IDiaEnumSymbols::get_Count", hres);
-
-    if (count > 0)
-    {
-        if (count > 1)
-            throw SymbolException(name + "is ambiguous");
-
-        DiaSymbolPtr child;
-        hres = symbols->Item(0, &child);
-        if (S_OK != hres)
-            throw DiaException("Call IDiaEnumSymbols::Item", hres);
-
-        return SymbolPtr( new DiaSymbol(child, m_machineType) );
-    }
+    if (selected.second > 0)
+        return getChildBySelected(selected, name);
 
     if (m_publicSymbols)
     {
@@ -208,63 +167,46 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &name )
     std::string underscoreName;
     underscoreName += '_';
     underscoreName += name;
-    symbols = 0;
 
-    hres = 
-        m_symbol->findChildren(
+    selected = 
+        selectChildren(
             ::SymTagNull,
             toWStr(underscoreName),
-            nsfCaseSensitive | nsfUndecoratedName,
-            &symbols);
+            nsfCaseSensitive | nsfUndecoratedName);
 
-    hres = symbols->get_Count(&count);
-    if (S_OK != hres)
-        throw DiaException("Call IDiaEnumSymbols::get_Count", hres);
-
-    if (count >0 )
-    {
-        DiaSymbolPtr child;
-        hres = symbols->Item(0, &child);
-        if (S_OK != hres)
-            throw DiaException("Call IDiaEnumSymbols::Item", hres);
-
-        return SymbolPtr( new DiaSymbol(child, m_machineType) );
-    }
+    if (selected.second > 0)
+        return getChildBySelected(selected, name);
 
     // _имя@парам
-    std::string     pattern = "_";
+    std::string pattern = "_";
     pattern += name;
     pattern += "@*";
-    symbols = 0;
 
-    hres = 
-        m_symbol->findChildren(
+    selected = 
+        selectChildren(
             ::SymTagNull,
             toWStr(pattern),
-            nsfRegularExpression | nsfCaseSensitive | nsfUndecoratedName,
-            &symbols);
+            nsfRegularExpression | nsfCaseSensitive | nsfUndecoratedName);
 
-    if (S_OK != hres)
-        throw DiaException("Call IDiaSymbol::findChildren", hres);
-
-    hres = symbols->get_Count(&count);
-    if (S_OK != hres)
-        throw DiaException("Call IDiaEnumSymbols::get_Count", hres);
-
-    if (count == 0)
-         throw DiaException( name + " not found");
-
-    if (count >0 )
-    {
-        DiaSymbolPtr child;
-        hres = symbols->Item(0, &child);
-        if (S_OK != hres)
-            throw DiaException("Call IDiaEnumSymbols::Item", hres);
-
-        return SymbolPtr( new DiaSymbol(child, m_machineType) );
-    }
+    if (selected.second > 0)
+        return getChildBySelected(selected, name);
 
     throw DiaException(name + " is not found");
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+SymbolPtr DiaSymbol::getChildBySelected(const SelectedChilds &selected, const std::string &name)
+{
+    if (selected.second > 1)
+        throw SymbolException(name + "is ambiguous");
+
+    DiaSymbolPtr child;
+    HRESULT hres = selected.first->Item(0, &child);
+    if (S_OK != hres)
+        throw DiaException("Call IDiaEnumSymbols::Item", hres);
+
+    return SymbolPtr( new DiaSymbol(child, m_machineType) );
 }
 
 //////////////////////////////////////////////////////////////////////////////

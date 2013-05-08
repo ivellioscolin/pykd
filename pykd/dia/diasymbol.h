@@ -104,6 +104,16 @@ protected:
     static const DiaRegToRegRelativeBase &regToRegRelativeI386;
     ULONG getRegRealativeIdImpl(const DiaRegToRegRelativeBase &DiaRegToRegRelative);
 
+    // IDiaSymbol::findChildren/IDiaEnumSymbols::get_Count wrapper
+    typedef std::pair< DiaEnumSymbolsPtr, LONG > SelectedChilds;
+    SelectedChilds selectChildren(
+        ULONG symtag,
+        LPCOLESTR name = NULL,
+        DWORD compareFlags = nsNone
+    );
+
+    SymbolPtr getChildBySelected(const SelectedChilds &selected, const std::string &name);
+
     template <typename TRet>
     TRet callSymbolT(
         HRESULT(STDMETHODCALLTYPE IDiaSymbol::*method)(TRet *),
