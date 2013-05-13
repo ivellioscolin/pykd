@@ -11,7 +11,7 @@ if "%PROCESSOR_ARCHITECTURE%" == "x86" (
     if not defined PROCESSOR_ARCHITEW6432 set Arch=x86
 ) 
 
-set PythonRegKey=HKLM\Software\Python\PythonCore\2.6\InstallPath
+set PythonRegKey=HKLM\Software\Python\PythonCore\2.7\InstallPath
 
 set RegSwitch=64
 if "%TestAppPlatform%"=="Win32" set RegSwitch=32

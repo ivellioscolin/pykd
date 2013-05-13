@@ -13,18 +13,18 @@ import pykd
 
 import target
 
-import intbase
-import memtest
-import moduletest
-import typeinfo
-import typedvar
-import regtest
-import mspdbtest
-import localstest
-import customtypestest
-import ehexcepttest
-import ehstatustest
-import ehsymbolstest
+#import intbase
+#import memtest
+#import moduletest
+#import typeinfo
+#import typedvar
+#import regtest
+#import mspdbtest
+#import localstest
+#import customtypestest
+#import ehexcepttest
+#import ehstatustest
+#import ehsymbolstest
 
 class StartProcessWithoutParamsTest(unittest.TestCase):
     def testStart(self):
@@ -45,21 +45,21 @@ def getTestSuite( singleName = "" ):
            [
                 unittest.TestLoader().loadTestsFromTestCase( StartProcessWithoutParamsTest ),
                 # *** Test without start/kill new processes
-                unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
-                unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
-                unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
-                unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
-                unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
-                unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
-                unittest.TestLoader().loadTestsFromTestCase( customtypestest.CustomTypesTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( customtypestest.CustomTypesTest ),
                 # ^^^
                 unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest ),
 
-                unittest.TestLoader().loadTestsFromTestCase( mspdbtest.MsPdbTest ),
-                unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
-                unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionTest ),
-                unittest.TestLoader().loadTestsFromTestCase( ehstatustest.EhStatusTest ),
-                unittest.TestLoader().loadTestsFromTestCase( ehsymbolstest.EhSymbolsTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( mspdbtest.MsPdbTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( ehstatustest.EhStatusTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( ehsymbolstest.EhSymbolsTest ),
             ] ) 
     else:
        return unittest.TestSuite(

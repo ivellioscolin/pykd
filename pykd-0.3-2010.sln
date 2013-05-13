@@ -2,8 +2,46 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pykd", "pykd\pykd.vcxproj", "{C4C45791-0201-4406-BC5C-A384B01E3BF5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF} = {0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kdlib", "kdlibcpp\source\kdlib.vcxproj", "{3E9C538F-F060-4E86-AB7D-D44439615B63}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5A3C2DA6-AE91-4025-AC03-A58BD03CEBCD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{FE246107-1CB8-404F-97BD-E901E4B5E972}"
+	ProjectSection(SolutionItems) = preProject
+		test\scripts\_run_pykdtest.cmd = test\scripts\_run_pykdtest.cmd
+		test\scripts\basetest.py = test\scripts\basetest.py
+		test\scripts\clienttest.py = test\scripts\clienttest.py
+		test\scripts\customtypestest.py = test\scripts\customtypestest.py
+		test\scripts\dbgcmd.py = test\scripts\dbgcmd.py
+		test\scripts\diatest.py = test\scripts\diatest.py
+		test\scripts\ehexcepttest.py = test\scripts\ehexcepttest.py
+		test\scripts\ehloadtest.py = test\scripts\ehloadtest.py
+		test\scripts\ehstatustest.py = test\scripts\ehstatustest.py
+		test\scripts\ehsymbolstest.py = test\scripts\ehsymbolstest.py
+		test\scripts\eventtest.py = test\scripts\eventtest.py
+		test\scripts\intbase.py = test\scripts\intbase.py
+		test\scripts\localstest.py = test\scripts\localstest.py
+		test\scripts\memtest.py = test\scripts\memtest.py
+		test\scripts\moduletest.py = test\scripts\moduletest.py
+		test\scripts\mspdbtest.py = test\scripts\mspdbtest.py
+		test\scripts\pykdtest.py = test\scripts\pykdtest.py
+		test\scripts\regtest.py = test\scripts\regtest.py
+		test\scripts\synsymtest.py = test\scripts\synsymtest.py
+		test\scripts\target.py = test\scripts\target.py
+		test\scripts\testutils.py = test\scripts\testutils.py
+		test\scripts\thrdctxtest.py = test\scripts\thrdctxtest.py
+		test\scripts\typedvar.py = test\scripts\typedvar.py
+		test\scripts\typeinfo.py = test\scripts\typeinfo.py
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "targetapp", "kdlibcpp\tests\targetapp\targetapp.vcxproj", "{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3E9C538F-F060-4E86-AB7D-D44439615B63} = {3E9C538F-F060-4E86-AB7D-D44439615B63}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,8 +62,18 @@ Global
 		{3E9C538F-F060-4E86-AB7D-D44439615B63}.Debug|Win32.Build.0 = Debug|Win32
 		{3E9C538F-F060-4E86-AB7D-D44439615B63}.Release|Win32.ActiveCfg = Release|Win32
 		{3E9C538F-F060-4E86-AB7D-D44439615B63}.Release|Win32.Build.0 = Release|Win32
+		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}.Debug_2.7|Win32.ActiveCfg = Debug|Win32
+		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}.Debug_2.7|Win32.Build.0 = Debug|Win32
+		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}.Debug|Win32.Build.0 = Debug|Win32
+		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}.Release|Win32.ActiveCfg = Release|Win32
+		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FE246107-1CB8-404F-97BD-E901E4B5E972} = {5A3C2DA6-AE91-4025-AC03-A58BD03CEBCD}
+		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF} = {5A3C2DA6-AE91-4025-AC03-A58BD03CEBCD}
 	EndGlobalSection
 EndGlobal

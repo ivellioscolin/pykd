@@ -34,11 +34,11 @@ using namespace kdlib;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-//static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
-//#ifdef _DEBUG
-//    " <DBG>"
-//#endif  // _DEBUG
-//;
+static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
+#ifdef _DEBUG
+    " <DBG>"
+#endif  // _DEBUG
+;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -82,7 +82,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, dprintln, 1, 2 );
 
 BOOST_PYTHON_MODULE( pykd )
 {
-   // python::scope().attr("version") = pykdVersion;
+    python::scope().attr("version") = pykdVersion;
 
    // // DbgEng services 
    // python::def( "setSymSrvDir", &setSymSrvDir,

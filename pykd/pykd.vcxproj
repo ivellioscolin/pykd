@@ -54,6 +54,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -86,6 +87,9 @@
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(PYTHON_27_X86_ROOT)\libs;$(BOOST_ROOT)\stage_2.7\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>"$(ProjectDir)..\test\scripts\_run_pykdtest.cmd" "$(TargetDir)targetapp.exe" $(PlatformName)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
