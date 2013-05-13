@@ -2,4 +2,3 @@ EXPORTS
 	DebugExtensionInitialize
 	DebugExtensionUninitialize
 	py
-	pycmd
