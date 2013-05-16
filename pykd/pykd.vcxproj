@@ -55,6 +55,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <TargetExt>.pyd</TargetExt>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -72,6 +73,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
     </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">
     <ClCompile>
@@ -88,8 +97,12 @@
       <AdditionalLibraryDirectories>$(PYTHON_27_X86_ROOT)\libs;$(BOOST_ROOT)\stage_2.7\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>"$(ProjectDir)..\test\scripts\_run_pykdtest.cmd" "$(TargetDir)targetapp.exe" $(PlatformName)</Command>
+      <Command>copy $(ProjectDir)..\Debug\targetapp.exe $(OutDir)targetapp.exe</Command>
     </PostBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -112,6 +125,7 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="windbgext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

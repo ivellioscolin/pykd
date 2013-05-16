@@ -3,50 +3,46 @@
 #include "kdlib/kdlib.h"
 #include "kdlib/windbg.h"
 
+#include "windbgext.h"
+
 using namespace kdlib;
 using namespace kdlib::windbg;
 
 ///////////////////////////////////////////////////////////////////////////////
 
+KDLIB_WINDBG_EXTENSION_INIT( PykdExt );
+
+
+///////////////////////////////////////////////////////////////////////////////
+
 extern "C" void initpykd();
 
-class PykdExt : public WindbgExtension
+void PykdExt::setUp() 
 {
-public:
-    KDLIB_EXT_COMMAND_METHOD(py);
+    WindbgExtension::setUp();
 
-private:
+    PyImport_AppendInittab("pykd", initpykd ); 
 
-    void startConsole();
+    Py_Initialize();
 
-    virtual void setUp() 
-    {
-        WindbgExtension::setUp();
+    boost::python::import( "pykd" );
 
-        PyImport_AppendInittab("pykd", initpykd ); 
+    // перенаправление стандартных потоков ВВ
+    python::object       sys = python::import("sys");
 
-        Py_Initialize();
+    sys.attr("stdout") = python::ptr( dbgout  );
+    sys.attr("stderr") = python::ptr( dbgout );
+    sys.attr("stdin") = python::ptr( dbgin );
+}
 
-        boost::python::import( "pykd" );
+///////////////////////////////////////////////////////////////////////////////
 
-        // перенаправление стандартных потоков ВВ
-        python::object       sys = python::import("sys");
+void PykdExt::tearDown()
+{
+    Py_Finalize();
 
-        sys.attr("stdout") = python::ptr( dbgout  );
-        sys.attr("stderr") = python::ptr( dbgout );
-        sys.attr("stdin") = python::ptr( dbgin );
-    }
-
-    virtual void tearDown()
-    {
-        Py_Finalize();
-
-        WindbgExtension::tearDown();
-    }
-
-};
-
-KDLIB_WINDBG_EXTENSION_INIT( PykdExt );
+    WindbgExtension::tearDown();
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

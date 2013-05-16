@@ -2,7 +2,7 @@
 #include "stdafx.h"
 
 
-#include "kdlib/dbgio.h"
+#include "kdlib/kdlib.h"
 
 using namespace kdlib;
 
@@ -95,26 +95,26 @@ BOOST_PYTHON_MODULE( pykd )
    //     "Call a WinDBG extension's routine. Parameters: handle returned by loadExt; string command line" );
 
 
-   // // Manage debug target 
+   // Manage debug target 
 
-   // python::def( "startProcess", &startProcess,
-   //     "Start process for debugging" ); 
-   // python::def( "attachProcess", &attachProcess,
-   //     "Attach debugger to a exsisting process" );
-   // python::def( "detachProcess", &detachProcess, detachProcess_( boost::python::args( "pid" ),
-   //     "Stop process debugging") ); 
-   // python::def( "killProcess", &terminateProcess,
-   //     "Stop debugging and terminate current process" );
-   // python::def( "loadDump", &loadDump,
-   //     "Load crash dump");
-   // python::def( "isDumpAnalyzing", &isDumpAnalyzing,
-   //     "Check if it is a dump analyzing ( not living debuggee )" );
-   // python::def( "isKernelDebugging", &isKernelDebugging,
-   //     "Check if kernel dubugging is running" );
-   // python::def( "isWindbgExt", &WindbgGlobalSession::isInit,
-   //     "Check if script works in windbg context" );
-   // python::def( "writeDump", &writeDump,
-   //     "Create memory dump file" );
+    python::def( "startProcess", &startProcess,
+        "Start process for debugging" ); 
+    python::def( "attachProcess", &attachProcess,
+        "Attach debugger to a exsisting process" );
+    //python::def( "detachProcess", &detachProcess, detachProcess_( boost::python::args( "pid" ),
+    //    "Stop process debugging") ); 
+    python::def( "killProcess", &terminateProcess,
+        "Stop debugging and terminate current process" );
+    python::def( "loadDump", &loadDump,
+        "Load crash dump");
+    python::def( "isDumpAnalyzing", &isDumpAnalyzing,
+        "Check if it is a dump analyzing ( not living debuggee )" );
+    python::def( "isKernelDebugging", &isKernelDebugging,
+        "Check if kernel dubugging is running" );
+    //python::def( "isWindbgExt", &WindbgGlobalSession::isInit,
+    //    "Check if script works in windbg context" );
+    python::def( "writeDump", &writeDump,
+        "Create memory dump file" );
 
    // python::def( "breakin", &debugBreak,
    //     "Break into debugger" );

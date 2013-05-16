@@ -28,16 +28,16 @@ import target
 
 class StartProcessWithoutParamsTest(unittest.TestCase):
     def testStart(self):
-        target.processId = pykd.startProcess( target.appPath )
-        target.module = pykd.module( target.moduleName )
-        target.module.reload();
-        print "\n" + str( pykd.getSystemVersion() )
-        pykd.go()
+       target.processId = pykd.startProcess( target.appPath )
+      # target.module = pykd.module( target.moduleName )
+      #  target.module.reload();
+      #  print "\n" + str( pykd.getSystemVersion() )
+      #  pykd.go()
 
 class TerminateProcessTest(unittest.TestCase):
     def testKill(self):
         pykd.killProcess( target.processId )
-        pykd.detachProcess( target.processId )
+        #pykd.detachProcess( target.processId )
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
@@ -76,6 +76,4 @@ if __name__ == "__main__":
     target.appPath = sys.argv[1]
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
     
-    unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
-
-
+    unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )\
