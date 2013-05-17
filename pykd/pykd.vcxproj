@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="variant.h" />
     <ClInclude Include="windbgext.h" />
   </ItemGroup>
   <ItemGroup>

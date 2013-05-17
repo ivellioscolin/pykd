@@ -6,6 +6,10 @@
 
 using namespace kdlib;
 
+#include "variant.h"
+
+using namespace pykd;
+
 
 //
 //#include "pykdver.h"
@@ -101,8 +105,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Start process for debugging" ); 
     python::def( "attachProcess", &attachProcess,
         "Attach debugger to a exsisting process" );
-    //python::def( "detachProcess", &detachProcess, detachProcess_( boost::python::args( "pid" ),
-    //    "Stop process debugging") ); 
+//    python::def( "detachProcess", &detachProcess, detachProcess_( boost::python::args( "pid" ),
+//        "Stop process debugging") ); 
     python::def( "killProcess", &terminateProcess,
         "Stop debugging and terminate current process" );
     python::def( "loadDump", &loadDump,
@@ -321,49 +325,49 @@ BOOST_PYTHON_MODULE( pykd )
    // python::def( "setSymbolPath", &setSymbolPath, "Set current symbol path");
    // python::def( "appendSymbolPath", &appendSymbolPath, "Append current symbol path");
 
-   // python::class_<intBase>( "intBase", "intBase", python::no_init )
-   //     .def( python::init<python::object&>() )
-   //     .def( "__eq__", &intBase::eq )
-   //     .def( "__ne__", &intBase::ne)
-   //     .def( "__lt__", &intBase::lt)
-   //     .def( "__gt__", &intBase::gt )
-   //     .def( "__le__", &intBase::le )
-   //     .def( "__ge__", &intBase::ge )
-   //     .def( "__add__", &intBase::add )
-   //     .def( "__radd__", &intBase::add )
-   //     .def( "__sub__", &intBase::sub )
-   //     .def( "__rsub__", &intBase::rsub )
-   //     .def( "__mul__", &intBase::mul )
-   //     .def( "__rmul__", &intBase::mul )
-   //     .def( "__div__", &intBase::div )
-   //     .def( "__rdiv__", &intBase::rdiv )
-   //     .def( "__mod__", &intBase::mod )
-   //     .def( "__rmod__", &intBase::rmod )
-   //     .def( "__rshift__", &intBase::rshift )
-   //     .def( "__rrshift__", &intBase::rrshift )
-   //     .def( "__lshift__", &intBase::lshift )
-   //     .def( "__rlshift__", &intBase::rlshift )
-   //     .def( "__and__", &intBase::and )
-   //     .def( "__rand__", &intBase::and )
-   //     .def( "__or__", &intBase::or )
-   //     .def( "__ror__", &intBase::or )
-   //     .def( "__xor__", &intBase::xor )
-   //     .def( "__rxor__", &intBase::xor )
-   //     .def( "__neg__", &intBase::neg )
-   //     .def( "__pos__", &intBase::pos ) 
-   //     .def( "__invert__", &intBase::invert ) 
-   //     .def( "__nonzero__", &intBase::nonzero )
-   //     .def( "__str__", &intBase::str )
-   //     .def( "__hex__", &intBase::hex )
-   //     .def( "__long__", &intBase::long_ )
-   //     .def( "__int__", &intBase::int_ )
-   //     .def( "__index__", &intBase::long_ )
-   //     .def( "__hash__", &intBase::long_ );
+python::class_<pykd::NumVariant>( "numVariant", "numVariant", python::no_init )
+        .def( python::init<python::object&>() )
+        .def( "__eq__", &pykd::NumVariant::eq )
+        .def( "__ne__", &pykd::NumVariant::ne)
+        .def( "__lt__", &pykd::NumVariant::lt)
+        .def( "__gt__", &pykd::NumVariant::gt )
+        .def( "__le__", &pykd::NumVariant::le )
+        .def( "__ge__", &pykd::NumVariant::ge )
+        .def( "__add__", &pykd::NumVariant::add )
+        .def( "__radd__", &pykd::NumVariant::add )
+        .def( "__sub__", &pykd::NumVariant::sub )
+        .def( "__rsub__", &pykd::NumVariant::rsub )
+        .def( "__mul__", &pykd::NumVariant::mul )
+        .def( "__rmul__", &pykd::NumVariant::mul )
+        .def( "__div__", &pykd::NumVariant::div )
+        .def( "__rdiv__", &pykd::NumVariant::rdiv )
+        .def( "__mod__", &pykd::NumVariant::mod )
+        .def( "__rmod__", &pykd::NumVariant::rmod )
+        .def( "__rshift__", &pykd::NumVariant::rshift )
+        .def( "__rrshift__", &pykd::NumVariant::rrshift )
+        .def( "__lshift__", &pykd::NumVariant::lshift )
+        .def( "__rlshift__", &pykd::NumVariant::rlshift )
+        .def( "__and__", &pykd::NumVariant::and )
+        .def( "__rand__", &pykd::NumVariant::and )
+        .def( "__or__", &pykd::NumVariant::or )
+        .def( "__ror__", &pykd::NumVariant::or )
+        .def( "__xor__", &pykd::NumVariant::xor )
+        .def( "__rxor__", &pykd::NumVariant::xor )
+        .def( "__neg__", &pykd::NumVariant::neg )
+        .def( "__pos__", &pykd::NumVariant::pos ) 
+        .def( "__invert__", &pykd::NumVariant::invert ) 
+        .def( "__nonzero__", &pykd::NumVariant::nonzero )
+        //.def( "__str__", &pykd::NumVariant::str )
+        //.def( "__hex__", &pykd::NumVariant::hex )
+        .def( "__long__", &pykd::NumVariant::long_ )
+        .def( "__int__", &pykd::NumVariant::int_ )
+        .def( "__index__", &pykd::NumVariant::long_ )
+        .def( "__hash__", &pykd::NumVariant::long_ );
 
-   // python::implicitly_convertible<intBase,ULONG64>();
-   // python::implicitly_convertible<intBase,LONG64>();
-   // python::implicitly_convertible<intBase,ULONG>();
-   // python::implicitly_convertible<intBase,LONG>();
+    python::implicitly_convertible<pykd::NumVariant, unsigned long long>();
+    python::implicitly_convertible<pykd::NumVariant, long long>();
+    python::implicitly_convertible<pykd::NumVariant, unsigned long>();
+    python::implicitly_convertible<pykd::NumVariant, long>();
 
    // python::class_<Module, ModulePtr, python::bases<intBase> >("module", "Class representing executable module", python::no_init )
    //     .def("__init__", python::make_constructor(Module::loadModuleByName) )

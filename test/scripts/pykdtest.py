@@ -13,7 +13,7 @@ import pykd
 
 import target
 
-#import intbase
+import intbase
 #import memtest
 #import moduletest
 #import typeinfo
@@ -29,10 +29,10 @@ import target
 class StartProcessWithoutParamsTest(unittest.TestCase):
     def testStart(self):
        target.processId = pykd.startProcess( target.appPath )
-      # target.module = pykd.module( target.moduleName )
-      #  target.module.reload();
+       target.module = pykd.module( target.moduleName )
+       target.module.reload();
       #  print "\n" + str( pykd.getSystemVersion() )
-      #  pykd.go()
+       pykd.go()
 
 class TerminateProcessTest(unittest.TestCase):
     def testKill(self):
@@ -43,9 +43,10 @@ def getTestSuite( singleName = "" ):
     if singleName == "":
         return unittest.TestSuite(
            [
+                unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
+
                 unittest.TestLoader().loadTestsFromTestCase( StartProcessWithoutParamsTest ),
                 # *** Test without start/kill new processes
-                #unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
