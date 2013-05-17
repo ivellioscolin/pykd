@@ -228,6 +228,23 @@ void findMemoryRegion( ULONG64 beginOffset, ULONG64 *startOffset, ULONG64* lengt
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+ULONG64 searchMemory( ULONG64 offset, ULONG length, const std::string& pattern )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    offset = addr64NoSafe(offset);
+
+    ULONG64 foundOffset;
+    HRESULT hres = g_dbgEng->dataspace->SearchVirtual( offset, length, (PVOID)pattern.c_str(), (ULONG)pattern.size(), 1, &foundOffset );
+
+    if ( FAILED( hres ) )
+        return 0LL;
+
+    return foundOffset;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 ULONG getVaProtect( ULONG64 offset )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );

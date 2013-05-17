@@ -349,7 +349,7 @@ class EthernetType:
         return self.typeVal == IPv6
 
     def __str__( self ):
-        return { IPv4 : "IPv4", ARP : "ARP", IPv6 : "IPv6" }.get( self.typeVal, self.typeVal )    
+        return { IPv4 : "IPv4", ARP : "ARP", IPv6 : "IPv6" }.get( self.typeVal, str(self.typeVal) )    
 
     def getNextLayerPacket( self, dataPos ):
         return {  
@@ -388,7 +388,7 @@ class EthernetPacket:
 
 
     def __str__( self):
-
+   
         s = "Ethernet header: "
          
         if self.parsed:
@@ -409,8 +409,7 @@ class NetPacket:
 
     def __init__( self, rawData, startProtocol="eth", beginOffset=0 ):
         self.rawData = rawData
-        dataPos = iter( self.rawData[ beginOffset : ] )
-        
+        dataPos = iter( self.rawData[ beginOffset : ] )        
         
         self.mediaParsed = {
             "eth" : lambda : EthernetPacket( dataPos ),

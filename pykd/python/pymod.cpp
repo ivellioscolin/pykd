@@ -155,7 +155,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if the virtual address is valid" );
     python::def( "compareMemory", &compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
         "Compare two memory buffers by virtual or physical addresses" ) );
-
+    python::def( "searchMemory", &searchMemory, 
+        "Search in virtual memory" );
     python::def( "findMemoryRegion", &findMemoryRegionPy,
         "Return address of begining valid memory region nearest to offset" );
     python::def( "getVaProtect", &getVaProtect,

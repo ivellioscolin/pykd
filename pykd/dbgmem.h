@@ -12,7 +12,7 @@ bool readMemoryUnsafeNoSafe( ULONG64 offset, PVOID buffer, ULONG length, bool ph
 bool isVaValid( ULONG64 addr );
 bool compareMemory( ULONG64 addr1, ULONG64 addr2, ULONG length, bool phyAddr = FALSE );
 ULONG getVaProtect( ULONG64 offset );
-
+ULONG64 searchMemory( ULONG64 offset, ULONG length, const std::string& pattern );
 void findMemoryRegion( ULONG64 beginOffset, ULONG64 *startOffset, ULONG64* length );
 python::tuple findMemoryRegionPy( ULONG64 beginOffset );
 
