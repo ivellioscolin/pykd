@@ -14,7 +14,7 @@ import pykd
 import target
 
 import intbase
-#import memtest
+import memtest
 #import moduletest
 #import typeinfo
 #import typedvar
@@ -48,7 +48,7 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( StartProcessWithoutParamsTest ),
                 # *** Test without start/kill new processes
                 #unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
-                #unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
+                unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),

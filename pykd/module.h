@@ -1,0 +1,30 @@
+#pragma once
+
+#include "kdlib/module.h"
+
+namespace pykd {
+
+
+struct Module : public kdlib::Module 
+{
+
+    static kdlib::ModulePtr loadModuleByName( const std::wstring &name )
+    {
+        return kdlib::loadModule( name );
+    }
+
+    static kdlib::ModulePtr loadModuleByOffset( kdlib::MEMOFFSET_64 offset )
+    {
+        return kdlib::loadModule( offset);
+    }
+
+    static std::wstring print( kdlib::Module& module ) {
+        return L"PYKD MODULE";
+    }
+
+    //static  kdlib::MEMOFFSET_64 convertToLong( kdlib::Module& module ) {
+    //    return module.getBase();
+    //}
+};
+
+} // end namespace pykd

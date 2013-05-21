@@ -27,6 +27,12 @@
     <ClInclude Include="variant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="target.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -39,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pymod.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="target.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

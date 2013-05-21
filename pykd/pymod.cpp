@@ -4,9 +4,9 @@
 
 #include "kdlib/kdlib.h"
 
-using namespace kdlib;
-
 #include "variant.h"
+#include "module.h"
+#include "target.h"
 
 using namespace pykd;
 
@@ -44,30 +44,27 @@ static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 #endif  // _DEBUG
 ;
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 //
 //BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_, detachProcess, 0, 1 );
 //
-BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, dprint, 1, 2 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, dprintln, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, kdlib::dprint, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, kdlib::dprintln, 1, 2 );
 
 //BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_findSymbol, Module::getSymbolNameByVa, 1, 2 );
 
-
-
-//
-//BOOST_PYTHON_FUNCTION_OVERLOADS( loadChars_, loadChars, 2, 3 );
-//BOOST_PYTHON_FUNCTION_OVERLOADS( loadWChars_, loadWChars, 2, 3 );
-//BOOST_PYTHON_FUNCTION_OVERLOADS( loadBytes_, loadBytes, 2, 3 );
-//BOOST_PYTHON_FUNCTION_OVERLOADS( loadWords_, loadWords, 2, 3 );
-//BOOST_PYTHON_FUNCTION_OVERLOADS( loadDWords_, loadDWords, 2, 3 );
-//BOOST_PYTHON_FUNCTION_OVERLOADS( loadQWords_, loadQWords, 2, 3 );
-//BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignBytes_, loadSignBytes, 2, 3 );
-//BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords_, loadSignWords, 2, 3 );
-//BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
-//BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
-//BOOST_PYTHON_FUNCTION_OVERLOADS( loadFloats_, loadFloats, 2, 3 );
-//BOOST_PYTHON_FUNCTION_OVERLOADS( loadDoubles_, loadDoubles, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadChars_, kdlib::loadChars, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadWChars_, kdlib::loadWChars, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadBytes_, kdlib::loadBytes, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadWords_, kdlib::loadWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadDWords_, kdlib::loadDWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadQWords_, kdlib::loadQWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignBytes_, kdlib::loadSignBytes, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords_, kdlib::loadSignWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, kdlib::loadSignDWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, kdlib::loadSignQWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadFloats_, kdlib::loadFloats, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadDoubles_, kdlib::loadDoubles, 2, 3 );
 //BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, compareMemory, 3, 4 );
 //
 //BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, getSourceLine, 0, 1 );
@@ -101,23 +98,23 @@ BOOST_PYTHON_MODULE( pykd )
 
    // Manage debug target 
 
-    python::def( "startProcess", &startProcess,
+    python::def( "startProcess", &kdlib::startProcess,
         "Start process for debugging" ); 
-    python::def( "attachProcess", &attachProcess,
+    python::def( "attachProcess", &kdlib::attachProcess,
         "Attach debugger to a exsisting process" );
 //    python::def( "detachProcess", &detachProcess, detachProcess_( boost::python::args( "pid" ),
 //        "Stop process debugging") ); 
-    python::def( "killProcess", &terminateProcess,
+    python::def( "killProcess", &kdlib::terminateProcess,
         "Stop debugging and terminate current process" );
-    python::def( "loadDump", &loadDump,
+    python::def( "loadDump", &kdlib::loadDump,
         "Load crash dump");
-    python::def( "isDumpAnalyzing", &isDumpAnalyzing,
+    python::def( "isDumpAnalyzing", &kdlib::isDumpAnalyzing,
         "Check if it is a dump analyzing ( not living debuggee )" );
-    python::def( "isKernelDebugging", &isKernelDebugging,
+    python::def( "isKernelDebugging", &kdlib::isKernelDebugging,
         "Check if kernel dubugging is running" );
     //python::def( "isWindbgExt", &WindbgGlobalSession::isInit,
     //    "Check if script works in windbg context" );
-    python::def( "writeDump", &writeDump,
+    python::def( "writeDump", &kdlib::writeDump,
         "Create memory dump file" );
 
    // python::def( "breakin", &debugBreak,
@@ -126,24 +123,24 @@ BOOST_PYTHON_MODULE( pykd )
    //     "Evaluate windbg expression" );
    // python::def( "dbgCommand", &debugCommand,
    //     "Run a debugger's command and return it's result as a string" );
-   // python::def( "go", &debugGo,
-   //     "Go debugging"  );
+    python::def( "go", &targetGo,
+        "Go debugging"  );
    // python::def( "step", &debugStep,
    //     "The target is executing a single instruction or--if that instruction is a subroutine call--subroutine" );
    // python::def( "trace", &debugStepIn,
    //     "The target is executing a single instruction" );
 
    // Debug output
-    python::def( "dprint", &dprint, dprint_( python::args( "str", "dml" ), 
+    python::def( "dprint", &kdlib::dprint, dprint_( python::args( "str", "dml" ), 
         "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
-    python::def( "dprintln", &dprintln, dprintln_( python::args( "str", "dml" ), 
+    python::def( "dprintln", &kdlib::dprintln, dprintln_( python::args( "str", "dml" ), 
         "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
 
     // Python debug output console helper classes
-    python::class_<DbgOut, boost::noncopyable >( "dout", "dout", python::no_init )
-        .def( "write", &DbgOut::write );
-    python::class_<DbgIn, boost::noncopyable>( "din", "din", python::no_init )
-        .def( "readline", &DbgIn::readline );
+    python::class_<kdlib::DbgOut, boost::noncopyable >( "dout", "dout", python::no_init )
+        .def( "write", &kdlib::DbgOut::write );
+    python::class_<kdlib::DbgIn, boost::noncopyable>( "din", "din", python::no_init )
+        .def( "readline", &kdlib::DbgIn::readline );
 
    // // system properties
    // python::def( "ptrSize", &ptrSize,
@@ -172,69 +169,69 @@ BOOST_PYTHON_MODULE( pykd )
    // python::def( "getVaProtect", &getVaProtect,
    //     "Return memory attributes" );
 
-   // python::def( "ptrByte", &ptrByte,
-   //     "Read an unsigned 1-byte integer from the target memory" );
-   // python::def( "ptrWord", &ptrWord,
-   //     "Read an unsigned 2-byte integer from the target memory" );
-   // python::def( "ptrDWord", (ULONG64(*)(ULONG64))&ptrDWord,
-   //     "Read an unsigned 4-byte integer from the target memory" );
-   // python::def( "ptrQWord", (ULONG64(*)(ULONG64))&ptrQWord,
-   //     "Read an unsigned 8-byte integer from the target memory" );
-   // python::def( "ptrMWord", (ULONG64(*)(ULONG64))&ptrMWord,
-   //     "Read an unsigned mashine's word wide integer from the target memory" );
-   // python::def( "ptrSignByte", &ptrSignByte,
-   //     "Read an signed 1-byte integer from the target memory" );
-   // python::def( "ptrSignWord", &ptrSignWord,
-   //     "Read an signed 2-byte integer from the target memory" );
-   // python::def( "ptrSignDWord", &ptrSignDWord,
-   //     "Read an signed 4-byte integer from the target memory" );
-   // python::def( "ptrSignQWord", &ptrSignQWord,
-   //     "Read an signed 8-byte integer from the target memory" );
-   // python::def( "ptrSignMWord", &ptrSignMWord,
-   //     "Read an signed mashine's word wide integer from the target memory" );
-   // python::def( "ptrPtr", (ULONG64(*)(ULONG64))&ptrPtr,
-   //     "Read an pointer value from the target memory" );
-   // python::def( "ptrFloat", &ptrSingleFloat,
-   //     "Read a float with single precision from the target memory" );
-   //python::def( "ptrDouble", &ptrDoubleFloat,
-   //     "Read a float with single precision from the target memory" );
+    python::def( "ptrByte", &kdlib::ptrByte,
+        "Read an unsigned 1-byte integer from the target memory" );
+    python::def( "ptrWord", &kdlib::ptrWord,
+        "Read an unsigned 2-byte integer from the target memory" );
+    python::def( "ptrDWord", &kdlib::ptrDWord,
+        "Read an unsigned 4-byte integer from the target memory" );
+    python::def( "ptrQWord", &kdlib::ptrQWord,
+        "Read an unsigned 8-byte integer from the target memory" );
+    python::def( "ptrMWord", &kdlib::ptrMWord,
+        "Read an unsigned mashine's word wide integer from the target memory" );
+    python::def( "ptrSignByte", &kdlib::ptrSignByte,
+        "Read an signed 1-byte integer from the target memory" );
+    python::def( "ptrSignWord", &kdlib::ptrSignWord,
+        "Read an signed 2-byte integer from the target memory" );
+    python::def( "ptrSignDWord", &kdlib::ptrSignDWord,
+        "Read an signed 4-byte integer from the target memory" );
+    python::def( "ptrSignQWord", &kdlib::ptrSignQWord,
+        "Read an signed 8-byte integer from the target memory" );
+    python::def( "ptrSignMWord", &kdlib::ptrSignMWord,
+        "Read an signed mashine's word wide integer from the target memory" );
+    python::def( "ptrPtr", &kdlib::ptrPtr,
+        "Read an pointer value from the target memory" );
+    python::def( "ptrFloat", &kdlib::ptrSingleFloat,
+        "Read a float with single precision from the target memory" );
+   python::def( "ptrDouble", &kdlib::ptrDoubleFloat,
+        "Read a float with single precision from the target memory" );
 
-   // python::def( "loadBytes", &loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
-   //     "Read the block of the target's memory and return it as list of unsigned bytes" ) );
-   // python::def( "loadWords", &loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
-   //     "Read the block of the target's memory and return it as list of unsigned shorts" ) );
-   // python::def( "loadDWords", &loadDWords, loadDWords_( python::args( "offset", "count", "phyAddr" ),
-   //     "Read the block of the target's memory and return it as list of unsigned long ( double word )" ) );
-   // python::def( "loadQWords", &loadQWords, loadQWords_( python::args( "offset", "count", "phyAddr" ),
-   //     "Read the block of the target's memory and return it as list of unsigned long long ( quad word )" ) );
-   // python::def( "loadSignBytes", &loadSignBytes, loadSignBytes_( python::args( "offset", "count", "phyAddr" ),
-   //     "Read the block of the target's memory and return it as list of signed bytes" ) );
-   // python::def( "loadSignWords", &loadSignWords, loadSignWords_( python::args( "offset", "count", "phyAddr" ),
-   //     "Read the block of the target's memory and return it as list of signed words" ) );
-   // python::def( "loadSignDWords", &loadSignDWords, loadSignDWords_( python::args( "offset", "count", "phyAddr" ),
-   //     "Read the block of the target's memory and return it as list of signed longs" ) );
-   // python::def( "loadSignQWords", &loadSignQWords, loadSignQWords_( python::args( "offset", "count", "phyAddr" ),
-   //     "Read the block of the target's memory and return it as list of signed long longs" ) );
-   // python::def( "loadChars", &loadChars, loadChars_( python::args( "address", "count", "phyAddr" ),
-   //     "Load string from target memory" ) );
-   // python::def( "loadWChars", &loadWChars, loadWChars_( python::args( "address", "count", "phyAddr" ),
-   //     "Load string from target memory" ) );
-   // python::def( "loadCStr", &loadCStr,
-   //     "Load string from the target buffer containing 0-terminated ansi-string" );
-   // python::def( "loadWStr", &loadWStr,
-   //     "Load string from the target buffer containing 0-terminated unicode-string" );
-   // python::def( "loadUnicodeString", &loadUnicodeStr,
-   //     "Return string represention of windows UNICODE_STRING type" );
-   // python::def( "loadAnsiString", &loadAnsiStr,
-   //     "Return string represention of windows ANSI_STRING type" );
-   // python::def( "loadPtrList", &loadPtrList,
-   //     "Return list of pointers, each points to next" );
-   // python::def( "loadPtrs", &loadPtrArray,
-   //     "Read the block of the target's memory and return it as a list of pointers" );
-   // python::def( "loadFloats", &loadFloats, loadFloats_( python::args( "offset", "count", "phyAddr" ),
-   //     "Read the block of the target's memory and return it as list of floats" ) );
-   // python::def( "loadDoubles", &loadDoubles, loadDoubles_( python::args( "offset", "count", "phyAddr" ),
-   //     "Read the block of the target's memory and return it as list of doubles" ) );
+    python::def( "loadBytes", &kdlib::loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of unsigned bytes" ) );
+    python::def( "loadWords", &kdlib::loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of unsigned shorts" ) );
+    python::def( "loadDWords", &kdlib::loadDWords, loadDWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of unsigned long ( double word )" ) );
+    python::def( "loadQWords", &kdlib::loadQWords, loadQWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of unsigned long long ( quad word )" ) );
+    python::def( "loadSignBytes", &kdlib::loadSignBytes, loadSignBytes_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of signed bytes" ) );
+    python::def( "loadSignWords", &kdlib::loadSignWords, loadSignWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of signed words" ) );
+    python::def( "loadSignDWords", &kdlib::loadSignDWords, loadSignDWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of signed longs" ) );
+    python::def( "loadSignQWords", &kdlib::loadSignQWords, loadSignQWords_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of signed long longs" ) );
+    python::def( "loadChars", &kdlib::loadChars, loadChars_( python::args( "address", "count", "phyAddr" ),
+        "Load string from target memory" ) );
+    python::def( "loadWChars", &kdlib::loadWChars, loadWChars_( python::args( "address", "count", "phyAddr" ),
+        "Load string from target memory" ) );
+    python::def( "loadCStr", &kdlib::loadCStr,
+        "Load string from the target buffer containing 0-terminated ansi-string" );
+    python::def( "loadWStr", &kdlib::loadWStr,
+        "Load string from the target buffer containing 0-terminated unicode-string" );
+    //python::def( "loadUnicodeString", &loadUnicodeStr,
+    //    "Return string represention of windows UNICODE_STRING type" );
+    //python::def( "loadAnsiString", &loadAnsiStr,
+    //    "Return string represention of windows ANSI_STRING type" );
+    //python::def( "loadPtrList", &loadPtrList,
+    //    "Return list of pointers, each points to next" );
+    //python::def( "loadPtrs", &loadPtrArray,
+    //    "Read the block of the target's memory and return it as a list of pointers" );
+    python::def( "loadFloats", &kdlib::loadFloats, loadFloats_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of floats" ) );
+    python::def( "loadDoubles", &kdlib::loadDoubles, loadDoubles_( python::args( "offset", "count", "phyAddr" ),
+        "Read the block of the target's memory and return it as list of doubles" ) );
 
    // // types and vaiables
    // python::def( "getSourceFile", &getSourceFile, getSourceFile_( python::args( "offset"),
@@ -325,113 +322,116 @@ BOOST_PYTHON_MODULE( pykd )
    // python::def( "setSymbolPath", &setSymbolPath, "Set current symbol path");
    // python::def( "appendSymbolPath", &appendSymbolPath, "Append current symbol path");
 
-python::class_<pykd::NumVariant>( "numVariant", "numVariant", python::no_init )
-        .def( python::init<python::object&>() )
-        .def( "__eq__", &pykd::NumVariant::eq )
-        .def( "__ne__", &pykd::NumVariant::ne)
-        .def( "__lt__", &pykd::NumVariant::lt)
-        .def( "__gt__", &pykd::NumVariant::gt )
-        .def( "__le__", &pykd::NumVariant::le )
-        .def( "__ge__", &pykd::NumVariant::ge )
-        .def( "__add__", &pykd::NumVariant::add )
-        .def( "__radd__", &pykd::NumVariant::add )
-        .def( "__sub__", &pykd::NumVariant::sub )
-        .def( "__rsub__", &pykd::NumVariant::rsub )
-        .def( "__mul__", &pykd::NumVariant::mul )
-        .def( "__rmul__", &pykd::NumVariant::mul )
-        .def( "__div__", &pykd::NumVariant::div )
-        .def( "__rdiv__", &pykd::NumVariant::rdiv )
-        .def( "__mod__", &pykd::NumVariant::mod )
-        .def( "__rmod__", &pykd::NumVariant::rmod )
-        .def( "__rshift__", &pykd::NumVariant::rshift )
-        .def( "__rrshift__", &pykd::NumVariant::rrshift )
-        .def( "__lshift__", &pykd::NumVariant::lshift )
-        .def( "__rlshift__", &pykd::NumVariant::rlshift )
-        .def( "__and__", &pykd::NumVariant::and )
-        .def( "__rand__", &pykd::NumVariant::and )
-        .def( "__or__", &pykd::NumVariant::or )
-        .def( "__ror__", &pykd::NumVariant::or )
-        .def( "__xor__", &pykd::NumVariant::xor )
-        .def( "__rxor__", &pykd::NumVariant::xor )
-        .def( "__neg__", &pykd::NumVariant::neg )
-        .def( "__pos__", &pykd::NumVariant::pos ) 
-        .def( "__invert__", &pykd::NumVariant::invert ) 
-        .def( "__nonzero__", &pykd::NumVariant::nonzero )
+python::class_<kdlib::NumVariantGetter, boost::noncopyable>( "numVariant", "numVariant", python::no_init )
+        .def("__init__", python::make_constructor(&NumVariant::getVariant) )
+        .def( "__eq__", &NumVariant::eq )
+        .def( "__ne__", &NumVariant::ne)
+        .def( "__lt__", &NumVariant::lt)
+        .def( "__gt__", &NumVariant::gt )
+        .def( "__le__", &NumVariant::le )
+        .def( "__ge__", &NumVariant::ge )
+        .def( "__add__", &NumVariant::add )
+        .def( "__radd__", &NumVariant::add )
+        .def( "__sub__", &NumVariant::sub )
+        .def( "__rsub__", &NumVariant::rsub )
+        .def( "__mul__", &NumVariant::mul )
+        .def( "__rmul__", &NumVariant::mul )
+        .def( "__div__", &NumVariant::div )
+        .def( "__rdiv__", &NumVariant::rdiv )
+        .def( "__mod__", &NumVariant::mod )
+        .def( "__rmod__", &NumVariant::rmod )
+        .def( "__rshift__", &NumVariant::rshift )
+        .def( "__rrshift__", &NumVariant::rrshift )
+        .def( "__lshift__", &NumVariant::lshift )
+        .def( "__rlshift__", &NumVariant::rlshift )
+        .def( "__and__", &NumVariant::and )
+        .def( "__rand__", &NumVariant::and )
+        .def( "__or__", &NumVariant::or )
+        .def( "__ror__", &NumVariant::or )
+        .def( "__xor__", &NumVariant::xor )
+        .def( "__rxor__", &NumVariant::xor )
+        .def( "__neg__", &NumVariant::neg )
+        .def( "__pos__", &NumVariant::pos ) 
+        .def( "__invert__", &NumVariant::invert ) 
+        .def( "__nonzero__", &NumVariant::nonzero )
         //.def( "__str__", &pykd::NumVariant::str )
-        //.def( "__hex__", &pykd::NumVariant::hex )
-        .def( "__long__", &pykd::NumVariant::long_ )
-        .def( "__int__", &pykd::NumVariant::int_ )
-        .def( "__index__", &pykd::NumVariant::long_ )
-        .def( "__hash__", &pykd::NumVariant::long_ );
+       // .def( "__hex__", &pykd::NumVariant::hex )
+        .def( "__long__", &NumVariant::long_ )
+        .def( "__int__", &NumVariant::int_ )
+        .def( "__index__", &NumVariant::long_ )
+        .def( "__hash__", &NumVariant::long_ )
+        ;
 
-    python::implicitly_convertible<pykd::NumVariant, unsigned long long>();
-    python::implicitly_convertible<pykd::NumVariant, long long>();
-    python::implicitly_convertible<pykd::NumVariant, unsigned long>();
-    python::implicitly_convertible<pykd::NumVariant, long>();
+    //python::implicitly_convertible<kdlib::NumVariantGetter, unsigned long long>();
+    //python::implicitly_convertible<kdlib::NumVariantGetter, long long>();
+    //python::implicitly_convertible<kdlib::NumVariantGetter, unsigned long>();
+    //python::implicitly_convertible<kdlib::NumVariantGetter, long>();
 
-   // python::class_<Module, ModulePtr, python::bases<intBase> >("module", "Class representing executable module", python::no_init )
-   //     .def("__init__", python::make_constructor(Module::loadModuleByName) )
-   //     .def("__init__", python::make_constructor(Module::loadModuleByOffset) )
-   //     .def("begin", &Module::getBase,
-   //          "Return start address of the module" )
-   //     .def("end", &Module::getEnd,
-   //          "Return end address of the module" )
-   //     .def("size", &Module::getSize,
-   //           "Return size of the module" )
-   //     .def("name", &Module::getName,
-   //          "Return name of the module" )
-   //     .def("reload", &Module::reloadSymbols,
-   //         "(Re)load symbols for the module" )
-   //     .def("image", &Module::getImageName,
-   //         "Return name of the image of the module" )
-   //     .def("symfile", &Module::getSymFile,
-   //          "Return the full path to the module's symbol information" )
-   //     .def("offset", &Module::getSymbolOffset,
-   //         "Return offset of the symbol" )
-   //     .def("findSymbol", &Module::getSymbolNameByVa, Module_findSymbol( python::args("offset", "showDisplacement"),
-   //         "Return symbol name by virtual address" ) )
-   //     .def("findSymbolAndDisp", &pysupport::moduleFindSymbolAndDisp,
-   //         "Return tuple(symbol_name, displacement) by virtual address" )
-   //     .def("rva", &Module::getSymbolRva,
-   //         "Return rva of the symbol" )
-   //     .def("sizeof", &Module::getSymbolSize,
-   //         "Return a size of the type or variable" )
-   //     .def("type", &Module::getTypeByName,
-   //         "Return typeInfo class by type name" )
-   //     .def("getUdts", &Module::getUdts,
-   //         "Return a list of all user-defined type names" )
-   //     .def("getEnums", &Module::getEnums,
-   //         "Return a list of all enumeration names" )
-   //     .def("typedVar", &Module::getTypedVarByAddr,
-   //         "Return a typedVar class instance" )
-   //     .def("typedVar",&Module::getTypedVarByName,
-   //         "Return a typedVar class instance" )
-   //     .def("typedVar",&Module::getTypedVarByTypeName,
-   //         "Return a typedVar class instance" )
-   //     .def("typedVarList", &Module::getTypedVarListByTypeName,
-   //         "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
-   //     .def("typedVarArray", &Module::getTypedVarArrayByTypeName,
-   //         "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
-   //     .def("containingRecord", &Module::containingRecordByName,
-   //         "Return instance of the typedVar class. It's value are loaded from the target memory."
-   //         "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
-   //     .def("enumSymbols", &Module::enumSymbols, Module_enumSymbols( python::args("mask"),
-   //          "Return list of tuple ( symbolname, offset )" ) )
-   //     .def("checksum", &Module::getCheckSum,
-   //         "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
-   //     .def("timestamp", &Module::getTimeDataStamp,
-   //         "Return a low 32 bits of the time stamp of the image: IMAGE_FILE_HEADER.TimeDateStamp" )
-   //     .def("unloaded", &Module::isUnloaded,
-   //         "Returns a flag that the module was unloaded")
-   //     .def("um", &Module::isUserMode,
-   //         "Returns a flag that the module is a user-mode module")
-   //     .def("queryVersion", &Module::queryVersion,
-   //         "Return string from the module's version resources" )
-   //     .def("getVersion",  &Module::getVersion,
-   //         "Return tuple of the module's file version" )
-   //     .def("__getattr__", &Module::getSymbolOffset,
-   //         "Return address of the symbol" )
-   //     .def( "__str__", &Module::print );
+    python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumVariantGetter>, boost::noncopyable>("module", "Class representing executable module", python::no_init )
+        .def("__init__", python::make_constructor(&Module::loadModuleByName ) )
+        .def("__init__", python::make_constructor(&Module::loadModuleByOffset) )
+        .def("begin", &kdlib::Module::getBase,
+             "Return start address of the module" )
+        .def("end", &kdlib::Module::getEnd,
+             "Return end address of the module" )
+        .def("size", &kdlib::Module::getSize,
+              "Return size of the module" )
+        .def("name", &kdlib::Module::getName,
+             "Return name of the module" )
+        .def("reload", &kdlib::Module::reloadSymbols,
+            "(Re)load symbols for the module" )
+        //.def("image", &Module::getImageName,
+        //    "Return name of the image of the module" )
+        //.def("symfile", &Module::getSymFile,
+        //     "Return the full path to the module's symbol information" )
+        //.def("offset", &Module::getSymbolOffset,
+        //    "Return offset of the symbol" )
+        //.def("findSymbol", &Module::getSymbolNameByVa, Module_findSymbol( python::args("offset", "showDisplacement"),
+        //    "Return symbol name by virtual address" ) )
+        //.def("findSymbolAndDisp", &pysupport::moduleFindSymbolAndDisp,
+        //    "Return tuple(symbol_name, displacement) by virtual address" )
+        //.def("rva", &Module::getSymbolRva,
+        //    "Return rva of the symbol" )
+        //.def("sizeof", &Module::getSymbolSize,
+        //    "Return a size of the type or variable" )
+        //.def("type", &Module::getTypeByName,
+        //    "Return typeInfo class by type name" )
+        //.def("getUdts", &Module::getUdts,
+        //    "Return a list of all user-defined type names" )
+        //.def("getEnums", &Module::getEnums,
+        //    "Return a list of all enumeration names" )
+        //.def("typedVar", &Module::getTypedVarByAddr,
+        //    "Return a typedVar class instance" )
+        //.def("typedVar",&Module::getTypedVarByName,
+        //    "Return a typedVar class instance" )
+        //.def("typedVar",&Module::getTypedVarByTypeName,
+        //    "Return a typedVar class instance" )
+        //.def("typedVarList", &Module::getTypedVarListByTypeName,
+        //    "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
+        //.def("typedVarArray", &Module::getTypedVarArrayByTypeName,
+        //    "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
+        //.def("containingRecord", &Module::containingRecordByName,
+        //    "Return instance of the typedVar class. It's value are loaded from the target memory."
+        //    "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
+        //.def("enumSymbols", &Module::enumSymbols, Module_enumSymbols( python::args("mask"),
+        //     "Return list of tuple ( symbolname, offset )" ) )
+        //.def("checksum", &Module::getCheckSum,
+        //    "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
+        //.def("timestamp", &Module::getTimeDataStamp,
+        //    "Return a low 32 bits of the time stamp of the image: IMAGE_FILE_HEADER.TimeDateStamp" )
+        //.def("unloaded", &Module::isUnloaded,
+        //    "Returns a flag that the module was unloaded")
+        //.def("um", &Module::isUserMode,
+        //    "Returns a flag that the module is a user-mode module")
+        //.def("queryVersion", &Module::queryVersion,
+        //    "Return string from the module's version resources" )
+        //.def("getVersion",  &Module::getVersion,
+        //    "Return tuple of the module's file version" )
+        .def("__getattr__", &kdlib::Module::getSymbolVa,
+            "Return address of the symbol" )
+        .def( "__str__", &Module::print );
+
+
 
    // python::class_<TypeInfo, TypeInfoPtr, python::bases<intBase>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
    //     .def("__init__", python::make_constructor(TypeInfo::getTypeInfoByName ) )
