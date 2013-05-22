@@ -16,8 +16,8 @@ import target
 import intbase
 import memtest
 import moduletest
-#import typeinfo
-#import typedvar
+import typeinfo
+import typedvar
 #import regtest
 #import mspdbtest
 #import localstest
@@ -49,8 +49,8 @@ def getTestSuite( singleName = "" ):
                 # *** Test without start/kill new processes
                 unittest.TestLoader().loadTestsFromTestCase( moduletest.ModuleTest ),
                 unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
-                #unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
-                #unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
+                unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
+                unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( customtypestest.CustomTypesTest ),
                 # ^^^

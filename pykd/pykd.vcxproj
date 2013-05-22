@@ -130,6 +130,8 @@
     <ClInclude Include="stladaptor.h" />
     <ClInclude Include="target.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="typedvar.h" />
+    <ClInclude Include="typeinfo.h" />
     <ClInclude Include="variant.h" />
     <ClInclude Include="windbgext.h" />
   </ItemGroup>

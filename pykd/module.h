@@ -5,7 +5,7 @@
 namespace pykd {
 
 
-struct ModuleAdaptor : public kdlib::Module 
+struct ModuleAdapter : public kdlib::Module 
 {
 
     static kdlib::ModulePtr loadModuleByName( const std::wstring &name )

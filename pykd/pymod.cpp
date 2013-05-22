@@ -9,6 +9,8 @@
 #include "target.h"
 #include "dbgexcept.h"
 #include "memaccess.h"
+#include "typeinfo.h"
+#include "typedvar.h"
 
 using namespace pykd;
 
@@ -369,8 +371,8 @@ python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVarian
     //python::implicitly_convertible<kdlib::NumVariantGetter, long>();
 
     python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumBehavior>, boost::noncopyable>("module", "Class representing executable module", python::no_init )
-        .def("__init__", python::make_constructor(&ModuleAdaptor::loadModuleByName ) )
-        .def("__init__", python::make_constructor(&ModuleAdaptor::loadModuleByOffset) )
+        .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByName ) )
+        .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByOffset) )
         .def("begin", &kdlib::Module::getBase,
              "Return start address of the module" )
         .def("end", &kdlib::Module::getEnd,
@@ -430,67 +432,68 @@ python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVarian
         //    "Return tuple of the module's file version" )
         .def("__getattr__", &kdlib::Module::getSymbolVa,
             "Return address of the symbol" )
-        .def( "__str__", &ModuleAdaptor::print );
+        .def( "__str__", &ModuleAdapter::print );
 
 
+    python::class_<kdlib::TypeInfo, kdlib::TypeInfoPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
+        .def("__init__", python::make_constructor( TypeInfoAdapter::getTypeInfoByName ) )
+        .def( "name", &kdlib::TypeInfo::getName,
+            "Return type name" )
+        .def( "size", &kdlib::TypeInfo::getSize,
+            "Return type size" )
+        .def( "staticOffset", TypeInfoAdapter::getStaticOffset,
+            "Return offset of the static field" )
+        .def( "fieldOffset", TypeInfoAdapter::getElementOffset,
+            "Return offset of the nonstatic field" )
+        .def( "bitOffset", &kdlib::TypeInfo::getBitOffset,
+            "Return bit field's offset" )
+        .def( "bitWidth", &kdlib::TypeInfo::getBitWidth,
+            "Return bit field's length" )
+        .def( "field", TypeInfoAdapter::getElement,
+            "Return field's type" )
+        //.def( "asMap", &kdlib::TypeInfo::asMap,
+        //    "Return type as python dict ( for enum types )" )
+        //.def( "deref", &kdlib::TypeInfo::deref,
+        //    "Return type of pointer" )
+        //.def( "append", &kdlib::TypeInfo::appendField,
+        //    "Add a new field to custom defined struct" )
+        //.def( "ptrTo", &kdlib::TypeInfo::ptrTo,
+        //    "Return pointer to the type" )
+        //.def( "arrayOf", &kdlib::TypeInfo::arrayOf,
+        //    "Return array of the type" )
+        //.def( "__str__", &TypeInfo::print,
+        //    "Return typa as a printable string" )
+        //.def( "__getattr__", &TypeInfo::getField )
+        //.def("__len__", &TypeInfo::getElementCount )
+        //.def("__getitem__", &TypeInfo::getElementByIndex )
+        ;
 
-   // python::class_<TypeInfo, TypeInfoPtr, python::bases<intBase>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
-   //     .def("__init__", python::make_constructor(TypeInfo::getTypeInfoByName ) )
-   //     .def( "name", &TypeInfo::getName,
-   //         "Return type name" )
-   //     .def( "size", &TypeInfo::getSize,
-   //         "Return type size" )
-   //     .def( "staticOffset", &TypeInfo::getStaticOffsetByName,
-   //         "Return offset of the static field" )
-   //     .def( "fieldOffset", &TypeInfo::getFieldOffsetByNameRecursive,
-   //         "Return offset of the nonstatic field" )
-   //     .def( "bitOffset", &TypeInfo::getBitOffset,
-   //         "Return bit field's offset" )
-   //     .def( "bitWidth", &TypeInfo::getBitWidth,
-   //         "Return bit field's length" )
-   //     .def( "field", &TypeInfo::getField,
-   //         "Return field's type" )
-   //     .def( "asMap", &TypeInfo::asMap,
-   //         "Return type as python dict ( for enum types )" )
-   //     .def( "deref", &TypeInfo::deref,
-   //         "Return type of pointer" )
-   //     .def( "append", &TypeInfo::appendField,
-   //         "Add a new field to custom defined struct" )
-   //     .def( "ptrTo", &TypeInfo::ptrTo,
-   //         "Return pointer to the type" )
-   //     .def( "arrayOf", &TypeInfo::arrayOf,
-   //         "Return array of the type" )
-   //     .def( "__str__", &TypeInfo::print,
-   //         "Return typa as a printable string" )
-   //     .def( "__getattr__", &TypeInfo::getField )
-   //     .def("__len__", &TypeInfo::getElementCount )
-   //     .def("__getitem__", &TypeInfo::getElementByIndex );
-
-   // python::class_<TypedVar, TypedVarPtr, python::bases<intBase>, boost::noncopyable >("typedVar", 
-   //     "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", python::no_init  )
-   //     .def("__init__", python::make_constructor(TypedVar::getTypedVarByName) )
-   //     .def("__init__", python::make_constructor(TypedVar::getTypedVarByTypeName) )
-   //     .def("__init__", python::make_constructor(TypedVar::getTypedVarByTypeInfo) )
-   //     .def("getAddress", &TypedVar::getAddress, 
-   //         "Return virtual address" )
-   //     .def("sizeof", &TypedVar::getSize,
-   //         "Return size of a variable in the target memory" )
-   //     .def("fieldOffset", &TypedVar::getFieldOffsetByNameRecursive,
-   //         "Return target field offset" )
-   //     .def("field", &TypedVar::getField,
-   //         "Return field of structure as an object attribute" )
-   //     .def( "dataKind", &TypedVar::getDataKind,
-   //         "Retrieves the variable classification of a data: DataIsXxx")
-   //     .def("deref", &TypedVar::deref,
-   //         "Return value by pointer" )
-   //     .def("type", &TypedVar::getType,
-   //         "Return typeInfo instance" )
-   //     .def("__getattr__", &TypedVar::getField,
-   //         "Return field of structure as an object attribute" )
-   //     .def( "__str__", &TypedVar::print )
-   //     .def("__len__", &TypedVar::getElementCount )
-   //     .def("__getitem__", &TypedVar::getElementByIndex )
-   //     .def("__getitem__", &TypedVar::getElementByIndexPtr );
+    python::class_<kdlib::TypedVar, kdlib::TypedVarPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typedVar", 
+        "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", python::no_init  )
+        .def("__init__", python::make_constructor(TypedVarAdapter::getTypedVarByName) )
+        .def("__init__", python::make_constructor(TypedVarAdapter::getTypedVarByTypeName) )
+        .def("__init__", python::make_constructor(TypedVarAdapter::getTypedVarByTypeInfo) )
+        .def("getAddress", &kdlib::TypedVar::getAddress, 
+            "Return virtual address" )
+        .def("sizeof", &kdlib::TypedVar::getSize,
+            "Return size of a variable in the target memory" )
+        .def("fieldOffset", TypedVarAdapter::getFieldOffsetByName,
+            "Return target field offset" )
+        .def("field", TypedVarAdapter::getField,
+            "Return field of structure as an object attribute" )
+        //.def( "dataKind", &kdlib::TypedVar::getDataKind,
+        //    "Retrieves the variable classification of a data: DataIsXxx")
+       /* .def("deref", &kdlib::TypedVar::deref,
+            "Return value by pointer" )
+        .def("type", &kdlib::TypedVar::getType,
+            "Return typeInfo instance" )*/
+        .def("__getattr__", TypedVarAdapter::getField,
+            "Return field of structure as an object attribute" )
+        //.def( "__str__", &kdlib::TypedVar::print )
+        .def("__len__", &kdlib::TypedVar::getElementCount )
+        //.def("__getitem__", &kdlib::TypedVar::getElementByIndex )
+        //.def("__getitem__", &kdlib::TypedVar::getElementByIndexPtr )
+        ;
 
    // python::class_<TypeBuilder>("typeBuilder",
    //     "Class for building dynamically defined types", boost::python::no_init  )
@@ -667,13 +670,8 @@ python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVarian
 
     pykd::exception<kdlib::DbgException>( "DbgException", "Pykd base exception class" );
     pykd::exception<kdlib::MemoryException,kdlib::DbgException>( "MemoryException", "Target memory access exception class" );
-   // pykd::exception<WaitEventException,DbgException>( "WaitEventException", "None of the targets could generate events" );
-   // pykd::exception<WrongEventTypeException,DbgException>( "WrongEventTypeException", "Unknown last event type" );
-   // pykd::exception<SymbolException,DbgException>( "SymbolException", "Symbol exception" );
-   // //pykd::exception<pyDia::Exception,SymbolException>( "DiaException", "Debug interface access exception" );
-   // pykd::exception<TypeException,SymbolException>( "TypeException", "type exception" );
-   // //pykd::exception<AddSyntheticSymbolException,DbgException>( "AddSynSymbolException", "synthetic symbol exception" );
-   // //pykd::exception<ImplementException,DbgException>( "ImplementException", "implementation exception" );
+    pykd::exception<kdlib::SymbolException,kdlib::DbgException>( "SymbolException", "Symbol exception" );
+    pykd::exception<kdlib::TypeException,kdlib::SymbolException>( "TypeException", "type exception" );
 }
 
 //////////////////////////////////////////////////////////////////////////////////
