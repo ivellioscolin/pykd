@@ -40,13 +40,13 @@ class ModuleTest( unittest.TestCase ):
        self.assertEqual( target.module.name() + ".exe", target.module.image() )
 
     def testFindModule( self ):
-        self.assertRaises( pykd.BaseException, pykd.module, target.module.begin() - 0x10 )
+        self.assertRaises( pykd.DbgException, pykd.module, target.module.begin() - 0x10 )
 
         self.assertNotEqual( None, pykd.module( target.module.begin() ) )
         self.assertNotEqual( None, pykd.module( target.module.begin() + 0x10) )
 
-        self.assertRaises( pykd.BaseException, pykd.module, target.module.end() )
-        self.assertRaises( pykd.BaseException, pykd.module, target.module.end() + 0x10 )
+        self.assertRaises( pykd.DbgException, pykd.module, target.module.end() )
+        self.assertRaises( pykd.DbgException, pykd.module, target.module.end() + 0x10 )
 
     def testSymbol( self ):
         self.assertEqual( target.module.rva("FuncWithName0"), target.module.offset("FuncWithName0") - target.module.begin() )

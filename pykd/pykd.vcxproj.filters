@@ -33,6 +33,15 @@
     <ClInclude Include="target.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dbgexcept.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stladaptor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="memaccess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,6 +57,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="target.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dbgexcept.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

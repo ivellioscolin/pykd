@@ -45,7 +45,7 @@ class MemoryTest( unittest.TestCase ):
         charArray = pykd.loadSignBytes( target.module.ucharArray, 5 )
         testArray = [ 0, 10, 0x78, -128, -1 ]
         self.assertEqual( 5, len(charArray) )
-        self.assertEqual( 0, len( [ charArray[i] for i in xrange(len(testArray)) if charArray[i] != testArray[i] ] ) )    
+        self.assertEqual( 0, len( [ charArray[i] for i in xrange(len(testArray)) if charArray[i] != testArray[i] ] ) )
     
     def testLoadSignWords( self ):
         loadArray = pykd.loadSignWords( target.module.ushortArray, 5 )
@@ -111,13 +111,13 @@ class MemoryTest( unittest.TestCase ):
         self.assertTrue( math.fabs( pykd.ptrDouble( target.module.g_double) - 5.1234567891 ) < 0.0000001 )
         
     def testLoadFloats(self):
-       testArray = [ 1.0, 2.001, -3.0004 ];
-       readArray = pykd.loadFloats( target.module.floatArray, 3 );
-       for i in range(0,3):
+       testArray = [  1.0, 0.001, -199.999, 20000.01, 0.111111 ];
+       readArray = pykd.loadFloats( target.module.floatArray, 5 );
+       for i in range(5):
            self.assertTrue( math.fabs( testArray[i] - readArray[i]  ) < 0.001 )
            
     def testLoadDoubles(self):
-       testArray = [ 1.0, 2.0000001, -3.0000004 ];
-       readArray = pykd.loadDoubles( target.module.doubleArray, 3 );
-       for i in range(0,3):
+       testArray = [ 1.0000000, 0.0000000001, -199.99999999998, 200000.00000001, 0.3333333333 ];
+       readArray = pykd.loadDoubles( target.module.doubleArray, 5 );
+       for i in range(5):
            self.assertTrue( math.fabs( testArray[i] - readArray[i]  ) < 0.0000001 )

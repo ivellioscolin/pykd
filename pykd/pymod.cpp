@@ -7,6 +7,8 @@
 #include "variant.h"
 #include "module.h"
 #include "target.h"
+#include "dbgexcept.h"
+#include "memaccess.h"
 
 using namespace pykd;
 
@@ -55,17 +57,17 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, kdlib::dprintln, 1, 2 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadChars_, kdlib::loadChars, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadWChars_, kdlib::loadWChars, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadBytes_, kdlib::loadBytes, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadWords_, kdlib::loadWords, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadDWords_, kdlib::loadDWords, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadQWords_, kdlib::loadQWords, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignBytes_, kdlib::loadSignBytes, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords_, kdlib::loadSignWords, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, kdlib::loadSignDWords, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, kdlib::loadSignQWords, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadFloats_, kdlib::loadFloats, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadDoubles_, kdlib::loadDoubles, 2, 3 );
-//BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, compareMemory, 3, 4 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadBytes_, loadBytes, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadWords_, loadWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadDWords_, loadDWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadQWords_, loadQWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignBytes_, loadSignBytes, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords_, loadSignWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadFloats_, loadFloats, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadDoubles_, loadDoubles, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, kdlib::compareMemory, 3, 4 );
 //
 //BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, getSourceLine, 0, 1 );
 //BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, getSourceFile, 0, 1 );
@@ -156,18 +158,17 @@ BOOST_PYTHON_MODULE( pykd )
    // python::def("getSystemVersion", &getSystemVersion,
    //     "Return systemVersion");
 
-   // // Manage target memory access
-   // python::def( "addr64", &addr64,
-   //     "Extend address to 64 bits formats" );
-   // python::def( "isValid", &isVaValid,
-   //     "Check if the virtual address is valid" );
-   // python::def( "compareMemory", &compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
-   //     "Compare two memory buffers by virtual or physical addresses" ) );
-
-   // python::def( "findMemoryRegion", &findMemoryRegionPy,
-   //     "Return address of begining valid memory region nearest to offset" );
-   // python::def( "getVaProtect", &getVaProtect,
-   //     "Return memory attributes" );
+    // Manage target memory access
+    python::def( "addr64", &kdlib::addr64,
+        "Extend address to 64 bits formats" );
+    python::def( "isValid", &kdlib::isVaValid,
+        "Check if the virtual address is valid" );
+    python::def( "compareMemory", &kdlib::compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
+        "Compare two memory buffers by virtual or physical addresses" ) );
+    //python::def( "findMemoryRegion", &kdlib::findMemoryRegion,
+    //    "Return address of begining valid memory region nearest to offset" );
+    //python::def( "getVaProtect", &kdlib::getVaProtect,
+    //    "Return memory attributes" );
 
     python::def( "ptrByte", &kdlib::ptrByte,
         "Read an unsigned 1-byte integer from the target memory" );
@@ -196,21 +197,21 @@ BOOST_PYTHON_MODULE( pykd )
    python::def( "ptrDouble", &kdlib::ptrDoubleFloat,
         "Read a float with single precision from the target memory" );
 
-    python::def( "loadBytes", &kdlib::loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadBytes", &loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of unsigned bytes" ) );
-    python::def( "loadWords", &kdlib::loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadWords", &loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of unsigned shorts" ) );
-    python::def( "loadDWords", &kdlib::loadDWords, loadDWords_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadDWords", &loadDWords, loadDWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of unsigned long ( double word )" ) );
-    python::def( "loadQWords", &kdlib::loadQWords, loadQWords_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadQWords", &loadQWords, loadQWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of unsigned long long ( quad word )" ) );
-    python::def( "loadSignBytes", &kdlib::loadSignBytes, loadSignBytes_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadSignBytes", &loadSignBytes, loadSignBytes_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of signed bytes" ) );
-    python::def( "loadSignWords", &kdlib::loadSignWords, loadSignWords_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadSignWords", &loadSignWords, loadSignWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of signed words" ) );
-    python::def( "loadSignDWords", &kdlib::loadSignDWords, loadSignDWords_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadSignDWords", &loadSignDWords, loadSignDWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of signed longs" ) );
-    python::def( "loadSignQWords", &kdlib::loadSignQWords, loadSignQWords_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadSignQWords", &loadSignQWords, loadSignQWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of signed long longs" ) );
     python::def( "loadChars", &kdlib::loadChars, loadChars_( python::args( "address", "count", "phyAddr" ),
         "Load string from target memory" ) );
@@ -228,9 +229,9 @@ BOOST_PYTHON_MODULE( pykd )
     //    "Return list of pointers, each points to next" );
     //python::def( "loadPtrs", &loadPtrArray,
     //    "Read the block of the target's memory and return it as a list of pointers" );
-    python::def( "loadFloats", &kdlib::loadFloats, loadFloats_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadFloats", &loadFloats, loadFloats_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of floats" ) );
-    python::def( "loadDoubles", &kdlib::loadDoubles, loadDoubles_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadDoubles", &loadDoubles, loadDoubles_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of doubles" ) );
 
    // // types and vaiables
@@ -380,8 +381,8 @@ python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVarian
              "Return name of the module" )
         .def("reload", &kdlib::Module::reloadSymbols,
             "(Re)load symbols for the module" )
-        //.def("image", &Module::getImageName,
-        //    "Return name of the image of the module" )
+        .def("image", &kdlib::Module::getImageName,
+            "Return name of the image of the module" )
         //.def("symfile", &Module::getSymFile,
         //     "Return the full path to the module's symbol information" )
         //.def("offset", &Module::getSymbolOffset,
@@ -664,8 +665,8 @@ python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVarian
    // // wrapper for standart python exceptions
    // python::register_exception_translator<PyException>( &PyException::exceptionTranslate );
 
-   // pykd::exception<DbgException>( "BaseException", "Pykd base exception class" );
-   // pykd::exception<MemoryException,DbgException>( "MemoryException", "Target memory access exception class" );
+    pykd::exception<kdlib::DbgException>( "DbgException", "Pykd base exception class" );
+    pykd::exception<kdlib::MemoryException,kdlib::DbgException>( "MemoryException", "Target memory access exception class" );
    // pykd::exception<WaitEventException,DbgException>( "WaitEventException", "None of the targets could generate events" );
    // pykd::exception<WrongEventTypeException,DbgException>( "WrongEventTypeException", "Unknown last event type" );
    // pykd::exception<SymbolException,DbgException>( "SymbolException", "Symbol exception" );
