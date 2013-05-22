@@ -5,7 +5,7 @@
 namespace pykd {
 
 
-struct Module : public kdlib::Module 
+struct ModuleAdaptor : public kdlib::Module 
 {
 
     static kdlib::ModulePtr loadModuleByName( const std::wstring &name )
@@ -22,9 +22,6 @@ struct Module : public kdlib::Module
         return L"PYKD MODULE";
     }
 
-    //static  kdlib::MEMOFFSET_64 convertToLong( kdlib::Module& module ) {
-    //    return module.getBase();
-    //}
 };
 
 } // end namespace pykd

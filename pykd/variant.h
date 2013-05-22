@@ -4,14 +4,15 @@
 
 namespace pykd {
 
-class NumVariant : public kdlib::NumVariantGetter
+class NumVariantAdaptor : public kdlib::NumBehavior
 {
 
 public:
 
-    static kdlib::NumVariantGetter*  getVariant(  const python::object &obj )
+
+    static kdlib::NumBehavior* NumVariantAdaptor::getVariant( const python::object &obj )
     {
-        NumVariant*  var = new NumVariant();
+        NumVariantAdaptor*  var = new NumVariantAdaptor();
 
         if ( PyBool_Check( obj.ptr() ) )
         {
@@ -36,9 +37,9 @@ public:
         return var;
     }
 
-   static python::object convertToPython( kdlib::NumVariantGetter& v )
+   static python::object NumVariantAdaptor::convertToPython( kdlib::NumBehavior& num )
    {
-        kdlib::NumVariant var = v;
+        kdlib::NumVariant var = kdlib::NumVariant( num );
 
         if ( var.isChar() )
             return python::object( var.asInt() );
@@ -81,111 +82,111 @@ public:
 
 public:
 
-    static python::object eq( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object eq( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) == obj;
     }
 
-    static python::object ne( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object ne( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) != obj;
     }
 
-    static python::object lt( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object lt( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) < obj;
     }
 
-    static python::object gt( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object gt( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) > obj;
     }
 
-    static python::object le( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object le( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) <= obj;
     }
 
-    static python::object ge( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object ge( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) >= obj;
     }
 
-    static python::object add( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object add( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) + obj;
     }
 
-    static python::object sub( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object sub( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) - obj;
     }
 
-    static python::object rsub( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object rsub( kdlib::NumBehavior& var, python::object&  obj ) {
         return obj - convertToPython(var);
     }
 
-    static python::object mul( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object mul( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) * obj;
     }
 
-    static python::object div( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object div( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) / obj;
     }
 
-    static python::object rdiv( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object rdiv( kdlib::NumBehavior& var, python::object&  obj ) {
         return  obj / convertToPython(var);
     }
 
-    static python::object mod( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object mod( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) % obj;
     }
 
-    static python::object rmod( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object rmod( kdlib::NumBehavior& var, python::object&  obj ) {
         return  obj % convertToPython(var);
     }
 
-    static python::object rshift( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object rshift( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) >> obj;
     }
 
-    static python::object rrshift( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object rrshift( kdlib::NumBehavior& var, python::object&  obj ) {
         return obj >> convertToPython(var);
     }
 
-    static python::object lshift( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object lshift( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) << obj;
     }
 
-    static python::object rlshift( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object rlshift( kdlib::NumBehavior& var, python::object&  obj ) {
         return obj << convertToPython(var);
     }
 
-    static python::object and( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object and( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) & obj;
     }
 
-    static python::object or( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object or( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) | obj;
     }
 
-    static python::object xor( kdlib::NumVariantGetter& var, python::object&  obj ) {
+    static python::object xor( kdlib::NumBehavior& var, python::object&  obj ) {
         return convertToPython(var) ^ obj;
     }
 
-    static python::object neg(kdlib::NumVariantGetter& var) {
+    static python::object neg(kdlib::NumBehavior& var) {
         return 0 - convertToPython(var);
     }
 
-    static  python::object pos(kdlib::NumVariantGetter& var) {
+    static  python::object pos(kdlib::NumBehavior& var) {
         return 0 + convertToPython(var);
     }
 
-   static  python::object invert(kdlib::NumVariantGetter& var) {
+   static  python::object invert(kdlib::NumBehavior& var) {
         return convertToPython(var) ^ convertToPython(var);
     }
 
-    static python::object nonzero(kdlib::NumVariantGetter& var) {
+    static python::object nonzero(kdlib::NumBehavior& var) {
         return convertToPython(var) != 0;
     }
 
-    static python::object long_(kdlib::NumVariantGetter& var ) {
+    static python::object long_(kdlib::NumBehavior& var ) {
         return convertToPython(var);
     }
 
-    static python::object int_(kdlib::NumVariantGetter& var) {
+    static python::object int_(kdlib::NumBehavior& var) {
         return convertToPython(var);
     }
 
