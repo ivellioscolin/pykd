@@ -81,7 +81,9 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, kdlib::compareMemory, 3, 4 );
 //
 //BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( TypeBuilder_createStruct, TypeBuilder::createStruct, 1, 2 );
 //
-//BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_enumSymbols, Module::enumSymbols, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( Module_enumSymbols, ModuleAdapter::enumSymbols, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( Module_findSymbol, ModuleAdapter::findSymbol, 2, 3 );
+
 //BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_findSymbol, Module::getSymbolNameByVa, 1, 2 );
 
 
@@ -387,12 +389,12 @@ python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVarian
             "Return name of the image of the module" )
         //.def("symfile", &Module::getSymFile,
         //     "Return the full path to the module's symbol information" )
-        //.def("offset", &Module::getSymbolOffset,
-        //    "Return offset of the symbol" )
-        //.def("findSymbol", &Module::getSymbolNameByVa, Module_findSymbol( python::args("offset", "showDisplacement"),
-        //    "Return symbol name by virtual address" ) )
-        //.def("findSymbolAndDisp", &pysupport::moduleFindSymbolAndDisp,
-        //    "Return tuple(symbol_name, displacement) by virtual address" )
+        .def("offset", &kdlib::Module::getSymbolVa,
+            "Return offset of the symbol" )
+        .def("findSymbol", ModuleAdapter::findSymbol, Module_findSymbol( python::args("offset", "showDisplacement"),
+            "Return symbol name by virtual address" ) )
+        .def("findSymbolAndDisp", ModuleAdapter::findSymbolAndDisp,
+            "Return tuple(symbol_name, displacement) by virtual address" )
         //.def("rva", &Module::getSymbolRva,
         //    "Return rva of the symbol" )
         //.def("sizeof", &Module::getSymbolSize,
@@ -416,8 +418,8 @@ python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVarian
         //.def("containingRecord", &Module::containingRecordByName,
         //    "Return instance of the typedVar class. It's value are loaded from the target memory."
         //    "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
-        //.def("enumSymbols", &Module::enumSymbols, Module_enumSymbols( python::args("mask"),
-        //     "Return list of tuple ( symbolname, offset )" ) )
+        .def("enumSymbols", ModuleAdapter::enumSymbols, Module_enumSymbols( python::args("mask"),
+             "Return list of tuple ( symbolname, offset )" ) )
         //.def("checksum", &Module::getCheckSum,
         //    "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
         //.def("timestamp", &Module::getTimeDataStamp,

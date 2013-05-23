@@ -1,5 +1,7 @@
 #pragma once
 
+#include <sstream>
+
 #include "kdlib/module.h"
 
 namespace pykd {
@@ -22,6 +24,40 @@ struct ModuleAdapter : public kdlib::Module
         return L"PYKD MODULE";
     }
 
+    static python::list enumSymbols( kdlib::Module& module, const std::wstring  &mask = L"*" )
+    {
+        kdlib::SymbolOffsetList  offsetLst = module.enumSymbols( mask );
+        python::list  pyLst;
+        for (  kdlib::SymbolOffsetList::const_iterator it = offsetLst.begin(); it != offsetLst.end(); ++it )
+            pyLst.append( python::make_tuple( it->first, it->second ) );
+        return pyLst;
+    }
+
+    static std::wstring findSymbol( kdlib::Module& module, kdlib::MEMOFFSET_64 offset, bool showDisplacement = true ) 
+    {
+        kdlib::MEMDISPLACEMENT  displacement = 0;
+        std::wstring  symbolName = module.findSymbol( offset, displacement );
+        if ( !showDisplacement || displacement == 0 )
+            return symbolName;
+
+        std::wstringstream  wsstr;
+
+        wsstr << symbolName;
+
+        if ( displacement > 0  )
+            wsstr << L'+' << std::hex << displacement;
+        else
+            wsstr << L'-' << std::hex << -displacement;
+
+        return wsstr.str();
+    }
+
+    static python::tuple findSymbolAndDisp( kdlib::Module& module, kdlib::MEMOFFSET_64 offset )
+    {
+        kdlib::MEMDISPLACEMENT  displacement = 0;
+        std::wstring  symbolName = module.findSymbol( offset, displacement );
+        return python::make_tuple( symbolName, displacement );
+    }
 };
 
 } // end namespace pykd
