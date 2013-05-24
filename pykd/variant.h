@@ -190,6 +190,12 @@ public:
         return convertToPython(var);
     }
 
+    static void registerNumConvertion()  {
+        python::converter::registry::push_back( &numConvertible, &numConstruct<long>, python::type_id<long>() );
+        python::converter::registry::push_back( &numConvertible, &numConstruct<unsigned long>, python::type_id<unsigned long>() );
+        python::converter::registry::push_back( &numConvertible, &numConstruct<long long>, python::type_id<long long>() );
+        python::converter::registry::push_back( &numConvertible, &numConstruct<unsigned long long>, python::type_id<unsigned long long>() );
+    }
 
 private:
 
@@ -197,7 +203,31 @@ private:
         return m_variant;
     }
 
-     kdlib::NumVariant  m_variant;
+    kdlib::NumVariant  m_variant;
+
+    static void* numConvertible( PyObject* obj_ptr)
+    {
+        python::extract<kdlib::NumBehavior> getNumVar(obj_ptr);
+
+        if (getNumVar.check())
+            return obj_ptr;
+        else
+            return 0;
+    }
+
+    template<typename T>
+    static void numConstruct( PyObject* obj_ptr, python::converter::rvalue_from_python_stage1_data* data)
+    {
+        void* storage = ( (python::converter::rvalue_from_python_storage<T>*)data)->storage.bytes;
+ 
+        kdlib::NumBehavior* num = python::extract<kdlib::NumBehavior*>(obj_ptr);
+
+        kdlib::NumVariant   var = *num;
+        
+        new (storage ) T( static_cast<T>(var.asULongLong() ) );
+
+        data->convertible = storage;
+    }
 };
 
 } // end pykf namespace

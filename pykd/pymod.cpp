@@ -327,7 +327,7 @@ BOOST_PYTHON_MODULE( pykd )
    // python::def( "setSymbolPath", &setSymbolPath, "Set current symbol path");
    // python::def( "appendSymbolPath", &appendSymbolPath, "Append current symbol path");
 
-python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVariant", python::no_init )
+    python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVariant", python::no_init )
         .def("__init__", python::make_constructor(&NumVariantAdaptor::getVariant) )
         .def( "__eq__", &NumVariantAdaptor::eq )
         .def( "__ne__", &NumVariantAdaptor::ne)
@@ -367,10 +367,7 @@ python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVarian
         .def( "__hash__", &NumVariantAdaptor::long_ )
         ;
 
-    //python::implicitly_convertible<kdlib::NumVariantGetter, unsigned long long>();
-    //python::implicitly_convertible<kdlib::NumVariantGetter, long long>();
-    //python::implicitly_convertible<kdlib::NumVariantGetter, unsigned long>();
-    //python::implicitly_convertible<kdlib::NumVariantGetter, long>();
+        NumVariantAdaptor::registerNumConvertion();
 
     python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumBehavior>, boost::noncopyable>("module", "Class representing executable module", python::no_init )
         .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByName ) )
@@ -395,22 +392,22 @@ python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVarian
             "Return symbol name by virtual address" ) )
         .def("findSymbolAndDisp", ModuleAdapter::findSymbolAndDisp,
             "Return tuple(symbol_name, displacement) by virtual address" )
-        //.def("rva", &Module::getSymbolRva,
-        //    "Return rva of the symbol" )
+        .def("rva", &kdlib::Module::getSymbolRva,
+            "Return rva of the symbol" )
         //.def("sizeof", &Module::getSymbolSize,
         //    "Return a size of the type or variable" )
-        //.def("type", &Module::getTypeByName,
-        //    "Return typeInfo class by type name" )
+        .def("type", &kdlib::Module::getTypeByName,
+            "Return typeInfo class by type name" )
         //.def("getUdts", &Module::getUdts,
         //    "Return a list of all user-defined type names" )
         //.def("getEnums", &Module::getEnums,
         //    "Return a list of all enumeration names" )
-        //.def("typedVar", &Module::getTypedVarByAddr,
-        //    "Return a typedVar class instance" )
-        //.def("typedVar",&Module::getTypedVarByName,
-        //    "Return a typedVar class instance" )
-        //.def("typedVar",&Module::getTypedVarByTypeName,
-        //    "Return a typedVar class instance" )
+        .def("typedVar", &kdlib::Module::getTypedVarByAddr,
+            "Return a typedVar class instance" )
+        .def("typedVar",&kdlib::Module::getTypedVarByName,
+            "Return a typedVar class instance" )
+        .def("typedVar",&kdlib::Module::getTypedVarByTypeName,
+            "Return a typedVar class instance" )
         //.def("typedVarList", &Module::getTypedVarListByTypeName,
         //    "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
         //.def("typedVarArray", &Module::getTypedVarArrayByTypeName,
@@ -451,7 +448,7 @@ python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVarian
             "Return bit field's offset" )
         .def( "bitWidth", &kdlib::TypeInfo::getBitWidth,
             "Return bit field's length" )
-        .def( "field", TypeInfoAdapter::getElement,
+        .def( "field", TypeInfoAdapter::getElementByName,
             "Return field's type" )
         //.def( "asMap", &kdlib::TypeInfo::asMap,
         //    "Return type as python dict ( for enum types )" )
@@ -465,9 +462,9 @@ python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVarian
         //    "Return array of the type" )
         //.def( "__str__", &TypeInfo::print,
         //    "Return typa as a printable string" )
-        //.def( "__getattr__", &TypeInfo::getField )
-        //.def("__len__", &TypeInfo::getElementCount )
-        //.def("__getitem__", &TypeInfo::getElementByIndex )
+        .def( "__getattr__", TypeInfoAdapter::getElementByName )
+        .def("__len__", &kdlib::TypeInfo::getElementCount )
+        .def("__getitem__", TypeInfoAdapter::getElementByIndex )
         ;
 
     python::class_<kdlib::TypedVar, kdlib::TypedVarPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typedVar", 
@@ -493,7 +490,7 @@ python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVarian
             "Return field of structure as an object attribute" )
         //.def( "__str__", &kdlib::TypedVar::print )
         .def("__len__", &kdlib::TypedVar::getElementCount )
-        //.def("__getitem__", &kdlib::TypedVar::getElementByIndex )
+        .def("__getitem__", &TypedVarAdapter::getElementByIndex )
         //.def("__getitem__", &kdlib::TypedVar::getElementByIndexPtr )
         ;
 

@@ -28,6 +28,10 @@ struct TypedVarAdapter {
     }
 
 
+    static kdlib::TypedVarPtr getElementByIndex( kdlib::TypedVar& typedVar, long index ) {
+        return typedVar.getElement( index );
+    }
+
 };
 
 } // end namespace pykd

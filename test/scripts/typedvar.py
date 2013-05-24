@@ -104,7 +104,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 16, tv.fieldOffset("m_field4") )
 
     def testArrayField(self):
-        tv = target.module.typedVar( "g_struct3" )
+        tv = target.module.typedVar( "g_structWithArray" )
         self.assertEqual( 2, len(tv.m_arrayField) )
         self.assertEqual( 0, tv.m_arrayField[0] )
         self.assertEqual( 2, tv.m_arrayField[1] )
@@ -117,13 +117,13 @@ class TypedVarTest( unittest.TestCase ):
         except IndexError:
             self.assertTrue(True)
 
-    def testArrayFieldSlice(self):
-        tv = target.module.typedVar( "g_struct3" )
-        self.assertEqual( [ 0, 2 ], tv.m_arrayField[0:2] )
+    #def testArrayFieldSlice(self):
+    #    tv = target.module.typedVar( "g_structWithArray" )
+    #    self.assertEqual( [ 0, 2 ], tv.m_arrayField[0:2] )
 
-    def testArrayFieldSliceNegative(self):
-        tv = target.module.typedVar( "g_struct3" )
-        self.assertEqual( 2, tv.m_arrayField[-1] )
+    #def testArrayFieldSliceNegative(self):
+    #    tv = target.module.typedVar( "g_structWithArray" )
+    #    self.assertEqual( 2, tv.m_arrayField[-1] )
 
     def testGlobalVar(self):
         self.assertEqual( 4, target.module.typedVar( "g_ulongValue" ) )
@@ -210,7 +210,7 @@ class TypedVarTest( unittest.TestCase ):
       
         self.assertTrue( ind in [0,1,2] )
     
-        tv = target.module.typedVar( "g_struct3" )
+        tv = target.module.typedVar( "g_structWithArray" )
         self.assertEqual( 2, tv.m_arrayField[ind] )
         
         ind = target.module.typedVar( "g_ulongValue" )

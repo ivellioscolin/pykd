@@ -21,9 +21,15 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
     }
 
 
-    static kdlib::TypeInfoPtr getElement( kdlib::TypeInfo &typeInfo, const std::wstring &name ) {
+    static kdlib::TypeInfoPtr getElementByName( kdlib::TypeInfo &typeInfo, const std::wstring &name ) {
         return typeInfo.getElement(name);
     }
+
+
+    static kdlib::TypeInfoPtr getElementByIndex( kdlib::TypeInfo &typeInfo, size_t index ) {
+        return typeInfo.getElement(index);
+    }
+
 };
 
 } // end namespace pykd

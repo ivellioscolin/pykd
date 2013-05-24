@@ -146,8 +146,9 @@ class TypeInfoTest( unittest.TestCase ):
     def testUnion(self):
         ti = target.module.type("unionTest")
         self.assertEqual( 0, ti.fieldOffset("m_doubleValue") )
-        self.assertEqual( 0, ti.fieldOffset("m_bits") )
-        self.assertEqual( ti.size(), ti.m_doubleValue.size() )
+        self.assertEqual( 0, ti.fieldOffset("m_value") )
+        self.assertEqual( 0, ti.fieldOffset("m_structValue") )
+        self.assertEqual( ti.size(), ti.m_structValue.size() )
 
     def testAsMap(self):
         ti = target.module.type("enumType")
