@@ -107,9 +107,12 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( 12, ti1.fieldOffset("m_field2") )
         self.assertEqual( 14, ti1.fieldOffset("m_field3") )
 
-        ti2 = target.module.type( "struct2" )
-        self.assertTrue( ti2.fieldOffset("m_union") >= ti2.m_struct.size() )
-        self.assertEqual( 0, ti2.m_union.fieldOffset("m_value") )
+        ti2 = target.module.type( "unionTest" )
+        self.assertEqual( 0, ti2.fieldOffset("m_value") )
+        self.assertEqual( 0, ti2.fieldOffset("m_structValue") )
+
+        ti3 = target.module.type( "structWithNested" )
+        self.assertEqual( ti3.fieldOffset( "m_unnameStruct"), ti3.fieldOffset( "m_unnameStruct.m_field2" ) )
 
     def testSize( self ):
         ti1 = target.module.type( "structTest" )
@@ -165,19 +168,19 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertRaises( pykd.BaseException, ti.deref );
 
     def testNestedStruct( self ):
-        ti = target.module.type("StructWithNested")
+        ti = target.module.type("structWithNested")
         self.assertTrue( hasattr( ti, "m_field" ) )
         self.assertTrue( hasattr( ti, "m_field2" ) )
         self.assertFalse( hasattr( ti, "m_nestedFiled" ) )
 
-        ti = target.module.type("StructWithNested::Nested")
+        ti = target.module.type("structWithNested::Nested")
         self.assertTrue( hasattr( ti, "m_nestedFiled" ) )
 
     def testPrint(self):
-        self.assertTrue( str(target.module.type( "g_ucharValue" ) ) )
-        self.assertTrue( str(target.module.type( "g_ushortValue" ) ) )
-        self.assertTrue( str(target.module.type( "g_ulongValue" ) ) )
-        self.assertTrue( str(target.module.type( "g_ulonglongValue" ) ) )
+        self.assertTrue( str(target.module.type( "ucharVar" ) ) )
+        self.assertTrue( str(target.module.type( "ushortVar" ) ) )
+        self.assertTrue( str(target.module.type( "ulongVar" ) ) )
+        self.assertTrue( str(target.module.type( "ulonglongVar" ) ) )
         self.assertTrue( str(target.module.type( "g_structWithBits" ) ) )
         self.assertTrue( str(target.module.type( "g_structTest" ) ) )
         self.assertTrue( str(target.module.type( "g_structTest1" ) ) )

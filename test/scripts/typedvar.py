@@ -22,23 +22,20 @@ class TypedVarTest( unittest.TestCase ):
         tv = pykd.typedVar( target.moduleName + "!g_structTest" )
 
     def testBaseTypes(self):
-        self.assertEqual( 1, target.module.typedVar( "g_ucharValue" ) )
-        self.assertEqual( 2, target.module.typedVar( "g_ushortValue" ) )
-        self.assertEqual( 4, target.module.typedVar( "g_ulongValue" ) )
-        self.assertEqual( 8, target.module.typedVar( "g_ulonglongValue" ) )
-        self.assertEqual( -1, target.module.typedVar( "g_charValue" ) )
-        self.assertEqual( -2, target.module.typedVar( "g_shortValue" ) )
-        self.assertEqual( -4, target.module.typedVar( "g_longValue" ) )
-        self.assertEqual( -8, target.module.typedVar( "g_longlongValue" ) )
+        self.assertEqual( 1, target.module.typedVar( "ucharVar" ) )
+        self.assertEqual( 2, target.module.typedVar( "ushortVar" ) )
+        self.assertEqual( 4, target.module.typedVar( "ulongVar" ) )
+        self.assertEqual( 8, target.module.typedVar( "ulonglongVar" ) )
+        self.assertEqual( -1, target.module.typedVar( "charVar" ) )
+        self.assertEqual( -2, target.module.typedVar( "shortVar" ) )
+        self.assertEqual( -4, target.module.typedVar( "longVar" ) )
+        self.assertEqual( -8, target.module.typedVar( "longlongVar" ) )
 
     def testPtrTo(self):
-        tvBaseType = pykd.typedVar( pykd.typeInfo("UInt8B").ptrTo(), 
-                                    target.module.offset("g_pUlonglongValue") )
-        self.assertEqual( target.module.typedVar( "g_ulonglongValue" ),
-                          tvBaseType.deref() )
+        tvBaseType = pykd.typedVar( pykd.typeInfo("UInt8B").ptrTo(), target.module.offset("pbigValue") )
+        self.assertEqual( target.module.typedVar( "g_ulonglongValue" ), tvBaseType.deref() )
 
-        tvDiaStruct = pykd.typedVar( target.module.type("structTest").ptrTo(),
-                                     target.module.offset("g_structTestPtr") )
+        tvDiaStruct = pykd.typedVar( target.module.type("structTest").ptrTo(), target.module.offset("g_structTestPtr") )
         self.assertEqual( 500, tvDiaStruct.deref().m_field1 )
 
         customStructTest = pykd.typeBuilder().createStruct("customStructTest", 4)
@@ -77,7 +74,7 @@ class TypedVarTest( unittest.TestCase ):
 
         self.assertEqual( pykd.sizeof("g_structTest"), tv1.sizeof() )
         self.assertEqual( pykd.sizeof("g_testArray"), tv2.sizeof() )
-        self.assertEqual( pykd.sizeof("g_ucharValue"), 1 )
+        self.assertEqual( pykd.sizeof("ucharVar"), 1 )
 
     def testByAddress( self ):
         tv1 = target.module.typedVar( "structTest", target.module.g_structTest )
@@ -126,11 +123,11 @@ class TypedVarTest( unittest.TestCase ):
     #    self.assertEqual( 2, tv.m_arrayField[-1] )
 
     def testGlobalVar(self):
-        self.assertEqual( 4, target.module.typedVar( "g_ulongValue" ) )
+        self.assertEqual( 10002000, target.module.typedVar( "ulongVar" ) )
         self.assertEqual( 0x80000000, target.module.typedVar( "ulongArray" )[3] )
         self.assertEqual( 0x8000000000000000, target.module.typedVar( "ulonglongArray" )[3] )
-        self.assertEqual( -100000,  target.module.typedVar( "longArray" )[3])
-        self.assertEqual( -10000000000, target.module.typedVar( "longlongArray" )[4])
+        self.assertEqual( 0x7FFFFFFF, target.module.typedVar( "longArray" )[3])
+        self.assertEqual( -1, target.module.typedVar( "longlongArray" )[4])
         self.assertEqual( target.module.g_structTest, target.module.typedVar( "g_structTestPtr" ) )
 
     def testContainingRecord(self):
@@ -200,12 +197,12 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( tv1.m_field3, tv2[0][1] )
 
     def testEnum(self):
-        tv = target.module.typedVar("g_classChild")
-        self.assertEqual( 3, tv.m_enumField )
-        self.assertEqual( target.module.type("enumType").THREE, tv.m_enumField )
+        tv = target.module.typedVar("g_constEnumThree")
+        self.assertEqual( 3, tv )
+        self.assertEqual( target.module.type("enumType").THREE, tv )
 
     def testIndex(self):
-        ind  = target.module.typedVar( "g_ucharValue" )
+        ind  = target.module.typedVar( "ucharVar" )
         self.assertEqual( 5, [0,5,10][ind] )
       
         self.assertTrue( ind in [0,1,2] )
@@ -213,7 +210,7 @@ class TypedVarTest( unittest.TestCase ):
         tv = target.module.typedVar( "g_structWithArray" )
         self.assertEqual( 2, tv.m_arrayField[ind] )
         
-        ind = target.module.typedVar( "g_ulongValue" )
+        ind = target.module.typedVar( "ulongValue" )
         self.assertEqual( 4, ind )
         self.assertTrue( ind in { 1 : "1", 4 : "2" } )
         self.assertEqual( "2", { 1 : "1", 4 : "2" }[ind] )
@@ -228,7 +225,7 @@ class TypedVarTest( unittest.TestCase ):
         try:
             tv.m_field1.deref()
             self.assertTrue(False)
-        except pykd.BaseException: 
+        except pykd.TypeException: 
             pass
             
     def testSkipDeref(self):
@@ -260,10 +257,10 @@ class TypedVarTest( unittest.TestCase ):
         self.assertTrue( tv1 )
 
     def testPrint(self):
-        self.assertTrue( str(target.module.typedVar( "g_ucharValue" ) ) )
-        self.assertTrue( str(target.module.typedVar( "g_ushortValue" ) ) )
-        self.assertTrue( str(target.module.typedVar( "g_ulongValue" ) ) )
-        self.assertTrue( str(target.module.typedVar( "g_ulonglongValue" ) ) )
+        self.assertTrue( str(target.module.typedVar( "ucharVar" ) ) )
+        self.assertTrue( str(target.module.typedVar( "ushortVar" ) ) )
+        self.assertTrue( str(target.module.typedVar( "ulongVar" ) ) )
+        self.assertTrue( str(target.module.typedVar( "ulonglongVar" ) ) )
         self.assertTrue( str(target.module.typedVar( "g_structWithBits" ) ) )
         self.assertTrue( str(target.module.typedVar( "g_structTest" ) ) )
         self.assertTrue( str(target.module.typedVar( "g_structTest1" ) ) )
@@ -319,7 +316,7 @@ class TypedVarTest( unittest.TestCase ):
            entry = entry.deref().Flink
 
     def testWrongArgs(self):
-        self.assertRaises( pykd.BaseException, pykd.typedVar, None, 0 )
-        self.assertRaises( pykd.BaseException, pykd.typedVarList, target.module.g_listHead1, None, "next" )
-        self.assertRaises( pykd.BaseException, pykd.typedVarArray, target.module.g_testArray, None, 2 )
-        self.assertRaises( pykd.BaseException, pykd.containingRecord, target.module.offset( "g_structTest" ), None, "m_field2" )
+        self.assertRaises( pykd.TypeException, pykd.typedVar, None, 0 )
+        self.assertRaises( pykd.TypeException, pykd.typedVarList, target.module.g_listHead1, None, "next" )
+        self.assertRaises( pykd.TypeException, pykd.typedVarArray, target.module.g_testArray, None, 2 )
+        self.assertRaises( pykd.TypeException, pykd.containingRecord, target.module.offset( "g_structTest" ), None, "m_field2" )

@@ -148,19 +148,19 @@ BOOST_PYTHON_MODULE( pykd )
     python::class_<kdlib::DbgIn, boost::noncopyable>( "din", "din", python::no_init )
         .def( "readline", &kdlib::DbgIn::readline );
 
-   // // system properties
-   // python::def( "ptrSize", &ptrSize,
-   //     "Return effective pointer size" );
-   // python::def( "is64bitSystem", &is64bitSystem,
-   //    "Check if target system has 64 address space" );
-   // python::def( "pageSize", &getPageSize,
-   //     "Get the page size for the currently executing processor context" );
-   // python::def( "systemUptime", &getSystemUptime,
-   //     "Return the number of seconds the computer has been running" );
-   // python::def( "currentTime", &getCurrentTime,
-   //     "Return the number of seconds since the beginning of 1970" );
-   // python::def("getSystemVersion", &getSystemVersion,
-   //     "Return systemVersion");
+   // system properties
+    python::def( "ptrSize", &kdlib::ptrSize,
+        "Return effective pointer size" );
+    python::def( "is64bitSystem", &kdlib::is64bitSystem,
+       "Check if target system has 64 address space" );
+    python::def( "pageSize", &kdlib::getPageSize,
+        "Get the page size for the currently executing processor context" );
+    python::def( "systemUptime", &kdlib::getSystemUptime,
+        "Return the number of seconds the computer has been running" );
+    python::def( "currentTime", &kdlib::getCurrentTime,
+        "Return the number of seconds since the beginning of 1970" );
+    //python::def("getSystemVersion", &getSystemVersion,
+    //    "Return systemVersion");
 
     // Manage target memory access
     python::def( "addr64", &kdlib::addr64,
@@ -249,8 +249,8 @@ BOOST_PYTHON_MODULE( pykd )
    //     "Find symbol by the target virtual memory offset" ) );
    // python::def("findSymbolAndDisp", &pysupport::findSymbolAndDisp,
    //     "Return tuple(symbol_name, displacement) by virtual address" );
-   // python::def( "sizeof", &TypeInfo::getSymbolSize,
-   //     "Return a size of the type or variable" );
+    python::def( "sizeof", &kdlib::getSymbolSize,
+        "Return a size of the type or variable" );
    // python::def("typedVarList", &getTypedVarListByTypeName,
    //     "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" );
    // python::def("typedVarList", &getTypedVarListByType,
@@ -394,8 +394,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return tuple(symbol_name, displacement) by virtual address" )
         .def("rva", &kdlib::Module::getSymbolRva,
             "Return rva of the symbol" )
-        //.def("sizeof", &Module::getSymbolSize,
-        //    "Return a size of the type or variable" )
+        .def("sizeof", &kdlib::Module::getSymbolSize,
+            "Return a size of the type or variable" )
         .def("type", &kdlib::Module::getTypeByName,
             "Return typeInfo class by type name" )
         //.def("getUdts", &Module::getUdts,
@@ -460,8 +460,8 @@ BOOST_PYTHON_MODULE( pykd )
         //    "Return pointer to the type" )
         //.def( "arrayOf", &kdlib::TypeInfo::arrayOf,
         //    "Return array of the type" )
-        //.def( "__str__", &TypeInfo::print,
-        //    "Return typa as a printable string" )
+        .def( "__str__", &TypeInfoAdapter::print,
+            "Return typa as a printable string" )
         .def( "__getattr__", TypeInfoAdapter::getElementByName )
         .def("__len__", &kdlib::TypeInfo::getElementCount )
         .def("__getitem__", TypeInfoAdapter::getElementByIndex )
@@ -488,7 +488,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return typeInfo instance" )*/
         .def("__getattr__", TypedVarAdapter::getField,
             "Return field of structure as an object attribute" )
-        //.def( "__str__", &kdlib::TypedVar::print )
+        .def( "__str__", &TypedVarAdapter::print )
         .def("__len__", &kdlib::TypedVar::getElementCount )
         .def("__getitem__", &TypedVarAdapter::getElementByIndex )
         //.def("__getitem__", &kdlib::TypedVar::getElementByIndexPtr )

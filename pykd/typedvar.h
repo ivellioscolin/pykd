@@ -32,6 +32,10 @@ struct TypedVarAdapter {
         return typedVar.getElement( index );
     }
 
+    static std::wstring print( kdlib::TypedVar& typedVar ) {
+        return L"TYPEDVAR STR";
+    }
+
 };
 
 } // end namespace pykd
