@@ -34,7 +34,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "Char*[2]", target.module.type("strArray").name() )
         self.assertEqual( "Char*(*)[2]", target.module.type("ptrStrArray").name() )
         self.assertEqual( "Int4B(*[4])[2][3]", target.module.type("arrIntMatrixPtrs").name() )
-        self.assertEqual( "Int4B(*)[2][3]", target.module.type("ptrIntMatrix1").name() )
+        self.assertEqual( "Int4B(*)[2][3]", target.module.type("ptrIntMatrix").name() )
 
 
     def testGetField( self ):
@@ -191,11 +191,10 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertTrue( str(target.module.type( "intMatrix4" ) ) )
         self.assertTrue( str(target.module.type( "ptrIntMatrix" ) ) )
         self.assertTrue( str(target.module.type( "g_classChild" ) ) )
-        self.assertTrue( str(target.module.type( "g_struct3" ) ) )
-        self.assertTrue( str(target.module.type( "g_listHead" ) ) )
-        self.assertTrue( str(target.module.type( "g_voidPtr" ) ) )
-        self.assertTrue( str(target.module.type( "g_arrOfPtrToFunc" ) ) )
-        self.assertTrue( str(target.module.type( "g_unTypedPtrToFunction" ) ) )
+#        self.assertTrue( str(target.module.type( "g_listHead" ) ) )
+#        self.assertTrue( str(target.module.type( "g_voidPtr" ) ) )
+#        self.assertTrue( str(target.module.type( "g_arrOfPtrToFunc" ) ) )
+#        self.assertTrue( str(target.module.type( "g_unTypedPtrToFunction" ) ) )
         
     def testTypedef(self):
         self.assertEqual( "structTest", pykd.typeInfo( "g_structTypeDef" ).name() )

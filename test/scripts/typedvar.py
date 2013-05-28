@@ -271,11 +271,11 @@ class TypedVarTest( unittest.TestCase ):
         self.assertTrue( str(target.module.typedVar( "intMatrix4" ) ) )
         self.assertTrue( str(target.module.typedVar( "ptrIntMatrix" ) ) )
         self.assertTrue( str(target.module.typedVar( "g_classChild" ) ) )
-        self.assertTrue( str(target.module.typedVar( "g_struct3" ) ) )
-        self.assertTrue( str(target.module.typedVar( "g_listHead" ) ) )
-        self.assertTrue( str(target.module.typedVar( "g_voidPtr" ) ) )
-        self.assertTrue( str(target.module.typedVar( "g_arrOfPtrToFunc" ) ) )
-        self.assertTrue( str(target.module.typedVar( "g_unTypedPtrToFunction" ) ) )
+        #self.assertTrue( str(target.module.typedVar( "g_struct3" ) ) )
+        #self.assertTrue( str(target.module.typedVar( "g_listHead" ) ) )
+        #self.assertTrue( str(target.module.typedVar( "g_voidPtr" ) ) )
+        #self.assertTrue( str(target.module.typedVar( "g_arrOfPtrToFunc" ) ) )
+        #self.assertTrue( str(target.module.typedVar( "g_unTypedPtrToFunction" ) ) )
         
     def testNotValidPrint(self):
         types = ("structTest", "ULong[100]", "ULong*" )
