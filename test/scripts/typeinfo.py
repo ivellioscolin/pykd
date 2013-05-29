@@ -46,47 +46,47 @@ class TypeInfoTest( unittest.TestCase ):
 
     def testBaseTypes( self ):
 
-        self.assertEqual("Int1B", target.module.type( "Int1B" ).name() )
-        self.assertEqual("Int2B", target.module.type( "Int2B" ).name() )
-        self.assertEqual("Int4B", target.module.type( "Int4B" ).name() )
-        self.assertEqual("Int8B", target.module.type( "Int8B" ).name() )
-        self.assertEqual("UInt1B", target.module.type( "UInt1B" ).name() )
-        self.assertEqual("UInt2B", target.module.type( "UInt2B" ).name() )
-        self.assertEqual("UInt4B", target.module.type( "UInt4B" ).name() )
-        self.assertEqual("UInt8B", target.module.type( "UInt8B" ).name() )
+        self.assertEqual("Int1B", pykd.typeInfo( "Int1B" ).name() )
+        self.assertEqual("Int2B", pykd.typeInfo( "Int2B" ).name() )
+        self.assertEqual("Int4B", pykd.typeInfo( "Int4B" ).name() )
+        self.assertEqual("Int8B", pykd.typeInfo( "Int8B" ).name() )
+        self.assertEqual("UInt1B", pykd.typeInfo( "UInt1B" ).name() )
+        self.assertEqual("UInt2B", pykd.typeInfo( "UInt2B" ).name() )
+        self.assertEqual("UInt4B", pykd.typeInfo( "UInt4B" ).name() )
+        self.assertEqual("UInt8B", pykd.typeInfo( "UInt8B" ).name() )
 
-        self.assertEqual("Long", target.module.type( "Long" ).name() )
-        self.assertEqual("ULong", target.module.type( "ULong" ).name() )
-        self.assertEqual("Bool", target.module.type( "Bool" ).name() )
-        self.assertEqual("Char", target.module.type("Char").name() )
-        self.assertEqual("WChar", target.module.type("WChar").name() )
+        self.assertEqual("Long", pykd.typeInfo( "Long" ).name() )
+        self.assertEqual("ULong", pykd.typeInfo( "ULong" ).name() )
+        self.assertEqual("Bool", pykd.typeInfo( "Bool" ).name() )
+        self.assertEqual("Char", pykd.typeInfo("Char").name() )
+        self.assertEqual("WChar", pykd.typeInfo("WChar").name() )
 
-        self.assertEqual( 1, target.module.type("Int1B").size() )
-        self.assertEqual( 1, target.module.type("UInt1B").size() )
-        self.assertEqual( 2, target.module.type("Int2B").size() )
-        self.assertEqual( 2, target.module.type("UInt2B").size() )
-        self.assertEqual( 4, target.module.type("Int4B").size() )
-        self.assertEqual( 4, target.module.type("UInt4B").size() )
-        self.assertEqual( 8, target.module.type("Int8B").size() )
-        self.assertEqual( 8, target.module.type("UInt8B").size() )
+        self.assertEqual( 1, pykd.typeInfo("Int1B").size() )
+        self.assertEqual( 1, pykd.typeInfo("UInt1B").size() )
+        self.assertEqual( 2, pykd.typeInfo("Int2B").size() )
+        self.assertEqual( 2, pykd.typeInfo("UInt2B").size() )
+        self.assertEqual( 4, pykd.typeInfo("Int4B").size() )
+        self.assertEqual( 4, pykd.typeInfo("UInt4B").size() )
+        self.assertEqual( 8, pykd.typeInfo("Int8B").size() )
+        self.assertEqual( 8, pykd.typeInfo("UInt8B").size() )
 
-        self.assertEqual( 4, target.module.type("Long" ).size() )
-        self.assertEqual( 4, target.module.type("ULong" ).size() )
-        self.assertEqual( 1, target.module.type("Bool" ).size() )
-        self.assertEqual( 1, target.module.type("Char").size() )
-        self.assertEqual( 2, target.module.type("WChar").size() )
+        self.assertEqual( 4, pykd.typeInfo("Long" ).size() )
+        self.assertEqual( 4, pykd.typeInfo("ULong" ).size() )
+        self.assertEqual( 1, pykd.typeInfo("Bool" ).size() )
+        self.assertEqual( 1, pykd.typeInfo("Char").size() )
+        self.assertEqual( 2, pykd.typeInfo("WChar").size() )
 
         try:
-            self.assertEqual("Int9B", target.module.type( "Int9B" ).name() )
+            self.assertEqual("Int9B", pykd.typeInfo( "Int9B" ).name() )
         except pykd.SymbolException:
             pass
             
     def testBaseTypePtr(self):
-        self.assertEqual("Int1B*", target.module.type( "Int1B*" ).name() )
-        self.assertEqual("Int1B", target.module.type( "Int1B*" ).deref().name() )
+        self.assertEqual("Int1B*", pykd.typeInfo( "Int1B*" ).name() )
+        self.assertEqual("Int1B", pykd.typeInfo( "Int1B*" ).deref().name() )
         
     def testBaseTypeArray(self):
-        self.assertEqual("Int4B[20]", target.module.type( "Int4B[20]" ).name() )
+        self.assertEqual("Int4B[20]", pykd.typeInfo( "Int4B[20]" ).name() )
 
     def testName( self ):
         ti1 = target.module.type( "classChild" )
@@ -158,14 +158,17 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( { 1 : "ONE", 2 : "TWO", 3 : "THREE" }, ti.asMap() )
 
     def testDeref(self):
-        ti = target.module.type("listStruct1")
-        self.assertEqual( "listStruct1", ti.next.deref().name() )
+        ti = pykd.typeInfo("Int1B*")
+        self.assertEqual( "Int1B", ti.deref().name() )
 
-        ti = target.module.type("listStruct1*")
-        self.assertEqual( "listStruct1", ti.deref().name() )
+        ti = target.module.type("structTest*")
+        self.assertEqual( "structTest", ti.deref().name() )
+
+        ti =  pykd.typeInfo("structTest[2]")
+        self.assertRaises( pykd.TypeException, ti.deref );
 
         ti = target.module.type("classChild")
-        self.assertRaises( pykd.BaseException, ti.deref );
+        self.assertRaises( pykd.TypeException, ti.deref );
 
     def testNestedStruct( self ):
         ti = target.module.type("structWithNested")
@@ -222,8 +225,8 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( 0, len(ti) )
         
     def testDerefName(self):
-        entry = pykd.typedVar("entry1").Flink
-        self.assertEqual( "_LIST_ENTRY*", entry.type().name() )
+        entry = pykd.typedVar("g_listHead").flink
+        self.assertEqual( "listEntry*", entry.type().name() )
         
     def testPtrTo(self):        
         ti = pykd.typeInfo("UInt8B").ptrTo()

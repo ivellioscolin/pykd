@@ -452,12 +452,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Return field's type" )
         //.def( "asMap", &kdlib::TypeInfo::asMap,
         //    "Return type as python dict ( for enum types )" )
-        //.def( "deref", &kdlib::TypeInfo::deref,
-        //    "Return type of pointer" )
+        .def( "deref", &kdlib::TypeInfo::deref,
+            "Return type of pointer" )
         //.def( "append", &kdlib::TypeInfo::appendField,
         //    "Add a new field to custom defined struct" )
-        //.def( "ptrTo", &kdlib::TypeInfo::ptrTo,
-        //    "Return pointer to the type" )
+        .def( "ptrTo", &kdlib::TypeInfo::ptrTo,
+            "Return pointer to the type" )
         //.def( "arrayOf", &kdlib::TypeInfo::arrayOf,
         //    "Return array of the type" )
         .def( "__str__", &TypeInfoAdapter::print,
@@ -482,10 +482,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Return field of structure as an object attribute" )
         //.def( "dataKind", &kdlib::TypedVar::getDataKind,
         //    "Retrieves the variable classification of a data: DataIsXxx")
-       /* .def("deref", &kdlib::TypedVar::deref,
-            "Return value by pointer" )
+        // .def("deref", &kdlib::TypedVar::deref,
+        //    "Return value by pointer" )
         .def("type", &kdlib::TypedVar::getType,
-            "Return typeInfo instance" )*/
+            "Return typeInfo instance" )
         .def("__getattr__", TypedVarAdapter::getField,
             "Return field of structure as an object attribute" )
         .def( "__str__", &TypedVarAdapter::print )
