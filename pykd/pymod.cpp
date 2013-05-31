@@ -6,7 +6,7 @@
 
 #include "variant.h"
 #include "module.h"
-#include "target.h"
+#include "dbgengine.h"
 #include "dbgexcept.h"
 #include "memaccess.h"
 #include "typeinfo.h"
@@ -71,8 +71,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadFloats_, loadFloats, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadDoubles_, loadDoubles, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, kdlib::compareMemory, 3, 4 );
 //
-//BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, getSourceLine, 0, 1 );
-//BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, getSourceFile, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, getSourceLine, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, kdlib::getSourceFile, 0, 1 );
 //
 //BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBp_, setSoftwareBp, 1, 2 );
 //BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
@@ -238,13 +238,13 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "loadDoubles", &loadDoubles, loadDoubles_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of doubles" ) );
 
-   // // types and vaiables
-   // python::def( "getSourceFile", &getSourceFile, getSourceFile_( python::args( "offset"),
-   //     "Return source file by the specified offset" ) );
-   // python::def( "getSourceLine", &getSourceLine, getSourceLine_( python::args( "offset"),
-   //     "Return source file name, line and displacement by the specified offset" ) );
-   // python::def( "getOffset", &TypeInfo::getOffset,
-   //     "Return traget virtual address for specified symbol" );
+    // types and vaiables
+    python::def( "getSourceFile", &kdlib::getSourceFile, getSourceFile_( python::args( "offset"),
+        "Return source file by the specified offset" ) );
+    python::def( "getSourceLine", &getSourceLine, getSourceLine_( python::args( "offset"),
+        "Return source file name, line and displacement by the specified offset" ) );
+    python::def( "getOffset", &kdlib::getSymbolOffset,
+        "Return traget virtual address for specified symbol" );
    // python::def( "findSymbol", &TypeInfo::findSymbol, findSymbol_( python::args( "offset", "showDisplacement"),
    //     "Find symbol by the target virtual memory offset" ) );
    // python::def("findSymbolAndDisp", &pysupport::findSymbolAndDisp,

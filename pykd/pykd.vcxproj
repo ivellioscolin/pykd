@@ -123,12 +123,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dbgengine.h" />
     <ClInclude Include="dbgexcept.h" />
     <ClInclude Include="memaccess.h" />
     <ClInclude Include="module.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="stladaptor.h" />
-    <ClInclude Include="target.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="typedvar.h" />
     <ClInclude Include="typeinfo.h" />
@@ -136,6 +136,7 @@
     <ClInclude Include="windbgext.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dbgengine.cpp" />
     <ClCompile Include="dbgexcept.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -154,7 +155,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="target.cpp" />
     <ClCompile Include="windbgext.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -107,8 +107,8 @@ class MemoryTest( unittest.TestCase ):
             self.assertTrue( True )
             
     def testPtrFloat(self):
-        self.assertTrue( math.fabs( pykd.ptrFloat( target.module.g_float) - 5.123456 ) < 0.001 )
-        self.assertTrue( math.fabs( pykd.ptrDouble( target.module.g_double) - 5.1234567891 ) < 0.0000001 )
+        self.assertTrue( math.fabs( pykd.ptrFloat( target.module.floatVar) + 5.99 ) < 0.001 )
+        self.assertTrue( math.fabs( pykd.ptrDouble( target.module.doubleVar) - 6.00000001 ) < 0.0000001 )
         
     def testLoadFloats(self):
        testArray = [  1.0, 0.001, -199.999, 20000.01, 0.111111 ];

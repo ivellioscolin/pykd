@@ -30,9 +30,6 @@
     <ClInclude Include="module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="target.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="dbgexcept.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -46,6 +43,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="typedvar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dbgengine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,10 +62,10 @@
     <ClCompile Include="pymod.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="target.cpp">
+    <ClCompile Include="dbgexcept.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dbgexcept.cpp">
+    <ClCompile Include="dbgengine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

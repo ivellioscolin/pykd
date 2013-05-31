@@ -2,7 +2,7 @@
 
 #include "kdlib/dbgengine.h"
 
-#include "target.h"
+#include "dbgengine.h"
 
 namespace pykd {
 
@@ -15,6 +15,19 @@ void targetGo()
     kdlib::targetGo();
 
     PyEval_RestoreThread( state );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+python::tuple getSourceLine( kdlib::MEMOFFSET_64 offset )
+{
+    std::wstring  fileName;
+    unsigned long  lineno;
+    long  displacement;
+
+    kdlib::getSourceLine( fileName, lineno, displacement, offset );
+
+    return python::make_tuple( fileName, lineno, displacement );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

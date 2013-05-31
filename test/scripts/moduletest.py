@@ -49,9 +49,9 @@ class ModuleTest( unittest.TestCase ):
         self.assertRaises( pykd.DbgException, pykd.module, target.module.end() + 0x10 )
 
     def testSymbol( self ):
-        self.assertEqual( target.module.rva("FuncWithName0"), target.module.offset("FuncWithName0") - target.module.begin() )
-        self.assertEqual( target.module.rva("FuncWithName0"), target.module.FuncWithName0 - target.module.begin() )
-        self.assertEqual( target.module.rva("FuncWithName0"), pykd.getOffset( target.module.name() + "!FuncWithName0") - target.module.begin() )
+        self.assertEqual( target.module.rva("FastcallFunc"), target.module.offset("FastcallFunc") - target.module.begin() )
+        self.assertEqual( target.module.rva("FastcallFunc"), target.module.FastcallFunc - target.module.begin() )
+        self.assertEqual( target.module.rva("FastcallFunc"), pykd.getOffset( target.module.name() + "!FastcallFunc") - target.module.begin() )
 
     def testFindSymbol( self ):
         self.assertEqual( "LocalStaticFunc", target.module.findSymbol( target.module.offset("LocalStaticFunc") ) )
@@ -59,9 +59,6 @@ class ModuleTest( unittest.TestCase ):
         self.assertEqual( "StdcallFunc", target.module.findSymbol( target.module.offset("StdcallFunc") ) )
         self.assertEqual( "FastcallFunc", target.module.findSymbol( target.module.offset("FastcallFunc") ) )
         self.assertEqual( "_UnderscoreFunc", target.module.findSymbol( target.module.offset("_UnderscoreFunc") ) )
-
-        #self.assertEqual( "FuncWithName0", target.module.findSymbol( target.module.offset("FuncWithName0") ) )
-        #self.assertEqual( "_FuncWithName2", target.module.findSymbol( target.module.offset("_FuncWithName2") ) )
         #self.assertEqual( "targetapp!FuncWithName0", pykd.findSymbol( target.module.offset("FuncWithName0") ) )
         #self.assertEqual( "targetapp!_FuncWithName2", pykd.findSymbol( target.module.offset("_FuncWithName2") ) )
         #self.assertEqual( "_FuncWithName2+10", target.module.findSymbol( target.module.offset("_FuncWithName2") + 0x10 ) )
@@ -83,14 +80,14 @@ class ModuleTest( unittest.TestCase ):
         self.assertEqual( "structTest", target.module.type("g_structTest").name() );
 
     def testSourceFile( self ):
-        fileName = pykd.getSourceFile(target.module.FuncWithName0 )
-        self.assertTrue( re.search('targetapp\\.cpp', fileName ) )
-        fileName, lineNo, displacement = pykd.getSourceLine( target.module.FuncWithName0 + 2)
-        self.assertEqual( 421, lineNo )
-        self.assertTrue( re.search('targetapp\\.cpp', fileName ) )
+        fileName = pykd.getSourceFile(target.module.CdeclFunc )
+        self.assertTrue( re.search('testfunc\\.cpp', fileName ) )
+        fileName, lineNo, displacement = pykd.getSourceLine( target.module.CdeclFunc + 2)
+        self.assertEqual( 15, lineNo )
+        self.assertTrue( re.search('testfunc\\.cpp', fileName ) )
         self.assertEqual( 2, displacement )
-        fileName, lineNo, displacement = pykd.getSourceLine()
-        self.assertEqual( 698, lineNo )
+        #fileName, lineNo, displacement = pykd.getSourceLine()
+        #self.assertEqual( 698, lineNo )
 
     def testEnumSymbols( self ):
         lst = target.module.enumSymbols()
