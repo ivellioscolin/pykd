@@ -229,10 +229,10 @@ BOOST_PYTHON_MODULE( pykd )
     //    "Return string represention of windows UNICODE_STRING type" );
     //python::def( "loadAnsiString", &loadAnsiStr,
     //    "Return string represention of windows ANSI_STRING type" );
-    //python::def( "loadPtrList", &loadPtrList,
-    //    "Return list of pointers, each points to next" );
-    //python::def( "loadPtrs", &loadPtrArray,
-    //    "Read the block of the target's memory and return it as a list of pointers" );
+    python::def( "loadPtrList", &loadPtrList,
+        "Return list of pointers, each points to next" );
+    python::def( "loadPtrs", &loadPtrArray,
+        "Read the block of the target's memory and return it as a list of pointers" );
     python::def( "loadFloats", &loadFloats, loadFloats_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of floats" ) );
     python::def( "loadDoubles", &loadDoubles, loadDoubles_( python::args( "offset", "count", "phyAddr" ),
@@ -458,8 +458,8 @@ BOOST_PYTHON_MODULE( pykd )
         //    "Add a new field to custom defined struct" )
         .def( "ptrTo", &kdlib::TypeInfo::ptrTo,
             "Return pointer to the type" )
-        //.def( "arrayOf", &kdlib::TypeInfo::arrayOf,
-        //    "Return array of the type" )
+        .def( "arrayOf", &kdlib::TypeInfo::arrayOf,
+            "Return array of the type" )
         .def( "__str__", &TypeInfoAdapter::print,
             "Return typa as a printable string" )
         .def( "__getattr__", TypeInfoAdapter::getElementByName )

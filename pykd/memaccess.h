@@ -59,5 +59,15 @@ inline python::list loadDoubles( kdlib::MEMOFFSET_64 offset, unsigned long count
     return vectorToList( kdlib::loadDoubles( offset, count, phyAddr ) );
 }
 
+inline python::list loadPtrList( kdlib::MEMOFFSET_64 offset )
+{
+    return vectorToList( kdlib::loadPtrList(offset) );
+}
+
+inline python::list loadPtrArray(  kdlib::MEMOFFSET_64 offset, unsigned long count )
+{ 
+    return vectorToList( kdlib::loadPtrs(offset, count) );
+}
+
 } // end namespace pykd
 

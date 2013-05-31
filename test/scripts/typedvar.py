@@ -22,14 +22,14 @@ class TypedVarTest( unittest.TestCase ):
         tv = pykd.typedVar( target.moduleName + "!g_structTest" )
 
     def testBaseTypes(self):
-        self.assertEqual( 1, target.module.typedVar( "ucharVar" ) )
-        self.assertEqual( 2, target.module.typedVar( "ushortVar" ) )
-        self.assertEqual( 4, target.module.typedVar( "ulongVar" ) )
-        self.assertEqual( 8, target.module.typedVar( "ulonglongVar" ) )
-        self.assertEqual( -1, target.module.typedVar( "charVar" ) )
-        self.assertEqual( -2, target.module.typedVar( "shortVar" ) )
-        self.assertEqual( -4, target.module.typedVar( "longVar" ) )
-        self.assertEqual( -8, target.module.typedVar( "longlongVar" ) )
+        self.assertEqual( 10, target.module.typedVar( "ucharVar" ) )
+        self.assertEqual( 1020, target.module.typedVar( "ushortVar" ) )
+        self.assertEqual( 10002000, target.module.typedVar( "ulongVar" ) )
+        self.assertEqual( 1234567890, target.module.typedVar( "ulonglongVar" ) )
+        self.assertEqual( -5, target.module.typedVar( "charVar" ) )
+        self.assertEqual( -1020, target.module.typedVar( "shortVar" ) )
+        self.assertEqual( -1002000, target.module.typedVar( "longVar" ) )
+        self.assertEqual( -1234567890, target.module.typedVar( "longlongVar" ) )
 
     def testPtrTo(self):
         tvBaseType = pykd.typedVar( pykd.typeInfo("UInt8B").ptrTo(), target.module.offset("pbigValue") )
@@ -272,8 +272,8 @@ class TypedVarTest( unittest.TestCase ):
         self.assertTrue( str(target.module.typedVar( "ptrIntMatrix" ) ) )
         self.assertTrue( str(target.module.typedVar( "g_classChild" ) ) )
         #self.assertTrue( str(target.module.typedVar( "g_struct3" ) ) )
-        #self.assertTrue( str(target.module.typedVar( "g_listHead" ) ) )
-        #self.assertTrue( str(target.module.typedVar( "g_voidPtr" ) ) )
+        self.assertTrue( str(target.module.typedVar( "g_listHead" ) ) )
+        self.assertTrue( str(target.module.typedVar( "voidPtr" ) ) )
         #self.assertTrue( str(target.module.typedVar( "g_arrOfPtrToFunc" ) ) )
         #self.assertTrue( str(target.module.typedVar( "g_unTypedPtrToFunction" ) ) )
         

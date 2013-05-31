@@ -120,13 +120,13 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( pykd.ptrSize(), target.module.type("structTest**").size() )
         self.assertEqual( pykd.sizeof("structTest"), target.module.type("structTest").size() )
         self.assertEqual( pykd.sizeof("structTest**"), target.module.type("structTest**").size() )
-        self.assertEqual( pykd.sizeof("Int1B"), target.module.type("Int1B").size() )
+        self.assertEqual( pykd.sizeof("Int1B"), pykd.typeInfo("Int1B").size() )
 
     def testBitField( self ):
         ti = target.module.type( "g_structWithBits" )
         self.assertEqual( 0, ti.fieldOffset("m_bit6_8") )
         self.assertEqual( 4, ti.m_bit6_8.size() )
-        self.assertEqual( "ULong:3", ti.m_bit6_8.name() )
+        self.assertEqual( "UInt4B:3", ti.m_bit6_8.name() )
         self.assertEqual( 3, ti.m_bit6_8.bitWidth() )
         self.assertEqual( 6, ti.m_bit6_8.bitOffset() )
 
@@ -139,12 +139,13 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "enumType", ti.m_enumField.name() )
 
     def testPtr(self):
-        self.assertEqual( "listStruct1*", target.module.type( "g_listHead1" ).name() )
-        self.assertEqual( "listStruct1*[2]", target.module.type( "g_arrOfListStruct1" ).name())
-        self.assertEqual( "Void*",  target.module.type( "g_voidPtr" ).name() )
-        self.assertEqual( "Void*[3]", target.module.type( "g_arrOfVoidPtr" ).name())
-        self.assertEqual( "<function>*", target.module.type( "g_ptrToFunction" ).name())
-        self.assertEqual( "<function>*[4]", target.module.type( "g_arrOfPtrToFunc" ).name())
+        self.assertEqual( "ULongLong*", target.module.type( "pbigValue" ).name() )
+        self.assertEqual( "testStruct*", target.module.type( "testStruct*" ).name() )
+        self.assertEqual( "UShort*", target.module.type( "UShort*" ).name() )
+        self.assertEqual( "Void*",  target.module.type( "voidPtr" ).name() )
+        self.assertEqual( "Void*[3]", target.module.type( "voidPtrArray" ).name())
+        #self.assertEqual( "<function>*", target.module.type( "g_ptrToFunction" ).name())
+        #self.assertEqual( "<function>*[4]", target.module.type( "g_arrOfPtrToFunc" ).name())
 
     def testUnion(self):
         ti = target.module.type("unionTest")
