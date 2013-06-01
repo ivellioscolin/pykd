@@ -184,7 +184,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Read an unsigned 8-byte integer from the target memory" );
     python::def( "ptrMWord", &kdlib::ptrMWord,
         "Read an unsigned mashine's word wide integer from the target memory" );
-    python::def( "ptrSignByte", &kdlib::ptrSignByte,
+    python::def( "ptrSignByte", &ptrSignByte,
         "Read an signed 1-byte integer from the target memory" );
     python::def( "ptrSignWord", &kdlib::ptrSignWord,
         "Read an signed 2-byte integer from the target memory" );
@@ -384,8 +384,8 @@ BOOST_PYTHON_MODULE( pykd )
             "(Re)load symbols for the module" )
         .def("image", &kdlib::Module::getImageName,
             "Return name of the image of the module" )
-        //.def("symfile", &Module::getSymFile,
-        //     "Return the full path to the module's symbol information" )
+        .def("symfile", &kdlib::Module::getSymFile,
+             "Return the full path to the module's symbol information" )
         .def("offset", &kdlib::Module::getSymbolVa,
             "Return offset of the symbol" )
         .def("findSymbol", ModuleAdapter::findSymbol, Module_findSymbol( python::args("offset", "showDisplacement"),
@@ -664,9 +664,10 @@ BOOST_PYTHON_MODULE( pykd )
    //         "Triggered debug symbols unloaded. Parameter - module base or 0 (all modules)\n"
    //         "There is no return value");
 
-   // // wrapper for standart python exceptions
-   // python::register_exception_translator<PyException>( &PyException::exceptionTranslate );
 
+    python::register_exception_translator<kdlib::IndexException>( &ExceptionTranslator::indexTranslate );
+
+    // kdlib exception
     pykd::exception<kdlib::DbgException>( "DbgException", "Pykd base exception class" );
     pykd::exception<kdlib::MemoryException,kdlib::DbgException>( "MemoryException", "Target memory access exception class" );
     pykd::exception<kdlib::SymbolException,kdlib::DbgException>( "SymbolException", "Symbol exception" );

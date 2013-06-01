@@ -174,9 +174,11 @@ class TypeInfoTest( unittest.TestCase ):
     def testNestedStruct( self ):
         ti = target.module.type("structWithNested")
         self.assertTrue( hasattr( ti, "m_field" ) )
-        self.assertTrue( hasattr( ti, "m_field2" ) )
+        self.assertTrue( hasattr( ti, "m_field3" ) )
+        self.assertTrue( hasattr( ti, "m_unnameStruct" ) )
+        self.assertTrue( hasattr( ti.m_unnameStruct, "m_field2" ) )
+        self.assertFalse( hasattr( ti, "m_field2" ) )
         self.assertFalse( hasattr( ti, "m_nestedFiled" ) )
-
         ti = target.module.type("structWithNested::Nested")
         self.assertTrue( hasattr( ti, "m_nestedFiled" ) )
 

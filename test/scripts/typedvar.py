@@ -202,7 +202,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( target.module.type("enumType").THREE, tv )
 
     def testIndex(self):
-        ind  = target.module.typedVar( "ucharVar" )
+        ind  = target.module.typedVar( "g_structTest" ).m_field3
         self.assertEqual( 5, [0,5,10][ind] )
       
         self.assertTrue( ind in [0,1,2] )
@@ -210,10 +210,8 @@ class TypedVarTest( unittest.TestCase ):
         tv = target.module.typedVar( "g_structWithArray" )
         self.assertEqual( 2, tv.m_arrayField[ind] )
         
-        ind = target.module.typedVar( "ulongValue" )
-        self.assertEqual( 4, ind )
         self.assertTrue( ind in { 1 : "1", 4 : "2" } )
-        self.assertEqual( "2", { 1 : "1", 4 : "2" }[ind] )
+        self.assertEqual( "1", { 1 : "1", 4 : "2" }[ind] )
 
     def testDeref(self):
         tv = target.module.typedVar( "g_structTest1" )

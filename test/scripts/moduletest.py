@@ -13,9 +13,9 @@ class ModuleTest( unittest.TestCase ):
         self.assertEqual( target.module.name(), pykd.module(target.module.begin() ).name() )
         self.assertEqual( target.module.name(), pykd.module(target.module.name() ).name() )
 
-    def testMiscellaneous( self ):
-        self.assertFalse( target.module.unloaded() )
-        self.assertTrue( target.module.um() )
+    #def testMiscellaneous( self ):
+    #    self.assertFalse( target.module.unloaded() )
+    #    self.assertTrue( target.module.um() )
 
     def testName( self ):
         self.assertEqual( target.moduleName, target.module.name() )
@@ -103,13 +103,13 @@ class ModuleTest( unittest.TestCase ):
         lst = target.module.enumSymbols( "classChild" )
         self.assertEqual( 0, len(lst) )
 
-    def testGetTypes( self ):
-        lst1 = target.module.getUdts()
-        self.assertNotEqual( 0, len(lst1) )
-        self.assertTrue( "classChild" in lst1 )
-        self.assertTrue( "classBase" in lst1 )
-        self.assertTrue( "structTest" in lst1 )
+    #def testGetTypes( self ):
+    #    lst1 = target.module.getUdts()
+    #    self.assertNotEqual( 0, len(lst1) )
+    #    self.assertTrue( "classChild" in lst1 )
+    #    self.assertTrue( "classBase" in lst1 )
+    #    self.assertTrue( "structTest" in lst1 )
 
-        lst2 = target.module.getEnums()
-        self.assertNotEqual( 0, len(lst2) )
-        self.assertTrue( "enumType" in lst2 )
+    #    lst2 = target.module.getEnums()
+    #    self.assertNotEqual( 0, len(lst2) )
+    #    self.assertTrue( "enumType" in lst2 )

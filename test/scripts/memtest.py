@@ -94,7 +94,7 @@ class MemoryTest( unittest.TestCase ):
         
     def testPtrList( self ):
         lst = pykd.loadPtrList( target.module.g_listHead )
-        self.assertEqual( 3, len( lst ) )
+        self.assertEqual( 5, len( lst ) )
         
     def testPtrArray( self ):
         lst = pykd.loadPtrs( target.module.arrIntMatrixPtrs, 3 )

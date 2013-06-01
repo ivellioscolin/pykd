@@ -9,6 +9,11 @@ namespace python = boost::python;
 
 namespace pykd {
 
+inline int ptrSignByte( kdlib::MEMOFFSET_64 offset )
+{
+    return kdlib::ptrSignByte(offset);
+}
+
 inline python::list loadBytes( kdlib::MEMOFFSET_64 offset, unsigned long count, bool phyAddr = false )
 {
     return vectorToList( kdlib::loadBytes( offset, count, phyAddr ) );
