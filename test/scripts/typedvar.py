@@ -33,7 +33,7 @@ class TypedVarTest( unittest.TestCase ):
 
     def testPtrTo(self):
         tvBaseType = pykd.typedVar( pykd.typeInfo("UInt8B").ptrTo(), target.module.offset("pbigValue") )
-        self.assertEqual( target.module.typedVar( "g_ulonglongValue" ), tvBaseType.deref() )
+        self.assertEqual( target.module.typedVar( "ulonglongVar" ), tvBaseType.deref() )
 
         tvDiaStruct = pykd.typedVar( target.module.type("structTest").ptrTo(), target.module.offset("g_structTestPtr") )
         self.assertEqual( 500, tvDiaStruct.deref().m_field1 )
@@ -56,11 +56,10 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 1, arrayStructVar[1].m_field3 ) 
 
     def testConst(self):
-        self.assertEqual( True, target.module.typedVar( "g_constBoolValue" ) )
-        self.assertEqual( 0x5555, target.module.typedVar( "g_constNumValue" ) )
+        self.assertEqual( True, target.module.typedVar( "boolConst" ) )
+        self.assertEqual( 0x5555, target.module.typedVar( "ulongConst" ) )
+        self.assertEqual( 0xffffff000000, target.module.typedVar( "ulonglongConst" ) )
         self.assertEqual( 3, target.module.typedVar( "g_constEnumThree" ) )
-        self.assertEqual( 0xffffff, target.module.typedVar( "g_constUlong" ) )
-        self.assertEqual( 0xffffff000000, target.module.typedVar( "g_constUlonglong" ) )
 
     def testGetAddress( self ):
         tv = target.module.typedVar( "structTest", target.module.g_structTest )
@@ -286,8 +285,11 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 100, tv.m_staticConst )
 
     def testAmbiguousFieldAccess(self):
-        derivedFiledVal = pykd.loadCStr( pykd.typedVar( "g_fieldSameNameStruct" ).m_field )
-        self.assertEqual( derivedFiledVal, "toaster" )
+       # derivedFiledVal = pykd.loadCStr( pykd.typedVar( "g_fieldSameNameStruct" ).m_field )
+       # self.assertEqual( derivedFiledVal, "toaster" )
+         self.assertEqual( 678, pykd.typedVar( "g_virtChild" ).m_member )
+
+
 
     def testDiamondVirtualInherit(self):
         tv = pykd.typedVar( "g_virtChild" )
@@ -299,7 +301,7 @@ class TypedVarTest( unittest.TestCase ):
 
     def testUdtSubscribe(self):
         tv = pykd.typedVar( "g_virtChild" )
-        self.assertEqual( 5, len(tv) )
+        self.assertEqual( 6, len(tv) )
         fieldName, fieldVal = tv[4]
         self.assertEqual( fieldName, "m_baseField" )
         self.assertEqual( fieldVal, tv.m_baseField )
