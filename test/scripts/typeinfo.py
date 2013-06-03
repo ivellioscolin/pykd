@@ -140,8 +140,8 @@ class TypeInfoTest( unittest.TestCase ):
 
     def testPtr(self):
         self.assertEqual( "UInt8B*", target.module.type( "pbigValue" ).name() )
-        self.assertEqual( "testStruct*", target.module.type( "testStruct*" ).name() )
-        self.assertEqual( "UShort*", target.module.type( "UShort*" ).name() )
+        self.assertEqual( "structTest*", target.module.type( "structTest*" ).name() )
+        self.assertEqual( "UInt2B*", pykd.typeInfo( "UInt2B*" ).name() )
         self.assertEqual( "Void*",  target.module.type( "voidPtr" ).name() )
         self.assertEqual( "Void*[3]", target.module.type( "voidPtrArray" ).name())
         #self.assertEqual( "<function>*", target.module.type( "g_ptrToFunction" ).name())
