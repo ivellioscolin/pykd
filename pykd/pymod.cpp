@@ -482,8 +482,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return field of structure as an object attribute" )
         //.def( "dataKind", &kdlib::TypedVar::getDataKind,
         //    "Retrieves the variable classification of a data: DataIsXxx")
-        // .def("deref", &kdlib::TypedVar::deref,
-        //    "Return value by pointer" )
+         .def("deref", &kdlib::TypedVar::deref,
+            "Return value by pointer" )
         .def("type", &kdlib::TypedVar::getType,
             "Return typeInfo instance" )
         .def("__getattr__", TypedVarAdapter::getField,

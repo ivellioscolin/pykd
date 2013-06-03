@@ -33,7 +33,7 @@ class TypedVarTest( unittest.TestCase ):
 
     def testPtrTo(self):
         tvBaseType = pykd.typedVar( pykd.typeInfo("UInt8B").ptrTo(), target.module.offset("pbigValue") )
-        self.assertEqual( target.module.typedVar( "ulonglongVar" ), tvBaseType.deref() )
+        self.assertEqual( target.module.typedVar( "bigValue" ), tvBaseType.deref() )
 
         tvDiaStruct = pykd.typedVar( target.module.type("structTest").ptrTo(), target.module.offset("g_structTestPtr") )
         self.assertEqual( 500, tvDiaStruct.deref().m_field1 )

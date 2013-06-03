@@ -139,7 +139,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "enumType", ti.m_enumField.name() )
 
     def testPtr(self):
-        self.assertEqual( "ULongLong*", target.module.type( "pbigValue" ).name() )
+        self.assertEqual( "UInt8B*", target.module.type( "pbigValue" ).name() )
         self.assertEqual( "testStruct*", target.module.type( "testStruct*" ).name() )
         self.assertEqual( "UShort*", target.module.type( "UShort*" ).name() )
         self.assertEqual( "Void*",  target.module.type( "voidPtr" ).name() )
@@ -219,7 +219,7 @@ class TypeInfoTest( unittest.TestCase ):
         
     def testUdtSubscribe(self):
         ti = pykd.typeInfo( "g_virtChild" )
-        self.assertEqual( 5, len(ti) )
+        self.assertEqual( 6, len(ti) )
         for field in ti:
              str( field )
              
