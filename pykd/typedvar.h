@@ -1,5 +1,9 @@
 #pragma once
 
+#include <boost/python/list.hpp>
+#include <boost/python/tuple.hpp>
+namespace python = boost::python;
+
 #include "kdlib/typedvar.h"
 
 namespace pykd {
@@ -42,7 +46,20 @@ struct TypedVarAdapter {
 
     static kdlib::TypedVarPtr containingRecordByType( kdlib::MEMOFFSET_64 offset, kdlib::TypeInfoPtr &typeInfo, const std::wstring &fieldName ) {
         return kdlib::containingRecord( offset, typeInfo, fieldName );
+    }
 
+    static python::list getFields( kdlib::TypedVar& typedVar )
+    {
+        python::list  lst;
+        for ( size_t i = 0; i < typedVar.getElementCount(); ++i )
+        {
+            std::wstring  name = typedVar.getElementName(i);
+            kdlib::MEMOFFSET_32  offset = typedVar.getElementOffset(i);
+            kdlib::TypedVarPtr  val = typedVar.getElement(i);
+            lst.append( python::make_tuple( name, offset, val ) );
+        }
+
+        return lst;
     }
 };
 

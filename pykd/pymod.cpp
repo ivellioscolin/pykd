@@ -450,6 +450,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return bit field's length" )
         .def( "field", TypeInfoAdapter::getElementByName,
             "Return field's type" )
+        .def( "fieldName", &kdlib::TypeInfo::getElementName,
+         "Return name of struct field by index" )
         //.def( "asMap", &kdlib::TypeInfo::asMap,
         //    "Return type as python dict ( for enum types )" )
         .def( "deref", &kdlib::TypeInfo::deref,
@@ -480,6 +482,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Return target field offset" )
         .def("field", TypedVarAdapter::getField,
             "Return field of structure as an object attribute" )
+        .def("field", TypedVarAdapter::getElementByIndex,
+            "Return field of structure as an object attribute" )
+        .add_property( "fields", TypedVarAdapter::getFields,
+            "Return list of tuple ( filedName, fieldOffset, fieldValue )" )
+        .def( "fieldName", &kdlib::TypedVar::getElementName,
+            "Return name of struct field by index" )
         //.def( "dataKind", &kdlib::TypedVar::getDataKind,
         //    "Retrieves the variable classification of a data: DataIsXxx")
          .def("deref", &kdlib::TypedVar::deref,

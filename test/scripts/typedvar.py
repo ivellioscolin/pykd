@@ -38,11 +38,11 @@ class TypedVarTest( unittest.TestCase ):
         tvDiaStruct = pykd.typedVar( target.module.type("structTest").ptrTo(), target.module.offset("g_structTestPtr") )
         self.assertEqual( 500, tvDiaStruct.deref().m_field1 )
 
-        customStructTest = pykd.typeBuilder().createStruct("customStructTest", 4)
-        customStructTest.append("m_field0", pykd.typeInfo("UInt4B"))
-        customStructTest.append("m_field1", pykd.typeInfo("UInt8B"))
-        tvCustomStruct = pykd.typedVar( customStructTest.ptrTo(), target.module.offset("g_structTestPtr") )
-        self.assertEqual( 500, tvCustomStruct.deref().m_field1 )
+        #customStructTest = pykd.typeBuilder().createStruct("customStructTest", 4)
+        #customStructTest.append("m_field0", pykd.typeInfo("UInt4B"))
+        #customStructTest.append("m_field1", pykd.typeInfo("UInt8B"))
+        #tvCustomStruct = pykd.typedVar( customStructTest.ptrTo(), target.module.offset("g_structTestPtr") )
+        #self.assertEqual( 500, tvCustomStruct.deref().m_field1 )
 
     def testArrayOf(self):
         arrayType = pykd.typeInfo("UInt8B").arrayOf(5)
@@ -302,11 +302,14 @@ class TypedVarTest( unittest.TestCase ):
     def testUdtSubscribe(self):
         tv = pykd.typedVar( "g_virtChild" )
         self.assertEqual( 6, len(tv) )
-        fieldName, fieldVal = tv[4]
+        fieldName = tv.fieldName(5)
+        fieldVal = tv.field(5)
+
         self.assertEqual( fieldName, "m_baseField" )
         self.assertEqual( fieldVal, tv.m_baseField )
-        for field in tv:
-             str( field )
+
+        for field in tv.fields:
+            str( field )
 
     def testDeadlockList(self):
        lst = []
