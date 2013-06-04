@@ -36,6 +36,14 @@ struct TypedVarAdapter {
         return L"TYPEDVAR STR";
     }
 
+    static kdlib::TypedVarPtr containingRecordByName( kdlib::MEMOFFSET_64 offset, const std::wstring &typeName, const std::wstring &fieldName ) {
+        return kdlib::containingRecord( offset, typeName, fieldName );
+    }
+
+    static kdlib::TypedVarPtr containingRecordByType( kdlib::MEMOFFSET_64 offset, kdlib::TypeInfoPtr &typeInfo, const std::wstring &fieldName ) {
+        return kdlib::containingRecord( offset, typeInfo, fieldName );
+
+    }
 };
 
 } // end namespace pykd

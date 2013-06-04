@@ -259,12 +259,12 @@ BOOST_PYTHON_MODULE( pykd )
    //     "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" );
    // python::def("typedVarArray", &getTypedVarArrayByType,
    //     "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" );
-   // python::def("containingRecord", &containingRecordByName,
-   //     "Return instance of the typedVar class. It's value are loaded from the target memory."
-   //     "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
-   // python::def("containingRecord", &containingRecordByType,
-   //     "Return instance of the typedVar class. It's value are loaded from the target memory."
-   //     "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
+    python::def("containingRecord", &TypedVarAdapter::containingRecordByName,
+        "Return instance of the typedVar class. It's value are loaded from the target memory."
+        "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
+    python::def("containingRecord", &TypedVarAdapter::containingRecordByType,
+        "Return instance of the typedVar class. It's value are loaded from the target memory."
+        "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
 
    // // CPU registers
    // python::def( "reg", &getRegByName,
@@ -412,9 +412,9 @@ BOOST_PYTHON_MODULE( pykd )
         //    "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
         //.def("typedVarArray", &Module::getTypedVarArrayByTypeName,
         //    "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
-        //.def("containingRecord", &Module::containingRecordByName,
-        //    "Return instance of the typedVar class. It's value are loaded from the target memory."
-        //    "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
+        .def("containingRecord", &kdlib::Module::containingRecord,
+            "Return instance of the typedVar class. It's value are loaded from the target memory."
+            "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
         .def("enumSymbols", ModuleAdapter::enumSymbols, Module_enumSymbols( python::args("mask"),
              "Return list of tuple ( symbolname, offset )" ) )
         //.def("checksum", &Module::getCheckSum,
