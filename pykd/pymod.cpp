@@ -70,7 +70,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadFloats_, loadFloats, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadDoubles_, loadDoubles, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, kdlib::compareMemory, 3, 4 );
-//
+
+
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, getSourceLine, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, kdlib::getSourceFile, 0, 1 );
 //
@@ -194,8 +195,6 @@ BOOST_PYTHON_MODULE( pykd )
         "Read an signed 8-byte integer from the target memory" );
     python::def( "ptrSignMWord", &kdlib::ptrSignMWord,
         "Read an signed mashine's word wide integer from the target memory" );
-    python::def( "ptrPtr", &kdlib::ptrPtr,
-        "Read an pointer value from the target memory" );
     python::def( "ptrFloat", &kdlib::ptrSingleFloat,
         "Read a float with single precision from the target memory" );
    python::def( "ptrDouble", &kdlib::ptrDoubleFloat,
@@ -229,14 +228,17 @@ BOOST_PYTHON_MODULE( pykd )
     //    "Return string represention of windows UNICODE_STRING type" );
     //python::def( "loadAnsiString", &loadAnsiStr,
     //    "Return string represention of windows ANSI_STRING type" );
-    python::def( "loadPtrList", &loadPtrList,
-        "Return list of pointers, each points to next" );
-    python::def( "loadPtrs", &loadPtrArray,
-        "Read the block of the target's memory and return it as a list of pointers" );
     python::def( "loadFloats", &loadFloats, loadFloats_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of floats" ) );
     python::def( "loadDoubles", &loadDoubles, loadDoubles_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of doubles" ) );
+
+    python::def( "ptrPtr", &ptrPtr,
+        "Read an pointer value from the target memory" );
+    python::def( "loadPtrList", &loadPtrList,
+        "Return list of pointers, each points to next" );
+    python::def( "loadPtrs", &loadPtrArray,
+        "Read the block of the target's memory and return it as a list of pointers" );
 
     // types and vaiables
     python::def( "getSourceFile", &kdlib::getSourceFile, getSourceFile_( python::args( "offset"),
@@ -251,14 +253,14 @@ BOOST_PYTHON_MODULE( pykd )
    //     "Return tuple(symbol_name, displacement) by virtual address" );
     python::def( "sizeof", &kdlib::getSymbolSize,
         "Return a size of the type or variable" );
-   // python::def("typedVarList", &getTypedVarListByTypeName,
-   //     "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" );
-   // python::def("typedVarList", &getTypedVarListByType,
-   //     "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" );
-   // python::def("typedVarArray", &getTypedVarArrayByTypeName,
-   //     "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" );
-   // python::def("typedVarArray", &getTypedVarArrayByType,
-   //     "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" );
+    python::def("typedVarList", &TypedVarAdapter::getTypedVarListByTypeName,
+        "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" );
+    python::def("typedVarList", &TypedVarAdapter::getTypedVarListByType,
+        "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" );
+    python::def("typedVarArray", &TypedVarAdapter::getTypedVarArrayByTypeName,
+        "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" );
+    python::def("typedVarArray", &TypedVarAdapter::getTypedVarArrayByType,
+        "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" );
     python::def("containingRecord", &TypedVarAdapter::containingRecordByName,
         "Return instance of the typedVar class. It's value are loaded from the target memory."
         "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
@@ -408,10 +410,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a typedVar class instance" )
         .def("typedVar",&kdlib::Module::getTypedVarByTypeName,
             "Return a typedVar class instance" )
-        //.def("typedVarList", &Module::getTypedVarListByTypeName,
-        //    "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
-        //.def("typedVarArray", &Module::getTypedVarArrayByTypeName,
-        //    "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
+        .def("typedVarList", &ModuleAdapter::getTypedVarListByTypeName,
+            "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
+        .def("typedVarArray", &ModuleAdapter::getTypedVarArrayByTypeName,
+            "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
         .def("containingRecord", &kdlib::Module::containingRecord,
             "Return instance of the typedVar class. It's value are loaded from the target memory."
             "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )

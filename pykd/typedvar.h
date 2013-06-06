@@ -6,6 +6,8 @@ namespace python = boost::python;
 
 #include "kdlib/typedvar.h"
 
+#include "stladaptor.h"
+
 namespace pykd {
 
 struct TypedVarAdapter {
@@ -61,6 +63,32 @@ struct TypedVarAdapter {
 
         return lst;
     }
+
+    static python::list getTypedVarListByTypeName( kdlib::MEMOFFSET_64 offset, const std::wstring &typeName, const std::wstring &fieldName )
+    {
+        kdlib::TypedVarList  lst = kdlib::loadTypedVarList( offset, typeName, fieldName );
+        return vectorToList( lst );
+    }
+
+    static python::list getTypedVarListByType( kdlib::MEMOFFSET_64 offset, kdlib::TypeInfoPtr &typeInfo, const std::wstring &fieldName )
+    {
+        kdlib::TypedVarList  lst = kdlib::loadTypedVarList( offset, typeInfo, fieldName );
+        return vectorToList( lst );
+    }
+
+    static python::list getTypedVarArrayByTypeName( kdlib::MEMOFFSET_64 offset, const std::wstring &typeName, size_t number )
+    {
+        kdlib::TypedVarList  lst = kdlib::loadTypedVarArray( offset, typeName, number );
+        return vectorToList( lst );
+    }
+
+    static python::list getTypedVarArrayByType( kdlib::MEMOFFSET_64 offset, kdlib::TypeInfoPtr &typeInfo, size_t number )
+    {
+        kdlib::TypedVarList  lst = kdlib::loadTypedVarArray( offset, typeInfo, number );
+        return vectorToList( lst );
+    }
+
+
 };
 
 } // end namespace pykd

@@ -4,6 +4,8 @@
 
 #include "kdlib/module.h"
 
+#include "stladaptor.h"
+
 namespace pykd {
 
 
@@ -58,6 +60,20 @@ struct ModuleAdapter : public kdlib::Module
         std::wstring  symbolName = module.findSymbol( offset, displacement );
         return python::make_tuple( symbolName, displacement );
     }
+
+
+    static python::list getTypedVarListByTypeName( kdlib::Module& module, kdlib::MEMOFFSET_64 offset, const std::wstring &typeName, const std::wstring &fieldName )
+    {
+        kdlib::TypedVarList  lst = module.loadTypedVarList( offset, typeName, fieldName );
+        return vectorToList( lst );
+    }
+
+    static python::list getTypedVarArrayByTypeName( kdlib::Module& module, kdlib::MEMOFFSET_64 offset, const std::wstring &typeName, size_t number )
+    {
+        kdlib::TypedVarList  lst =  module.loadTypedVarArray( offset, typeName, number );
+        return vectorToList( lst );
+    }
+
 };
 
 } // end namespace pykd
