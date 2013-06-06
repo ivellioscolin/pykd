@@ -14,32 +14,6 @@
 
 using namespace pykd;
 
-
-//
-//#include "pykdver.h"
-//
-//#include "dbgengine.h"
-//#include "symengine.h"
-//
-//#include "module.h"
-//#include "variant.h"
-//#include "dbgexcept.h"
-//#include "dbgmem.h"
-//#include "typeinfo.h"
-//#include "customtypes.h"
-//#include "typedvar.h"
-//#include "cpureg.h"
-//#include "disasm.h"
-//#include "stkframe.h"
-//#include "bpoint.h"
-//#include "eventhandler.h"
-//#include "pysupport.h"
-//
-//#include "win/dbgio.h"
-//#include "win/windbg.h"
-//
-//using namespace pykd;
-
 ///////////////////////////////////////////////////////////////////////////////
 
 static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
@@ -49,9 +23,10 @@ static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 ;
 
 ///////////////////////////////////////////////////////////////////////////////
-//
-//BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_, detachProcess, 0, 1 );
-//
+
+BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_,  kdlib::detachProcess, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( terminateProcess_,  kdlib::terminateProcess, 0, 1 );
+
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, kdlib::dprint, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, kdlib::dprintln, 1, 2 );
 
@@ -109,10 +84,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Start process for debugging" ); 
     python::def( "attachProcess", &kdlib::attachProcess,
         "Attach debugger to a exsisting process" );
-//    python::def( "detachProcess", &detachProcess, detachProcess_( boost::python::args( "pid" ),
-//        "Stop process debugging") ); 
-    python::def( "killProcess", &kdlib::terminateProcess,
-        "Stop debugging and terminate current process" );
+    python::def( "detachProcess", &kdlib::detachProcess, detachProcess_( boost::python::args( "pid" ),
+        "Stop process debugging") ); 
+    python::def( "killProcess", &kdlib::terminateProcess, terminateProcess_( boost::python::args( "pid" ),
+        "Stop debugging and terminate current process" ) );
     python::def( "loadDump", &kdlib::loadDump,
         "Load crash dump");
     python::def( "isDumpAnalyzing", &kdlib::isDumpAnalyzing,
@@ -124,18 +99,18 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "writeDump", &kdlib::writeDump,
         "Create memory dump file" );
 
-   // python::def( "breakin", &debugBreak,
-   //     "Break into debugger" );
-   // python::def( "expr", &evaluate,
-   //     "Evaluate windbg expression" );
-   // python::def( "dbgCommand", &debugCommand,
-   //     "Run a debugger's command and return it's result as a string" );
+    python::def( "breakin", &targetBreak,
+        "Break into debugger" );
+    //python::def( "expr", &evaluate,
+    //    "Evaluate windbg expression" );
+    //python::def( "dbgCommand", &debugCommand,
+    //    "Run a debugger's command and return it's result as a string" );
     python::def( "go", &targetGo,
         "Go debugging"  );
-   // python::def( "step", &debugStep,
-   //     "The target is executing a single instruction or--if that instruction is a subroutine call--subroutine" );
-   // python::def( "trace", &debugStepIn,
-   //     "The target is executing a single instruction" );
+    python::def( "step", &targetStep,
+        "The target is executing a single instruction or--if that instruction is a subroutine call--subroutine" );
+    python::def( "trace", &targetStepIn,
+        "The target is executing a single instruction" );
 
    // Debug output
     python::def( "dprint", &kdlib::dprint, dprint_( python::args( "str", "dml" ), 

@@ -19,6 +19,39 @@ void targetGo()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void targetBreak()
+{
+    PyThreadState*    state = PyEval_SaveThread();
+
+    kdlib::targetBreak();
+
+    PyEval_RestoreThread( state );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void targetStep()
+{
+    PyThreadState*    state = PyEval_SaveThread();
+
+    kdlib::targetStep();
+
+    PyEval_RestoreThread( state );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void targetStepIn()
+{
+    PyThreadState*    state = PyEval_SaveThread();
+
+    kdlib::targetStepIn();
+
+    PyEval_RestoreThread( state );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 python::tuple getSourceLine( kdlib::MEMOFFSET_64 offset )
 {
     std::wstring  fileName;
