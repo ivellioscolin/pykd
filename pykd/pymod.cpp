@@ -11,6 +11,7 @@
 #include "memaccess.h"
 #include "typeinfo.h"
 #include "typedvar.h"
+#include "windbgext.h"
 
 using namespace pykd;
 
@@ -94,8 +95,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if it is a dump analyzing ( not living debuggee )" );
     python::def( "isKernelDebugging", &kdlib::isKernelDebugging,
         "Check if kernel dubugging is running" );
-    //python::def( "isWindbgExt", &WindbgGlobalSession::isInit,
-    //    "Check if script works in windbg context" );
+    python::def( "isWindbgExt", &PykdExt::isInit,
+        "Check if script works in windbg context" );
     python::def( "writeDump", &kdlib::writeDump,
         "Create memory dump file" );
 

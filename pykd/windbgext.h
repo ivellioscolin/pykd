@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "kdlib/windbg.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -10,6 +12,8 @@ public:
 
     KDLIB_EXT_COMMAND_METHOD(py);
 
+    static bool isInit();
+
 private:
 
     void startConsole();
@@ -18,6 +22,9 @@ private:
 
     virtual void tearDown();
 
+    std::string getScriptFileName( const std::string &scriptName );
+
+    std::vector<std::string> m_paths;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
