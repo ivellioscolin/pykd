@@ -235,17 +235,21 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 5, tv.m_fieldOfUnNamed )
 
     def testPointerToFunction(self):
-        tv1 = target.module.typedVar( "g_unTypedPtrToFunction" )
+
+        funcptr = target.module.typedVar( "CdeclFuncPtr" )
+        self.assertEqual( funcptr, target.module.CdeclFunc )
+
+        #tv1 = target.module.typedVar( "g_unTypedPtrToFunction" )
 
         # if debug: g_unTypedPtrToFunction point to jmp EnumWindowsProc2 (e9 xxxxxxxx)
-        self.assertTrue( ( target.module.offset("EnumWindowsProc2") == tv1 ) or
-                         ( 0xE9 == pykd.ptrByte( long(tv1) ) ) )
+        #self.assertTrue( ( target.module.offset("EnumWindowsProc2") == tv1 ) or
+        #                 ( 0xE9 == pykd.ptrByte( long(tv1) ) ) )
 
-        tv2 = target.module.typedVar( "g_unTypedPtrToFunction" )
-        self.assertEqual( tv1, tv2 )
+        #tv2 = target.module.typedVar( "g_unTypedPtrToFunction" )
+        #self.assertEqual( tv1, tv2 )
 
-        self.assertRaises( pykd.TypeException, tv1.deref )
-        self.assertRaises( pykd.TypeException, tv2.deref )
+        #self.assertRaises( pykd.TypeException, tv1.deref )
+        #self.assertRaises( pykd.TypeException, tv2.deref )
 
     def testTypeVarArg(self):
         tv1 = target.module.typedVar( "structTest", target.module.g_structTest )
@@ -313,7 +317,7 @@ class TypedVarTest( unittest.TestCase ):
 
     def testDeadlockList(self):
        lst = []
-       entry = pykd.typedVar("entry1").Flink
+       entry = pykd.typedVar("deadlockEntry").flink
        for i in range( 0, 100000 ):
            lst.append(entry)
-           entry = entry.deref().Flink
+           entry = entry.deref().flink
