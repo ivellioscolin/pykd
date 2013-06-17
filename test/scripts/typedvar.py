@@ -237,7 +237,7 @@ class TypedVarTest( unittest.TestCase ):
     def testPointerToFunction(self):
 
         funcptr = target.module.typedVar( "CdeclFuncPtr" )
-        self.assertEqual( funcptr, target.module.CdeclFunc )
+        self.assertEqual( funcptr.deref(), target.module.CdeclFunc )
 
         #tv1 = target.module.typedVar( "g_unTypedPtrToFunction" )
 

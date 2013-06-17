@@ -12,6 +12,7 @@
 #include "typeinfo.h"
 #include "typedvar.h"
 #include "windbgext.h"
+#include "breakpoint.h"
 
 using namespace pykd;
 
@@ -50,8 +51,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, kdlib::compareMemory, 3, 4 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, getSourceLine, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, kdlib::getSourceFile, 0, 1 );
-//
-//BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBp_, setSoftwareBp, 1, 2 );
+
 //BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 //
 //BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, TypeInfo::findSymbol, 1, 2 );
@@ -272,13 +272,14 @@ BOOST_PYTHON_MODULE( pykd )
    // python::def( "getParams", &getParams, 
    //     "Get list of function arguments" );
 
-   // // breakpoints
-   // python::def( "setBp", &setSoftwareBp, setSoftwareBp_( python::args( "offset", "callback" ),
-   //     "Set software breakpoint on executiont" ) );
-   // python::def( "setBp", &setHardwareBp, setHardwareBp_( python::args( "offset", "size", "accsessType", "callback" ) ,
-   //     "Set hardware breakpoint" ) );
-   // python::def( "removeBp", &removeBp,
-   //     "Remove breapoint by IDs" );
+    // breakpoints
+    python::def( "setBp", &kdlib::softwareBreakPointSet,
+        "Set software breakpoint on executiont" );
+    python::def( "removeBp", &kdlib::breakPointRemove,
+        "Remove breapoint by IDs" );
+
+    //python::def( "setBp", &setHardwareBp, setHardwareBp_( python::args( "offset", "size", "accsessType", "callback" ) ,
+    //    "Set hardware breakpoint" ) );
    // //python::def( "removeAllBp", &removeAllBp,
    // //    "Remove all breapoints" );
 
@@ -503,6 +504,13 @@ BOOST_PYTHON_MODULE( pykd )
    //     .def( "createUnion", &TypeBuilder::createUnion, 
    //         "Create custom union" );
 
+    python::class_<Breakpoint, BreakpointPtr, boost::noncopyable>( "breakpoint",
+        "class for breakpoint representation", python::no_init  )
+        .def("__init__", python::make_constructor(Breakpoint::setSoftwareBreakpoint) )
+        ;
+
+
+
    // python::class_<CpuReg, python::bases<intBase> >( 
    //     "cpuReg", "CPU regsiter class", boost::python::no_init )
    //         .def( "name", &CpuReg::name, "The name of the regsiter" )
@@ -613,18 +621,18 @@ BOOST_PYTHON_MODULE( pykd )
    //     .def( "jumprel", &Disasm::jumprel, "Change the current instruction" );
 
 
-   // python::enum_<DEBUG_CALLBACK_RESULT>("eventResult", "Return value of event handler")
-   //     .value("Proceed", DebugCallbackProceed)
-   //     .value("NoChange", DebugCallbackNoChange)
-   //     .value("Break", DebugCallbackBreak)
-   //     .export_values();
+    python::enum_<kdlib::DebugCallbackResult>("eventResult", "Return value of event handler")
+        .value("Proceed", kdlib::DebugCallbackProceed)
+        .value("NoChange", kdlib::DebugCallbackNoChange)
+        .value("Break", kdlib::DebugCallbackBreak)
+        .export_values();
 
-   // python::enum_<EXECUTION_STATUS>("executionStatus", "Execution Status")
-   //     .value("NoChange", DebugStatusNoChange )
-   //     .value("Go", DebugStatusGo )
-   //     .value("Break", DebugStatusBreak )
-   //     .value("NoDebuggee", DebugStatusNoDebuggee )
-   //     .export_values();
+    python::enum_<kdlib::ExecutionStatus>("executionStatus", "Execution Status")
+        .value("NoChange", kdlib::DebugStatusNoChange )
+        .value("Go", kdlib::DebugStatusGo )
+        .value("Break", kdlib::DebugStatusBreak )
+        .value("NoDebuggee", kdlib::DebugStatusNoDebuggee )
+        .export_values();
 
    // python::class_<EventHandlerWrap, EventHandlerPtr, boost::noncopyable>(
    //     "eventHandler", "Base class for overriding and handling debug notifications" )

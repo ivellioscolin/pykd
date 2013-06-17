@@ -9,10 +9,10 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void targetGo();
+kdlib::ExecutionStatus targetGo();
 void targetBreak();
-void targetStep();
-void targetStepIn();
+kdlib::ExecutionStatus targetStep();
+kdlib::ExecutionStatus targetStepIn();
 
 python::tuple getSourceLine( kdlib::MEMOFFSET_64 offset = 0 );
 

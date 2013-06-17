@@ -8,13 +8,17 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void targetGo()
+kdlib::ExecutionStatus targetGo()
 {
+    kdlib::ExecutionStatus  status;
+
     PyThreadState*    state = PyEval_SaveThread();
 
-    kdlib::targetGo();
+    status = kdlib::targetGo();
 
     PyEval_RestoreThread( state );
+
+    return status;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,24 +34,32 @@ void targetBreak()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void targetStep()
+kdlib::ExecutionStatus targetStep()
 {
+    kdlib::ExecutionStatus  status;
+
     PyThreadState*    state = PyEval_SaveThread();
 
-    kdlib::targetStep();
+    status =  kdlib::targetStep();
 
     PyEval_RestoreThread( state );
+
+    return status;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void targetStepIn()
+kdlib::ExecutionStatus targetStepIn()
 {
+    kdlib::ExecutionStatus  status;
+
     PyThreadState*    state = PyEval_SaveThread();
 
-    kdlib::targetStepIn();
+    status = kdlib::targetStepIn();
 
     PyEval_RestoreThread( state );
+
+    return status;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

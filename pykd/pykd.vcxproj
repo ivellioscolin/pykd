@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="breakpoint.h" />
     <ClInclude Include="dbgengine.h" />
     <ClInclude Include="dbgexcept.h" />
     <ClInclude Include="memaccess.h" />
@@ -136,6 +137,7 @@
     <ClInclude Include="windbgext.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="breakpoint.cpp" />
     <ClCompile Include="dbgengine.cpp" />
     <ClCompile Include="dbgexcept.cpp" />
     <ClCompile Include="dllmain.cpp">
