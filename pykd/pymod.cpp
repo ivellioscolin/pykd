@@ -12,7 +12,7 @@
 #include "typeinfo.h"
 #include "typedvar.h"
 #include "windbgext.h"
-#include "breakpoint.h"
+#include "eventhandler.h"
 
 using namespace pykd;
 
@@ -634,11 +634,11 @@ BOOST_PYTHON_MODULE( pykd )
         .value("NoDebuggee", kdlib::DebugStatusNoDebuggee )
         .export_values();
 
-   // python::class_<EventHandlerWrap, EventHandlerPtr, boost::noncopyable>(
-   //     "eventHandler", "Base class for overriding and handling debug notifications" )
-   //     .def( "onBreakpoint", &EventHandlerWrap::OnBreakpoint,
-   //         "Triggered breakpoint event. Parameter is int: ID of breakpoint\n"
-   //         "For ignore event method must return eventResult.noChange" )
+    //python::class_<EventHandler, EventHandlerPtr, boost::noncopyable>(
+    //    "eventHandler", "Base class for overriding and handling debug notifications" )
+    //     .def( "onBreakpoint", &EventHandler::OnBreakpoint,
+    //        "Triggered breakpoint event. Parameter is int: ID of breakpoint\n"
+    //        "For ignore event method must return eventResult.noChange" )
    //     .def( "onModuleLoad", &EventHandlerWrap::OnModuleLoad,
    //         "Triggered module load event. Parameter are long: module base, string: module name\n"
    //         "For ignore event method must return eventResult.noChange" )

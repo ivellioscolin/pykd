@@ -2,7 +2,7 @@
 
 #include "kdlib\eventhandler.h"
 
-#include "breakpoint.h"
+#include "eventhandler.h"
 #include "dbgexcept.h"
 
 namespace pykd {

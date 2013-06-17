@@ -48,7 +48,7 @@
     <ClInclude Include="dbgengine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="breakpoint.h">
+    <ClInclude Include="eventhandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -71,7 +71,7 @@
     <ClCompile Include="dbgengine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="breakpoint.cpp">
+    <ClCompile Include="eventhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

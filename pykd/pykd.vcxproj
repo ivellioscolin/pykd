@@ -123,9 +123,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="breakpoint.h" />
     <ClInclude Include="dbgengine.h" />
     <ClInclude Include="dbgexcept.h" />
+    <ClInclude Include="eventhandler.h" />
     <ClInclude Include="memaccess.h" />
     <ClInclude Include="module.h" />
     <ClInclude Include="stdafx.h" />
@@ -137,7 +137,6 @@
     <ClInclude Include="windbgext.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="breakpoint.cpp" />
     <ClCompile Include="dbgengine.cpp" />
     <ClCompile Include="dbgexcept.cpp" />
     <ClCompile Include="dllmain.cpp">
@@ -151,6 +150,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="eventhandler.cpp" />
     <ClCompile Include="pymod.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
