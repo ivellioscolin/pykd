@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "kdlib/dbgengine.h"
+#include "kdlib/typeinfo.h"
 
 #include "dbgengine.h"
 
@@ -73,6 +74,15 @@ python::tuple getSourceLine( kdlib::MEMOFFSET_64 offset )
     kdlib::getSourceLine( fileName, lineno, displacement, offset );
 
     return python::make_tuple( fileName, lineno, displacement );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+python::tuple findSymbolAndDisp( ULONG64 offset )
+{
+    kdlib::MEMDISPLACEMENT  displacement = 0;
+    std::wstring  symbolName = kdlib::findSymbol( offset, displacement );
+    return python::make_tuple(symbolName,displacement);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

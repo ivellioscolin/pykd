@@ -54,12 +54,12 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, kdlib::getSourceFile, 0, 1 );
 
 //BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 //
-//BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, TypeInfo::findSymbol, 1, 2 );
-//
 //BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( TypeBuilder_createStruct, TypeBuilder::createStruct, 1, 2 );
 //
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_enumSymbols, ModuleAdapter::enumSymbols, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_findSymbol, ModuleAdapter::findSymbol, 2, 3 );
+
+BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, TypeInfoAdapter::findSymbol, 1, 2 );
 
 //BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_findSymbol, Module::getSymbolNameByVa, 1, 2 );
 
@@ -223,10 +223,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Return source file name, line and displacement by the specified offset" ) );
     python::def( "getOffset", &kdlib::getSymbolOffset,
         "Return traget virtual address for specified symbol" );
-   // python::def( "findSymbol", &TypeInfo::findSymbol, findSymbol_( python::args( "offset", "showDisplacement"),
-   //     "Find symbol by the target virtual memory offset" ) );
-   // python::def("findSymbolAndDisp", &pysupport::findSymbolAndDisp,
-   //     "Return tuple(symbol_name, displacement) by virtual address" );
+    python::def( "findSymbol", &TypeInfoAdapter::findSymbol, findSymbol_( python::args( "offset", "showDisplacement"),
+        "Find symbol by the target virtual memory offset" ) );
+    python::def("findSymbolAndDisp", &findSymbolAndDisp,
+        "Return tuple(symbol_name, displacement) by virtual address" );
     python::def( "sizeof", &kdlib::getSymbolSize,
         "Return a size of the type or variable" );
     python::def("typedVarList", &TypedVarAdapter::getTypedVarListByTypeName,
@@ -294,10 +294,10 @@ BOOST_PYTHON_MODULE( pykd )
    //     "Set implicit thread for current process" );
    // python::def( "getProcessThreads", &pysupport::getProcessThreads,
    //     "Get all process's threads ( user mode only )" );
-   // python::def( "getCurrentProcessId", &getCurrentProcessId,
-   //     "Return PID of the current process ( user mode only )" );
-   // python::def( "getCurrentThreadId", &getCurrentThreadId,
-   //     "Return TID of the current thread ( user mode only )" );
+   python::def( "getCurrentProcessId", &kdlib::getCurrentProcessId,
+        "Return PID of the current process ( user mode only )" );
+   python::def( "getCurrentThreadId", &kdlib::getCurrentThreadId,
+        "Return TID of the current thread ( user mode only )" );
    // python::def( "getCurrentProcessExeName", &getCurrentProcessExecutableName,
    //     "Return name of executable file loaded in the current process");
 
@@ -577,7 +577,6 @@ BOOST_PYTHON_MODULE( pykd )
    //         "An array of additional arguments that describe the exception")
    //     .def( "__str__", &ExceptionInfo::print,
    //         "Return object as a string");
-
 
 
    // python::enum_<EVENT_TYPE>("eventType", "Type of debug event")
