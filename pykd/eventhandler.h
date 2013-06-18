@@ -1,10 +1,13 @@
 #pragma once
 
 #include "kdlib/dbgengine.h"
+#include "kdlib/eventhandler.h"
 
 #include "boost/shared_ptr.hpp"
 #include "boost/noncopyable.hpp"
 #include "boost/python/object.hpp"
+#include "boost/python/wrapper.hpp"
+
 namespace python = boost::python;
 
 namespace pykd {
@@ -26,6 +29,24 @@ protected:
 
     virtual ~Breakpoint() {}
 
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+class EventHandler;
+typedef boost::shared_ptr<EventHandler>  EventHandlerPtr;
+
+class EventHandler : public python::wrapper<kdlib::EventHandler>, public kdlib::EventHandler
+{
+public:
+
+    EventHandler();
+
+    virtual kdlib::DebugCallbackResult onBreakpoint( kdlib::BREAKPOINT_ID bpId );
+
+private:
+
+    PyThreadState*  m_pystate;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

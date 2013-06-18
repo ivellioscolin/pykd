@@ -634,11 +634,11 @@ BOOST_PYTHON_MODULE( pykd )
         .value("NoDebuggee", kdlib::DebugStatusNoDebuggee )
         .export_values();
 
-    //python::class_<EventHandler, EventHandlerPtr, boost::noncopyable>(
-    //    "eventHandler", "Base class for overriding and handling debug notifications" )
-    //     .def( "onBreakpoint", &EventHandler::OnBreakpoint,
-    //        "Triggered breakpoint event. Parameter is int: ID of breakpoint\n"
-    //        "For ignore event method must return eventResult.noChange" )
+    python::class_<EventHandler, EventHandlerPtr, boost::noncopyable>(
+        "eventHandler", "Base class for overriding and handling debug notifications" )
+         .def( "onBreakpoint", &EventHandler::onBreakpoint,
+            "Triggered breakpoint event. Parameter is int: ID of breakpoint\n"
+            "For ignore event method must return eventResult.noChange" )
    //     .def( "onModuleLoad", &EventHandlerWrap::OnModuleLoad,
    //         "Triggered module load event. Parameter are long: module base, string: module name\n"
    //         "For ignore event method must return eventResult.noChange" )
@@ -657,7 +657,7 @@ BOOST_PYTHON_MODULE( pykd )
    //     .def( "onSymbolsUnloaded", &EventHandlerWrap::onSymbolsUnloaded,
    //         "Triggered debug symbols unloaded. Parameter - module base or 0 (all modules)\n"
    //         "There is no return value");
-
+      ;
 
     python::register_exception_translator<kdlib::IndexException>( &ExceptionTranslator::indexTranslate );
 

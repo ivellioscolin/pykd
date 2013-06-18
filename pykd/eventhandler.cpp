@@ -118,5 +118,46 @@ BreakpointPtr Breakpoint::setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset, pyt
 
 ///////////////////////////////////////////////////////////////////////////////
 
+EventHandler::EventHandler()
+{
+    m_pystate = PyThreadState_Get();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+kdlib::DebugCallbackResult EventHandler::onBreakpoint( kdlib::BREAKPOINT_ID bpId )
+{
+    kdlib::DebugCallbackResult  result = kdlib::DebugCallbackNoChange;
+
+    PyEval_RestoreThread( m_pystate );
+
+    try {
+
+        do {
+
+            python::override pythonHandler = get_override( "onBreakpoint" );
+            if ( !pythonHandler )
+            {
+                result = kdlib::EventHandler::onBreakpoint( bpId );
+                break;
+            }
+
+            return pythonHandler(bpId );
+
+        } while( FALSE );
+
+    }
+    catch (const python::error_already_set &) 
+    {
+        printException();
+        result =  kdlib::DebugCallbackBreak;
+    }
+
+    m_pystate = PyEval_SaveThread();
+
+    return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // end namespace pykd
