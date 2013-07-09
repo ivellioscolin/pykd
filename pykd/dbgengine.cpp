@@ -107,6 +107,32 @@ void loadDump( const std::wstring &fileName )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+std::wstring debugCommand( const std::wstring &command )
+{
+    PyThreadState*    state = PyEval_SaveThread();
+
+    std::wstring outstr = kdlib::debugCommand(command);
+
+    PyEval_RestoreThread( state );
+
+    return outstr;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+unsigned long long evaluate( const std::wstring  &expression )
+{
+    PyThreadState*    state = PyEval_SaveThread();
+
+    unsigned long long result = kdlib::evaluate(expression);
+
+    PyEval_RestoreThread( state );
+
+    return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 python::tuple getSourceLine( kdlib::MEMOFFSET_64 offset )
 {
     std::wstring  fileName;

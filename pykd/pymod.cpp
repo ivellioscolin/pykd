@@ -104,10 +104,10 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::def( "breakin", &targetBreak,
         "Break into debugger" );
-    //python::def( "expr", &evaluate,
-    //    "Evaluate windbg expression" );
-    //python::def( "dbgCommand", &debugCommand,
-    //    "Run a debugger's command and return it's result as a string" );
+    python::def( "expr", &evaluate,
+        "Evaluate windbg expression" );
+    python::def( "dbgCommand", &debugCommand,
+        "Run a debugger's command and return it's result as a string" );
     python::def( "go", &targetGo,
         "Go debugging"  );
     python::def( "step", &targetStep,
