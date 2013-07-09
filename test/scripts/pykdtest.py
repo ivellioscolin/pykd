@@ -19,9 +19,8 @@ import moduletest
 import typeinfo
 import typedvar
 import breakpoint
+import regtest
 
-
-#import regtest
 #import mspdbtest
 #import localstest
 #import customtypestest
@@ -54,12 +53,14 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
                 unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
                 unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
-                #unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
+                unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( customtypestest.CustomTypesTest ),
                 # ^^^
                 unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest ),
 
                 unittest.TestLoader().loadTestsFromTestCase( breakpoint.BreakpointTest ),
+
+
 
                 #unittest.TestLoader().loadTestsFromTestCase( mspdbtest.MsPdbTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),

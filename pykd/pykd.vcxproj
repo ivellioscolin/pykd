@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="cpucontext.h" />
     <ClInclude Include="dbgengine.h" />
     <ClInclude Include="dbgexcept.h" />
     <ClInclude Include="eventhandler.h" />
@@ -137,6 +138,7 @@
     <ClInclude Include="windbgext.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cpucontext.cpp" />
     <ClCompile Include="dbgengine.cpp" />
     <ClCompile Include="dbgexcept.cpp" />
     <ClCompile Include="dllmain.cpp">

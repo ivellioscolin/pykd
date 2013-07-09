@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 
+#include <boost/bind.hpp>
 
 #include "kdlib/kdlib.h"
 
@@ -13,6 +14,7 @@
 #include "typedvar.h"
 #include "windbgext.h"
 #include "eventhandler.h"
+#include "cpucontext.h"
 
 using namespace pykd;
 
@@ -244,6 +246,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Return instance of the typedVar class. It's value are loaded from the target memory."
         "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
 
+
    // // CPU registers
    // python::def( "reg", &getRegByName,
    //     "Return a CPU regsiter value by the register's name" );
@@ -294,10 +297,10 @@ BOOST_PYTHON_MODULE( pykd )
    //     "Set implicit thread for current process" );
    // python::def( "getProcessThreads", &pysupport::getProcessThreads,
    //     "Get all process's threads ( user mode only )" );
-   python::def( "getCurrentProcessId", &kdlib::getCurrentProcessId,
-        "Return PID of the current process ( user mode only )" );
-   python::def( "getCurrentThreadId", &kdlib::getCurrentThreadId,
-        "Return TID of the current thread ( user mode only )" );
+   //python::def( "getCurrentProcessId", &kdlib::getCurrentProcessId,
+   //     "Return PID of the current process ( user mode only )" );
+   //python::def( "getCurrentThreadId", &kdlib::getCurrentThreadId,
+   //     "Return TID of the current thread ( user mode only )" );
    // python::def( "getCurrentProcessExeName", &getCurrentProcessExecutableName,
    //     "Return name of executable file loaded in the current process");
 
@@ -509,6 +512,16 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__init__", python::make_constructor(Breakpoint::setSoftwareBreakpoint) )
         ;
 
+
+    python::class_<kdlib::CPUContext, kdlib::CPUContextPtr, boost::noncopyable>( "cpu",
+        "class for CPU context representation", python::no_init  )
+         .def("__init__", python::make_constructor(&kdlib::loadCPUCurrentContext) )
+         .def("__init__", python::make_constructor(&kdlib::loadCPUContextByIndex) )
+         .add_property("ip", &kdlib::CPUContext::getIP )
+         .add_property("sp", &kdlib::CPUContext::getSP )
+         .add_property("fp", &kdlib::CPUContext::getSP )
+         .def("__getattr__",  &CPUContextAdaptor::getRegisterByName )
+         .def("__getitem__",  &CPUContextAdaptor::getRegisterByIndex );
 
 
    // python::class_<CpuReg, python::bases<intBase> >( 

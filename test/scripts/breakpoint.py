@@ -14,10 +14,10 @@ class callCounter:
         return self.func(val)
 
 def stopOnBreak(id):
-    return pykd.Break
+    return pykd.eventResult.Break
 
 def continueOnBreak(id):
-    return pykd.NoChange
+    return pykd.eventResult.Proceed
 
 
 class BreakpointTest( unittest.TestCase ):

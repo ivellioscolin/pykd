@@ -142,7 +142,23 @@ kdlib::DebugCallbackResult EventHandler::onBreakpoint( kdlib::BREAKPOINT_ID bpId
                 break;
             }
 
-            return pythonHandler(bpId );
+            python::object  resObj = pythonHandler( bpId );
+
+            if ( resObj.is_none() )
+            {
+                result = kdlib::DebugCallbackNoChange;
+                break;
+            }
+
+            int retVal = python::extract<int>( resObj );
+
+            if ( retVal >= kdlib::DebugCallbackMax )
+            {
+                result = kdlib::DebugCallbackBreak;
+                break;
+            }
+                
+            result = kdlib::DebugCallbackResult(retVal);
 
         } while( FALSE );
 

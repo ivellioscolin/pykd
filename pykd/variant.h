@@ -37,10 +37,8 @@ public:
         return var;
     }
 
-   static python::object NumVariantAdaptor::convertToPython( kdlib::NumBehavior& num )
+   static python::object NumVariantAdaptor::convertToPython( kdlib::NumVariant& var )
    {
-        kdlib::NumVariant var = kdlib::NumVariant( num );
-
         if ( var.isChar() )
             return python::object( var.asInt() );
         
@@ -78,6 +76,13 @@ public:
             return python::object( var.asDouble() );
 
         return python::object( var.asInt() );
+   }
+
+   static python::object NumVariantAdaptor::convertToPython( kdlib::NumBehavior& num )
+   {
+        kdlib::NumVariant var = kdlib::NumVariant( num );
+
+        return convertToPython( var );
    }
 
 public:
