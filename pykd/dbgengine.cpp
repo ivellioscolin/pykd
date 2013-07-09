@@ -65,6 +65,48 @@ kdlib::ExecutionStatus targetStepIn()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+kdlib::PROCESS_DEBUG_ID startProcess( const std::wstring  &processName )
+{
+    kdlib::PROCESS_DEBUG_ID  id;
+
+    PyThreadState*    state = PyEval_SaveThread();
+
+    id = kdlib::startProcess(processName);
+
+    PyEval_RestoreThread( state );
+
+    return id;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+kdlib::PROCESS_DEBUG_ID attachProcess( kdlib::PROCESS_ID pid )
+{
+    kdlib::PROCESS_DEBUG_ID  id;
+
+    PyThreadState*    state = PyEval_SaveThread();
+
+    id = kdlib::attachProcess(pid);
+
+    PyEval_RestoreThread( state );
+
+    return id;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void loadDump( const std::wstring &fileName )
+{
+    PyThreadState*    state = PyEval_SaveThread();
+
+    kdlib::loadDump(fileName);
+
+    PyEval_RestoreThread( state );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 python::tuple getSourceLine( kdlib::MEMOFFSET_64 offset )
 {
     std::wstring  fileName;

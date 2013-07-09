@@ -83,15 +83,15 @@ BOOST_PYTHON_MODULE( pykd )
 
    // Manage debug target 
 
-    python::def( "startProcess", &kdlib::startProcess,
+    python::def( "startProcess", &startProcess,
         "Start process for debugging" ); 
-    python::def( "attachProcess", &kdlib::attachProcess,
+    python::def( "attachProcess", &attachProcess,
         "Attach debugger to a exsisting process" );
     python::def( "detachProcess", &kdlib::detachProcess, detachProcess_( boost::python::args( "pid" ),
         "Stop process debugging") ); 
     python::def( "killProcess", &kdlib::terminateProcess, terminateProcess_( boost::python::args( "pid" ),
         "Stop debugging and terminate current process" ) );
-    python::def( "loadDump", &kdlib::loadDump,
+    python::def( "loadDump", &loadDump,
         "Load crash dump");
     python::def( "isDumpAnalyzing", &kdlib::isDumpAnalyzing,
         "Check if it is a dump analyzing ( not living debuggee )" );
@@ -616,21 +616,21 @@ BOOST_PYTHON_MODULE( pykd )
    //     "Function reads the kernel bug check code and related parameters\n"
    //     "And return tuple: (code, arg1, arg2, arg3, arg4)" );
 
-   // python::class_<Disasm>("disasm", "Class disassemble a processor instructions" )
-   //     .def( python::init<>( "constructor" ) )
-   //     .def( python::init<ULONG64>( boost::python::args("offset"), "constructor" ) )
-   //     .def( "disasm", &Disasm::disassemble, "Disassemble next instruction" )
-   //     .def( "disasm", &Disasm::jump, "Disassemble from the specified offset" )
-   //     .def( "asm", &Disasm::assembly, "Insert assemblied instuction to current offset" )
-   //     .def( "begin", &Disasm::begin, "Return begin offset" )
-   //     .def( "current", &Disasm::current, "Return current offset" )
-   //     .def( "length", &Disasm::length, "Return current instruction length" )
-   //     .def( "instruction", &Disasm::instruction, "Returm current disassembled instruction" )
-   //     .def( "ea", &Disasm::ea, "Return effective address for last disassembled instruction or 0" )
-   //     .def( "reset", &Disasm::reset, "Reset current offset to begin" )
-   //     .def( "findOffset", &Disasm::getNearInstruction, "Return the location of a processor instruction relative to a given location" )
-   //     .def( "jump", &Disasm::jump, "Change the current instruction" )
-   //     .def( "jumprel", &Disasm::jumprel, "Change the current instruction" );
+    python::class_<kdlib::Disasm>("disasm", "Class disassemble a processor instructions" )
+        .def( python::init<>( "constructor" ) )
+        .def( python::init<ULONG64>( boost::python::args("offset"), "constructor" ) )
+        .def( "disasm", &kdlib::Disasm::disassemble, "Disassemble next instruction" )
+        .def( "disasm", &kdlib::Disasm::jump, "Disassemble from the specified offset" )
+        .def( "asm", &kdlib::Disasm::assembly, "Insert assemblied instuction to current offset" )
+        .def( "begin", &kdlib::Disasm::begin, "Return begin offset" )
+        .def( "current", &kdlib::Disasm::current, "Return current offset" )
+        .def( "length", &kdlib::Disasm::length, "Return current instruction length" )
+        .def( "instruction", &kdlib::Disasm::instruction, "Returm current disassembled instruction" )
+        .def( "ea", &kdlib::Disasm::ea, "Return effective address for last disassembled instruction or 0" )
+        .def( "reset", &kdlib::Disasm::reset, "Reset current offset to begin" )
+        .def( "findOffset", &kdlib::Disasm::getNearInstruction, "Return the location of a processor instruction relative to a given location" )
+        .def( "jump", &kdlib::Disasm::jump, "Change the current instruction" )
+        .def( "jumprel", &kdlib::Disasm::jumprel, "Change the current instruction" );
 
 
     python::enum_<kdlib::DebugCallbackResult>("eventResult", "Return value of event handler")
@@ -660,9 +660,9 @@ BOOST_PYTHON_MODULE( pykd )
    //     .def( "onException", &EventHandlerWrap::OnException,
    //         "Triggered exception event. Parameter - exceptionInfo\n"
    //         "For ignore event method must return eventResult.noChange" )
-   //     .def( "onExecutionStatusChange", &EventHandlerWrap::onExecutionStatusChange,
-   //         "Triggered execution status changed. Parameter - execution status.\n"
-   //         "There is no return value" )
+        .def( "onExecutionStatusChange", &EventHandler::onExecutionStatusChange,
+            "Triggered execution status changed. Parameter - execution status.\n"
+            "There is no return value" )
    //     .def( "onSymbolsLoaded", &EventHandlerWrap::onSymbolsLoaded,
    //         "Triggered debug symbols loaded. Parameter - module base or 0\n"
    //         "There is no return value")

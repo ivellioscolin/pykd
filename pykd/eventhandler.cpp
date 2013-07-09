@@ -176,4 +176,26 @@ kdlib::DebugCallbackResult EventHandler::onBreakpoint( kdlib::BREAKPOINT_ID bpId
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void EventHandler::onExecutionStatusChange( kdlib::ExecutionStatus executionStatus )
+{
+    PyEval_RestoreThread( m_pystate );
+
+    try {
+
+        python::override pythonHandler = get_override( "onExecutionStatusChange" );
+        if ( pythonHandler )
+        {
+            pythonHandler( executionStatus );
+        }
+    }
+    catch (const python::error_already_set &) 
+    {
+        printException();
+    }
+
+    m_pystate = PyEval_SaveThread();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // end namespace pykd

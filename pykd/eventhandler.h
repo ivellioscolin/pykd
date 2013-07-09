@@ -43,6 +43,7 @@ public:
     EventHandler();
 
     virtual kdlib::DebugCallbackResult onBreakpoint( kdlib::BREAKPOINT_ID bpId );
+    virtual void onExecutionStatusChange( kdlib::ExecutionStatus executionStatus );
 
 private:
 
