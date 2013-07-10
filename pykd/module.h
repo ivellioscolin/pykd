@@ -22,8 +22,35 @@ struct ModuleAdapter : public kdlib::Module
         return kdlib::loadModule( offset);
     }
 
-    static std::wstring print( kdlib::Module& module ) {
-        return L"PYKD MODULE";
+    static std::wstring print( kdlib::Module& module ) 
+    {        
+        std::wstringstream   sstr;
+
+        //prepareSymbolFile();
+
+        sstr << L"Module: " << module.getName() <<  std::endl;
+        sstr << L"Start: " << std::hex <<  module.getBase() << L" End: " <<  module.getEnd() << L" Size: " <<  module.getSize() << std::endl;
+        //sstr << (m_unloaded ? ", UNLOADED!" : "") << std::endl;
+        sstr << L"Image: " <<  module.getImageName() << std::endl;
+        sstr << L"Symbols: " << module.getSymFile() << std::endl;
+
+
+        //if ( m_symSession )
+        //{
+        //     sstr << "Symbols: " << m_symSession->getSymbolFileName() << std::endl;
+        //    std::string buildDesc = m_symSession->getBuildDescription();
+        //    if (!buildDesc.empty())
+        //        sstr << "\t" << buildDesc << std::endl;
+        //}
+        //else
+        //{
+        //     sstr << "Symbols: not found" << std::endl;
+        //}
+ 
+        sstr << L"Timestamp: " << module.getTimeDataStamp() << std::endl;
+        sstr << L"Check Sum: " << module.getCheckSum() << std::endl;
+
+        return sstr.str();
     }
 
     static python::list enumSymbols( kdlib::Module& module, const std::wstring  &mask = L"*" )
