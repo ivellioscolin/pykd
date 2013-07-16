@@ -114,6 +114,8 @@ BOOST_PYTHON_MODULE( pykd )
         "The target is executing a single instruction or--if that instruction is a subroutine call--subroutine" );
     python::def( "trace", &targetStepIn,
         "The target is executing a single instruction" );
+    python::def( "getExecutionStatus", &kdlib::targetExecutionStatus,
+        "Return current execution status" );
 
    // Debug output
     python::def( "dprint", &kdlib::dprint, dprint_( python::args( "str", "dml" ), 
@@ -341,8 +343,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__pos__", &NumVariantAdaptor::pos ) 
         .def( "__invert__", &NumVariantAdaptor::invert ) 
         .def( "__nonzero__", &NumVariantAdaptor::nonzero )
-        //.def( "__str__", &pykd::NumVariant::str )
-       // .def( "__hex__", &pykd::NumVariant::hex )
+        .def( "__str__", &NumVariantAdaptor::str )
+        .def( "__hex__", &NumVariantAdaptor::hex )
         .def( "__long__", &NumVariantAdaptor::long_ )
         .def( "__int__", &NumVariantAdaptor::int_ )
         .def( "__index__", &NumVariantAdaptor::long_ )
@@ -399,10 +401,10 @@ BOOST_PYTHON_MODULE( pykd )
             "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
         .def("enumSymbols", ModuleAdapter::enumSymbols, Module_enumSymbols( python::args("mask"),
              "Return list of tuple ( symbolname, offset )" ) )
-        //.def("checksum", &Module::getCheckSum,
-        //    "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
-        //.def("timestamp", &Module::getTimeDataStamp,
-        //    "Return a low 32 bits of the time stamp of the image: IMAGE_FILE_HEADER.TimeDateStamp" )
+        .def("checksum", &kdlib::Module::getCheckSum,
+            "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
+        .def("timestamp", &kdlib::Module::getTimeDataStamp,
+            "Return a low 32 bits of the time stamp of the image: IMAGE_FILE_HEADER.TimeDateStamp" )
         //.def("unloaded", &Module::isUnloaded,
         //    "Returns a flag that the module was unloaded")
         //.def("um", &Module::isUserMode,
@@ -444,8 +446,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return pointer to the type" )
         .def( "arrayOf", &kdlib::TypeInfo::arrayOf,
             "Return array of the type" )
-        .def( "__str__", &TypeInfoAdapter::print,
-            "Return typa as a printable string" )
+        .def( "__str__", &kdlib::TypeInfo::str,
+            "Return type as a printable string" )
         .def( "__getattr__", TypeInfoAdapter::getElementByName )
         .def("__len__", &kdlib::TypeInfo::getElementCount )
         .def("__getitem__", TypeInfoAdapter::getElementByIndex )

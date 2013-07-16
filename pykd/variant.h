@@ -195,6 +195,16 @@ public:
         return convertToPython(var);
     }
 
+    static std::wstring str(kdlib::NumBehavior& var) { 
+            kdlib::NumVariant  v = var;
+            return v.asStr();
+    }
+
+    static std::wstring hex(kdlib::NumBehavior& var) { 
+            kdlib::NumVariant  v = var;
+            return v.asHex();
+    }
+
     static void registerNumConvertion()  {
         python::converter::registry::push_back( &numConvertible, &numConstruct<long>, python::type_id<long>() );
         python::converter::registry::push_back( &numConvertible, &numConstruct<unsigned long>, python::type_id<unsigned long>() );

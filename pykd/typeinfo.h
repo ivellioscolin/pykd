@@ -49,10 +49,6 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo.getElement(index);
     }
 
-    static std::wstring print( kdlib::TypeInfo &typeInfo ) {
-        return L"TYPEINFO STR";
-    }
-
 };
 
 } // end namespace pykd
