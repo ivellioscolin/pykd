@@ -70,15 +70,15 @@ BOOST_PYTHON_MODULE( pykd )
 {
     python::scope().attr("version") = pykdVersion;
 
-   // // DbgEng services 
-   // python::def( "setSymSrvDir", &setSymSrvDir,
-   //     "Set directory of SYMSRV.dll library.\nUsually this is a directory of WinDbg");
-   // python::def( "loadExt", &loadExtension,
-   //     "Load a WinDBG extension. Return handle of the loaded extension" );
-   // python::def( "removeExt", &removeExtension,
-   //     "Unload a WinDBG extension. Parameters: handle returned by loadExt" );
-   // python::def( "callExt", &callExtension,
-   //     "Call a WinDBG extension's routine. Parameters: handle returned by loadExt; string command line" );
+   // DbgEng services 
+    python::def( "setSymSrvDir", &kdlib::setSymSrvDir,
+        "Set directory of SYMSRV.dll library.\nUsually this is a directory of WinDbg");
+    python::def( "loadExt", &kdlib::loadExtension,
+        "Load a WinDBG extension. Return handle of the loaded extension" );
+    python::def( "removeExt", &kdlib::removeExtension,
+        "Unload a WinDBG extension. Parameters: handle returned by loadExt" );
+    python::def( "callExt", &kdlib::callExtension,
+        "Call a WinDBG extension's routine. Parameters: handle returned by loadExt; string command line" );
 
 
    // Manage debug target 
