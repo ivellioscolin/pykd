@@ -155,4 +155,21 @@ python::tuple findSymbolAndDisp( ULONG64 offset )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+python::dict getSystemVersion()
+{
+
+    kdlib::SystemInfo sysInfo;
+    kdlib::getSystemInfo( sysInfo );
+
+    python::dict  dct;
+    dct["majorVersion"] = sysInfo.majorVersion;
+    dct["minorVersion"] = sysInfo.minorVersion;
+    dct["buildNumber"] = sysInfo.buildNumber;
+    dct["buildDescription"] = sysInfo.buildDescription;
+
+    return dct;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } //end namespace pykd

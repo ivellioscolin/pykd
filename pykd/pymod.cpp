@@ -140,8 +140,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return the number of seconds the computer has been running" );
     python::def( "currentTime", &kdlib::getCurrentTime,
         "Return the number of seconds since the beginning of 1970" );
-    //python::def("getSystemVersion", &getSystemVersion,
-    //    "Return systemVersion");
+    python::def("getSystemVersion", &getSystemVersion,
+        "Return systemVersion");
 
     // Manage target memory access
     python::def( "addr64", &kdlib::addr64,
