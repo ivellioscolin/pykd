@@ -32,6 +32,14 @@ inline void setMSR( size_t msrIndex, unsigned long long value )
     return kdlib::loadCPUCurrentContext()->setMSR( msrIndex, value );
 }
 
+inline kdlib::CPUType getProcessorMode() {
+    return kdlib::loadCPUCurrentContext()->getCPUMode();
+}
+
+inline kdlib::CPUType getProcessorType() {
+    return kdlib::loadCPUCurrentContext()->getCPUType();
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 

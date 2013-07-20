@@ -255,12 +255,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Return MSR value" );
     python::def( "wrmsr", &setMSR,
         "Set MSR value" );
-   
-    
-    // python::def( "getProcessorMode", &getProcessorMode, 
-   //     "Return current processor mode as string: X86, ARM, IA64 or X64" );
-   // python::def( "getProcessorType", &getProcessorType,
-   //     "Return type of physical processor: X86, ARM, IA64 or X64" );
+    python::def( "getProcessorMode", &getProcessorMode, 
+        "Return current processor mode as string: X86, ARM, IA64 or X64" );
+    python::def( "getProcessorType", &getProcessorType,
+        "Return type of physical processor: X86, ARM, IA64 or X64" );
    // python::def( "setProcessorMode", &setProcessorMode,
    //     "Set current processor mode by string (X86, ARM, IA64 or X64)" );
 
@@ -521,6 +519,8 @@ BOOST_PYTHON_MODULE( pykd )
          .add_property("ip", &kdlib::CPUContext::getIP )
          .add_property("sp", &kdlib::CPUContext::getSP )
          .add_property("fp", &kdlib::CPUContext::getSP )
+         .def("getCPUType", &kdlib::CPUContext::getCPUType )
+         .def("getCPUMode",  &kdlib::CPUContext::getCPUMode )
          .def("__getattr__",  &CPUContextAdaptor::getRegisterByName )
          .def("__getitem__",  &CPUContextAdaptor::getRegisterByIndex );
 
