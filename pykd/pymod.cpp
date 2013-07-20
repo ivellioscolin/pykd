@@ -248,17 +248,16 @@ BOOST_PYTHON_MODULE( pykd )
         "Return instance of the typedVar class. It's value are loaded from the target memory."
         "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
 
-
-   // // CPU registers
-   // python::def( "reg", &getRegByName,
-   //     "Return a CPU regsiter value by the register's name" );
-   // python::def( "reg", &getRegByIndex,
-   //     "Return a CPU regsiter value by the register's value" );
-   // python::def ( "rdmsr", &loadMSR,
-   //     "Return MSR value" );
-   // python::def( "wrmsr", &setMSR,
-   //     "Set MSR value" );
-   // python::def( "getProcessorMode", &getProcessorMode, 
+    // CPU registers
+    python::def( "reg", &getRegisterByName,
+        "Return a CPU regsiter value by the register's name" );
+    python::def ( "rdmsr", &loadMSR,
+        "Return MSR value" );
+    python::def( "wrmsr", &setMSR,
+        "Set MSR value" );
+   
+    
+    // python::def( "getProcessorMode", &getProcessorMode, 
    //     "Return current processor mode as string: X86, ARM, IA64 or X64" );
    // python::def( "getProcessorType", &getProcessorType,
    //     "Return type of physical processor: X86, ARM, IA64 or X64" );

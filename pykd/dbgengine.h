@@ -25,7 +25,7 @@ python::tuple getSourceLine( kdlib::MEMOFFSET_64 offset = 0 );
 
 python::tuple findSymbolAndDisp( ULONG64 offset );
 
-python::dict getSystemVersion();
+python::object getSystemVersion();
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -17,6 +17,22 @@ public:
     static python::object getRegisterByIndex( kdlib::CPUContext& cpu, size_t index );
 };
 
+inline python::object getRegisterByName( const std::wstring &name )
+{
+    return CPUContextAdaptor::getRegisterByName( *kdlib::loadCPUCurrentContext().get(), name );
+}
+
+inline unsigned long long loadMSR( size_t msrIndex ) 
+{
+    return kdlib::loadCPUCurrentContext()->loadMSR( msrIndex );
+}
+
+inline void setMSR( size_t msrIndex, unsigned long long value )
+{  
+    return kdlib::loadCPUCurrentContext()->setMSR( msrIndex, value );
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } //end namespace pykd
