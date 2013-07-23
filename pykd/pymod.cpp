@@ -285,7 +285,24 @@ BOOST_PYTHON_MODULE( pykd )
    // //python::def( "removeAllBp", &removeAllBp,
    // //    "Remove all breapoints" );
 
-   // // processes and threads
+    // processes and threads
+    python::def ( "getNumberProcesses", kdlib::getNumberProcesses,
+        "Return number of processes on the target system" );
+    python::def( "getCurrentProcess", kdlib::getCurrentProcessId,
+        "Return ID of the current process. This ID can be used with terminateProcess" );
+    python::def( "getProcessOffset", kdlib::getProcessOffset,
+        "Return the location in the target's memory of the process structure ( PEB )" );
+    python::def( "getProcessSystemID", kdlib::getProcessSystemId,
+        "Return system process ID ( PID )" );
+    python::def( "getProcessId", kdlib::getProcessIdByOffset,
+        "Return process ID by the location in the target's memory of the process structure" );
+    python::def( "getProcessId", kdlib::getProcessIdBySystemId,
+        "Return process ID by the system's process ID ( PID )" );
+
+
+
+
+
    // python::def( "getCurrentProcess", &getCurrentProcess,
    //     "Return pointer to current process's block" );
    // python::def( "getImplicitThread", &getImplicitThread, 
