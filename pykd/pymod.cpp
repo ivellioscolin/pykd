@@ -298,27 +298,22 @@ BOOST_PYTHON_MODULE( pykd )
         "Return process ID by the location in the target's memory of the process structure" );
     python::def( "getProcessId", kdlib::getProcessIdBySystemId,
         "Return process ID by the system's process ID ( PID )" );
-
-
-
-
-
-   // python::def( "getCurrentProcess", &getCurrentProcess,
-   //     "Return pointer to current process's block" );
-   // python::def( "getImplicitThread", &getImplicitThread, 
-   //     "Return implicit thread for current process" );
-   // python::def( "setCurrentProcess", &setCurrentProcess, 
-   //     "Set current process by address" );
-   // python::def( "setImplicitThread", &setImplicitThread, 
-   //     "Set implicit thread for current process" );
-   // python::def( "getProcessThreads", &pysupport::getProcessThreads,
-   //     "Get all process's threads ( user mode only )" );
-   //python::def( "getCurrentProcessId", &kdlib::getCurrentProcessId,
-   //     "Return PID of the current process ( user mode only )" );
-   //python::def( "getCurrentThreadId", &kdlib::getCurrentThreadId,
-   //     "Return TID of the current thread ( user mode only )" );
    // python::def( "getCurrentProcessExeName", &getCurrentProcessExecutableName,
    //     "Return name of executable file loaded in the current process");
+
+
+    python::def ( "getNumberThreads", kdlib::getNumberThreads,
+        "Return number of threads on the target system" );
+    python::def( "getCurrentThread", kdlib::getCurrentThreadId,
+        "Return ID of the current thread" );
+    python::def( "getThreadOffset", kdlib::getThreadOffset,
+        "Return the location in the target's memory of the thread structure ( TEB )" );
+    python::def( "getThreadSystemID", kdlib::getThreadSystemId,
+        "Return system thread ID ( TID )" );
+    python::def( "getThreadId", kdlib::getThreadIdByOffset,
+        "Return thread ID by the location in the target's memory of the thread structure" );
+    python::def( "getThreadId", kdlib::getThreadIdBySystemId,
+        "Return thread ID by the system's thread ID ( PID )" );
 
    // // symbol path
    // python::def( "getSymbolPath", &getSymbolPath, "Returns current symbol path");
