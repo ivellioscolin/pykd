@@ -259,3 +259,10 @@ class TypeInfoTest( unittest.TestCase ):
         functype = target.module.typedVar( "CdeclStaticMethodPtr" ).type().deref()
         self.assertEqual( [ arg.name() for arg in functype ], [] )
 
+    def testFunctionName(self):
+        functype = target.module.typedVar( "CdeclFuncPtr" ).type().deref()
+        self.assertEqual(functype.name(), "Void(__cdecl)(Int4B, Float)")
+
+    def testFunctionPtrName(self):
+        funcptrtype = target.module.typedVar( "CdeclFuncPtr" ).type()
+        self.assertEqual(funcptrtype.name(), "Void(__cdecl*)(Int4B, Float)")
