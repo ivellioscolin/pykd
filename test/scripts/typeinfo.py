@@ -201,7 +201,7 @@ class TypeInfoTest( unittest.TestCase ):
 #        self.assertTrue( str(target.module.type( "g_voidPtr" ) ) )
 #        self.assertTrue( str(target.module.type( "g_arrOfPtrToFunc" ) ) )
 #        self.assertTrue( str(target.module.type( "g_unTypedPtrToFunction" ) ) )
-        
+
     def testTypedef(self):
         self.assertEqual( "structTest", pykd.typeInfo( "g_structTypeDef" ).name() )
         self.assertEqual( "structTest", pykd.typeInfo( "structTestTypeDef" ).name() )
@@ -216,27 +216,46 @@ class TypeInfoTest( unittest.TestCase ):
     def testVfnTable(self):
         ti = pykd.typeInfo( "g_classChild" )
         self.assertTrue( hasattr( ti, "__VFN_table" ) )
-        
+
     def testUdtSubscribe(self):
         ti = pykd.typeInfo( "g_virtChild" )
         self.assertEqual( 6, len(ti) )
         for field in ti:
              str( field )
-             
+
     def testStructNullSize(self):
         ti = target.module.type("structNullSize")
         self.assertEqual( 0, len(ti) )
-        
+
     def testDerefName(self):
         entry = pykd.typedVar("g_listHead").flink
         self.assertEqual( "listEntry*", entry.type().name() )
-        
-    def testPtrTo(self):        
+
+    def testPtrTo(self):
         ti = pykd.typeInfo("UInt8B").ptrTo()
         self.assertTrue( "UInt8B*", ti.name() )
         self.assertNotEqual( 0, ti.size() )
-        
+
     def testArrayOf(self):
         ti = pykd.typeInfo("UInt8B").arrayOf(10)
-        self.assertTrue( "UInt8B[10]", ti.name() )      
-        
+        self.assertTrue( "UInt8B[10]", ti.name() )
+
+    def testFunction(self):
+        functype = target.module.typedVar( "CdeclFuncPtr" ).type().deref()
+        self.assertTrue( functype.isFunction() )
+
+    def testFunctionArgs(self):
+        functype = target.module.typedVar( "CdeclFuncPtr" ).type().deref()
+        self.assertEqual( [ arg.name() for arg in functype ], ["Int4B", "Float"] )
+
+    def testFunctionCallConv(self):
+        functype = target.module.typedVar( "CdeclFuncPtr" ).type().deref()
+        self.assertEqual( functype.getCallingConvention(), pykd.callingConvention.NearC )
+
+    def testFunctionThis(self):
+        functype = target.module.typedVar( "MethodPtr" ).type().deref()
+        self.assertEqual( [ arg.name() for arg in functype ], ["FuncTestClass*"] )
+
+        functype = target.module.typedVar( "CdeclStaticMethodPtr" ).type().deref()
+        self.assertEqual( [ arg.name() for arg in functype ], [] )
+

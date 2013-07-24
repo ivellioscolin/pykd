@@ -444,7 +444,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "field", TypeInfoAdapter::getElementByName,
             "Return field's type" )
         .def( "fieldName", &kdlib::TypeInfo::getElementName,
-         "Return name of struct field by index" )
+            "Return name of struct field by index" )
         //.def( "asMap", &kdlib::TypeInfo::asMap,
         //    "Return type as python dict ( for enum types )" )
         .def( "deref", &kdlib::TypeInfo::deref,
@@ -455,6 +455,26 @@ BOOST_PYTHON_MODULE( pykd )
             "Return pointer to the type" )
         .def( "arrayOf", &kdlib::TypeInfo::arrayOf,
             "Return array of the type" )
+        .def( "isArray", &kdlib::TypeInfo::isArray,
+            "Return flag: type is array" )
+        .def( "isPointer", &kdlib::TypeInfo::isPointer,
+            "Return flag: type is pointer" )
+        .def( "isVoid", &kdlib::TypeInfo::isVoid,
+            "Return flag: type is void" )
+        .def( "isBase", &kdlib::TypeInfo::isBase,
+            "Return flag: type is base" )
+        .def( "isUserDefined", &kdlib::TypeInfo::isUserDefined,
+            "Return flag: type is UDT" )
+        .def( "isEnum", &kdlib::TypeInfo::isEnum,
+            "Return flag: type is enum" )
+        .def( "isBitField", &kdlib::TypeInfo::isBitField,
+            "Return flag: type is bit field" )
+        .def( "isFunction", &kdlib::TypeInfo::isFunction,
+            "Return flag: type is function" )
+        .def( "isConstant", &kdlib::TypeInfo::isConstant,
+            "Return flag: type is constant" )
+        .def( "getCallingConvention", &kdlib::TypeInfo::getCallingConvention,
+            "Returns an indicator of a methods calling convention: callingConvention" )
         .def( "__str__", &kdlib::TypeInfo::str,
             "Return type as a printable string" )
         .def( "__getattr__", TypeInfoAdapter::getElementByName )
@@ -657,6 +677,33 @@ BOOST_PYTHON_MODULE( pykd )
         .value("Go", kdlib::DebugStatusGo )
         .value("Break", kdlib::DebugStatusBreak )
         .value("NoDebuggee", kdlib::DebugStatusNoDebuggee )
+        .export_values();
+
+    python::enum_<kdlib::CallingConventionType>("callingConvention", "Calling convention for a function")
+        .value("NearC", kdlib::CallConv_NearC )
+        .value("FarC", kdlib::CallConv_FarC )
+        .value("NearPascal", kdlib::CallConv_NearPascal )
+        .value("FarPascal", kdlib::CallConv_FarPascal )
+        .value("NearFast", kdlib::CallConv_NearFast )
+        .value("FarFast", kdlib::CallConv_FarFast )
+        .value("Skipped", kdlib::CallConv_Skipped )
+        .value("NearStd", kdlib::CallConv_NearStd )
+        .value("FarStd0", kdlib::CallConv_FarStd )
+        .value("NearSys", kdlib::CallConv_NearSys )
+        .value("FarSys", kdlib::CallConv_FarSys )
+        .value("ThisCall", kdlib::CallConv_ThisCall )
+        .value("MipsCall", kdlib::CallConv_MipsCall )
+        .value("Generic", kdlib::CallConv_Generic )
+        .value("AlphaCall ", kdlib::CallConv_AlphaCall  )
+        .value("PpcCall", kdlib::CallConv_PpcCall )
+        .value("ShCall", kdlib::CallConv_ShCall )
+        .value("ArmCall", kdlib::CallConv_ArmCall )
+        .value("Am33Call", kdlib::CallConv_Am33Call )
+        .value("TriCall", kdlib::CallConv_TriCall )
+        .value("Sh5Call", kdlib::CallConv_Sh5Call )
+        .value("M32RCall", kdlib::CallConv_M32RCall )
+        .value("ClrCall", kdlib::CallConv_ClrCall )
+        .value("Inline", kdlib::CallConv_Inline )
         .export_values();
 
     python::class_<EventHandler, EventHandlerPtr, boost::noncopyable>(
