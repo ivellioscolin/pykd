@@ -234,22 +234,21 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 4, tv.m_fieldNestedStruct )
         self.assertEqual( 5, tv.m_fieldOfUnNamed )
 
-    def testPointerToFunction(self):
-
+    def testFunctionPtr(self):
         funcptr = target.module.typedVar( "CdeclFuncPtr" )
-        self.assertEqual( funcptr.deref(), target.module.CdeclFunc )
+        # CdeclFuncPtr -> jmp     targetapp!CdeclFunc (00bd1ba0)
+        # self.assertEqual( funcptr, target.module.CdeclFunc )
+        self.assertEqual( funcptr.type().deref().name(), target.module.typedVar("CdeclFunc").type().name() )
+        self.assertEqual( funcptr.type().name(), target.module.typedVar("CdeclFunc").type().ptrTo().name() )
 
-        #tv1 = target.module.typedVar( "g_unTypedPtrToFunction" )
+    def testFunctionRange(self):
+        func1 = target.module.typedVar("CdeclFunc")
+        self.assertTrue( func1.getAddress() >= target.module.begin() )
+        self.assertTrue( func1.getAddress() + func1.sizeof() <= target.module.end() )
 
-        # if debug: g_unTypedPtrToFunction point to jmp EnumWindowsProc2 (e9 xxxxxxxx)
-        #self.assertTrue( ( target.module.offset("EnumWindowsProc2") == tv1 ) or
-        #                 ( 0xE9 == pykd.ptrByte( long(tv1) ) ) )
-
-        #tv2 = target.module.typedVar( "g_unTypedPtrToFunction" )
-        #self.assertEqual( tv1, tv2 )
-
-        #self.assertRaises( pykd.TypeException, tv1.deref )
-        #self.assertRaises( pykd.TypeException, tv2.deref )
+        func2 = target.module.typedVar( target.module.StdcallFunc )
+        self.assertTrue( func2.getAddress() >= target.module.begin() )
+        self.assertTrue( func2.getAddress() + func2.sizeof() <= target.module.end() )
 
     def testTypeVarArg(self):
         tv1 = target.module.typedVar( "structTest", target.module.g_structTest )
@@ -316,8 +315,8 @@ class TypedVarTest( unittest.TestCase ):
             str( field )
 
     def testDeadlockList(self):
-       lst = []
-       entry = pykd.typedVar("deadlockEntry").flink
-       for i in range( 0, 100000 ):
-           lst.append(entry)
-           entry = entry.deref().flink
+        lst = []
+        entry = pykd.typedVar("deadlockEntry").flink
+        for i in range( 0, 100000 ):
+            lst.append(entry)
+            entry = entry.deref().flink

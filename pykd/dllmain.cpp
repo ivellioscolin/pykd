@@ -19,7 +19,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         break;
 
 	case DLL_PROCESS_DETACH:
-        kdlib::uninitialize();
+         kdlib::uninitialize();
 		break;
 	}
 	return TRUE;
