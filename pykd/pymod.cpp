@@ -262,9 +262,9 @@ BOOST_PYTHON_MODULE( pykd )
    // python::def( "setProcessorMode", &setProcessorMode,
    //     "Set current processor mode by string (X86, ARM, IA64 or X64)" );
 
-   // // stack and local variables
-   // python::def( "getStack", &getCurrentStack,
-   //     "Return a current stack as a list of stackFrame objects" );
+   // stack and local variables
+    python::def( "getStack", &getCurrentStack,
+        "Return a current stack as a list of stackFrame objects" );
    // python::def( "getStackWow64", &getCurrentStackWow64,
    //     "Return a stack for wow64 context as a list of stackFrame objects" );
    // python::def( "getFrame", &getCurrentStackFrame,
@@ -543,6 +543,13 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__init__", python::make_constructor(Breakpoint::setSoftwareBreakpoint) )
         ;
 
+    python::class_<StackFrame>( "stackFrame",
+        "class for stack's frame representation", python::no_init  )
+        .def_readonly( "ip", &StackFrame::ip, "instruction pointer" )
+        .def_readonly( "ret", &StackFrame::ret, "return pointer" )
+        .def_readonly( "fp", &StackFrame::fp, "frame pointer" )
+        .def_readonly( "sp", &StackFrame::sp, "stack pointer" )
+        .def( "__str__", &printStackFrame );
 
     python::class_<kdlib::CPUContext, kdlib::CPUContextPtr, boost::noncopyable>( "cpu",
         "class for CPU context representation", python::no_init  )
@@ -553,6 +560,7 @@ BOOST_PYTHON_MODULE( pykd )
          .add_property("fp", &kdlib::CPUContext::getSP )
          .def("getCPUType", &kdlib::CPUContext::getCPUType )
          .def("getCPUMode",  &kdlib::CPUContext::getCPUMode )
+         .def("getStack",  &CPUContextAdaptor::getStack )
          .def("__getattr__",  &CPUContextAdaptor::getRegisterByName )
          .def("__getitem__",  &CPUContextAdaptor::getRegisterByIndex );
 
@@ -587,24 +595,24 @@ BOOST_PYTHON_MODULE( pykd )
    //     .def( "__str__", &StackFrame::print,
    //         "Return stacks frame as a string");
 
-   // python::class_< SystemVersion, SystemVersionPtr, boost::noncopyable >(
-   //     "systemVersion", "Operation system version", python::no_init)
-   //     .def_readonly( "platformId", &SystemVersion::platformId,
-   //         "Platform ID: VER_PLATFORM_WIN32_NT for NT-based Windows")
-   //     .def_readonly( "win32Major", &SystemVersion::win32Major,
-   //         "Major version number of the target's operating system")
-   //     .def_readonly( "win32Minor", &SystemVersion::win32Minor,
-   //         "Minor version number of the target's operating system")
-   //     .def_readonly( "buildNumber", &SystemVersion::buildNumber,
-   //         "Build number for the target's operating system")
-   //     .def_readonly( "buildString", &SystemVersion::buildString,
-   //         "String that identifies the build of the system")
-   //     .def_readonly( "servicePackString", &SystemVersion::servicePackString,
-   //         "String for the service pack level of the target computer")
-   //     .def_readonly( "isCheckedBuild", &SystemVersion::isCheckedBuild,
-   //         "Checked build flag")
-   //     .def("__str__", pysupport::printSystemVersion,
-   //         "Return object as a string");
+    python::class_< kdlib::SystemInfo>(
+        "systemVersion", "Operation system version", python::no_init)
+        //.def_readonly( "platformId", &SystemVersion::platformId,
+        //    "Platform ID: VER_PLATFORM_WIN32_NT for NT-based Windows")
+        .def_readonly( "win32Major", &kdlib::SystemInfo::majorVersion,
+            "Major version number of the target's operating system")
+        .def_readonly( "win32Minor", &kdlib::SystemInfo::minorVersion,
+            "Minor version number of the target's operating system")
+        //.def_readonly( "buildNumber", &SystemVersion::buildNumber,
+        //    "Build number for the target's operating system")
+        .def_readonly( "buildString", &kdlib::SystemInfo::buildDescription,
+            "String that identifies the build of the system")
+        //.def_readonly( "servicePackString", &SystemVersion::servicePackString,
+        //    "String for the service pack level of the target computer")
+        //.def_readonly( "isCheckedBuild", &SystemVersion::isCheckedBuild,
+        //    "Checked build flag")
+        .def("__str__", &printSystemVersion,
+            "Return object as a string");
 
 
    // python::class_< ExceptionInfo, ExceptionInfoPtr, boost::noncopyable >(

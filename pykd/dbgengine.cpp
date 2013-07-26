@@ -155,20 +155,24 @@ python::tuple findSymbolAndDisp( ULONG64 offset )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-python::object getSystemVersion()
+kdlib::SystemInfo getSystemVersion()
 {
-
     kdlib::SystemInfo sysInfo;
     kdlib::getSystemInfo( sysInfo );
+    return sysInfo;
+}
 
-    python::object  obj;
+///////////////////////////////////////////////////////////////////////////////
 
-    obj.attr("majorVersion") = sysInfo.majorVersion;
-    obj.attr("minorVersion") = sysInfo.minorVersion;
-    obj.attr("buildNumber") = sysInfo.buildNumber;
-    obj.attr("buildDescription") = sysInfo.buildDescription;
+std::wstring printSystemVersion( kdlib::SystemInfo& sysInfo )
+{
+    std::wstringstream sstr;
 
-    return obj;
+    sstr << L"Major Version: " << sysInfo.majorVersion << std::endl;
+    sstr << L"Minor Version: " << sysInfo.minorVersion << std::endl;;
+    sstr << L"Description: " << sysInfo.buildDescription << std::endl;
+
+    return sstr.str();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
