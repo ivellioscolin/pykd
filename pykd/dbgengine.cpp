@@ -7,17 +7,34 @@
 
 namespace pykd {
 
+class AutoRestorePyState 
+{
+public:
+
+    AutoRestorePyState() 
+    {
+        m_state =  PyEval_SaveThread();
+    }
+
+    ~AutoRestorePyState() 
+    {
+        PyEval_RestoreThread( m_state );
+    }
+
+private:
+
+    PyThreadState*    m_state;
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 
 kdlib::ExecutionStatus targetGo()
 {
     kdlib::ExecutionStatus  status;
 
-    PyThreadState*    state = PyEval_SaveThread();
+    AutoRestorePyState  pystate;
 
     status = kdlib::targetGo();
-
-    PyEval_RestoreThread( state );
 
     return status;
 }
@@ -26,11 +43,9 @@ kdlib::ExecutionStatus targetGo()
 
 void targetBreak()
 {
-    PyThreadState*    state = PyEval_SaveThread();
+    AutoRestorePyState  pystate;
 
     kdlib::targetBreak();
-
-    PyEval_RestoreThread( state );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,11 +54,9 @@ kdlib::ExecutionStatus targetStep()
 {
     kdlib::ExecutionStatus  status;
 
-    PyThreadState*    state = PyEval_SaveThread();
+    AutoRestorePyState  pystate;
 
     status =  kdlib::targetStep();
-
-    PyEval_RestoreThread( state );
 
     return status;
 }
@@ -54,11 +67,9 @@ kdlib::ExecutionStatus targetStepIn()
 {
     kdlib::ExecutionStatus  status;
 
-    PyThreadState*    state = PyEval_SaveThread();
+    AutoRestorePyState  pystate;
 
     status = kdlib::targetStepIn();
-
-    PyEval_RestoreThread( state );
 
     return status;
 }
@@ -69,14 +80,11 @@ kdlib::PROCESS_DEBUG_ID startProcess( const std::wstring  &processName )
 {
     kdlib::PROCESS_DEBUG_ID  id;
 
-    PyThreadState*    state = PyEval_SaveThread();
+    AutoRestorePyState  pystate;
 
     id = kdlib::startProcess(processName);
 
-    PyEval_RestoreThread( state );
-
     return id;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -84,12 +92,10 @@ kdlib::PROCESS_DEBUG_ID startProcess( const std::wstring  &processName )
 kdlib::PROCESS_DEBUG_ID attachProcess( kdlib::PROCESS_ID pid )
 {
     kdlib::PROCESS_DEBUG_ID  id;
-
-    PyThreadState*    state = PyEval_SaveThread();
+    
+    AutoRestorePyState  pystate;
 
     id = kdlib::attachProcess(pid);
-
-    PyEval_RestoreThread( state );
 
     return id;
 }
@@ -98,22 +104,18 @@ kdlib::PROCESS_DEBUG_ID attachProcess( kdlib::PROCESS_ID pid )
 
 void loadDump( const std::wstring &fileName )
 {
-    PyThreadState*    state = PyEval_SaveThread();
+    AutoRestorePyState  pystate;
 
     kdlib::loadDump(fileName);
-
-    PyEval_RestoreThread( state );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 std::wstring debugCommand( const std::wstring &command )
 {
-    PyThreadState*    state = PyEval_SaveThread();
+    AutoRestorePyState  pystate;
 
     std::wstring outstr = kdlib::debugCommand(command);
-
-    PyEval_RestoreThread( state );
 
     return outstr;
 }
@@ -122,11 +124,9 @@ std::wstring debugCommand( const std::wstring &command )
 
 unsigned long long evaluate( const std::wstring  &expression )
 {
-    PyThreadState*    state = PyEval_SaveThread();
+    AutoRestorePyState  pystate;
 
     unsigned long long result = kdlib::evaluate(expression);
-
-    PyEval_RestoreThread( state );
 
     return result;
 }
