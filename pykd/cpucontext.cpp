@@ -16,7 +16,7 @@ python::object CPUContextAdaptor::getRegisterByName( kdlib::CPUContext& cpu, con
 
 ///////////////////////////////////////////////////////////////////////////////
 
-python::object CPUContextAdaptor::getRegisterByIndex( kdlib::CPUContext& cpu, size_t index )
+python::object CPUContextAdaptor::getRegisterByIndex( kdlib::CPUContext& cpu, unsigned long  index )
 {
     kdlib::NumVariant var = cpu.getRegisterByIndex(index);
     std::wstring name = cpu.getRegisterName(index);
@@ -28,13 +28,13 @@ python::object CPUContextAdaptor::getRegisterByIndex( kdlib::CPUContext& cpu, si
 
 python::list  CPUContextAdaptor::getStack( kdlib::CPUContext& cpu )
 {
-    size_t  numberFrames = cpu.getStackLength();
+    unsigned long  numberFrames = cpu.getStackLength();
     python::list  lst;
 
     python::object  typeObj = python::object( python::handle<>(&PyType_Type) );
     python::object  frameType = typeObj("frameType", python::tuple(), python::dict() );
 
-    for ( size_t i = 0; i < numberFrames; ++i )
+    for ( unsigned long  i = 0; i < numberFrames; ++i )
     {
         StackFrame   frame;
         cpu.getStackFrame( i, frame.ip, frame.ret, frame.fp, frame.sp );

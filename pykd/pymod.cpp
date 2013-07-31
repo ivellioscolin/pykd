@@ -714,6 +714,11 @@ BOOST_PYTHON_MODULE( pykd )
         .value("Inline", kdlib::CallConv_Inline )
         .export_values();
 
+    python::enum_<kdlib::CPUType>("CPUType", "type of CPU")
+        .value("I386", kdlib::CPU_I386 )
+        .value("AMD64", kdlib::CPU_AMD64 )
+        .export_values();
+
     python::class_<EventHandler, EventHandlerPtr, boost::noncopyable>(
         "eventHandler", "Base class for overriding and handling debug notifications" )
          .def( "onBreakpoint", &EventHandler::onBreakpoint,

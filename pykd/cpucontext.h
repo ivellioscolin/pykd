@@ -14,7 +14,7 @@ class CPUContextAdaptor
 {
 public:
     static python::object getRegisterByName( kdlib::CPUContext& cpu, const std::wstring &name );
-    static python::object getRegisterByIndex( kdlib::CPUContext& cpu, size_t index );
+    static python::object getRegisterByIndex( kdlib::CPUContext& cpu, unsigned long index );
     static python::list getStack( kdlib::CPUContext& cpu );
 };
 
@@ -29,12 +29,12 @@ inline python::object getRegisterByName( const std::wstring &name )
     return CPUContextAdaptor::getRegisterByName( *kdlib::loadCPUCurrentContext().get(), name );
 }
 
-inline unsigned long long loadMSR( size_t msrIndex ) 
+inline unsigned long long loadMSR( unsigned long  msrIndex ) 
 {
     return kdlib::loadCPUCurrentContext()->loadMSR( msrIndex );
 }
 
-inline void setMSR( size_t msrIndex, unsigned long long value )
+inline void setMSR( unsigned long  msrIndex, unsigned long long value )
 {  
     return kdlib::loadCPUCurrentContext()->setMSR( msrIndex, value );
 }
