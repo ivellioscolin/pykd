@@ -568,36 +568,11 @@ BOOST_PYTHON_MODULE( pykd )
          .def("__getattr__",  &CPUContextAdaptor::getRegisterByName )
          .def("__getitem__",  &CPUContextAdaptor::getRegisterByIndex );
 
-
-   // python::class_<CpuReg, python::bases<intBase> >( 
-   //     "cpuReg", "CPU regsiter class", boost::python::no_init )
-   //         .def( "name", &CpuReg::name, "The name of the regsiter" )
-   //         .def( "index", &CpuReg::index, "The index of thr register" );
-
    // python::class_<ScopeVars,ScopeVarsPtr,boost::noncopyable>( "locals",
    //     "Class for access to local vars",  python::no_init  )
    //         .def("__len__", &ScopeVars::getVarCount )
    //         .def("__getitem__", &ScopeVars::getVarByIndex )
    //         .def("__getitem__", &ScopeVars::getVarByName );
-
-   // python::class_<StackFrame, StackFramePtr,boost::noncopyable>( "stackFrame", 
-   //      "Class representing a frame of the call stack", python::no_init )
-   //     .def_readonly( "instructionOffset", &StackFrame::m_instructionOffset,
-   //         "Return a frame's instruction offset" )
-   //     .def_readonly( "returnOffset", &StackFrame::m_returnOffset,
-   //         "Return a frame's return offset" )
-   //     .def_readonly( "frameOffset", &StackFrame::m_frameOffset,
-   //         "Return a frame's offset" )
-   //     .def_readonly( "stackOffset", &StackFrame::m_stackOffset,
-   //         "Return a frame's stack offset" )
-   //     .def_readonly( "frameNumber", &StackFrame::m_frameNumber,
-   //         "Return a frame's number" )
-   //     .add_property( "locals", &StackFrame::getLocals, 
-   //         "Get list of local variables for this stack frame" )
-   //     .add_property( "params", &StackFrame::getParams,
-   //         "Get list of function params" )
-   //     .def( "__str__", &StackFrame::print,
-   //         "Return stacks frame as a string");
 
     python::class_< kdlib::SystemInfo>(
         "systemVersion", "Operation system version", python::no_init)

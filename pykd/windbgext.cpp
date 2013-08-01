@@ -34,6 +34,8 @@ void PykdExt::setUp()
 
     Py_Initialize();
 
+    PyEval_InitThreads();
+
     python::import( "pykd" );
 
     // перенаправление стандартных потоков ВВ
@@ -97,6 +99,7 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
     python::object  global(main.attr("__dict__"));
 
     try {
+        PykdInterruptWatch  interruptWatch;
         python::exec_file( scriptFileName.c_str(), global );
     }
     catch( python::error_already_set const & )
@@ -116,6 +119,7 @@ void PykdExt::startConsole()
     python::object       global(main.attr("__dict__"));
 
     try {
+        PykdInterruptWatch  interruptWatch;
         python::exec(  "__import__('code').InteractiveConsole(__import__('__main__').__dict__).interact()\n", global );
     }
     catch( python::error_already_set const & )
@@ -178,3 +182,28 @@ std::string PykdExt::getScriptFileName( const std::string &scriptName )
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+bool PykdInterruptWatch::onInterrupt()
+{
+    HANDLE  quitEvent = CreateEvent( NULL, FALSE, FALSE, NULL );
+    PyGILState_STATE state = PyGILState_Ensure();
+    Py_AddPendingCall(&quit, (void*)quitEvent);
+    PyGILState_Release(state);
+    WaitForSingleObject(quitEvent,INFINITE);
+    CloseHandle(quitEvent);
+    return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+int PykdInterruptWatch::quit(void *context)
+{
+    HANDLE   quitEvent = (HANDLE)context;
+    kdlib::eprintln( L"User Interrupt: CTRL+BREAK");
+    PyErr_SetString( PyExc_SystemExit, "CTRL+BREAK" );
+    SetEvent(quitEvent);
+    return -1;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
