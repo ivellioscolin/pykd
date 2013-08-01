@@ -47,6 +47,14 @@ inline kdlib::CPUType getProcessorType() {
     return kdlib::loadCPUCurrentContext()->getCPUType();
 }
 
+inline void setProcessorMode( kdlib::CPUType mode ) {
+    kdlib::loadCPUCurrentContext()->setCPUMode(mode);
+}
+
+inline void switchProcessorMode() {
+    kdlib::loadCPUCurrentContext()->switchCPUMode();
+}
+
 inline python::list getCurrentStack() {
     return CPUContextAdaptor::getStack( *kdlib::loadCPUCurrentContext() );
 }

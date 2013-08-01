@@ -259,8 +259,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Return current processor mode as string: X86, ARM, IA64 or X64" );
     python::def( "getProcessorType", &getProcessorType,
         "Return type of physical processor: X86, ARM, IA64 or X64" );
-   // python::def( "setProcessorMode", &setProcessorMode,
-   //     "Set current processor mode by string (X86, ARM, IA64 or X64)" );
+    python::def( "setProcessorMode", &setProcessorMode,
+        "Set current processor mode  (X86, ARM, IA64 or X64)" );
+    python::def( "switchProcessorMode", &switchProcessorMode,
+        "Switch processor mode ( X86 <-> X64 )" );
 
    // stack and local variables
     python::def( "getStack", &getCurrentStack,
@@ -560,6 +562,8 @@ BOOST_PYTHON_MODULE( pykd )
          .add_property("fp", &kdlib::CPUContext::getSP )
          .def("getCPUType", &kdlib::CPUContext::getCPUType )
          .def("getCPUMode",  &kdlib::CPUContext::getCPUMode )
+         .def("setCPUMode", &kdlib::CPUContext::setCPUMode )
+         .def("switchCPUMode", &kdlib::CPUContext::switchCPUMode )
          .def("getStack",  &CPUContextAdaptor::getStack )
          .def("__getattr__",  &CPUContextAdaptor::getRegisterByName )
          .def("__getitem__",  &CPUContextAdaptor::getRegisterByIndex );
@@ -671,7 +675,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "reset", &kdlib::Disasm::reset, "Reset current offset to begin" )
         .def( "findOffset", &kdlib::Disasm::getNearInstruction, "Return the location of a processor instruction relative to a given location" )
         .def( "jump", &kdlib::Disasm::jump, "Change the current instruction" )
-        .def( "jumprel", &kdlib::Disasm::jumprel, "Change the current instruction" );
+        .def( "jumprel", &kdlib::Disasm::jumprel, "Change the current instruction" )
+        .def( "__str__", &kdlib::Disasm::instruction );
 
 
     python::enum_<kdlib::DebugCallbackResult>("eventResult", "Return value of event handler")
