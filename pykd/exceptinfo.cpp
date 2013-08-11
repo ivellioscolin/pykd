@@ -8,9 +8,9 @@ namespace pykd {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ExceptionInfo::ExceptionInfo(ULONG FirstChance, const EXCEPTION_RECORD64 &Exception)
+ExceptionInfo::ExceptionInfo(ULONG FirstChance_, const EXCEPTION_RECORD64 &Exception)
 {
-    FirstChance = FirstChance != FALSE;
+    FirstChance = FirstChance_ != 0;
 
     ExceptionCode = Exception.ExceptionCode;
     ExceptionFlags = Exception.ExceptionFlags;
