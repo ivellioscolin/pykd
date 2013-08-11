@@ -198,4 +198,56 @@ void EventHandler::onExecutionStatusChange( kdlib::ExecutionStatus executionStat
 
 ///////////////////////////////////////////////////////////////////////////////
 
+kdlib::DebugCallbackResult EventHandler::onException( const kdlib::ExceptionInfo &exceptionInfo )
+{
+    kdlib::DebugCallbackResult  result = kdlib::DebugCallbackNoChange;
+
+    PyEval_RestoreThread( m_pystate );
+
+    try {
+
+        do {
+
+            python::override pythonHandler = get_override( "onException" );
+            if ( !pythonHandler )
+            {
+                result = kdlib::EventHandler::onException( exceptionInfo );
+                break;
+            }
+
+            python::object  resObj = pythonHandler( exceptionInfo );
+
+            if ( resObj.is_none() )
+            {
+                result = kdlib::DebugCallbackNoChange;
+                break;
+            }
+
+            int retVal = python::extract<int>( resObj );
+
+            if ( retVal >= kdlib::DebugCallbackMax )
+            {
+                result = kdlib::DebugCallbackBreak;
+                break;
+            }
+                
+            result = kdlib::DebugCallbackResult(retVal);
+
+        } while( FALSE );
+
+    }
+    catch (const python::error_already_set &) 
+    {
+        printException();
+        result =  kdlib::DebugCallbackBreak;
+    }
+
+    m_pystate = PyEval_SaveThread();
+
+    return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+
 } // end namespace pykd

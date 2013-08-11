@@ -177,4 +177,36 @@ std::wstring printSystemVersion( kdlib::SystemInfo& sysInfo )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+python::list getExceptionInfoParameters( kdlib::ExceptionInfo& exceptionInfo )
+{
+    python::list lst;
+    for ( unsigned long i = 0; i < exceptionInfo.parameterCount; ++i )
+        lst.append( exceptionInfo.parameters[i] );
+    return lst;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::wstring printExceptionInfo( kdlib::ExceptionInfo& exceptionInfo )
+{
+    std::wstringstream sstream;
+
+    sstream << L"FirstChance= " << (exceptionInfo.firstChance ? "True" : "False") << std::endl;
+
+    sstream << L"ExceptionCode= 0x" << std::hex << exceptionInfo.exceptionCode << std::endl;
+    sstream << L"ExceptionFlags= 0x" << std::hex <<  exceptionInfo.exceptionFlags << std::endl;
+    sstream << L"ExceptionRecord= 0x" << std::hex <<  exceptionInfo.exceptionRecord << std::endl;
+    sstream << L"ExceptionAddress= 0x" << std::hex <<  exceptionInfo.exceptionAddress << std::endl;
+
+    for (ULONG i = 0; i < exceptionInfo.parameterCount; ++i)
+    {
+        sstream << L"Param["  << std::dec << i << L"]= 0x";
+        sstream << std::hex <<  exceptionInfo.parameters[i] << std::endl;
+    }
+
+    return sstream.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } //end namespace pykd

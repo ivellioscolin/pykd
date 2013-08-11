@@ -44,6 +44,7 @@ public:
 
     virtual kdlib::DebugCallbackResult onBreakpoint( kdlib::BREAKPOINT_ID bpId );
     virtual void onExecutionStatusChange( kdlib::ExecutionStatus executionStatus );
+    virtual kdlib::DebugCallbackResult onException( const kdlib::ExceptionInfo &exceptionInfo );
 
 private:
 

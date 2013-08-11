@@ -574,7 +574,7 @@ BOOST_PYTHON_MODULE( pykd )
    //         .def("__getitem__", &ScopeVars::getVarByIndex )
    //         .def("__getitem__", &ScopeVars::getVarByName );
 
-    python::class_< kdlib::SystemInfo>(
+    python::class_<kdlib::SystemInfo>(
         "systemVersion", "Operation system version", python::no_init)
         //.def_readonly( "platformId", &SystemVersion::platformId,
         //    "Platform ID: VER_PLATFORM_WIN32_NT for NT-based Windows")
@@ -594,23 +594,22 @@ BOOST_PYTHON_MODULE( pykd )
             "Return object as a string");
 
 
-   // python::class_< ExceptionInfo, ExceptionInfoPtr, boost::noncopyable >(
-   //     "exceptionInfo", "Exception information", python::no_init )
-   //     .def_readonly( "FirstChance", &ExceptionInfo::FirstChance,
-   //         "Specifies whether this exception has been previously encountered")
-   //     .def_readonly( "ExceptionCode", &ExceptionInfo::ExceptionCode,
-   //         "The reason the exception occurred")
-   //     .def_readonly( "ExceptionFlags", &ExceptionInfo::ExceptionFlags,
-   //         "The exception flags")
-   //     .def_readonly( "ExceptionRecord", &ExceptionInfo::ExceptionRecord,
-   //         "A pointer to an associated EXCEPTION_RECORD structure")
-   //     .def_readonly( "ExceptionAddress", &ExceptionInfo::ExceptionAddress,
-   //         "The address where the exception occurred")
-   //     .add_property( "Parameters", &ExceptionInfo::getParameters,
-   //         "An array of additional arguments that describe the exception")
-   //     .def( "__str__", &ExceptionInfo::print,
-   //         "Return object as a string");
-
+    python::class_<kdlib::ExceptionInfo>(
+        "exceptionInfo", "Exception information", python::no_init )
+        .def_readonly( "firstChance", &kdlib::ExceptionInfo::firstChance,
+            "Specifies whether this exception has been previously encountered")
+        .def_readonly( "exceptionCode", &kdlib::ExceptionInfo::exceptionCode,
+            "The reason the exception occurred")
+        .def_readonly( "exceptionFlags", &kdlib::ExceptionInfo::exceptionFlags,
+            "The exception flags")
+        .def_readonly( "exceptionRecord", &kdlib::ExceptionInfo::exceptionRecord,
+            "A pointer to an associated EXCEPTION_RECORD structure")
+        .def_readonly( "exceptionAddress", &kdlib::ExceptionInfo::exceptionAddress,
+            "The address where the exception occurred")
+        .add_property( "parameters", &getExceptionInfoParameters,
+            "An array of additional arguments that describe the exception")
+        .def( "__str__", &printExceptionInfo,
+            "Return object as a string");
 
    // python::enum_<EVENT_TYPE>("eventType", "Type of debug event")
    //     .value("Breakpoint", EventTypeBreakpoint)

@@ -29,6 +29,10 @@ kdlib::SystemInfo getSystemVersion();
 
 std::wstring printSystemVersion( kdlib::SystemInfo& sysInfo );
 
+python::list getExceptionInfoParameters( kdlib::ExceptionInfo& exceptionInfo );
+
+std::wstring printExceptionInfo( kdlib::ExceptionInfo& exceptionInfo );
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } //end namespace pykd
