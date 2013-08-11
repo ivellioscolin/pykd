@@ -38,16 +38,15 @@ std::string ExceptionInfo::print() const
 
     sstream << "FirstChance= " << (FirstChance ? "True" : "False") << std::endl;
 
-    sstream << std::hex;
-    sstream << "ExceptionCode= 0x" << ExceptionCode << std::endl;
-    sstream << "ExceptionFlags= 0x" << ExceptionFlags << std::endl;
-    sstream << "ExceptionRecord= 0x" << ExceptionRecord << std::endl;
-    sstream << "ExceptionAddress= 0x" << ExceptionAddress << std::endl;
+    sstream << "ExceptionCode= 0x" << std::hex << ExceptionCode << std::endl;
+    sstream << "ExceptionFlags= 0x" << std::hex <<  ExceptionFlags << std::endl;
+    sstream << "ExceptionRecord= 0x" << std::hex <<  ExceptionRecord << std::endl;
+    sstream << "ExceptionAddress= 0x" << std::hex <<  ExceptionAddress << std::endl;
 
     for (ULONG i = 0; i < Parameters.size(); ++i)
     {
         sstream << "Param["  << std::dec << i << "]= 0x";
-        sstream << Parameters[i] << std::endl;
+        sstream << std::hex << Parameters[i] << std::endl;
     }
 
     return sstream.str();
