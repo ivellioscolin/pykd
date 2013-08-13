@@ -198,8 +198,8 @@ SymbolPtr DiaSymbol::getChildByName(const std::string &name)
 
 SymbolPtr DiaSymbol::getChildBySelected(const SelectedChilds &selected, const std::string &name)
 {
-    if (selected.second > 1)
-        throw SymbolException(name + "is ambiguous");
+    if (selected.second == 0)
+        throw SymbolException(name + " is not found");
 
     DiaSymbolPtr child;
     HRESULT hres = selected.first->Item(0, &child);
