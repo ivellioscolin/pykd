@@ -185,6 +185,9 @@ std::wstring loadWStr( ULONG64 offset )
             0,
             &strLength );
 
+    if ( FAILED( hres ) )
+        throw MemoryException( offset );    
+
     std::vector<wchar_t>  buffer(strLength);
         
     hres = 
@@ -195,8 +198,7 @@ std::wstring loadWStr( ULONG64 offset )
             strLength,
             NULL );
     
-    if ( FAILED( hres ) )
-        throw MemoryException( offset );
+
                            
     return std::wstring( &buffer[0] );
 }
