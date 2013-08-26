@@ -17,12 +17,12 @@ struct TypedVarAdapter {
     }
 
     static kdlib::TypedVarPtr getTypedVarByTypeName( const std::wstring &name, kdlib::MEMOFFSET_64 addr ) {
-        return kdlib::loadTypedVar( name, addr, kdlib::SymbolPtr() );
+        return kdlib::loadTypedVar( name, addr );
     }
 
     static kdlib::TypedVarPtr getTypedVarByTypeInfo( const kdlib::TypeInfoPtr &typeInfo, kdlib::MEMOFFSET_64 addr )
     {
-        return kdlib::loadTypedVar( typeInfo, addr, kdlib::SymbolPtr() );
+        return kdlib::loadTypedVar( typeInfo, addr );
     }
 
     static kdlib::MEMOFFSET_32 getFieldOffsetByName( kdlib::TypedVar& typedVar, const std::wstring &name ) {
@@ -39,8 +39,9 @@ struct TypedVarAdapter {
     }
 
     static std::wstring print( kdlib::TypedVar& typedVar ) {
-        return L"TYPEDVAR STR";
+        return typedVar.str();
     }
+
 
     static kdlib::TypedVarPtr containingRecordByName( kdlib::MEMOFFSET_64 offset, const std::wstring &typeName, const std::wstring &fieldName ) {
         return kdlib::containingRecord( offset, typeName, fieldName );

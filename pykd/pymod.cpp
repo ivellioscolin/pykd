@@ -709,9 +709,9 @@ BOOST_PYTHON_MODULE( pykd )
    //     .def( "onModuleUnload", &EventHandlerWrap::OnModuleUnload,
    //         "Triggered module unload event. Parameter are  long: module base, string: module name\n"
    //         "For ignore event method must return eventResult.noChange" )
-   //     .def( "onException", &EventHandlerWrap::OnException,
-   //         "Triggered exception event. Parameter - exceptionInfo\n"
-   //         "For ignore event method must return eventResult.noChange" )
+        .def( "onException", &EventHandler::onException,
+            "Triggered exception event. Parameter - exceptionInfo\n"
+            "For ignore event method must return eventResult.noChange" )
         .def( "onExecutionStatusChange", &EventHandler::onExecutionStatusChange,
             "Triggered execution status changed. Parameter - execution status.\n"
             "There is no return value" )

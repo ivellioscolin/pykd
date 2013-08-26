@@ -14,20 +14,44 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
     static std::wstring findSymbol(  kdlib::MEMOFFSET_64 offset, bool showDisplacement = true ) 
     {
         kdlib::MEMDISPLACEMENT  displacement = 0;
-        std::wstring  symbolName = kdlib::findSymbol( offset, displacement );
-        if ( !showDisplacement || displacement == 0 )
-            return symbolName;
+        std::wstring  symbolName;
 
-        std::wstringstream  wsstr;
+        try {
 
-        wsstr << symbolName;
+            kdlib::ModulePtr  mod = kdlib::loadModule( offset );
 
-        if ( displacement > 0  )
-            wsstr << L'+' << std::hex << displacement;
-        else
-            wsstr << L'-' << std::hex << -displacement;
+            try {
 
-        return wsstr.str();
+                symbolName = mod->findSymbol( offset, displacement );
+
+                std::wstringstream  sstr;
+                
+                sstr << mod->getName() << L'!' << symbolName;
+
+                if ( !showDisplacement || displacement == 0 )
+                    return sstr.str();
+
+                if ( displacement > 0  )
+                    sstr << L'+' << std::hex << displacement;
+                else
+                    sstr << L'-' << std::hex << -displacement;
+
+                return sstr.str();
+
+            } catch( kdlib::DbgException& )
+            {
+                std::wstringstream  sstr;
+                sstr << mod->getName() << '+' << std::hex << ( offset - mod->getBase() );
+                return sstr.str();
+            }
+
+        } catch( kdlib::DbgException& )
+        {
+            std::wstringstream sstr;
+            sstr << std::hex << offset;
+            return sstr.str();
+        }
+
     }
 
     static kdlib::MEMOFFSET_32 getElementOffset( kdlib::TypeInfo &typeInfo, const std::wstring &name ) {
