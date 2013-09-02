@@ -65,7 +65,7 @@ ULONG attachProcess( ULONG pid )
     hres = g_dbgEng->control->SetEngineOptions( opt );
     if ( FAILED( hres ) )
         throw DbgException( "IDebugControl::SetEngineOptions failed" );
-    
+
     hres = g_dbgEng->client->AttachProcess( 0, pid, 0 );
     if ( FAILED( hres ) )
         throw DbgException( "IDebugClient::AttachProcess failed" );
@@ -80,6 +80,34 @@ ULONG attachProcess( ULONG pid )
         throw DbgException( "IDebugSystemObjects::GetCurrentProcessId failed" );
 
     return processId;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void attachKernel( const std::string &connectOptions )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT hres = 
+        g_dbgEng->client->AttachKernel(
+            connectOptions.empty() ? DEBUG_ATTACH_LOCAL_KERNEL : DEBUG_ATTACH_KERNEL_CONNECTION,
+            connectOptions.empty() ? NULL : connectOptions.c_str());
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugClient::AttachKernel", hres );
+
+    hres = g_dbgEng->control->WaitForEvent(DEBUG_WAIT_DEFAULT, INFINITE);
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::WaitForEvent", hres );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+bool isLocalKernelDebuggerEnabled()
+{
+    HRESULT hres = g_dbgEng->client->IsKernelDebuggerEnabled();
+    if ( ( hres != S_OK ) && ( hres != S_FALSE ) )
+        throw DbgException( "IDebugClient::IsKernelDebuggerEnabled", hres );
+    return hres == S_OK;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

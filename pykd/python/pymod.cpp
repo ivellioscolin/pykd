@@ -38,6 +38,7 @@ static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 
 ////////////////////////////////////////////////////////////////////////////////
 
+BOOST_PYTHON_FUNCTION_OVERLOADS( attachKernel_, attachKernel, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_, detachProcess, 0, 1 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, dprint, 1, 2 );
@@ -92,6 +93,11 @@ BOOST_PYTHON_MODULE( pykd )
         "Start process for debugging" ); 
     python::def( "attachProcess", &attachProcess,
         "Attach debugger to a exsisting process" );
+    python::def( "attachKernel", &attachKernel, attachKernel_( boost::python::args( "connectOptions" ),
+        "Connect the debugger engine to a kernel target.\n"
+        "If connectOptions is not specified - attach to the local kernel") );
+    python::def( "isLocalKernelDebuggerEnabled", &isLocalKernelDebuggerEnabled,
+        "Check whether kernel debugging is enabled for the local kernel" );
     python::def( "detachProcess", &detachProcess, detachProcess_( boost::python::args( "pid" ),
         "Stop process debugging") ); 
     python::def( "killProcess", &terminateProcess,

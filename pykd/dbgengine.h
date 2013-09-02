@@ -8,6 +8,8 @@ namespace pykd {
 // manage debug target
 ULONG startProcess( const std::wstring  &processName );
 ULONG attachProcess( ULONG pid );
+void attachKernel( const std::string &connectOptions = "" );
+bool isLocalKernelDebuggerEnabled();
 void detachProcess( ULONG processId = -1);
 void terminateProcess( ULONG processId = -1);
 
