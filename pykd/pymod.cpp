@@ -30,6 +30,7 @@ static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_,  kdlib::detachProcess, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( terminateProcess_,  kdlib::terminateProcess, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( attachKernel_,  attachKernel, 0, 1 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, kdlib::dprint, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, kdlib::dprintln, 1, 2 );
@@ -93,6 +94,11 @@ BOOST_PYTHON_MODULE( pykd )
         "Stop debugging and terminate current process" ) );
     python::def( "loadDump", &loadDump,
         "Load crash dump");
+    python::def( "isLocalKernelDebuggerEnabled", &kdlib::isLocalKernelDebuggerEnabled,
+        "Check whether kernel debugging is enabled for the local kernel");
+    python::def( "attachKernel", &attachKernel, attachKernel_( boost::python::args( "connectOptions" ),
+        "Connect the debugger engine to a kernel target.\n"
+        "If connectOptions is not specified - attach to the local kernel") );
     python::def( "isDumpAnalyzing", &kdlib::isDumpAnalyzing,
         "Check if it is a dump analyzing ( not living debuggee )" );
     python::def( "isKernelDebugging", &kdlib::isKernelDebugging,

@@ -111,6 +111,15 @@ void loadDump( const std::wstring &fileName )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void attachKernel( const std::wstring &connectOptions )
+{
+    AutoRestorePyState  pystate;
+
+    kdlib::attachKernel(connectOptions);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 std::wstring debugCommand( const std::wstring &command )
 {
     AutoRestorePyState  pystate;
