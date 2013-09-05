@@ -55,15 +55,38 @@ ULONG64 findModuleBySymbol( const std::string &symbolName )
     HRESULT     hres;
     ULONG64     base;
 
-    hres = g_dbgEng->symbols->GetSymbolModule( ( std::string("!") + symbolName ).c_str(), &base );
-    if ( FAILED( hres ) )
+    std::string  str = "!";
+    str += symbolName;
+
+    hres = g_dbgEng->symbols->GetSymbolModule( str.c_str(), &base );
+    if ( SUCCEEDED( hres ) )
+        return base;
+
+    DEBUG_VALUE  debugValue = {};
+    ULONG        remainderIndex = 0;
+
+    hres = 
+        g_dbgEng->control->Evaluate( 
+            symbolName.c_str(), 
+            DEBUG_VALUE_INT64,
+            &debugValue,
+            &remainderIndex );
+
+    if ( SUCCEEDED( hres ) )
     {
-        std::stringstream   sstr;
-        sstr << "failed to find module for symbol: " << symbolName;
-        throw SymbolException( sstr.str() );
+        ULONG64     base;
+        ULONG       moduleIndex;
+
+        hres = g_dbgEng->symbols->GetModuleByOffset( debugValue.I64, 0, &moduleIndex, &base );
+        if ( FAILED( hres ) )
+            throw DbgException( "IDebugSymbol::GetModuleByOffset", hres );
+
+        return  base;
     }
 
-    return base;
+    std::stringstream   sstr;
+    sstr << "failed to find module for symbol: " << symbolName;
+    throw SymbolException( sstr.str() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
