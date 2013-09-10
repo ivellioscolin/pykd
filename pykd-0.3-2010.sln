@@ -40,6 +40,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{FE24
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "targetapp", "kdlibcpp\tests\targetapp\targetapp.vcxproj", "{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A7AF87D2-983B-4B3A-823F-5A2C6989672E}"
+	ProjectSection(SolutionItems) = preProject
+		samples\samples.py = samples\samples.py
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "snippets", "snippets", "{AAB21DD2-B0EE-493E-8415-5195F18879EB}"
+	ProjectSection(SolutionItems) = preProject
+		snippets\cr0.py = snippets\cr0.py
+		snippets\cr4.py = snippets\cr4.py
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "um", "um", "{EEFC9510-DFA7-439E-801E-48FCE72766AD}"
+	ProjectSection(SolutionItems) = preProject
+		samples\um\critlist.py = samples\um\critlist.py
+		samples\um\ldr.py = samples\um\ldr.py
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_2.7|Win32 = Debug_2.7|Win32
@@ -93,5 +110,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{FE246107-1CB8-404F-97BD-E901E4B5E972} = {5A3C2DA6-AE91-4025-AC03-A58BD03CEBCD}
 		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF} = {5A3C2DA6-AE91-4025-AC03-A58BD03CEBCD}
+		{EEFC9510-DFA7-439E-801E-48FCE72766AD} = {A7AF87D2-983B-4B3A-823F-5A2C6989672E}
 	EndGlobalSection
 EndGlobal
