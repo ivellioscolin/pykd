@@ -24,7 +24,7 @@ void debugStep();
 void debugStepIn();
 void debugBreak();
 std::string debugCommand( const std::wstring &command );
-ULONG64 evaluate( const std::wstring  &expression );
+BaseTypeVariant evaluate( const std::wstring  &expression, bool cplusplus = false );
 
 // debug output
 void dprint( const std::wstring &str, bool dml = false );

@@ -4,6 +4,7 @@
 #include "dbgengine.h"
 #include "typeinfo.h"
 #include <vector>
+#include <variant.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -71,4 +72,12 @@ std::string printSystemVersion(SystemVersionPtr sysVer)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+std::string evaluate( const std::wstring  &expression, bool cplusplus )
+{
+    BaseTypeVariant  var = pykd::evaluate( expression, cplusplus );
+
+    return boost::apply_visitor( pykd::VariantToStr(), var );
+}
+
+///////////////////////////////////////////////////////////////////////////////
 } } //pykd::support namespace end

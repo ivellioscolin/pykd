@@ -41,6 +41,7 @@ static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 BOOST_PYTHON_FUNCTION_OVERLOADS( attachKernel_, attachKernel, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_, detachProcess, 0, 1 );
 
+BOOST_PYTHON_FUNCTION_OVERLOADS( evaluate_, pykd::pysupport::evaluate, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, dprint, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, dprintln, 1, 2 );
 
@@ -115,8 +116,8 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::def( "breakin", &debugBreak,
         "Break into debugger" );
-    python::def( "expr", &evaluate,
-        "Evaluate windbg expression" );
+    python::def( "expr", &pykd::pysupport::evaluate, evaluate_( boost::python::args( "expression", "cplusplus" ), 
+        "Evaluate windbg expression" ) );
     python::def( "dbgCommand", &debugCommand,
         "Run a debugger's command and return it's result as a string" );
     python::def( "go", &debugGo,

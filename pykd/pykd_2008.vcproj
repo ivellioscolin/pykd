@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="pykd"
 	ProjectGUID="{FE961905-666F-4908-A212-961465F46F13}"
 	RootNamespace="pykd"
@@ -71,7 +71,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dbgeng.lib diaguids.lib psapi.lib"
+				AdditionalDependencies="dbgeng.lib diaguids.lib psapi.lib comsuppw.lib"
 				OutputFile="$(OutDir)\$(ProjectName).pyd"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(DIA_SDK_ROOT)\lib&quot;;&quot;$(DBG_SDK_ROOT)\lib\i386&quot;;&quot;$(PYTHON_ROOT)\x86\libs&quot;;&quot;$(BOOST_ROOT)\stage\lib&quot;"
@@ -153,7 +153,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dbgeng.lib diaguids.lib psapi.lib"
+				AdditionalDependencies="dbgeng.lib diaguids.lib psapi.lib comsuppw.lib"
 				OutputFile="$(OutDir)\$(ProjectName).pyd"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(DIA_SDK_ROOT)\lib\amd64&quot;;&quot;$(DBG_SDK_ROOT)\lib\amd64&quot;;&quot;$(PYTHON_ROOT)\x64\libs&quot;;&quot;$(BOOST_ROOT)\stage64\lib&quot;"
@@ -230,7 +230,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/pdbpath:none"
-				AdditionalDependencies="dbgeng.lib diaguids.lib psapi.lib"
+				AdditionalDependencies="dbgeng.lib diaguids.lib psapi.lib comsuppw.lib"
 				OutputFile="$(OutDir)\$(ProjectName).pyd"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(DIA_SDK_ROOT)\lib&quot;;&quot;$(DBG_SDK_ROOT)\lib\i386&quot;;&quot;$(PYTHON_ROOT)\x86\libs&quot;;&quot;$(BOOST_ROOT)\stage\lib&quot;"
@@ -310,7 +310,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/pdbpath:none"
-				AdditionalDependencies="dbgeng.lib diaguids.lib psapi.lib"
+				AdditionalDependencies="dbgeng.lib diaguids.lib psapi.lib comsuppw.lib"
 				OutputFile="$(OutDir)\$(ProjectName).pyd"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(DIA_SDK_ROOT)\lib\amd64&quot;;&quot;$(DBG_SDK_ROOT)\lib\amd64&quot;;&quot;$(PYTHON_ROOT)\x64\libs&quot;;&quot;$(BOOST_ROOT)\stage64\lib&quot;"

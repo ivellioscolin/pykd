@@ -198,7 +198,7 @@ void debugBreak()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ULONG64 evaluate( const std::wstring  &expression )
+BaseTypeVariant evaluate( const std::wstring  &expression, bool cplusplus )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
@@ -207,41 +207,60 @@ ULONG64 evaluate( const std::wstring  &expression )
 
     DEBUG_VALUE  debugValue = {};
     ULONG        remainderIndex = 0;
-
-    hres = g_dbgEng->control->IsPointer64Bit();
-    if ( FAILED( hres ) )
-        throw  DbgException( "IDebugControl::IsPointer64Bit  failed" );
+    ULONG        expresionSyntax;
     
-    if ( hres == S_OK )
+    hres = g_dbgEng->control->GetExpressionSyntax( &expresionSyntax );
+    if ( FAILED(hres) )
     {
-        hres = g_dbgEng->control->EvaluateWide( 
-            expression.c_str(), 
-            DEBUG_VALUE_INT64,
-            &debugValue,
-            &remainderIndex );
-            
-        if ( FAILED( hres ) )
-            throw  DbgException( "IDebugControl::Evaluate  failed" );
-            
-        if ( remainderIndex == expression.length() )
-            value = debugValue.I64;
-    }
-    else
-    {
-        hres = g_dbgEng->control->EvaluateWide( 
-            expression.c_str(), 
-            DEBUG_VALUE_INT32,
-            &debugValue,
-            &remainderIndex );
-            
-        if (  FAILED( hres ) )
-            throw  DbgException( "IDebugControl::Evaluate  failed" );
-            
-        if ( remainderIndex == expression.length() )
-            value = debugValue.I32;
+        throw  DbgException( "IDebugControl3::GetExpressionSyntax failed" );
     }
 
-    return value;
+    hres = g_dbgEng->control->SetExpressionSyntax( cplusplus ? DEBUG_EXPR_CPLUSPLUS : DEBUG_EXPR_MASM );
+    if ( FAILED(hres) )
+    {
+        throw  DbgException( "IDebugControl3::GetExpressionSyntax failed" );
+    }
+
+    hres = g_dbgEng->control->EvaluateWide( 
+        expression.c_str(), 
+        DEBUG_VALUE_INVALID,
+        &debugValue,
+        &remainderIndex );
+
+    if ( FAILED( hres ) )
+    {
+        g_dbgEng->control->SetExpressionSyntax( expresionSyntax );
+        throw  DbgException( "IDebugControl::Evaluate  failed" );
+    }
+
+    BaseTypeVariant   var;
+
+    switch( debugValue.Type )
+    {
+    case DEBUG_VALUE_INT8:
+        var =  BaseTypeVariant( (LONG)debugValue.I8 );
+        break;
+        
+    case DEBUG_VALUE_INT16:
+        var =  BaseTypeVariant( (LONG)debugValue.I16 );
+        break;
+        
+    case DEBUG_VALUE_INT32:
+        var = BaseTypeVariant( debugValue.I32 );
+        break;
+        
+    case DEBUG_VALUE_INT64:
+        var =  BaseTypeVariant( debugValue.I64 );
+        break;
+
+    default:
+        g_dbgEng->control->SetExpressionSyntax( expresionSyntax );
+        throw DbgException("unsupported type");
+    } 
+
+    g_dbgEng->control->SetExpressionSyntax( expresionSyntax );
+
+    return var;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
