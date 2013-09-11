@@ -272,6 +272,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="eventhandler.cpp" />
+    <ClCompile Include="memaccess.cpp" />
     <ClCompile Include="pymod.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

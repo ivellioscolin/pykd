@@ -210,10 +210,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Load string from the target buffer containing 0-terminated ansi-string" );
     python::def( "loadWStr", &kdlib::loadWStr,
         "Load string from the target buffer containing 0-terminated unicode-string" );
-    //python::def( "loadUnicodeString", &loadUnicodeStr,
-    //    "Return string represention of windows UNICODE_STRING type" );
-    //python::def( "loadAnsiString", &loadAnsiStr,
-    //    "Return string represention of windows ANSI_STRING type" );
+    python::def( "loadUnicodeString", &loadUnicodeStr,
+        "Return string represention of windows UNICODE_STRING type" );
+    python::def( "loadAnsiString", &loadAnsiStr,
+        "Return string represention of windows ANSI_STRING type" );
     python::def( "loadFloats", &loadFloats, loadFloats_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of floats" ) );
     python::def( "loadDoubles", &loadDoubles, loadDoubles_( python::args( "offset", "count", "phyAddr" ),

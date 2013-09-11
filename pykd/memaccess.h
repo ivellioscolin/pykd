@@ -79,5 +79,9 @@ inline python::list loadPtrArray(  kdlib::MEMOFFSET_64 offset, unsigned long cou
     return vectorToList( kdlib::loadPtrs(offset, count) );
 }
 
+std::wstring loadUnicodeStr(kdlib::MEMOFFSET_64 offset);
+
+std::string loadAnsiStr(kdlib::MEMOFFSET_64 offset);
+
 } // end namespace pykd
 

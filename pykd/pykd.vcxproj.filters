@@ -80,6 +80,9 @@
     <ClCompile Include="cpucontext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="memaccess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="pykd.def">

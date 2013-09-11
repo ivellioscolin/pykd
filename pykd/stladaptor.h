@@ -8,6 +8,7 @@ namespace python = boost::python;
 namespace pykd {
 
 template<typename T>
+inline
 python::list vectorToList( const std::vector<T>  &v ) {
     python::list lst;
     for ( std::vector<T>::const_iterator it = v.begin(); it != v.end(); ++it )
@@ -16,6 +17,7 @@ python::list vectorToList( const std::vector<T>  &v ) {
 }
 
 template<>
+inline
 python::list vectorToList<char>( const std::vector<char>  &v ) {
     python::list lst;
     for ( std::vector<char>::const_iterator it = v.begin(); it != v.end(); ++it )
