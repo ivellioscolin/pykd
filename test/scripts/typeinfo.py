@@ -192,7 +192,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertTrue( str(target.module.type( "g_voidPtr" ) ) )
         self.assertTrue( str(target.module.type( "g_arrOfPtrToFunc" ) ) )
         self.assertTrue( str(target.module.type( "g_unTypedPtrToFunction" ) ) )
-        
+
     def testTypedef(self):
         self.assertEqual( "structTest", pykd.typeInfo( "g_structTypeDef" ).name() )
         self.assertEqual( "structTest", pykd.typeInfo( "structTestTypeDef" ).name() )
@@ -213,21 +213,20 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( 5, len(ti) )
         for field in ti:
              str( field )
-             
+
     def testStructNullSize(self):
         ti = target.module.type("structNullSize")
         self.assertEqual( 0, len(ti) )
-        
+
     def testDerefName(self):
         entry = pykd.typedVar("entry1").Flink
         self.assertEqual( "_LIST_ENTRY*", entry.type().name() )
-        
-    def testPtrTo(self):        
+
+    def testPtrTo(self):
         ti = pykd.typeInfo("UInt8B").ptrTo()
         self.assertTrue( "UInt8B*", ti.name() )
         self.assertNotEqual( 0, ti.size() )
-        
+
     def testArrayOf(self):
         ti = pykd.typeInfo("UInt8B").arrayOf(10)
-        self.assertTrue( "UInt8B[10]", ti.name() )      
-        
+        self.assertTrue( "UInt8B[10]", ti.name() )

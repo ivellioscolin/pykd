@@ -149,7 +149,10 @@ BaseTypeVariant BasicTypedVar::getValue()
 
     if ( m_typeInfo->getName() == "Bool" )
         return *(bool*)&val;
-    
+
+    if ( m_typeInfo->getName() == "Hresult" )
+        return *(PULONG)&val;
+
     throw DbgException( "failed get value " );
 }
 

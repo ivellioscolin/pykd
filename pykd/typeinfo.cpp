@@ -252,7 +252,7 @@ TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &symScope, const std::string &symN
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-static const boost::regex baseMatch("^(Char)|(WChar)|(Int1B)|(UInt1B)|(Int2B)|(UInt2B)|(Int4B)|(UInt4B)|(Int8B)|(UInt8B)|(Long)|(ULong)|(Float)|(Bool)|(Double)$" );
+static const boost::regex baseMatch("^(Char)|(WChar)|(Int1B)|(UInt1B)|(Int2B)|(UInt2B)|(Int4B)|(UInt4B)|(Int8B)|(UInt8B)|(Long)|(ULong)|(Float)|(Bool)|(Double)|(Hresult)$" );
 
 bool 
 TypeInfo::isBaseType( const std::string &symName )
@@ -313,6 +313,9 @@ TypeInfo::getBaseTypeInfo( const std::string &symName, ULONG pointerSize )
 
         if ( baseMatchResult[15].matched )
             return TypeInfoPtr( new TypeInfoWrapper<double>("Double", pointerSize) );
+
+        if ( baseMatchResult[16].matched )
+            return TypeInfoPtr( new TypeInfoWrapper<unsigned long>("Hresult", pointerSize) );
    }
 
     return TypeInfoPtr();

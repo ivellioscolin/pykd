@@ -323,3 +323,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertRaises( pykd.BaseException, pykd.typedVarList, target.module.g_listHead1, None, "next" )
         self.assertRaises( pykd.BaseException, pykd.typedVarArray, target.module.g_testArray, None, 2 )
         self.assertRaises( pykd.BaseException, pykd.containingRecord, target.module.offset( "g_structTest" ), None, "m_field2" )
+
+    def testHresult(self):
+        tv = pykd.typedVar( "g_atlException" )
+        self.assertEqual( tv.m_hr, 0x8000FFFF )

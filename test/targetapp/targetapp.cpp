@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include <intrin.h>
-
+#include <atlexcept.h>
 #include <iostream>
 #include <string>
 
@@ -206,7 +206,7 @@ struct struct3 {
 struct3  g_struct3 = { { 0, 2 }, 3 };
 
 __int64  g_bigValue = 0x8080808080808080;
-
+volatile ATL::CAtlException g_atlException(E_UNEXPECTED);
 
 static LIST_ENTRY       g_listHead;
 
@@ -437,7 +437,7 @@ void FuncWithName0()
     std::cout << g_charValue;
     std::cout << g_shortValue;
     std::cout << g_longValue;
-    std::cout << g_longlongValue;
+    std::cout << g_longlongValue << g_atlException.m_hr;
 
     std::cout << g_structTest.m_field0;
     std::cout << g_testArray[1].m_field3;
