@@ -320,3 +320,7 @@ class TypedVarTest( unittest.TestCase ):
         for i in range( 0, 100000 ):
             lst.append(entry)
             entry = entry.deref().flink
+
+    def testHresult(self):
+        tv = pykd.typedVar( "g_atlException" )
+        self.assertEqual( tv.m_hr, 0x8000FFFF )
