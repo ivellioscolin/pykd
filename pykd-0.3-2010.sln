@@ -52,6 +52,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "snippets", "snippets", "{AA
 		snippets\cr4.py = snippets\cr4.py
 		snippets\ctlcode.py = snippets\ctlcode.py
 		snippets\export.py = snippets\export.py
+		snippets\gdt.py = snippets\gdt.py
 		snippets\iat.py = snippets\iat.py
 	EndProjectSection
 EndProject

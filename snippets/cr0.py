@@ -8,7 +8,7 @@ from pykd import *
 def cr0( value = 0 ):
 
     if value == 0:
-        value = reg( "cr0" ) & 0xFFFFFFFF
+        value = reg( "cr0" )
 
     dprintln( "CR0: %x (" % value + "".join( [  (  value & ( 1 << ( 31 - i ) ) ) and "1" or "0" for i in range(0,32) ] ) + ")" )
     
