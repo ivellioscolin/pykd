@@ -20,7 +20,7 @@ python::tuple moduleFindSymbolAndDisp( pykd::Module &module, ULONG64 offset );
 
 std::string printSystemVersion(SystemVersionPtr sysVer);
 
-std::string evaluate( const std::wstring  &expression, bool cplusplus = false );
+python::object evaluate( const std::wstring  &expression, bool cplusplus = false );
 
 } } //pykd::support namespace end
 

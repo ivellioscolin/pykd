@@ -72,11 +72,11 @@ std::string printSystemVersion(SystemVersionPtr sysVer)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::string evaluate( const std::wstring  &expression, bool cplusplus )
+python::object evaluate( const std::wstring  &expression, bool cplusplus )
 {
     BaseTypeVariant  var = pykd::evaluate( expression, cplusplus );
 
-    return boost::apply_visitor( pykd::VariantToStr(), var );
+    return boost::apply_visitor( pykd::VariantToPyobj(), var );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
