@@ -21,7 +21,7 @@ void loadDump( const std::wstring &fileName );
 void attachKernel( const std::wstring &connectOptions = L"" );
 
 std::wstring debugCommand( const std::wstring &command );
-unsigned long long evaluate( const std::wstring  &expression );
+python::object evaluate( const std::wstring  &expression, bool cplusplus = false );
 
 python::tuple getSourceLine( kdlib::MEMOFFSET_64 offset = 0 );
 

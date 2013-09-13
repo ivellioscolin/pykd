@@ -4,6 +4,7 @@
 #include "kdlib/typeinfo.h"
 
 #include "dbgengine.h"
+#include "variant.h"
 
 namespace pykd {
 
@@ -131,13 +132,13 @@ std::wstring debugCommand( const std::wstring &command )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-unsigned long long evaluate( const std::wstring  &expression )
+python::object evaluate( const std::wstring  &expression,  bool cplusplus )
 {
     AutoRestorePyState  pystate;
 
-    unsigned long long result = kdlib::evaluate(expression);
+    kdlib::NumVariant var = kdlib::evaluate(expression, cplusplus );
 
-    return result;
+    return pykd::NumVariantAdaptor::convertToPython( var );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
