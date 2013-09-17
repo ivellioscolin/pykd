@@ -25,4 +25,20 @@ python::list vectorToList<char>( const std::vector<char>  &v ) {
     return lst;
 }
 
+
+template<typename T>
+inline
+std::vector<T> listToVector( const python::list &lst )
+{
+    std::vector<T> vec( python::len(lst) );
+
+    for (  long i = 0; i < python::len(lst); ++i )
+    {
+        T  v = python::extract<T>(lst[i]);
+        vec[i] =v;
+    }
+
+    return vec;
+}
+
 } // end namespace pykd

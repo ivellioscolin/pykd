@@ -52,8 +52,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "snippets", "snippets", "{AA
 		snippets\cr4.py = snippets\cr4.py
 		snippets\ctlcode.py = snippets\ctlcode.py
 		snippets\export.py = snippets\export.py
+		snippets\findtag.py = snippets\findtag.py
 		snippets\gdt.py = snippets\gdt.py
+		snippets\help.py = snippets\help.py
 		snippets\iat.py = snippets\iat.py
+		snippets\pytowiki.py = snippets\pytowiki.py
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "um", "um", "{EEFC9510-DFA7-439E-801E-48FCE72766AD}"

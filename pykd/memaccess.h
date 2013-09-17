@@ -83,5 +83,17 @@ std::wstring loadUnicodeStr(kdlib::MEMOFFSET_64 offset);
 
 std::string loadAnsiStr(kdlib::MEMOFFSET_64 offset);
 
+inline kdlib::MEMOFFSET_64 searchMemoryLst( kdlib::MEMOFFSET_64 beginOffset, unsigned long length, const python::list &pattern )
+{
+    return kdlib::searchMemory( beginOffset, length, listToVector<char>(pattern) );
+}
+
+inline kdlib::MEMOFFSET_64 searchMemoryStr( kdlib::MEMOFFSET_64 beginOffset, unsigned long length, const std::string &pattern  )
+{
+    const char* p = pattern.c_str();
+    return kdlib::searchMemory( beginOffset, length, std::vector<char>( p, p + pattern.length() ) );
+}
+
+
 } // end namespace pykd
 
