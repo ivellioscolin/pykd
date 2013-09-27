@@ -160,7 +160,8 @@ python::tuple findSymbolAndDisp( ULONG64 offset )
 {
     kdlib::MEMDISPLACEMENT  displacement = 0;
     std::wstring  symbolName = kdlib::findSymbol( offset, displacement );
-    return python::make_tuple(symbolName,displacement);
+    std::wstring  moduleName = kdlib::getModuleName( kdlib::findModuleBase( offset ) );
+    return python::make_tuple(moduleName,symbolName,displacement);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

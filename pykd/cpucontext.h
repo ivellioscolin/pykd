@@ -5,6 +5,7 @@ namespace python = boost::python;
 
 #include "kdlib/dbgengine.h"
 #include "kdlib/cpucontext.h"
+#include "kdlib/stack.h"
 
 namespace pykd {
 
@@ -13,20 +14,20 @@ namespace pykd {
 class CPUContextAdaptor
 {
 public:
-    static python::object getRegisterByName( kdlib::CPUContext& cpu, const std::wstring &name );
-    static python::object getRegisterByIndex( kdlib::CPUContext& cpu, unsigned long index );
-    static python::list getStack( kdlib::CPUContext& cpu );
+    static python::object getRegisterByName( kdlib::CPUContextPtr& cpu, const std::wstring &name );
+    static python::object getRegisterByIndex( kdlib::CPUContextPtr& cpu, unsigned long index );
+    static python::list getStack( kdlib::CPUContextPtr& cpu );
 };
 
-struct StackFrame {
-    kdlib::MEMOFFSET_64 ip, ret, fp, sp;
-};
+//struct StackFrame {
+//    kdlib::MEMOFFSET_64 ip, ret, fp, sp;
+//};
 
-std::wstring printStackFrame( StackFrame& frame );
+std::wstring printStackFrame( kdlib::StackFramePtr& frame );
 
 inline python::object getRegisterByName( const std::wstring &name )
 {
-    return CPUContextAdaptor::getRegisterByName( *kdlib::loadCPUCurrentContext().get(), name );
+    return CPUContextAdaptor::getRegisterByName( kdlib::loadCPUCurrentContext(), name );
 }
 
 inline unsigned long long loadMSR( unsigned long  msrIndex ) 
@@ -56,9 +57,12 @@ inline void switchProcessorMode() {
 }
 
 inline python::list getCurrentStack() {
-    return CPUContextAdaptor::getStack( *kdlib::loadCPUCurrentContext() );
+    return CPUContextAdaptor::getStack( kdlib::loadCPUCurrentContext() );
 }
 
+inline kdlib::StackFramePtr getCurrentFrame() {
+    return kdlib::getStack()->getFrame(0);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

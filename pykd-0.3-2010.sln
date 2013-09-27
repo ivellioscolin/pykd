@@ -30,6 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{FE24
 		test\scripts\mspdbtest.py = test\scripts\mspdbtest.py
 		test\scripts\pykdtest.py = test\scripts\pykdtest.py
 		test\scripts\regtest.py = test\scripts\regtest.py
+		test\scripts\stacktest.py = test\scripts\stacktest.py
 		test\scripts\synsymtest.py = test\scripts\synsymtest.py
 		test\scripts\target.py = test\scripts\target.py
 		test\scripts\testutils.py = test\scripts\testutils.py

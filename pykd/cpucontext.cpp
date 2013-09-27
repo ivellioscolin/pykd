@@ -8,52 +8,47 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-python::object CPUContextAdaptor::getRegisterByName( kdlib::CPUContext& cpu, const std::wstring &name )
+python::object CPUContextAdaptor::getRegisterByName( kdlib::CPUContextPtr& cpu, const std::wstring &name )
 {
-    kdlib::NumVariant var = cpu.getRegisterByName(name);
+    kdlib::NumVariant var = cpu->getRegisterByName(name);
     return NumVariantAdaptor::convertToPython( var );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-python::object CPUContextAdaptor::getRegisterByIndex( kdlib::CPUContext& cpu, unsigned long  index )
+python::object CPUContextAdaptor::getRegisterByIndex( kdlib::CPUContextPtr& cpu, unsigned long  index )
 {
-    kdlib::NumVariant var = cpu.getRegisterByIndex(index);
-    std::wstring name = cpu.getRegisterName(index);
+    kdlib::NumVariant var = cpu->getRegisterByIndex(index);
+    std::wstring name = cpu->getRegisterName(index);
 
     return python::make_tuple( name, NumVariantAdaptor::convertToPython( var ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-python::list  CPUContextAdaptor::getStack( kdlib::CPUContext& cpu )
+python::list  CPUContextAdaptor::getStack( kdlib::CPUContextPtr& cpu )
 {
-    unsigned long  numberFrames = cpu.getStackLength();
-    python::list  lst;
+    kdlib::StackPtr  stack = kdlib::getStack(cpu);
 
-    python::object  typeObj = python::object( python::handle<>(&PyType_Type) );
-    python::object  frameType = typeObj("frameType", python::tuple(), python::dict() );
+    unsigned long  numberFrames = stack->getFrameCount();
+     python::list  lst;
 
     for ( unsigned long  i = 0; i < numberFrames; ++i )
-    {
-        StackFrame   frame;
-        cpu.getStackFrame( i, frame.ip, frame.ret, frame.fp, frame.sp );
-        lst.append( frame );
-    }
+        lst.append( stack->getFrame(i) );
 
     return lst;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::wstring printStackFrame( StackFrame& frame )
+std::wstring printStackFrame( kdlib::StackFramePtr& frame )
 {
     std::wstringstream sstr;
     sstr << L"Frame: ";
-    sstr << L"IP=" << std::hex << frame.ip << L"  ";
-    sstr << L"Return=" << std::hex << frame.ret << L"  ";
-    sstr << L"Frame Offset=" << std::hex << frame.fp << L"  ";
-    sstr << L"Stack Offset=" << std::hex << frame.sp;
+    sstr << L"IP=" << std::hex << frame->getIP() << L"  ";
+    sstr << L"Return=" << std::hex << frame->getRET() << L"  ";
+    sstr << L"Frame Offset=" << std::hex << frame->getFP() << L"  ";
+    sstr << L"Stack Offset=" << std::hex << frame->getSP();
 
     return sstr.str();
 }

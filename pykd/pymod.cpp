@@ -277,6 +277,10 @@ BOOST_PYTHON_MODULE( pykd )
    // stack and local variables
     python::def( "getStack", &getCurrentStack,
         "Return a current stack as a list of stackFrame objects" );
+    python::def( "getFrame", &getCurrentFrame,
+        "Return a current stack frame" );
+
+
    // python::def( "getStackWow64", &getCurrentStackWow64,
    //     "Return a stack for wow64 context as a list of stackFrame objects" );
    // python::def( "getFrame", &getCurrentStackFrame,
@@ -555,12 +559,12 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__init__", python::make_constructor(Breakpoint::setSoftwareBreakpoint) )
         ;
 
-    python::class_<StackFrame>( "stackFrame",
+    python::class_<kdlib::StackFrame, kdlib::StackFramePtr, boost::noncopyable>( "stackFrame",
         "class for stack's frame representation", python::no_init  )
-        .def_readonly( "ip", &StackFrame::ip, "instruction pointer" )
-        .def_readonly( "ret", &StackFrame::ret, "return pointer" )
-        .def_readonly( "fp", &StackFrame::fp, "frame pointer" )
-        .def_readonly( "sp", &StackFrame::sp, "stack pointer" )
+        .def_readonly( "ip", &kdlib::StackFrame::getIP, "instruction pointer" )
+        .def_readonly( "ret", &kdlib::StackFrame::getRET, "return pointer" )
+        .def_readonly( "fp", &kdlib::StackFrame::getFP, "frame pointer" )
+        .def_readonly( "sp", &kdlib::StackFrame::getSP, "stack pointer" )
         .def( "__str__", &printStackFrame );
 
     python::class_<kdlib::CPUContext, kdlib::CPUContextPtr, boost::noncopyable>( "cpu",
