@@ -337,9 +337,17 @@ void Module::getSymbolAndDispByVa( ULONG64 offset, std::string &symbolName, LONG
 {
     offset = prepareVa(offset);
 
-    SymbolPtr sym = getSymSession()->findByRva( (ULONG)(offset - m_base ), SymTagNull, &displacement );
+    symbolName.clear();
 
-    symbolName = sym->getName();
+    while ( symbolName.empty() )
+    {
+        SymbolPtr  sym = getSymSession()->findByRva( (ULONG)(offset - m_base ), SymTagNull, &displacement );
+        symbolName = sym->getName();
+        if ( !symbolName.empty() )
+            break;
+
+        offset = offset - displacement - 1;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
