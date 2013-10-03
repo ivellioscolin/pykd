@@ -75,4 +75,21 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
 
 };
 
+struct BaseTypesEnum {
+    static kdlib::TypeInfoPtr getUInt1B() { return kdlib::loadType(L"UInt1B"); }
+    static kdlib::TypeInfoPtr getUInt2B() { return kdlib::loadType(L"UInt2B"); }
+    static kdlib::TypeInfoPtr getUInt4B() { return kdlib::loadType(L"UInt4B"); }
+    static kdlib::TypeInfoPtr getUInt8B() { return kdlib::loadType(L"UInt8B"); }
+    static kdlib::TypeInfoPtr getInt1B() { return kdlib::loadType(L"Int1B"); }
+    static kdlib::TypeInfoPtr getInt2B() { return kdlib::loadType(L"Int2B"); }
+    static kdlib::TypeInfoPtr getInt4B() { return kdlib::loadType(L"Int4B"); }
+    static kdlib::TypeInfoPtr getInt8B() { return kdlib::loadType(L"Int8B"); }
+    static kdlib::TypeInfoPtr getLong() { return kdlib::loadType(L"Long"); }
+    static kdlib::TypeInfoPtr getULong() { return kdlib::loadType(L"ULong"); }
+    static kdlib::TypeInfoPtr getBool() { return kdlib::loadType(L"Bool"); }
+    static kdlib::TypeInfoPtr getChar() { return kdlib::loadType(L"Char"); }
+    static kdlib::TypeInfoPtr getWChar() { return kdlib::loadType(L"WChar"); }
+    static kdlib::TypeInfoPtr getVoidPtr() { return kdlib::loadType(L"Void*"); }
+};
+
 } // end namespace pykd

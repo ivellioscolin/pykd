@@ -257,6 +257,8 @@ BOOST_PYTHON_MODULE( pykd )
     python::def("containingRecord", &TypedVarAdapter::containingRecordByType,
         "Return instance of the typedVar class. It's value are loaded from the target memory."
         "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
+    python::def("customStruct", &kdlib::defineStruct,
+        "return custom defined struct" );
 
     // CPU registers
     python::def( "reg", &getRegisterByName,
@@ -531,30 +533,24 @@ BOOST_PYTHON_MODULE( pykd )
         //.def("__getitem__", &kdlib::TypedVar::getElementByIndexPtr )
         ;
 
-   // python::class_<TypeBuilder>("typeBuilder",
-   //     "Class for building dynamically defined types", boost::python::no_init  )
-   //     .def( python::init<ULONG>() )
-   //     .def( python::init<>() )
-   //     .add_property( "UInt1B", &TypeBuilder::getUInt1B )
-   //     .add_property( "UInt2B", &TypeBuilder::getUInt2B )
-   //     .add_property( "UInt4B", &TypeBuilder::getUInt4B )
-   //     .add_property( "UInt8B", &TypeBuilder::getUInt8B )
-   //     .add_property( "Int1B", &TypeBuilder::getInt1B )
-   //     .add_property( "Int2B", &TypeBuilder::getInt2B )
-   //     .add_property( "Int4B", &TypeBuilder::getInt4B )
-   //     .add_property( "Int8B", &TypeBuilder::getInt8B )
-   //     .add_property( "Long", &TypeBuilder::getLong )
-   //     .add_property( "ULong", &TypeBuilder::getULong )
-   //     .add_property( "Bool", &TypeBuilder::getBool )
-   //     .add_property( "Char", &TypeBuilder::getChar )
-   //     .add_property( "WChar", &TypeBuilder::getWChar )
-   //     .add_property( "VoidPtr", &TypeBuilder::getVoidPtr )
-   //     .def( "createStruct", &TypeBuilder::createStruct, TypeBuilder_createStruct( python::args( "name", "align" ),
-   //         "Create custom struct" ) )
-   //     .def( "createUnion", &TypeBuilder::createUnion, 
-   //         "Create custom union" );
+    python::class_<BaseTypesEnum>("baseTypes", "base types enumeration",  boost::python::no_init)
+        .add_static_property( "UInt1B", &BaseTypesEnum::getUInt1B )
+        .add_static_property( "UInt2B", &BaseTypesEnum::getUInt2B )
+        .add_static_property( "UInt4B", &BaseTypesEnum::getUInt4B )
+        .add_static_property( "UInt8B", &BaseTypesEnum::getUInt8B )
+        .add_static_property( "Int1B", &BaseTypesEnum::getInt1B )
+        .add_static_property( "Int2B", &BaseTypesEnum::getInt2B )
+        .add_static_property( "Int4B", &BaseTypesEnum::getInt4B )
+        .add_static_property( "Int8B", &BaseTypesEnum::getInt8B )
+        .add_static_property( "Long", &BaseTypesEnum::getLong )
+        .add_static_property( "ULong", &BaseTypesEnum::getULong )
+        .add_static_property( "Bool", &BaseTypesEnum::getBool )
+        .add_static_property( "Char", &BaseTypesEnum::getChar )
+        .add_static_property( "WChar", &BaseTypesEnum::getWChar )
+        .add_static_property( "VoidPtr", &BaseTypesEnum::getVoidPtr )
+        ;
 
-    python::class_<Breakpoint, BreakpointPtr, boost::noncopyable>( "breakpoint",
+   python::class_<Breakpoint, BreakpointPtr, boost::noncopyable>( "breakpoint",
         "class for breakpoint representation", python::no_init  )
         .def("__init__", python::make_constructor(Breakpoint::setSoftwareBreakpoint) )
         ;
