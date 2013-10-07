@@ -73,6 +73,10 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo.getElement(index);
     }
 
+    static kdlib::TypeInfoPtr ptrTo( kdlib::TypeInfo &typeInfo, size_t ptrSize = 0 ) {
+        return typeInfo.ptrTo(ptrSize);
+    }
+    
 };
 
 struct BaseTypesEnum {

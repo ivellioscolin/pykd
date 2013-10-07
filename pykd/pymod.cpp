@@ -57,12 +57,14 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, kdlib::getSourceFile, 0, 1 );
 
 //BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 //
-//BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( TypeBuilder_createStruct, TypeBuilder::createStruct, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( createStruct_, kdlib::defineStruct, 1, 2 );
 //
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_enumSymbols, ModuleAdapter::enumSymbols, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_findSymbol, ModuleAdapter::findSymbol, 2, 3 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, TypeInfoAdapter::findSymbol, 1, 2 );
+
+BOOST_PYTHON_FUNCTION_OVERLOADS( TypeInfo_ptrTo, TypeInfoAdapter::ptrTo, 1, 2 ); 
 
 //BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_findSymbol, Module::getSymbolNameByVa, 1, 2 );
 
@@ -257,8 +259,12 @@ BOOST_PYTHON_MODULE( pykd )
     python::def("containingRecord", &TypedVarAdapter::containingRecordByType,
         "Return instance of the typedVar class. It's value are loaded from the target memory."
         "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
-    python::def("customStruct", &kdlib::defineStruct,
+    python::def("createStruct", &kdlib::defineStruct,
         "return custom defined struct" );
+    python::def( "createStruct", &kdlib::defineStruct, createStruct_( python::args( "name", "align" ),
+            "Create custom struct" ) );
+    python::def( "createUnion", &kdlib::defineUnion, 
+            "Create custom union" );
 
     // CPU registers
     python::def( "reg", &getRegisterByName,
@@ -409,10 +415,6 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a size of the type or variable" )
         .def("type", &kdlib::Module::getTypeByName,
             "Return typeInfo class by type name" )
-        //.def("getUdts", &Module::getUdts,
-        //    "Return a list of all user-defined type names" )
-        //.def("getEnums", &Module::getEnums,
-        //    "Return a list of all enumeration names" )
         .def("typedVar", &kdlib::Module::getTypedVarByAddr,
             "Return a typedVar class instance" )
         .def("typedVar",&kdlib::Module::getTypedVarByName,
@@ -467,10 +469,10 @@ BOOST_PYTHON_MODULE( pykd )
         //    "Return type as python dict ( for enum types )" )
         .def( "deref", &kdlib::TypeInfo::deref,
             "Return type of pointer" )
-        //.def( "append", &kdlib::TypeInfo::appendField,
-        //    "Add a new field to custom defined struct" )
-        .def( "ptrTo", &kdlib::TypeInfo::ptrTo,
-            "Return pointer to the type" )
+        .def( "append", &kdlib::TypeInfo::appendField,
+            "Add a new field to custom defined struct" )
+        .def( "ptrTo", &TypeInfoAdapter::ptrTo, TypeInfo_ptrTo( python::args( "ptrSize" ),
+            "Return pointer to the type" ) )
         .def( "arrayOf", &kdlib::TypeInfo::arrayOf,
             "Return array of the type" )
         .def( "isArray", &kdlib::TypeInfo::isArray,
@@ -519,8 +521,6 @@ BOOST_PYTHON_MODULE( pykd )
             "Return list of tuple ( filedName, fieldOffset, fieldValue )" )
         .def( "fieldName", &kdlib::TypedVar::getElementName,
             "Return name of struct field by index" )
-        //.def( "dataKind", &kdlib::TypedVar::getDataKind,
-        //    "Retrieves the variable classification of a data: DataIsXxx")
          .def("deref", &kdlib::TypedVar::deref,
             "Return value by pointer" )
         .def("type", &kdlib::TypedVar::getType,
@@ -577,12 +577,6 @@ BOOST_PYTHON_MODULE( pykd )
          .def("getStack",  &CPUContextAdaptor::getStack )
          .def("__getattr__",  &CPUContextAdaptor::getRegisterByName )
          .def("__getitem__",  &CPUContextAdaptor::getRegisterByIndex );
-
-   // python::class_<ScopeVars,ScopeVarsPtr,boost::noncopyable>( "locals",
-   //     "Class for access to local vars",  python::no_init  )
-   //         .def("__len__", &ScopeVars::getVarCount )
-   //         .def("__getitem__", &ScopeVars::getVarByIndex )
-   //         .def("__getitem__", &ScopeVars::getVarByName );
 
     python::class_<kdlib::SystemInfo>(
         "systemVersion", "Operation system version", python::no_init)

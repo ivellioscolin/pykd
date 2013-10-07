@@ -20,10 +20,11 @@ import typeinfo
 import typedvar
 import breakpoint
 import regtest
+import stacktest
+import customtypestest
+
 
 #import mspdbtest
-#import localstest
-#import customtypestest
 #import ehexcepttest
 #import ehstatustest
 #import ehsymbolstest
@@ -54,16 +55,16 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
                 unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
                 unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
-                #unittest.TestLoader().loadTestsFromTestCase( customtypestest.CustomTypesTest ),
+                unittest.TestLoader().loadTestsFromTestCase( customtypestest.CustomTypesTest ),
                 # ^^^
                 unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest ),
 
                 unittest.TestLoader().loadTestsFromTestCase( breakpoint.BreakpointTest ),
 
+                unittest.TestLoader().loadTestsFromTestCase( stacktest.StackTest ),
 
-
+                #unittest.TestLoader().loadTestsFromTestCase(  localstest.LocalVarsTest )
                 #unittest.TestLoader().loadTestsFromTestCase( mspdbtest.MsPdbTest ),
-                #unittest.TestLoader().loadTestsFromTestCase( localstest.LocalVarsTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( ehstatustest.EhStatusTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( ehsymbolstest.EhSymbolsTest ),
@@ -84,3 +85,4 @@ if __name__ == "__main__":
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
     
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
+
