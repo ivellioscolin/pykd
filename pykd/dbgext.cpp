@@ -294,30 +294,12 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
 
         PyThreadState_Swap( NULL );
 
-        //interpreter->tstate_head = threadState->next;
-
         PyThreadState_Delete(threadState);
     }
 
     PyInterpreterState_Clear(interpreter);
 
-     PyInterpreterState_Delete(interpreter);
-
-     //Py_EndInterpreter( localInterpreter );
-
-    //std::list<PyThreadState*>  localThreadsState;
-    //localThread = PyInterpreterState_ThreadHead( localInterpreter );
-    //while( localThread )
-    //{
-    //    localThreadsState.push_back(localThread);
-    //    localThread = PyThreadState_Next(localThread);
-    //}
-
-    //std::for_each( localThreadsState.begin(), localThreadsState.end(), PyThreadState_Clear );
-    //std::for_each( localThreadsState.begin(), localThreadsState.end(), PyThreadState_Delete );
-
-    //PyInterpreterState_Clear( localInterpreter );
-    //PyInterpreterState_Delete( localInterpreter );
+    PyInterpreterState_Delete(interpreter);
 
     PyThreadState_Swap( globalInterpreter );
 
