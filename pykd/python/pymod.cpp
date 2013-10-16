@@ -634,6 +634,13 @@ BOOST_PYTHON_MODULE( pykd )
         .value("NoDebuggee", DebugStatusNoDebuggee )
         .export_values();
 
+    python::enum_<DEBUG_ACCESS_TYPE>("debugAccess", "Debud Access Types")
+        .value("Read", DebugAccessRead )
+        .value("Write", DebugAccessWrite )
+        .value("Execute", DebugAccessExecute )
+        .value("DebugAccessIo", DebugAccessIo )
+        .export_values();
+
     python::class_<EventHandlerWrap, EventHandlerPtr, boost::noncopyable>(
         "eventHandler", "Base class for overriding and handling debug notifications" )
         .def( "onBreakpoint", &EventHandlerWrap::OnBreakpoint,

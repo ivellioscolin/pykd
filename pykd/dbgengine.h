@@ -160,6 +160,13 @@ enum EXECUTION_STATUS {
     DebugStatusNoDebuggee           = 7
 };
 
+enum DEBUG_ACCESS_TYPE {
+    DebugAccessRead                 = 0x00000001,
+    DebugAccessWrite                = 0x00000002,
+    DebugAccessExecute              = 0x00000004,
+    DebugAccessIo                   = 0x00000008
+};
+
 struct BUG_CHECK_DATA
 {
     ULONG code;
