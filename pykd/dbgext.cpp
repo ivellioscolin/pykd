@@ -192,10 +192,12 @@ HRESULT
 CALLBACK
 py( PDEBUG_CLIENT4 client, PCSTR args )
 {
+
     WindbgGlobalSession::RestorePyState();
 
     PyThreadState   *globalInterpreter = PyThreadState_Swap( NULL );
-    PyThreadState   *localInterpreter = Py_NewInterpreter();
+
+    PyThreadState   *localState = Py_NewInterpreter();
 
     try {
 
@@ -235,7 +237,8 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
             
         if ( argsList.size() == 0 )
         {
-            Py_EndInterpreter( localInterpreter ); 
+            Py_EndInterpreter( localState ); 
+
             PyThreadState_Swap( globalInterpreter );
 
             WindbgGlobalSession::SavePyState();
@@ -243,33 +246,37 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
             return S_OK;
         }
             
-        char    **pythonArgs = new char* [ argsList.size() ];
-     
-        for ( size_t  i = 0; i < argsList.size(); ++i )
-            pythonArgs[i] = const_cast<char*>( argsList[i].c_str() );
-
-        PySys_SetArgv( (int)argsList.size(), pythonArgs );
-
-        delete[]  pythonArgs;
-
        // найти путь к файлу
         std::string     fullScriptName;
         DbgPythonPath   dbgPythonPath;
-        
-        if ( !dbgPythonPath.getFullFileName( argsList[0], fullScriptName ) )
+
+        if ( dbgPythonPath.getFullFileName( argsList[0], fullScriptName ) )
         {
-            eprintln( L"script file not found" );
+            char    **pythonArgs = new char* [ argsList.size() ];
+
+            for ( size_t  i = 1; i < argsList.size(); ++i )
+                pythonArgs[i] = const_cast<char*>( argsList[i].c_str() );
+
+             pythonArgs[0] = const_cast<char*>( fullScriptName.c_str() );
+
+             PySys_SetArgv( (int)argsList.size(), pythonArgs );
+
+             delete[]  pythonArgs;
+
+            try {
+
+                python::object       result;
+
+                result =  python::exec_file( fullScriptName.c_str(), global, global );
+            }
+            catch( boost::python::error_already_set const & )
+            {
+                printException();
+            }
         }
         else
-        try {
-
-            python::object       result;
-
-            result =  python::exec_file( fullScriptName.c_str(), global, global );
-        }
-        catch( boost::python::error_already_set const & )
         {
-            printException();
+            eprintln( L"script file not found" );
         }
     }
     catch(...)
@@ -277,7 +284,41 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
        eprintln( L"unexpected error" );
     }
 
-    Py_EndInterpreter( localInterpreter ); 
+    PyInterpreterState  *interpreter = localState->interp;
+
+    while( interpreter->tstate_head != NULL )
+    {
+        PyThreadState   *threadState = (PyThreadState*)(interpreter->tstate_head);
+
+        PyThreadState_Clear(threadState);
+
+        PyThreadState_Swap( NULL );
+
+        //interpreter->tstate_head = threadState->next;
+
+        PyThreadState_Delete(threadState);
+    }
+
+    PyInterpreterState_Clear(interpreter);
+
+     PyInterpreterState_Delete(interpreter);
+
+     //Py_EndInterpreter( localInterpreter );
+
+    //std::list<PyThreadState*>  localThreadsState;
+    //localThread = PyInterpreterState_ThreadHead( localInterpreter );
+    //while( localThread )
+    //{
+    //    localThreadsState.push_back(localThread);
+    //    localThread = PyThreadState_Next(localThread);
+    //}
+
+    //std::for_each( localThreadsState.begin(), localThreadsState.end(), PyThreadState_Clear );
+    //std::for_each( localThreadsState.begin(), localThreadsState.end(), PyThreadState_Delete );
+
+    //PyInterpreterState_Clear( localInterpreter );
+    //PyInterpreterState_Delete( localInterpreter );
+
     PyThreadState_Swap( globalInterpreter );
 
     WindbgGlobalSession::SavePyState();
