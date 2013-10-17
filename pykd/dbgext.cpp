@@ -193,6 +193,10 @@ CALLBACK
 py( PDEBUG_CLIENT4 client, PCSTR args )
 {
 
+    ULONG    mask = 0;
+    client->GetOutputMask( &mask );
+    client->SetOutputMask( mask & ~DEBUG_OUTPUT_PROMPT ); // убрать эхо ввода
+
     WindbgGlobalSession::RestorePyState();
 
     PyThreadState   *globalInterpreter = PyThreadState_Swap( NULL );
@@ -304,6 +308,8 @@ py( PDEBUG_CLIENT4 client, PCSTR args )
     PyThreadState_Swap( globalInterpreter );
 
     WindbgGlobalSession::SavePyState();
+
+    client->SetOutputMask( mask );
 
     return S_OK;
 }

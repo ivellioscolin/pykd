@@ -139,7 +139,8 @@ BOOST_PYTHON_MODULE( pykd )
     python::class_<DbgErr>( "dout", "dout", python::no_init )
         .def( "write", &DbgErr::write );
     python::class_<DbgIn>( "din", "din", python::no_init )
-        .def( "readline", &DbgIn::readline );
+        .def( "readline", &DbgIn::readline )
+        .add_property( "encoding", &DbgIn::encoding );
 
     // system properties
     python::def( "ptrSize", &ptrSize,
