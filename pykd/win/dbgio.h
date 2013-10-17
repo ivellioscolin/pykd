@@ -54,7 +54,7 @@ class DbgIn {
 
 public:
 
-    std::string
+    std::wstring
     readline() {
         return dreadline();
     }
@@ -68,7 +68,7 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class OutputReader : public IDebugOutputCallbacks, private boost::noncopyable {
+class OutputReader : public IDebugOutputCallbacksWide, private boost::noncopyable {
 
 public:
 
@@ -78,21 +78,21 @@ public:
 
         m_client = client;
 
-        hres = m_client->GetOutputCallbacks( &m_previousCallback );
+        hres = m_client->GetOutputCallbacksWide( &m_previousCallback );
         if ( FAILED( hres ) )
             throw DbgException( "IDebugClient::GetOutputCallbacks failed" );
 
-        hres = m_client->SetOutputCallbacks( this );
+        hres = m_client->SetOutputCallbacksWide( this );
         if ( FAILED( hres ) )
             throw DbgException( "IDebugClient::GetOutputCallbacks failed" );
     }
 
     ~OutputReader() 
     {
-        m_client->SetOutputCallbacks( m_previousCallback );
+        m_client->SetOutputCallbacksWide( m_previousCallback );
     }
 
-    const std::string&
+    const std::wstring&
     Line() const {
         return  m_readLine;
     }
@@ -117,22 +117,22 @@ private:
 
    STDMETHOD(Output)(
         __in ULONG Mask,
-        __in PCSTR Text )
+        __in PCWSTR Text )
    {
         if ( Mask == DEBUG_OUTPUT_NORMAL )
         {
-            m_readLine += std::string( Text );
+            m_readLine += std::wstring( Text );
         }
        return S_OK;
    }
 
 private:
 
-    std::string                         m_readLine;
+    std::wstring                        m_readLine;
 
-    CComPtr<IDebugOutputCallbacks>      m_previousCallback;
+    CComPtr<IDebugOutputCallbacksWide>  m_previousCallback;
 
-    CComPtr<IDebugClient4>              m_client;
+    CComQIPtr<IDebugClient5>            m_client;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

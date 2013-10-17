@@ -67,16 +67,16 @@ void eprintln( const std::wstring &str )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-std::string dreadline()
+std::wstring dreadline()
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
-    char    str[0x100];
-    ULONG   inputSize = 0;
+    wchar_t    str[0x100];
+    ULONG     inputSize = 0;
 
-    g_dbgEng->control->Input( str, sizeof(str), &inputSize );
+    g_dbgEng->control->InputWide( str, sizeof(str), &inputSize );
 
-    return std::string( str ) + "\n";
+    return std::wstring( str ) + L"\n";
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

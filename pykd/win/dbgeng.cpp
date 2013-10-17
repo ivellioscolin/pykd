@@ -265,7 +265,7 @@ BaseTypeVariant evaluate( const std::wstring  &expression, bool cplusplus )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::string debugCommand( const std::wstring &command )
+std::wstring debugCommand( const std::wstring &command )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
@@ -275,9 +275,9 @@ std::string debugCommand( const std::wstring &command )
     hres = g_dbgEng->control->ExecuteWide( DEBUG_OUTCTL_THIS_CLIENT, command.c_str(), 0 );
 
     if ( FAILED( hres ) )
-        throw  DbgException( "IDebugControl::Execute  failed" ); 
+        throw  DbgException( "IDebugControl::ExecuteWide  failed" ); 
 
-    return std::string( outReader.Line() ); 
+    return outReader.Line();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1314,7 +1314,7 @@ void removeExtension( ULONG64 extHandle )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::string callExtension( ULONG64 extHandle, const std::wstring command, const std::wstring  &params  )
+std::wstring callExtension( ULONG64 extHandle, const std::wstring command, const std::wstring  &params  )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
@@ -1327,7 +1327,7 @@ std::string callExtension( ULONG64 extHandle, const std::wstring command, const 
     if ( FAILED( hres ) )
         throw  DbgException( "IDebugControl::CallExtension  failed" ); 
         
-    return std::string( outReader.Line() );
+    return std::wstring( outReader.Line() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -23,13 +23,13 @@ void debugGo();
 void debugStep();
 void debugStepIn();
 void debugBreak();
-std::string debugCommand( const std::wstring &command );
+std::wstring debugCommand( const std::wstring &command );
 BaseTypeVariant evaluate( const std::wstring  &expression, bool cplusplus = false );
 
 // debug output
 void dprint( const std::wstring &str, bool dml = false );
 void dprintln( const std::wstring &str, bool dml = false );
-std::string dreadline();
+std::wstring dreadline();
 void eprint( const std::wstring &str );
 void eprintln( const std::wstring &str );
 
@@ -203,7 +203,7 @@ void appendSymbolPath(const std::string &symPath);
 // Extensions
 ULONG64 loadExtension(const std::wstring &extPath );
 void removeExtension( ULONG64 extHandle );
-std::string callExtension( ULONG64 extHandle, const std::wstring command, const std::wstring  &params  );
+std::wstring callExtension( ULONG64 extHandle, const std::wstring command, const std::wstring  &params  );
 
 };
 

@@ -15,6 +15,8 @@ cfg.PromptManager.in_template = 'In <\\#>: '
 cfg.PromptManager.in2_template = '   .\\D.: '
 cfg.PromptManager.out_template = 'Out<\\#>: '
 
+cfg.InteractiveShellApp.extensions = [ 'pykdmagic' ]
+
 ipshell = InteractiveShellEmbed(config=cfg)
 
 ipshell()    
