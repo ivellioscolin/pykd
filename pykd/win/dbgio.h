@@ -17,6 +17,13 @@ public:
         dprint( str );
     }
 
+    void flush() {
+    }
+
+    std::string
+    encoding() {
+        return "ascii";
+    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -29,6 +36,14 @@ public:
     write( const std::wstring  &str )
     {
         eprint( str );
+    }
+
+    void flush() {
+    }
+
+    std::string
+    encoding() {
+        return "ascii";
     }
 };
 

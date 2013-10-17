@@ -135,9 +135,13 @@ BOOST_PYTHON_MODULE( pykd )
 
     // Python debug output console helper classes
     python::class_<DbgOut>( "dout", "dout", python::no_init )
-        .def( "write", &DbgOut::write );
-    python::class_<DbgErr>( "dout", "dout", python::no_init )
-        .def( "write", &DbgErr::write );
+        .def( "write", &DbgOut::write )
+        .def( "flush", &DbgOut::flush )
+        .add_property( "encoding", &DbgOut::encoding );
+    python::class_<DbgErr>( "derr", "derr", python::no_init )
+        .def( "write", &DbgErr::write )
+        .def( "flush", &DbgOut::flush )
+        .add_property( "encoding", &DbgErr::encoding );
     python::class_<DbgIn>( "din", "din", python::no_init )
         .def( "readline", &DbgIn::readline )
         .add_property( "encoding", &DbgIn::encoding );
