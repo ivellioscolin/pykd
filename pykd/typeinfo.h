@@ -203,7 +203,7 @@ public:
         throw PyException( PyExc_TypeError, "object has no len()" );
     }
 
-    virtual python::tuple getElementByIndex( ULONG index ) {
+    virtual python::object getElementByIndex( ULONG index ) {
         throw PyException( PyExc_TypeError, "object is unsubscriptable");  
     }
 
@@ -400,7 +400,7 @@ protected:
         return getFieldCount();
     }
 
-    virtual python::tuple getElementByIndex( ULONG index ) {
+    virtual python::object getElementByIndex( ULONG index ) {
         return python::make_tuple( getFieldNameByIndex(index), getFieldByIndex(index) );
     }
 
@@ -542,6 +542,14 @@ protected:
         return getSize();
     }
 
+    virtual ULONG getElementCount() {
+        return getFieldCount();
+    }
+
+    virtual python::object getElementByIndex( ULONG index ) {
+        return python::make_tuple( getFieldNameByIndex(index), getFieldByIndex(index) );
+    }
+
     SymbolPtr    m_dia;
 };
 
@@ -628,6 +636,16 @@ public:
 
     virtual ULONG getCount() {
         return m_count;
+    }
+
+    virtual ULONG getElementCount() {
+        return getCount();
+    }
+
+    virtual python::object getElementByIndex( ULONG index ) {
+        if( index < m_count )
+            return python::object( m_derefType );
+        throw PyException( PyExc_IndexError, "index out of range" );
     }
 
     virtual TypeInfoPtr getElementType() {

@@ -213,6 +213,19 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( 5, len(ti) )
         for field in ti:
              str( field )
+             
+    def testArraySubscribe(self):
+        ti = pykd.typeInfo("g_testArray")
+        self.assertEqual(2, len(ti) )
+        for field in ti:
+             str( field )
+        
+    def testEnumSubscribe(self):
+        ti = pykd.typeInfo("enumType")
+        self.assertEqual(3, len(ti) )
+        self.assertEqual( ( "TWO", 2 ), ti[1] )
+        for field in ti:
+             str( field )
 
     def testStructNullSize(self):
         ti = target.module.type("structNullSize")
