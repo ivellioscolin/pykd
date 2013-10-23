@@ -470,7 +470,7 @@ BaseTypeVariant BitFieldVar::getValue()
     else
     {
         val >>= m_typeInfo->getBitOffset();
-        val &= ( 1 << m_typeInfo->getBitWidth() ) - 1;
+        val &= ( 1LL << m_typeInfo->getBitWidth() ) - 1LL;
 
         switch ( m_typeInfo->getSize() )
         {

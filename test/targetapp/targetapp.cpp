@@ -45,12 +45,14 @@ struct structWithBits {
     ULONG m_bit0_4  : 5;
     ULONG m_bit5    : 1;
     ULONG m_bit6_8  : 3;
+    ULONG64 m_bit0_60 : 60;
 };
 
 struct structWitSignBits {
     LONG m_bit0_4  : 5;
     LONG m_bit5    : 1;
     LONG m_bit6_8  : 3;
+    LONG64 m_bit0_60 : 60;
 };
 
 
@@ -104,8 +106,8 @@ typedef struct structAbstract  *pstructAbstract;
 
 pstructAbstract g_structAbstract = 0;
 
-structWithBits g_structWithBits = { 4, 1, 5};
-structWitSignBits g_structWithSignBits = { 4, 1, 5 };
+structWithBits g_structWithBits = { 4, 1, 5, 0xFF00000000 };
+structWitSignBits g_structWithSignBits = { 4, 1, 5, -1LL };
 
 structTest      g_structTest = { 0, 500, true, 1, NULL };
 structTest      g_structTest1 = { 0, 500, true, 1, &g_structTest };
