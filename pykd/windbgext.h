@@ -18,6 +18,8 @@ private:
 
     void startConsole();
 
+    void printUsage();
+
     virtual void setUp();
 
     virtual void tearDown();
@@ -25,6 +27,8 @@ private:
     std::string getScriptFileName( const std::string &scriptName );
 
     std::vector<std::string> m_paths;
+
+    PyThreadState  *m_pyState;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -9,6 +9,7 @@ namespace python = boost::python;
 
 #include "windbgext.h"
 #include "dbgexcept.h"
+#include "pydbgio.h"
 
 using namespace kdlib;
 using namespace kdlib::windbg;
@@ -32,19 +33,34 @@ void PykdExt::setUp()
 
     PyImport_AppendInittab("pykd", initpykd ); 
 
-    Py_Initialize();
-
     PyEval_InitThreads();
 
-    python::import( "pykd" );
+    Py_Initialize();
+
+    python::object  main = boost::python::import("__main__");
+
+    python::object  main_namespace = main.attr("__dict__");
+
+    python::object  pykd = python::import( "pykd" );
+
+   // делаем аналог from pykd import *
+    python::dict     pykd_namespace( pykd.attr("__dict__") ); 
+
+    python::list     iterkeys( pykd_namespace.iterkeys() );
+
+    for (int i = 0; i < boost::python::len(iterkeys); i++)
+    {
+        std::string     key = boost::python::extract<std::string>(iterkeys[i]);
+
+        main_namespace[ key ] = pykd_namespace[ key ];
+    }
 
     // перенаправление стандартных потоков ¬¬
     python::object       sys = python::import("sys");
 
-    sys.attr("stdout") = python::ptr( dbgout  );
-    sys.attr("stderr") = python::ptr( dbgout );
-    sys.attr("stdin") = python::ptr( dbgin );
-
+    sys.attr("stdout") = python::object( pykd::DbgOut() );
+    sys.attr("stderr") = python::object( pykd::DbgOut() );
+    sys.attr("stdin") = python::object( pykd::DbgIn() );
 
     python::list pathList(sys.attr("path"));
 
@@ -52,12 +68,16 @@ void PykdExt::setUp()
 
     for (python::ssize_t i = 0; i < n ; i++) 
         m_paths.push_back(boost::python::extract<std::string>(pathList[i]));
+
+    m_pyState = PyEval_SaveThread();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void PykdExt::tearDown()
 {
+    PyEval_RestoreThread( m_pyState );
+
     Py_Finalize();
 
     WindbgExtension::tearDown();
@@ -67,45 +87,157 @@ void PykdExt::tearDown()
 
 KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
 {
-    const ArgsList&   args = getArgs();
+    ArgsList   args = getArgs();
+
+    bool  global = false;
+    bool  local = false;
+    bool  clean = false;
+ 
+    ArgsList::iterator  foundArg;
+
+    foundArg = std::find( args.begin(), args.end(), "-h" );
+    if ( foundArg !=  args.end() )
+    {
+        printUsage();
+        return;
+    }
+
+    foundArg = std::find( args.begin(), args.end(), "--help" );
+    if ( foundArg !=  args.end() )
+    {
+        printUsage();
+        return;
+    }
+
+    foundArg = std::find( args.begin(), args.end(), "-g" );
+    if ( foundArg != args.end() )
+    {
+        global = true;
+        args.erase( foundArg );
+    }
+
+    foundArg = std::find( args.begin(), args.end(), "--global" );
+    if ( foundArg != args.end() )
+    {
+        global = true;
+        args.erase( foundArg );
+    }
+
+    foundArg = std::find( args.begin(), args.end(), "-l" );
+    if ( foundArg != args.end() )
+    {
+        local = true;
+        args.erase( foundArg );
+    }
+
+    foundArg = std::find( args.begin(), args.end(), "--local" );
+    if ( foundArg != args.end() )
+    {
+        local = true;
+        args.erase( foundArg );
+    }
+
+    if ( global & local )
+    {
+       eprintln( L"-g(--global) and -l(--local) cannot be set together" );
+       return;
+    }
+
+    std::string  scriptFileName;
+    if ( args.size() > 0 )
+    {
+       scriptFileName  = getScriptFileName( args[0] );
+
+        if ( scriptFileName.empty() )
+        {
+            eprintln( L"script file not found" );
+            return;
+        }
+
+        global = !(global | local ) ? false : global ; //set local by default
+    }
+    else
+    {
+        global = !(global | local ) ? true : global ; //set global by default
+    }
+
+    PyThreadState   *localState = NULL;
+    PyThreadState   *globalState = NULL;
+
+    PyEval_RestoreThread( m_pyState );
+
+    if ( !global )
+    {
+        globalState = PyThreadState_Swap( NULL );
+
+        localState = Py_NewInterpreter();
+
+        python::object       sys = python::import("sys");
+
+        sys.attr("stdout") = python::object( pykd::DbgOut() );
+        sys.attr("stderr") = python::object( pykd::DbgOut() );
+        sys.attr("stdin") = python::object( pykd::DbgIn() );
+    }
 
     if ( args.size() == 0 )
     {
         startConsole();
-        return;
     }
-
-    std::string  scriptFileName = getScriptFileName( args[0] );
-
-    if ( scriptFileName.empty() )
+    else
     {
-        eprintln( L"script file not found" );
-        return;
+        std::string  scriptFileName = getScriptFileName( args[0] );
+
+        // устанавиливаем питоновские аргументы
+        char  **pythonArgs = new char* [ args.size() ];
+
+        pythonArgs[0] = const_cast<char*>(scriptFileName.c_str());
+
+        for ( size_t  i = 1; i < args.size(); ++i )
+            pythonArgs[i] = const_cast<char*>( args[i].c_str() );
+
+        PySys_SetArgv( (int)args.size(), pythonArgs );
+
+        delete[]  pythonArgs;
+
+        // получаем достпу к глобальному мапу ( нужен дл€ вызова exec_file )
+        python::object  main =  python::import("__main__");
+
+        python::object  global(main.attr("__dict__"));
+
+        try {
+            PykdInterruptWatch  interruptWatch;
+            python::exec_file( scriptFileName.c_str(), global );
+        }
+        catch( python::error_already_set const & )
+        {
+            printException();
+        }
     }
 
-    // устанавиливаем питоновские аргументы
-    char  **pythonArgs = new char* [ args.size() ];
-
-    for ( size_t  i = 0; i < args.size(); ++i )
-        pythonArgs[i] = const_cast<char*>( args[i].c_str() );
-
-    PySys_SetArgv( (int)args.size(), pythonArgs );
-
-    delete[]  pythonArgs;
-
-    // получаем достпу к глобальному мапу ( нужен дл€ вызова exec_file )
-    python::object  main =  python::import("__main__");
-
-    python::object  global(main.attr("__dict__"));
-
-    try {
-        PykdInterruptWatch  interruptWatch;
-        python::exec_file( scriptFileName.c_str(), global );
-    }
-    catch( python::error_already_set const & )
+    if ( !global )
     {
-        printException();
+        PyInterpreterState  *interpreter = localState->interp;
+
+        while( interpreter->tstate_head != NULL )
+        {
+            PyThreadState   *threadState = (PyThreadState*)(interpreter->tstate_head);
+
+            PyThreadState_Clear(threadState);
+
+            PyThreadState_Swap( NULL );
+
+            PyThreadState_Delete(threadState);
+        }
+    
+        PyInterpreterState_Clear(interpreter);
+
+        PyInterpreterState_Delete(interpreter);
+
+        PyThreadState_Swap( globalState );
     }
+
+    m_pyState = PyEval_SaveThread();
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -126,6 +258,16 @@ void PykdExt::startConsole()
     {
         printException();
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void PykdExt::printUsage()
+{
+    dprintln( L"usage: !py [options] [file]" );
+    dprintln( L"Options:" );
+    dprintln( L"-g --global  : run code in the common namespace" );
+    dprintln( L"-l --local   : run code in the isolate namespace" );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

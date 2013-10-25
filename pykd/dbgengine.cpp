@@ -5,27 +5,10 @@
 
 #include "dbgengine.h"
 #include "variant.h"
+#include "pystate.h"
 
 namespace pykd {
 
-class AutoRestorePyState 
-{
-public:
-
-    AutoRestorePyState() 
-    {
-        m_state =  PyEval_SaveThread();
-    }
-
-    ~AutoRestorePyState() 
-    {
-        PyEval_RestoreThread( m_state );
-    }
-
-private:
-
-    PyThreadState*    m_state;
-};
 
 ///////////////////////////////////////////////////////////////////////////////
 

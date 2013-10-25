@@ -15,6 +15,7 @@
 #include "windbgext.h"
 #include "eventhandler.h"
 #include "cpucontext.h"
+#include "pydbgio.h"
 
 using namespace pykd;
 
@@ -132,10 +133,14 @@ BOOST_PYTHON_MODULE( pykd )
         "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
 
     // Python debug output console helper classes
-    python::class_<kdlib::DbgOut, boost::noncopyable >( "dout", "dout", python::no_init )
-        .def( "write", &kdlib::DbgOut::write );
-    python::class_<kdlib::DbgIn, boost::noncopyable>( "din", "din", python::no_init )
-        .def( "readline", &kdlib::DbgIn::readline );
+    python::class_<DbgOut>( "dout", "dout", python::no_init )
+        .def( "write", &DbgOut::write )
+        .def( "flush", &DbgOut::flush )
+        .add_property( "encoding", &DbgOut::encoding );
+
+    python::class_<DbgIn>( "din", "din", python::no_init )
+        .def( "readline", &DbgIn::readline )
+        .add_property( "encoding", &DbgIn::encoding );
 
    // system properties
     python::def( "ptrSize", &kdlib::ptrSize,
