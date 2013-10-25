@@ -379,7 +379,7 @@ std::string getModuleVersionInfo( ULONG64 baseOffset, const std::string &value )
             << std::setw(4) << std::setfill('0') << codePages[0].wCodePage 
             << "\\" << value;
 
-    ULONG  valueLength;
+    ULONG  valueLength = 0;
 
     g_dbgEng->symbols->GetModuleVersionInformation( 
         DEBUG_ANY_ID,
@@ -388,6 +388,9 @@ std::string getModuleVersionInfo( ULONG64 baseOffset, const std::string &value )
         NULL,
         0,
         &valueLength );
+
+    if (!valueLength)
+        return "";
 
     std::vector<char>  valueStr(valueLength);
 
