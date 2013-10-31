@@ -13,7 +13,7 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-ULONG startProcess( const std::wstring  &processName )
+ULONG startProcess( const std::wstring  &processName, bool debugChildren )
 {
     PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
@@ -32,7 +32,12 @@ ULONG startProcess( const std::wstring  &processName )
     std::vector< std::wstring::value_type >      cmdLine( processName.size() + 1 );
     wcscpy_s( &cmdLine[0], cmdLine.size(), processName.c_str() );
 
-    hres = g_dbgEng->client->CreateProcessWide( 0, &cmdLine[0], DEBUG_PROCESS | DETACHED_PROCESS );
+    hres = g_dbgEng->client->CreateProcessWide( 
+        0,
+        &cmdLine[0],
+        ( debugChildren ? DEBUG_PROCESS : DEBUG_ONLY_THIS_PROCESS) | DETACHED_PROCESS 
+        );
+
     if ( FAILED( hres ) )
         throw DbgException( "IDebugClient4::CreateProcessWide failed" );
 
@@ -158,6 +163,10 @@ void terminateProcess( ULONG processId )
     hres = g_dbgEng->client->TerminateCurrentProcess();
     if ( FAILED( hres ) )
         throw DbgException( "IDebugClient::TerminateCurrentProcess", hres );
+
+    hres = g_dbgEng->client->DetachCurrentProcess();
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugClient::DetachCurrentProcess failed" );
 
 }
 

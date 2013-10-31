@@ -7,7 +7,7 @@ class PykdMagic (Magics):
 
     @line_magic
     def kd(self,line):
-        "any windbg command"
+        "magic for calling any windbg command"
         try:
             pykd.dprintln( pykd.dbgCommand(line) )
         except pykd.BaseException:
@@ -18,6 +18,5 @@ def load_ipython_extension(ipython):
     ipython.register_magics(PykdMagic)   
 
 def unload_ipython_extension(ipython):
-    pass 
-        
+    pass
         

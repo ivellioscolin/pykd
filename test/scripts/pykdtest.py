@@ -37,7 +37,6 @@ class StartProcessWithoutParamsTest(unittest.TestCase):
 class TerminateProcessTest(unittest.TestCase):
     def testKill(self):
         pykd.killProcess( target.processId )
-        pykd.detachProcess( target.processId )
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
