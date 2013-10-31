@@ -14,7 +14,7 @@ void targetBreak();
 kdlib::ExecutionStatus targetStep();
 kdlib::ExecutionStatus targetStepIn();
 
-kdlib::PROCESS_DEBUG_ID startProcess( const std::wstring  &processName );
+kdlib::PROCESS_DEBUG_ID startProcess( const std::wstring  &processName, bool debugChildren = false );
 kdlib::PROCESS_DEBUG_ID attachProcess( kdlib::PROCESS_ID pid );
 void loadDump( const std::wstring &fileName );
 

@@ -60,13 +60,13 @@ kdlib::ExecutionStatus targetStepIn()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-kdlib::PROCESS_DEBUG_ID startProcess( const std::wstring  &processName )
+kdlib::PROCESS_DEBUG_ID startProcess( const std::wstring  &processName, bool debugChildren )
 {
     kdlib::PROCESS_DEBUG_ID  id;
 
     AutoRestorePyState  pystate;
 
-    id = kdlib::startProcess(processName);
+    id = kdlib::startProcess(processName, debugChildren);
 
     return id;
 }
