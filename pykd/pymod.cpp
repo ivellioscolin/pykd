@@ -34,6 +34,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( startProcess_,  startProcess, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_,  kdlib::detachProcess, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( terminateProcess_,  kdlib::terminateProcess, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( attachKernel_,  attachKernel, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( evaluate_, evaluate, 1, 2 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, kdlib::dprint, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, kdlib::dprintln, 1, 2 );
@@ -119,8 +120,8 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::def( "breakin", &targetBreak,
         "Break into debugger" );
-    python::def( "expr", &evaluate,
-        "Evaluate windbg expression" );
+    python::def( "expr", &evaluate, evaluate_( boost::python::args( "expression", "cplusplus" ),
+        "Evaluate windbg expression" ) );
     python::def( "dbgCommand", &debugCommand,
         "Run a debugger's command and return it's result as a string" );
     python::def( "go", &targetGo,
