@@ -12,6 +12,8 @@ void attachKernel( const std::string &connectOptions = "" );
 bool isLocalKernelDebuggerEnabled();
 void detachProcess( ULONG processId = -1);
 void terminateProcess( ULONG processId = -1);
+void detachAllProcesses();
+void terminateAllProcesses();
 
 void loadDump( const std::wstring &fileName );
 void writeDump( const std::wstring &fileNamem, bool smallDump );

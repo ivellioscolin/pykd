@@ -166,7 +166,39 @@ void terminateProcess( ULONG processId )
 
     hres = g_dbgEng->client->DetachCurrentProcess();
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugClient::DetachCurrentProcess failed" );
+        throw DbgException( "IDebugClient::DetachCurrentProcess", hres );
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void detachAllProcesses()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT     hres;
+
+    hres = g_dbgEng->client->DetachProcesses();
+
+    if ( FAILED(hres) )
+        throw DbgException( "IDebugClient::DetachProcesses", hres );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void terminateAllProcesses()
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+
+    hres = g_dbgEng->client->TerminateProcesses();
+    if ( FAILED(hres) )
+        throw DbgException( "IDebugClient::TerminateProcesses", hres );
+
+    hres = g_dbgEng->client->DetachProcesses();
+    if ( FAILED(hres) )
+        throw DbgException( "IDebugClient::DetachProcesses", hres );
 
 }
 

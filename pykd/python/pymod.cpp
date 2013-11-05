@@ -102,8 +102,12 @@ BOOST_PYTHON_MODULE( pykd )
         "Check whether kernel debugging is enabled for the local kernel" );
     python::def( "detachProcess", &detachProcess, detachProcess_( boost::python::args( "pid" ),
         "Stop process debugging") ); 
+    python::def( "detachAllProcesses", &detachAllProcesses, 
+        "Detach from all process and resume all their threads" );
     python::def( "killProcess", &terminateProcess,
         "Stop debugging and terminate current process" );
+    python::def( "killAllProcesses", &terminateAllProcesses,
+        "Detach from all process then terminate them");
     python::def( "loadDump", &loadDump,
         "Load crash dump");
     python::def( "isDumpAnalyzing", &isDumpAnalyzing,
