@@ -95,8 +95,12 @@ BOOST_PYTHON_MODULE( pykd )
         "Attach debugger to a exsisting process" );
     python::def( "detachProcess", &kdlib::detachProcess, detachProcess_( boost::python::args( "pid" ),
         "Stop process debugging") ); 
+    python::def( "detachAllProcesses", &kdlib::detachAllProcesses, 
+        "Detach from all process and resume all their threads" );
     python::def( "killProcess", &kdlib::terminateProcess, terminateProcess_( boost::python::args( "pid" ),
         "Stop debugging and terminate current process" ) );
+    python::def( "killAllProcesses", &kdlib::terminateAllProcesses,
+        "Detach from all process then terminate them");
     python::def( "loadDump", &loadDump,
         "Load crash dump");
     python::def( "isLocalKernelDebuggerEnabled", &kdlib::isLocalKernelDebuggerEnabled,
