@@ -5,6 +5,7 @@
 
 #include "kdlib/kdlib.h"
 
+#include "pykdver.h"
 #include "variant.h"
 #include "module.h"
 #include "dbgengine.h"

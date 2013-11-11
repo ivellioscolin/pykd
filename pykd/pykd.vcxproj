@@ -240,7 +240,9 @@
     <ClInclude Include="memaccess.h" />
     <ClInclude Include="module.h" />
     <ClInclude Include="pydbgio.h" />
+    <ClInclude Include="pykdver.h" />
     <ClInclude Include="pystate.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="stladaptor.h" />
     <ClInclude Include="targetver.h" />
@@ -293,6 +295,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="pykd.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="pykd.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
