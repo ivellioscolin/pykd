@@ -27,6 +27,11 @@ bool PykdExt::isInit() {
 
 extern "C" void initpykd();
 
+pykd::DbgOut   pykdOut;
+pykd::DbgOut   pykdErr;
+pykd::DbgIn    pykdIn;
+
+
 void PykdExt::setUp() 
 {
     WindbgExtension::setUp();
@@ -56,11 +61,15 @@ void PykdExt::setUp()
     }
 
     // перенаправление стандартных потоков ВВ
+    kdlib::dbgout =&pykdOut;
+    kdlib::dbgerr = &pykdErr;
+    kdlib::dbgin = &pykdIn;
+
     python::object       sys = python::import("sys");
 
-    sys.attr("stdout") = python::object( pykd::DbgOut() );
-    sys.attr("stderr") = python::object( pykd::DbgOut() );
-    sys.attr("stdin") = python::object( pykd::DbgIn() );
+    sys.attr("stdout") = python::object( &pykdOut );
+    sys.attr("stderr") = python::object( &pykdErr );
+    sys.attr("stdin") = python::object( &pykdIn );
 
     python::list pathList(sys.attr("path"));
 

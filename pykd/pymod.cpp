@@ -73,9 +73,17 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( TypeInfo_ptrTo, TypeInfoAdapter::ptrTo, 1, 2 );
 
 //BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_findSymbol, Module::getSymbolNameByVa, 1, 2 );
 
+pykd::SysDbgOut   sysPykdOut;
+pykd::SysDbgOut   sysPykdErr;
+pykd::SysDbgIn    sysPykdIn;
 
 BOOST_PYTHON_MODULE( pykd )
 {
+    // использовать вместо консоли потоки из sys
+    kdlib::dbgout =&sysPykdOut;
+    kdlib::dbgerr = &sysPykdErr;
+    kdlib::dbgin = &sysPykdIn;
+
     python::scope().attr("version") = pykdVersion;
 
    // DbgEng services 
@@ -747,6 +755,7 @@ BOOST_PYTHON_MODULE( pykd )
     pykd::exception<kdlib::MemoryException,kdlib::DbgException>( "MemoryException", "Target memory access exception class" );
     pykd::exception<kdlib::SymbolException,kdlib::DbgException>( "SymbolException", "Symbol exception" );
     pykd::exception<kdlib::TypeException,kdlib::SymbolException>( "TypeException", "type exception" );
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////
