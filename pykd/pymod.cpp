@@ -516,6 +516,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return flag: type is constant" )
         .def( "getCallingConvention", &kdlib::TypeInfo::getCallingConvention,
             "Returns an indicator of a methods calling convention: callingConvention" )
+        .def( "getClassParent", &kdlib::TypeInfo::getClassParent,
+            "Return class parent" )
         .def( "__str__", &kdlib::TypeInfo::str,
             "Return type as a printable string" )
         .def( "__getattr__", TypeInfoAdapter::getElementByName )
