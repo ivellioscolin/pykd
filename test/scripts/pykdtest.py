@@ -29,6 +29,8 @@ import customtypestest
 #import ehstatustest
 #import ehsymbolstest
 
+pykd.initialize()
+
 class StartProcessWithoutParamsTest(unittest.TestCase):
     def testStart(self):
        target.processId = pykd.startProcess( target.appPath )

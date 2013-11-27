@@ -11,7 +11,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	switch (ul_reason_for_call)
 	{
     case DLL_PROCESS_ATTACH:
-        kdlib::initialize();
         break;
 
 	case DLL_THREAD_ATTACH:
@@ -19,7 +18,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         break;
 
 	case DLL_PROCESS_DETACH:
-         kdlib::uninitialize();
 		break;
 	}
 	return TRUE;

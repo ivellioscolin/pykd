@@ -86,6 +86,11 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::scope().attr("version") = pykdVersion;
 
+    python::def( "initialize", &kdlib::initialize,
+        "Initialize debug engine, only for console mode" );
+    python::def( "deinitialize", &kdlib::uninitialize,
+        "Deintialize debug engine, only for console mode" );
+
    // DbgEng services 
     python::def( "setSymSrvDir", &kdlib::setSymSrvDir,
         "Set directory of SYMSRV.dll library.\nUsually this is a directory of WinDbg");
