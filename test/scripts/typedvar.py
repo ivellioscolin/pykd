@@ -101,6 +101,7 @@ class TypedVarTest( unittest.TestCase ):
 
     def testArrayField(self):
         tv = target.module.typedVar( "g_structWithArray" )
+        self.assertEqual( tv + tv.fieldOffset("m_arrayField"),tv.m_arrayField)
         self.assertEqual( 2, len(tv.m_arrayField) )
         self.assertEqual( 0, tv.m_arrayField[0] )
         self.assertEqual( 2, tv.m_arrayField[1] )
