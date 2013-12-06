@@ -383,7 +383,7 @@ void DiaSymbol::getValue( BaseTypeVariant &btv )
         break;
 
     case VT_BOOL:
-        btv = !!vtValue.iVal;
+        btv = !!vtValue.boolVal;
         break;
 
     case VT_I2:
@@ -391,7 +391,7 @@ void DiaSymbol::getValue( BaseTypeVariant &btv )
         break;
 
     case VT_UI2:
-        btv = (ULONG)vtValue.iVal;
+        btv = (ULONG)vtValue.uiVal;
         break;
 
     case VT_I4:
