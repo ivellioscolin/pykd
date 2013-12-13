@@ -129,5 +129,20 @@ class CustomTypesTest(unittest.TestCase):
         mySubStruct.append( "m_uint2", tb.UInt2B )
         mySubStructPtr = mySubStruct.ptrTo()
         self.assertEqual( pykd.ptrSize(), mySubStructPtr.size() )
-
-
+        
+    def testAlign(self):
+        tb = pykd.typeBuilder()
+        struct = tb.createStruct(name ="MyAlignStruct", align=4)
+        struct.append( "m_field1", tb.UInt1B )
+        self.assertEqual( 1, struct.size() )
+        struct.append( "m_field2", tb.UInt1B )
+        self.assertEqual( 2, struct.size() )
+        struct.append( "m_field3", tb.UInt1B )
+        struct.append( "m_field4", tb.UInt2B )
+        self.assertEqual( 6, struct.size() )
+        struct.append( "m_field5", tb.UInt4B )
+        self.assertEqual( 12, struct.size() )
+        struct.append( "m_field6", tb.UInt1B )
+        self.assertEqual( 16, struct.size() )
+        struct.append( "m_field7", tb.UInt1B.arrayOf(5) )
+        self.assertEqual( 20, struct.size() )
