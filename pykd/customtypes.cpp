@@ -9,16 +9,16 @@ namespace pykd {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr TypeBuilder::createStruct(  const std::string &name, ULONG align )
+TypeInfoPtr TypeBuilder::createStruct( const std::string &name, ULONG align )
 {
-    return TypeInfoPtr( new CustomStruct( name, m_ptrSize, align ? align : m_ptrSize ) );
+    return TypeInfoPtr( new CustomStruct( name, m_ptrSize, align ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-TypeInfoPtr TypeBuilder::createUnion( const std::string &name )
+TypeInfoPtr TypeBuilder::createUnion( const std::string &name, ULONG align )
 {
-    return TypeInfoPtr( new CustomUnion( name, m_ptrSize, m_ptrSize ) );
+    return TypeInfoPtr( new CustomUnion( name, m_ptrSize, align ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

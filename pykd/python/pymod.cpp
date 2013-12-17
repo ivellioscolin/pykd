@@ -69,6 +69,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, TypeInfo::findSymbol, 1, 2 );
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( TypeBuilder_createStruct, TypeBuilder::createStruct, 1, 2 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( TypeBuilder_createUnion, TypeBuilder::createUnion, 1, 2 );
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_enumSymbols, Module::enumSymbols, 0, 1 );
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_findSymbol, Module::getSymbolNameByVa, 1, 2 );
@@ -518,8 +519,8 @@ BOOST_PYTHON_MODULE( pykd )
         .add_property( "VoidPtr", &TypeBuilder::getVoidPtr )
         .def( "createStruct", &TypeBuilder::createStruct, TypeBuilder_createStruct( python::args( "name", "align" ),
             "Create custom struct" ) )
-        .def( "createUnion", &TypeBuilder::createUnion, 
-            "Create custom union" );
+        .def( "createUnion", &TypeBuilder::createUnion, TypeBuilder_createUnion( python::args( "name", "align" ),
+            "Create custom union" ) );
 
     python::class_<CpuReg, python::bases<intBase> >( 
         "cpuReg", "CPU regsiter class", boost::python::no_init )

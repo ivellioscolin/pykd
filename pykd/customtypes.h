@@ -41,7 +41,7 @@ public:
 
     TypeInfoPtr createStruct( const std::string &name, ULONG align = 0 );
 
-    TypeInfoPtr createUnion( const std::string &name);
+    TypeInfoPtr createUnion( const std::string &name, ULONG align = 0);
 
 private:
 
@@ -63,7 +63,7 @@ protected:
         UdtTypeInfoBase( name )
         {
             m_ptrSize = pointerSize;
-            m_align = align;
+            m_align = align ? align : m_ptrSize;
             m_size = 0;
         }
 

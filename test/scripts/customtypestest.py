@@ -142,6 +142,14 @@ class CustomTypesTest(unittest.TestCase):
         struct.append( "m_field7", tb.UInt1B.arrayOf(5) )
         self.assertEqual( 20, struct.size() )
 
+    def testUnionAlignedSize(self):
+        tb = pykd.typeBuilder()
+        union = tb.createUnion("MyCustomUnion", align=4)
+        union.append( "m_field1", tb.UInt2B )
+        self.assertEqual( 2, union.size() )
+        union.append( "m_field2", tb.UInt1B.arrayOf(3) )
+        self.assertEqual( 4, union.size() )
+
     def testWi12591(self):
         tb = pykd.typeBuilder()
         struct = tb.createStruct(name ="MyAlignStruct", align=4)
