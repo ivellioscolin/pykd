@@ -9,6 +9,7 @@
 
 namespace pykd {
 
+
 template< class TExcept >
 struct exceptPyType{
     static python::handle<>     pyExceptType;
@@ -43,34 +44,55 @@ public:
         python::scope().attr( className.c_str() ) = ob;
 
         exceptPyType<TExcept>::pyExceptType = python::handle<>( ob.ptr() );
-
-        python::register_exception_translator<TExcept>( &exceptionTranslate );
     }
-
-    static
-    void
-    exceptionTranslate(const TExcept &e ) {
-
-        python::object      exceptObj = python::object( exceptPyType<TExcept>::pyExceptType )( e.what() );
-
-        PyErr_SetObject( exceptPyType<TExcept>::pyExceptType.get(), exceptObj.ptr());
-    }
-
 };
 
-//////////////////////////////////////////////////////////////////////////////
 
-struct ExceptionTranslator {
 
-    static
-    void
-    indexTranslate(const kdlib::IndexException &e ) {
+inline void exceptionTranslate(const kdlib::DbgException &e ) 
+{
+    if ( typeid(e).hash_code() == typeid(kdlib::MemoryException).hash_code() )
+    {
+        python::object      exceptObj = python::object( exceptPyType<kdlib::MemoryException>::pyExceptType )( e.what() );
+        PyErr_SetObject( exceptPyType<kdlib::MemoryException>::pyExceptType.get(), exceptObj.ptr());
+        return;
+    }
+
+    if ( typeid(e).hash_code() == typeid(kdlib::SymbolException).hash_code() )
+    {
+        python::object      exceptObj = python::object( exceptPyType<kdlib::SymbolException>::pyExceptType )( e.what() );
+        PyErr_SetObject( exceptPyType<kdlib::SymbolException>::pyExceptType.get(), exceptObj.ptr());
+        return;
+    }
+
+    if ( typeid(e).hash_code() == typeid(kdlib::TypeException).hash_code() )
+    {
+        python::object      exceptObj = python::object( exceptPyType<kdlib::TypeException>::pyExceptType )( e.what() );
+        PyErr_SetObject( exceptPyType<kdlib::TypeException>::pyExceptType.get(), exceptObj.ptr());
+        return;
+    }
+
+    if ( typeid(e).hash_code() == typeid(kdlib::IndexException).hash_code() )
+    {
         PyErr_SetString( PyExc_IndexError, "Index out of range");
+        return;
     }
 
-};
+    python::object      exceptObj = python::object( exceptPyType<kdlib::DbgException>::pyExceptType )( e.what() );
+    PyErr_SetObject( exceptPyType<kdlib::DbgException>::pyExceptType.get(), exceptObj.ptr());
+}
 
-///////////////////////////////////////////////////////////////////////////////////
+inline void registerExceptions()
+{
+    pykd::exception<kdlib::DbgException>( "DbgException", "Pykd base exception class" );
+    pykd::exception<kdlib::MemoryException,kdlib::DbgException>( "MemoryException", "Target memory access exception class" );
+    pykd::exception<kdlib::SymbolException,kdlib::DbgException>( "SymbolException", "Symbol exception" );
+    pykd::exception<kdlib::TypeException,kdlib::SymbolException>( "TypeException", "type exception" );
+
+    python::register_exception_translator<kdlib::DbgException>( &exceptionTranslate );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
 
 void printException();
 

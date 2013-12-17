@@ -772,14 +772,8 @@ BOOST_PYTHON_MODULE( pykd )
    //         "There is no return value");
       ;
 
-    python::register_exception_translator<kdlib::IndexException>( &ExceptionTranslator::indexTranslate );
-
-    // kdlib exception
-    pykd::exception<kdlib::DbgException>( "DbgException", "Pykd base exception class" );
-    pykd::exception<kdlib::MemoryException,kdlib::DbgException>( "MemoryException", "Target memory access exception class" );
-    pykd::exception<kdlib::SymbolException,kdlib::DbgException>( "SymbolException", "Symbol exception" );
-    pykd::exception<kdlib::TypeException,kdlib::SymbolException>( "TypeException", "type exception" );
-
+    // C++ exception translation to python
+    pykd::registerExceptions();
 }
 
 //////////////////////////////////////////////////////////////////////////////////
