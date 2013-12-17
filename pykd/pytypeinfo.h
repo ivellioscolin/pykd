@@ -27,10 +27,10 @@ inline kdlib::TypeInfoPtr defineStruct( const std::wstring &structName, size_t a
     return kdlib::defineStruct(structName, align);
 }
 
-inline kdlib::TypeInfoPtr defineUnion( const std::wstring& unionName )
+inline kdlib::TypeInfoPtr defineUnion( const std::wstring& unionName, size_t align = 0 )
 {
     AutoRestorePyState  pystate;
-    return kdlib::defineUnion(unionName);
+    return kdlib::defineUnion(unionName, align);
 }
 
 

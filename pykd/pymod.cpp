@@ -67,6 +67,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, pykd::findSymbol, 1, 2 );
 //BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 //
 BOOST_PYTHON_FUNCTION_OVERLOADS( createStruct_, kdlib::defineStruct, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( createUnion_, kdlib::defineUnion, 1, 2 );
 //
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_enumSymbols, ModuleAdapter::enumSymbols, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_findSymbol, ModuleAdapter::findSymbol, 2, 3 );
@@ -292,8 +293,8 @@ BOOST_PYTHON_MODULE( pykd )
     //    "Return custom defined struct" );
     python::def( "createStruct", &pykd::defineStruct, createStruct_( python::args( "name", "align" ),
         "Create custom struct" ) );
-    python::def( "createUnion", &pykd::defineUnion, 
-        "Create custom union" );
+    python::def( "createUnion", &pykd::defineUnion, createUnion_( python::args( "name", "align" ),
+        "Create custom union" ) );
 
     // CPU registers
     python::def( "reg", pykd::getRegisterByName,
