@@ -30,11 +30,11 @@ def printDeltaStat():
     for i in range( 0, len(stk) -1 ):
     
         try:
-            mod = module( stk[i].returnOffset )
+            mod = module( stk[i].ret )
         except BaseException:
             continue    
   
-        delta = stk[i+1].frameOffset - stk[i].frameOffset
+        delta = stk[i+1].fp - stk[i].fp
         if delta > 0:
        
             moduleName = mod.name()
@@ -44,7 +44,7 @@ def printDeltaStat():
             else:
                 moduleLst[moduleName] = delta
                 
-            func = moduleName + "!" + mod.findSymbol( stk[i].returnOffset, showDisplacement = False )
+            func = moduleName + "!" + mod.findSymbol( stk[i].ret, showDisplacement = False )
 
             if func in funcLst:
                 funcLst[func] = funcLst[func] + delta
@@ -53,9 +53,9 @@ def printDeltaStat():
                 
     nt = module("nt")
     
-    thread = nt.typedVar( "_KTHREAD", getImplicitThread() )                
+    thread = nt.typedVar( "_KTHREAD", getThreadOffset( getCurrentThread() ) )
                 
-    stackSize = thread.InitialStack - thread.StackLimit                
+    stackSize = thread.InitialStack - thread.StackLimit
                 
     dprintln("")
     dprintln( "%12s\t%s" % ("Stack usage:", "Module:" ) )
@@ -80,12 +80,12 @@ def printDeltaStack():
     dprintln( "Stack Delta:\tFunction:")
     
     for i in range( 0, len(stk) -1 ):
-        dprint( "%12s\t" % long( stk[i+1].frameOffset - stk[i].frameOffset) )
+        dprint( "%12s\t" % long( stk[i+1].fp - stk[i].fp) )
         try:
-            mod = module( stk[i].returnOffset )
-            dprintln( "%s!%s"% ( mod.name(), mod.findSymbol( stk[i].returnOffset, showDisplacement = False ) ) )
+            mod = module( stk[i].ret )
+            dprintln( "%s!%s"% ( mod.name(), mod.findSymbol( stk[i].ret, showDisplacement = False ) ) )
         except BaseException:
-            dprintln( findSymbol( stk[i].returnOffset ) )        
+            dprintln( findSymbol( stk[i].ret ) )        
 
 def main():
 

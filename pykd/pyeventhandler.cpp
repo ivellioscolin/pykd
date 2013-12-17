@@ -2,7 +2,7 @@
 
 #include "kdlib\eventhandler.h"
 
-#include "eventhandler.h"
+#include "pyeventhandler.h"
 #include "dbgexcept.h"
 
 namespace pykd {
@@ -14,11 +14,11 @@ class SoftwareBreakpoint : public Breakpoint
 public:
 
     SoftwareBreakpoint(  kdlib::MEMOFFSET_64 offset ) {
-        m_id = kdlib::softwareBreakPointSet( offset );
+        m_id = pykd::softwareBreakPointSet( offset );
     }
 
     ~SoftwareBreakpoint() {
-        kdlib::breakPointRemove( m_id );
+        pykd::breakPointRemove( m_id );
     }
 
 private:
@@ -37,13 +37,13 @@ public:
     {
         m_pystate = PyThreadState_Get();
         m_callback = callback;
-        m_id = kdlib::softwareBreakPointSet( offset );
+        m_id = pykd::softwareBreakPointSet( offset );
     }
 
     ~SoftwareBreakpointWithCallback()
     {
         try {
-            kdlib::breakPointRemove( m_id );
+            pykd::breakPointRemove( m_id );
         } catch( kdlib::DbgException& )
         { }
     }

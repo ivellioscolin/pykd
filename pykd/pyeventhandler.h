@@ -8,12 +8,42 @@
 #include "boost/python/object.hpp"
 #include "boost/python/wrapper.hpp"
 
+#include "pythreadstate.h"
+
 namespace python = boost::python;
 
 namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+inline kdlib::BREAKPOINT_ID softwareBreakPointSet( kdlib::MEMOFFSET_64 offset )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::softwareBreakPointSet(offset);
+}
+
+inline kdlib::BREAKPOINT_ID hardwareBreakPointSet( kdlib::MEMOFFSET_64 offset, size_t size = 0, kdlib::ACCESS_TYPE accessType = 0 )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::hardwareBreakPointSet(offset, size, accessType);
+}
+
+
+inline void breakPointRemove( kdlib::BREAKPOINT_ID id )
+{
+    AutoRestorePyState  pystate;
+    kdlib::breakPointRemove(id);
+}
+
+inline void breakPointRemoveAll()
+{
+    AutoRestorePyState  pystate;
+    kdlib::breakPointRemoveAll();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+    
 class Breakpoint;
 typedef boost::shared_ptr<Breakpoint>  BreakpointPtr;
 

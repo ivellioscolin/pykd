@@ -6,17 +6,21 @@
 #include "kdlib/kdlib.h"
 
 #include "pykdver.h"
+
 #include "variant.h"
-#include "module.h"
-#include "dbgengine.h"
 #include "dbgexcept.h"
-#include "memaccess.h"
-#include "typeinfo.h"
-#include "typedvar.h"
 #include "windbgext.h"
-#include "eventhandler.h"
-#include "cpucontext.h"
+
+#include "pydbgeng.h"
 #include "pydbgio.h"
+#include "pydisasm.h"
+#include "pyeventhandler.h"
+#include "pymemaccess.h"
+#include "pymodule.h"
+#include "pysymengine.h"
+#include "pytypedvar.h"
+#include "pytypeinfo.h"
+#include "pycpucontext.h"
 
 using namespace pykd;
 
@@ -31,34 +35,34 @@ static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 ///////////////////////////////////////////////////////////////////////////////
 
 
-BOOST_PYTHON_FUNCTION_OVERLOADS( startProcess_,  startProcess, 1, 2 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_,  kdlib::detachProcess, 0, 1 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( terminateProcess_,  kdlib::terminateProcess, 0, 1 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( attachKernel_,  attachKernel, 0, 1 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( evaluate_, evaluate, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( startProcess_,  pykd::startProcess, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_,  pykd::detachProcess, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( terminateProcess_,  pykd::terminateProcess, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( attachKernel_,  pykd::attachKernel, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( evaluate_, pykd::evaluate, 1, 2 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, kdlib::dprint, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, kdlib::dprintln, 1, 2 );
 
 //BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_findSymbol, Module::getSymbolNameByVa, 1, 2 );
 
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadChars_, kdlib::loadChars, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadWChars_, kdlib::loadWChars, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadBytes_, loadBytes, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadWords_, loadWords, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadDWords_, loadDWords, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadQWords_, loadQWords, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignBytes_, loadSignBytes, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords_, loadSignWords, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, loadSignDWords, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, loadSignQWords, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadFloats_, loadFloats, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( loadDoubles_, loadDoubles, 2, 3 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, kdlib::compareMemory, 3, 4 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadChars_, pykd::loadChars, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadWChars_, pykd::loadWChars, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadBytes_, pykd::loadBytes, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadWords_, pykd::loadWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadDWords_, pykd::loadDWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadQWords_, pykd::loadQWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignBytes_, pykd::loadSignBytes, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignWords_, pykd::loadSignWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignDWords_, pykd::loadSignDWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadSignQWords_, pykd::loadSignQWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadFloats_, pykd::loadFloats, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( loadDoubles_, pykd::loadDoubles, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, pykd::compareMemory, 3, 4 );
 
-
-BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, getSourceLine, 0, 1 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, kdlib::getSourceFile, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, pykd::getSourceFile, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, pykd::getSourceLine, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, pykd::findSymbol, 1, 2 );
 
 //BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
 //
@@ -67,7 +71,6 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( createStruct_, kdlib::defineStruct, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_enumSymbols, ModuleAdapter::enumSymbols, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_findSymbol, ModuleAdapter::findSymbol, 2, 3 );
 
-BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, TypeInfoAdapter::findSymbol, 1, 2 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( TypeInfo_ptrTo, TypeInfoAdapter::ptrTo, 1, 2 ); 
 
@@ -76,6 +79,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( TypeInfo_ptrTo, TypeInfoAdapter::ptrTo, 1, 2 );
 pykd::SysDbgOut   sysPykdOut;
 pykd::SysDbgOut   sysPykdErr;
 pykd::SysDbgIn    sysPykdIn;
+
 
 BOOST_PYTHON_MODULE( pykd )
 {
@@ -92,59 +96,58 @@ BOOST_PYTHON_MODULE( pykd )
         "Deintialize debug engine, only for console mode" );
 
    // DbgEng services 
-    python::def( "setSymSrvDir", &kdlib::setSymSrvDir,
+    python::def( "setSymSrvDir", pykd::setSymSrvDir,
         "Set directory of SYMSRV.dll library.\nUsually this is a directory of WinDbg");
-    python::def( "loadExt", &kdlib::loadExtension,
+    python::def( "loadExt", pykd::loadExtension,
         "Load a WinDBG extension. Return handle of the loaded extension" );
-    python::def( "removeExt", &kdlib::removeExtension,
+    python::def( "removeExt", pykd::removeExtension,
         "Unload a WinDBG extension. Parameters: handle returned by loadExt" );
-    python::def( "callExt", &kdlib::callExtension,
+    python::def( "callExt", pykd::callExtension,
         "Call a WinDBG extension's routine. Parameters: handle returned by loadExt; string command line" );
-
 
    // Manage debug target 
 
-    python::def( "startProcess", &startProcess, startProcess_( boost::python::args( "commandline", "debugChildren" ), 
+    python::def( "startProcess", pykd::startProcess, startProcess_( boost::python::args( "commandline", "debugChildren" ), 
         "Start process for debugging" ) ); 
-    python::def( "attachProcess", &attachProcess,
+    python::def( "attachProcess", pykd::attachProcess,
         "Attach debugger to a exsisting process" );
-    python::def( "detachProcess", &kdlib::detachProcess, detachProcess_( boost::python::args( "pid" ),
+    python::def( "detachProcess", pykd::detachProcess, detachProcess_( boost::python::args( "pid" ),
         "Stop process debugging") ); 
-    python::def( "detachAllProcesses", &kdlib::detachAllProcesses, 
+    python::def( "detachAllProcesses", pykd::detachAllProcesses, 
         "Detach from all process and resume all their threads" );
-    python::def( "killProcess", &kdlib::terminateProcess, terminateProcess_( boost::python::args( "pid" ),
+    python::def( "killProcess", pykd::terminateProcess, terminateProcess_( boost::python::args( "pid" ),
         "Stop debugging and terminate current process" ) );
-    python::def( "killAllProcesses", &kdlib::terminateAllProcesses,
+    python::def( "killAllProcesses", pykd::terminateAllProcesses,
         "Detach from all process then terminate them");
-    python::def( "loadDump", &loadDump,
+    python::def( "loadDump", pykd::loadDump,
         "Load crash dump");
-    python::def( "isLocalKernelDebuggerEnabled", &kdlib::isLocalKernelDebuggerEnabled,
+    python::def( "isLocalKernelDebuggerEnabled", pykd::isLocalKernelDebuggerEnabled,
         "Check whether kernel debugging is enabled for the local kernel");
-    python::def( "attachKernel", &attachKernel, attachKernel_( boost::python::args( "connectOptions" ),
+    python::def( "attachKernel", pykd::attachKernel, attachKernel_( boost::python::args( "connectOptions" ),
         "Connect the debugger engine to a kernel target.\n"
         "If connectOptions is not specified - attach to the local kernel") );
-    python::def( "isDumpAnalyzing", &kdlib::isDumpAnalyzing,
+    python::def( "isDumpAnalyzing", pykd::isDumpAnalyzing,
         "Check if it is a dump analyzing ( not living debuggee )" );
-    python::def( "isKernelDebugging", &kdlib::isKernelDebugging,
+    python::def( "isKernelDebugging", pykd::isKernelDebugging,
         "Check if kernel dubugging is running" );
-    python::def( "isWindbgExt", &PykdExt::isInit,
+    python::def( "isWindbgExt", PykdExt::isInit,
         "Check if script works in windbg context" );
-    python::def( "writeDump", &kdlib::writeDump,
+    python::def( "writeDump", pykd::writeDump,
         "Create memory dump file" );
 
-    python::def( "breakin", &targetBreak,
+    python::def( "breakin", pykd::targetBreak,
         "Break into debugger" );
-    python::def( "expr", &evaluate, evaluate_( boost::python::args( "expression", "cplusplus" ),
+    python::def( "expr", pykd::evaluate, evaluate_( boost::python::args( "expression", "cplusplus" ),
         "Evaluate windbg expression" ) );
-    python::def( "dbgCommand", &debugCommand,
+    python::def( "dbgCommand", pykd::debugCommand,
         "Run a debugger's command and return it's result as a string" );
-    python::def( "go", &targetGo,
+    python::def( "go", pykd::targetGo,
         "Go debugging"  );
-    python::def( "step", &targetStep,
+    python::def( "step", pykd::targetStep,
         "The target is executing a single instruction or--if that instruction is a subroutine call--subroutine" );
-    python::def( "trace", &targetStepIn,
+    python::def( "trace", pykd::targetStepIn,
         "The target is executing a single instruction" );
-    python::def( "getExecutionStatus", &kdlib::targetExecutionStatus,
+    python::def( "getExecutionStatus", pykd::targetExecutionStatus,
         "Return current execution status" );
 
    // Debug output
@@ -164,17 +167,17 @@ BOOST_PYTHON_MODULE( pykd )
         .add_property( "encoding", &DbgIn::encoding );
 
    // system properties
-    python::def( "ptrSize", &kdlib::ptrSize,
+    python::def( "ptrSize", pykd::ptrSize,
         "Return effective pointer size" );
-    python::def( "is64bitSystem", &kdlib::is64bitSystem,
+    python::def( "is64bitSystem", pykd::is64bitSystem,
        "Check if target system has 64 address space" );
-    python::def( "pageSize", &kdlib::getPageSize,
+    python::def( "pageSize", pykd::getPageSize,
         "Get the page size for the currently executing processor context" );
-    python::def( "systemUptime", &kdlib::getSystemUptime,
+    python::def( "systemUptime", pykd::getSystemUptime,
         "Return the number of seconds the computer has been running" );
-    python::def( "currentTime", &kdlib::getCurrentTime,
+    python::def( "currentTime", pykd::getCurrentTime,
         "Return the number of seconds since the beginning of 1970" );
-    python::def("getSystemVersion", &getSystemVersion,
+    python::def("getSystemVersion", pykd::getSystemVersion,
         "Return systemVersion");
 
     // Manage target memory access
@@ -193,125 +196,125 @@ BOOST_PYTHON_MODULE( pykd )
     //python::def( "getVaProtect", &kdlib::getVaProtect,
     //    "Return memory attributes" );
 
-    python::def( "ptrByte", &kdlib::ptrByte,
+    python::def( "ptrByte", pykd::ptrByte,
         "Read an unsigned 1-byte integer from the target memory" );
-    python::def( "ptrWord", &kdlib::ptrWord,
+    python::def( "ptrWord", pykd::ptrWord,
         "Read an unsigned 2-byte integer from the target memory" );
-    python::def( "ptrDWord", &kdlib::ptrDWord,
+    python::def( "ptrDWord", pykd::ptrDWord,
         "Read an unsigned 4-byte integer from the target memory" );
-    python::def( "ptrQWord", &kdlib::ptrQWord,
+    python::def( "ptrQWord", pykd::ptrQWord,
         "Read an unsigned 8-byte integer from the target memory" );
-    python::def( "ptrMWord", &kdlib::ptrMWord,
+    python::def( "ptrMWord", pykd::ptrMWord,
         "Read an unsigned mashine's word wide integer from the target memory" );
-    python::def( "ptrSignByte", &ptrSignByte,
+    python::def( "ptrSignByte", pykd::ptrSignByte,
         "Read an signed 1-byte integer from the target memory" );
-    python::def( "ptrSignWord", &kdlib::ptrSignWord,
+    python::def( "ptrSignWord", pykd::ptrSignWord,
         "Read an signed 2-byte integer from the target memory" );
-    python::def( "ptrSignDWord", &kdlib::ptrSignDWord,
+    python::def( "ptrSignDWord", pykd::ptrSignDWord,
         "Read an signed 4-byte integer from the target memory" );
-    python::def( "ptrSignQWord", &kdlib::ptrSignQWord,
+    python::def( "ptrSignQWord", pykd::ptrSignQWord,
         "Read an signed 8-byte integer from the target memory" );
-    python::def( "ptrSignMWord", &kdlib::ptrSignMWord,
+    python::def( "ptrSignMWord", pykd::ptrSignMWord,
         "Read an signed mashine's word wide integer from the target memory" );
-    python::def( "ptrFloat", &kdlib::ptrSingleFloat,
+    python::def( "ptrFloat", pykd::ptrSingleFloat,
         "Read a float with single precision from the target memory" );
-   python::def( "ptrDouble", &kdlib::ptrDoubleFloat,
+   python::def( "ptrDouble", pykd::ptrDoubleFloat,
         "Read a float with single precision from the target memory" );
 
-    python::def( "loadBytes", &loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadBytes", pykd::loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of unsigned bytes" ) );
-    python::def( "loadWords", &loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadWords", pykd::loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of unsigned shorts" ) );
-    python::def( "loadDWords", &loadDWords, loadDWords_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadDWords", pykd::loadDWords, loadDWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of unsigned long ( double word )" ) );
-    python::def( "loadQWords", &loadQWords, loadQWords_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadQWords", pykd::loadQWords, loadQWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of unsigned long long ( quad word )" ) );
-    python::def( "loadSignBytes", &loadSignBytes, loadSignBytes_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadSignBytes", pykd::loadSignBytes, loadSignBytes_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of signed bytes" ) );
-    python::def( "loadSignWords", &loadSignWords, loadSignWords_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadSignWords", pykd::loadSignWords, loadSignWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of signed words" ) );
-    python::def( "loadSignDWords", &loadSignDWords, loadSignDWords_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadSignDWords", pykd::loadSignDWords, loadSignDWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of signed longs" ) );
-    python::def( "loadSignQWords", &loadSignQWords, loadSignQWords_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadSignQWords", pykd::loadSignQWords, loadSignQWords_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of signed long longs" ) );
-    python::def( "loadChars", &kdlib::loadChars, loadChars_( python::args( "address", "count", "phyAddr" ),
+    python::def( "loadChars", pykd::loadChars, loadChars_( python::args( "address", "count", "phyAddr" ),
         "Load string from target memory" ) );
-    python::def( "loadWChars", &kdlib::loadWChars, loadWChars_( python::args( "address", "count", "phyAddr" ),
+    python::def( "loadWChars", pykd::loadWChars, loadWChars_( python::args( "address", "count", "phyAddr" ),
         "Load string from target memory" ) );
-    python::def( "loadCStr", &kdlib::loadCStr,
+    python::def( "loadCStr", pykd::loadCStr,
         "Load string from the target buffer containing 0-terminated ansi-string" );
-    python::def( "loadWStr", &kdlib::loadWStr,
+    python::def( "loadWStr", pykd::loadWStr,
         "Load string from the target buffer containing 0-terminated unicode-string" );
-    python::def( "loadUnicodeString", &loadUnicodeStr,
+    python::def( "loadUnicodeString", pykd::loadUnicodeStr,
         "Return string represention of windows UNICODE_STRING type" );
-    python::def( "loadAnsiString", &loadAnsiStr,
+    python::def( "loadAnsiString", pykd::loadAnsiStr,
         "Return string represention of windows ANSI_STRING type" );
-    python::def( "loadFloats", &loadFloats, loadFloats_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadFloats", pykd::loadFloats, loadFloats_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of floats" ) );
-    python::def( "loadDoubles", &loadDoubles, loadDoubles_( python::args( "offset", "count", "phyAddr" ),
+    python::def( "loadDoubles", pykd::loadDoubles, loadDoubles_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of doubles" ) );
 
-    python::def( "ptrPtr", &ptrPtr,
+    python::def( "ptrPtr", pykd::ptrPtr,
         "Read an pointer value from the target memory" );
-    python::def( "loadPtrList", &loadPtrList,
+    python::def( "loadPtrList", pykd::loadPtrList,
         "Return list of pointers, each points to next" );
-    python::def( "loadPtrs", &loadPtrArray,
+    python::def( "loadPtrs", pykd::loadPtrArray,
         "Read the block of the target's memory and return it as a list of pointers" );
 
     // types and vaiables
-    python::def( "getSourceFile", &kdlib::getSourceFile, getSourceFile_( python::args( "offset"),
+    python::def( "getSourceFile", pykd::getSourceFile, getSourceFile_( python::args( "offset"),
         "Return source file by the specified offset" ) );
-    python::def( "getSourceLine", &getSourceLine, getSourceLine_( python::args( "offset"),
+    python::def( "getSourceLine", pykd::getSourceLine, getSourceLine_( python::args( "offset"),
         "Return source file name, line and displacement by the specified offset" ) );
-    python::def( "getOffset", &kdlib::getSymbolOffset,
+    python::def( "getOffset", pykd::getSymbolOffset,
         "Return traget virtual address for specified symbol" );
-    python::def( "findSymbol", &TypeInfoAdapter::findSymbol, findSymbol_( python::args( "offset", "showDisplacement"),
+    python::def( "findSymbol", pykd::findSymbol, findSymbol_( python::args( "offset", "showDisplacement"),
         "Find symbol by the target virtual memory offset" ) );
-    python::def("findSymbolAndDisp", &findSymbolAndDisp,
+    python::def("findSymbolAndDisp", pykd::findSymbolAndDisp,
         "Return tuple(symbol_name, displacement) by virtual address" );
-    python::def( "sizeof", &kdlib::getSymbolSize,
+    python::def( "sizeof", pykd::getSymbolSize,
         "Return a size of the type or variable" );
-    python::def("typedVarList", &TypedVarAdapter::getTypedVarListByTypeName,
+    python::def("typedVarList", pykd::getTypedVarListByTypeName,
         "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" );
-    python::def("typedVarList", &TypedVarAdapter::getTypedVarListByType,
+    python::def("typedVarList", pykd::getTypedVarListByType,
         "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" );
-    python::def("typedVarArray", &TypedVarAdapter::getTypedVarArrayByTypeName,
+    python::def("typedVarArray", pykd::getTypedVarArrayByTypeName,
         "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" );
-    python::def("typedVarArray", &TypedVarAdapter::getTypedVarArrayByType,
+    python::def("typedVarArray", pykd::getTypedVarArrayByType,
         "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" );
-    python::def("containingRecord", &TypedVarAdapter::containingRecordByName,
+    python::def("containingRecord", pykd::containingRecordByName,
         "Return instance of the typedVar class. It's value are loaded from the target memory."
         "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
-    python::def("containingRecord", &TypedVarAdapter::containingRecordByType,
+    python::def("containingRecord", pykd::containingRecordByType,
         "Return instance of the typedVar class. It's value are loaded from the target memory."
         "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
-    python::def("createStruct", &kdlib::defineStruct,
-        "return custom defined struct" );
-    python::def( "createStruct", &kdlib::defineStruct, createStruct_( python::args( "name", "align" ),
-            "Create custom struct" ) );
-    python::def( "createUnion", &kdlib::defineUnion, 
-            "Create custom union" );
+    //python::def("createStruct", &kdlib::defineStruct,
+    //    "Return custom defined struct" );
+    python::def( "createStruct", &pykd::defineStruct, createStruct_( python::args( "name", "align" ),
+        "Create custom struct" ) );
+    python::def( "createUnion", &pykd::defineUnion, 
+        "Create custom union" );
 
     // CPU registers
-    python::def( "reg", &getRegisterByName,
+    python::def( "reg", pykd::getRegisterByName,
         "Return a CPU regsiter value by the register's name" );
-    python::def ( "rdmsr", &loadMSR,
+    python::def ( "rdmsr", pykd::loadMSR,
         "Return MSR value" );
-    python::def( "wrmsr", &setMSR,
+    python::def( "wrmsr", pykd::setMSR,
         "Set MSR value" );
-    python::def( "getProcessorMode", &getProcessorMode, 
+    python::def( "getProcessorMode", pykd::getProcessorMode, 
         "Return current processor mode as string: X86, ARM, IA64 or X64" );
-    python::def( "getProcessorType", &getProcessorType,
+    python::def( "getProcessorType", pykd::getProcessorType,
         "Return type of physical processor: X86, ARM, IA64 or X64" );
-    python::def( "setProcessorMode", &setProcessorMode,
+    python::def( "setProcessorMode",pykd::setProcessorMode,
         "Set current processor mode  (X86, ARM, IA64 or X64)" );
-    python::def( "switchProcessorMode", &switchProcessorMode,
+    python::def( "switchProcessorMode", pykd::switchProcessorMode,
         "Switch processor mode ( X86 <-> X64 )" );
 
    // stack and local variables
-    python::def( "getStack", &getCurrentStack,
+    python::def( "getStack", pykd::getCurrentStack,
         "Return a current stack as a list of stackFrame objects" );
-    python::def( "getFrame", &getCurrentFrame,
+    python::def( "getFrame", pykd::getCurrentFrame,
         "Return a current stack frame" );
 
 
@@ -325,9 +328,9 @@ BOOST_PYTHON_MODULE( pykd )
    //     "Get list of function arguments" );
 
     // breakpoints
-    python::def( "setBp", &kdlib::softwareBreakPointSet,
+    python::def( "setBp", pykd::softwareBreakPointSet,
         "Set software breakpoint on executiont" );
-    python::def( "removeBp", &kdlib::breakPointRemove,
+    python::def( "removeBp", pykd::breakPointRemove,
         "Remove breapoint by IDs" );
 
     //python::def( "setBp", &setHardwareBp, setHardwareBp_( python::args( "offset", "size", "accsessType", "callback" ) ,
@@ -336,34 +339,46 @@ BOOST_PYTHON_MODULE( pykd )
    // //    "Remove all breapoints" );
 
     // processes and threads
-    python::def ( "getNumberProcesses", kdlib::getNumberProcesses,
+    python::def ( "getNumberProcesses", pykd::getNumberProcesses,
         "Return number of processes on the target system" );
-    python::def( "getCurrentProcess", kdlib::getCurrentProcessId,
+    python::def( "getCurrentProcess", pykd::getCurrentProcessId,
         "Return ID of the current process. This ID can be used with terminateProcess" );
-    python::def( "getProcessOffset", kdlib::getProcessOffset,
+    python::def( "getProcessOffset", pykd::getProcessOffset,
         "Return the location in the target's memory of the process structure ( PEB )" );
-    python::def( "getProcessSystemID", kdlib::getProcessSystemId,
+    python::def( "getProcessSystemID", pykd::getProcessSystemId,
         "Return system process ID ( PID )" );
-    python::def( "getProcessId", kdlib::getProcessIdByOffset,
+    python::def( "getProcessId", pykd::getProcessIdByOffset,
         "Return process ID by the location in the target's memory of the process structure" );
-    python::def( "getProcessId", kdlib::getProcessIdBySystemId,
+    python::def( "getProcessId", pykd::getProcessIdBySystemId,
         "Return process ID by the system's process ID ( PID )" );
+    python::def( "setCurrentProcess", pykd::setCurrentProcess,
+        "Set current process by ID" );
+    python::def( "getImplicitProcess", pykd::getImplicitProcessOffset,
+        "Return implicit process" );
+    python::def( "setImplicitProcess", pykd::setImplicitProcess,
+        "Set implicit process" );
    // python::def( "getCurrentProcessExeName", &getCurrentProcessExecutableName,
    //     "Return name of executable file loaded in the current process");
 
 
-    python::def ( "getNumberThreads", kdlib::getNumberThreads,
+    python::def ( "getNumberThreads", pykd::getNumberThreads,
         "Return number of threads on the target system" );
-    python::def( "getCurrentThread", kdlib::getCurrentThreadId,
+    python::def( "getCurrentThread", pykd::getCurrentThreadId,
         "Return ID of the current thread" );
-    python::def( "getThreadOffset", kdlib::getThreadOffset,
+    python::def( "getThreadOffset", pykd::getThreadOffset,
         "Return the location in the target's memory of the thread structure ( TEB )" );
-    python::def( "getThreadSystemID", kdlib::getThreadSystemId,
+    python::def( "getThreadSystemID", pykd::getThreadSystemId,
         "Return system thread ID ( TID )" );
-    python::def( "getThreadId", kdlib::getThreadIdByOffset,
+    python::def( "getThreadId", pykd::getThreadIdByOffset,
         "Return thread ID by the location in the target's memory of the thread structure" );
-    python::def( "getThreadId", kdlib::getThreadIdBySystemId,
+    python::def( "getThreadId", pykd::getThreadIdBySystemId,
         "Return thread ID by the system's thread ID ( PID )" );
+    python::def("setCurrentThread", pykd::setCurrentThread,
+        "Set current thread" );
+    python::def( "getImplicitThread", pykd::getImplicitThreadOffset,
+        "Return implicit thread" );
+    python::def( "setImplicitThread", pykd::setImplicitThread,
+        "Set implicit thread" );
 
    // // symbol path
    // python::def( "getSymbolPath", &getSymbolPath, "Returns current symbol path");
@@ -415,50 +430,50 @@ BOOST_PYTHON_MODULE( pykd )
     python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumBehavior>, boost::noncopyable>("module", "Class representing executable module", python::no_init )
         .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByName ) )
         .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByOffset) )
-        .def("begin", &kdlib::Module::getBase,
+        .def("begin", ModuleAdapter::getBase,
              "Return start address of the module" )
-        .def("end", &kdlib::Module::getEnd,
+        .def("end", ModuleAdapter::getEnd,
              "Return end address of the module" )
-        .def("size", &kdlib::Module::getSize,
+        .def("size", ModuleAdapter::getSize,
               "Return size of the module" )
-        .def("name", &kdlib::Module::getName,
+        .def("name", ModuleAdapter::getName,
              "Return name of the module" )
-        .def("reload", &kdlib::Module::reloadSymbols,
+        .def("reload", ModuleAdapter::reloadSymbols,
             "(Re)load symbols for the module" )
-        .def("image", &kdlib::Module::getImageName,
+        .def("image", ModuleAdapter::getImageName,
             "Return name of the image of the module" )
-        .def("symfile", &kdlib::Module::getSymFile,
+        .def("symfile", ModuleAdapter::getSymFile,
              "Return the full path to the module's symbol information" )
-        .def("offset", &kdlib::Module::getSymbolVa,
+        .def("offset", ModuleAdapter::getSymbolVa,
             "Return offset of the symbol" )
         .def("findSymbol", ModuleAdapter::findSymbol, Module_findSymbol( python::args("offset", "showDisplacement"),
             "Return symbol name by virtual address" ) )
         .def("findSymbolAndDisp", ModuleAdapter::findSymbolAndDisp,
             "Return tuple(symbol_name, displacement) by virtual address" )
-        .def("rva", &kdlib::Module::getSymbolRva,
+        .def("rva", ModuleAdapter::getSymbolRva,
             "Return rva of the symbol" )
-        .def("sizeof", &kdlib::Module::getSymbolSize,
+        .def("sizeof", ModuleAdapter::getSymbolSize,
             "Return a size of the type or variable" )
-        .def("type", &kdlib::Module::getTypeByName,
+        .def("type", ModuleAdapter::getTypeByName,
             "Return typeInfo class by type name" )
-        .def("typedVar", &kdlib::Module::getTypedVarByAddr,
+        .def("typedVar", ModuleAdapter::getTypedVarByAddr,
             "Return a typedVar class instance" )
-        .def("typedVar",&kdlib::Module::getTypedVarByName,
+        .def("typedVar",ModuleAdapter::getTypedVarByName,
             "Return a typedVar class instance" )
-        .def("typedVar",&kdlib::Module::getTypedVarByTypeName,
+        .def("typedVar", ModuleAdapter::getTypedVarByTypeName,
             "Return a typedVar class instance" )
-        .def("typedVarList", &ModuleAdapter::getTypedVarListByTypeName,
+        .def("typedVarList", ModuleAdapter::getTypedVarListByTypeName,
             "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
-        .def("typedVarArray", &ModuleAdapter::getTypedVarArrayByTypeName,
+        .def("typedVarArray", ModuleAdapter::getTypedVarArrayByTypeName,
             "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
-        .def("containingRecord", &kdlib::Module::containingRecord,
+        .def("containingRecord", ModuleAdapter::containingRecord,
             "Return instance of the typedVar class. It's value are loaded from the target memory."
             "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
         .def("enumSymbols", ModuleAdapter::enumSymbols, Module_enumSymbols( python::args("mask"),
              "Return list of tuple ( symbolname, offset )" ) )
-        .def("checksum", &kdlib::Module::getCheckSum,
+        .def("checksum", ModuleAdapter::getCheckSum,
             "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
-        .def("timestamp", &kdlib::Module::getTimeDataStamp,
+        .def("timestamp", ModuleAdapter::getTimeDataStamp,
             "Return a low 32 bits of the time stamp of the image: IMAGE_FILE_HEADER.TimeDateStamp" )
         //.def("unloaded", &Module::isUnloaded,
         //    "Returns a flag that the module was unloaded")
@@ -468,76 +483,74 @@ BOOST_PYTHON_MODULE( pykd )
         //    "Return string from the module's version resources" )
         //.def("getVersion",  &Module::getVersion,
         //    "Return tuple of the module's file version" )
-        .def("__getattr__", &kdlib::Module::getSymbolVa,
+        .def("__getattr__", ModuleAdapter::getSymbolVa,
             "Return address of the symbol" )
         .def( "__str__", &ModuleAdapter::print );
 
 
     python::class_<kdlib::TypeInfo, kdlib::TypeInfoPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
-        .def("__init__", python::make_constructor( TypeInfoAdapter::getTypeInfoByName ) )
-        .def( "name", &kdlib::TypeInfo::getName,
+        .def("__init__", python::make_constructor( pykd::getTypeInfoByName ) )
+        .def( "name", TypeInfoAdapter::getName,
             "Return type name" )
-        .def( "size", &kdlib::TypeInfo::getSize,
+        .def( "size", TypeInfoAdapter::getSize,
             "Return type size" )
         .def( "staticOffset", TypeInfoAdapter::getStaticOffset,
             "Return offset of the static field" )
         .def( "fieldOffset", TypeInfoAdapter::getElementOffset,
             "Return offset of the nonstatic field" )
-        .def( "bitOffset", &kdlib::TypeInfo::getBitOffset,
+        .def( "bitOffset", TypeInfoAdapter::getBitOffset,
             "Return bit field's offset" )
-        .def( "bitWidth", &kdlib::TypeInfo::getBitWidth,
+        .def( "bitWidth", TypeInfoAdapter::getBitWidth,
             "Return bit field's length" )
         .def( "field", TypeInfoAdapter::getElementByName,
             "Return field's type" )
-        .def( "fieldName", &kdlib::TypeInfo::getElementName,
+        .def( "fieldName", TypeInfoAdapter::getElementName,
             "Return name of struct field by index" )
-        //.def( "asMap", &kdlib::TypeInfo::asMap,
-        //    "Return type as python dict ( for enum types )" )
-        .def( "deref", &kdlib::TypeInfo::deref,
+        .def( "deref", TypeInfoAdapter::deref,
             "Return type of pointer" )
-        .def( "append", &kdlib::TypeInfo::appendField,
+        .def( "append", TypeInfoAdapter::appendField,
             "Add a new field to custom defined struct" )
-        .def( "ptrTo", &TypeInfoAdapter::ptrTo, TypeInfo_ptrTo( python::args( "ptrSize" ),
+        .def( "ptrTo", TypeInfoAdapter::ptrTo, TypeInfo_ptrTo( python::args( "ptrSize" ),
             "Return pointer to the type" ) )
-        .def( "arrayOf", &kdlib::TypeInfo::arrayOf,
+        .def( "arrayOf", TypeInfoAdapter::arrayOf,
             "Return array of the type" )
-        .def( "isArray", &kdlib::TypeInfo::isArray,
+        .def( "isArray", TypeInfoAdapter::isArray,
             "Return flag: type is array" )
-        .def( "isPointer", &kdlib::TypeInfo::isPointer,
+        .def( "isPointer", TypeInfoAdapter::isPointer,
             "Return flag: type is pointer" )
-        .def( "isVoid", &kdlib::TypeInfo::isVoid,
+        .def( "isVoid", TypeInfoAdapter::isVoid,
             "Return flag: type is void" )
-        .def( "isBase", &kdlib::TypeInfo::isBase,
+        .def( "isBase", TypeInfoAdapter::isBase,
             "Return flag: type is base" )
-        .def( "isUserDefined", &kdlib::TypeInfo::isUserDefined,
+        .def( "isUserDefined", TypeInfoAdapter::isUserDefined,
             "Return flag: type is UDT" )
-        .def( "isEnum", &kdlib::TypeInfo::isEnum,
+        .def( "isEnum", TypeInfoAdapter::isEnum,
             "Return flag: type is enum" )
-        .def( "isBitField", &kdlib::TypeInfo::isBitField,
+        .def( "isBitField", TypeInfoAdapter::isBitField,
             "Return flag: type is bit field" )
-        .def( "isFunction", &kdlib::TypeInfo::isFunction,
+        .def( "isFunction", TypeInfoAdapter::isFunction,
             "Return flag: type is function" )
-        .def( "isConstant", &kdlib::TypeInfo::isConstant,
+        .def( "isConstant", TypeInfoAdapter::isConstant,
             "Return flag: type is constant" )
-        .def( "getCallingConvention", &kdlib::TypeInfo::getCallingConvention,
+        .def( "getCallingConvention", TypeInfoAdapter::getCallingConvention,
             "Returns an indicator of a methods calling convention: callingConvention" )
-        .def( "getClassParent", &kdlib::TypeInfo::getClassParent,
+        .def( "getClassParent", TypeInfoAdapter::getClassParent,
             "Return class parent" )
-        .def( "__str__", &kdlib::TypeInfo::str,
+        .def( "__str__", TypeInfoAdapter::str,
             "Return type as a printable string" )
         .def( "__getattr__", TypeInfoAdapter::getElementByName )
-        .def("__len__", &kdlib::TypeInfo::getElementCount )
+        .def("__len__", TypeInfoAdapter::getElementCount )
         .def("__getitem__", TypeInfoAdapter::getElementByIndex )
         ;
 
     python::class_<kdlib::TypedVar, kdlib::TypedVarPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typedVar", 
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", python::no_init  )
-        .def("__init__", python::make_constructor(TypedVarAdapter::getTypedVarByName) )
-        .def("__init__", python::make_constructor(TypedVarAdapter::getTypedVarByTypeName) )
-        .def("__init__", python::make_constructor(TypedVarAdapter::getTypedVarByTypeInfo) )
-        .def("getAddress", &kdlib::TypedVar::getAddress, 
+        .def("__init__", python::make_constructor(pykd::getTypedVarByName) )
+        .def("__init__", python::make_constructor(pykd::getTypedVarByTypeName) )
+        .def("__init__", python::make_constructor(pykd::getTypedVarByTypeInfo) )
+        .def("getAddress", TypedVarAdapter::getAddress, 
             "Return virtual address" )
-        .def("sizeof", &kdlib::TypedVar::getSize,
+        .def("sizeof", TypedVarAdapter::getSize,
             "Return size of a variable in the target memory" )
         .def("fieldOffset", TypedVarAdapter::getFieldOffsetByName,
             "Return target field offset" )
@@ -547,17 +560,17 @@ BOOST_PYTHON_MODULE( pykd )
             "Return field of structure as an object attribute" )
         .add_property( "fields", TypedVarAdapter::getFields,
             "Return list of tuple ( filedName, fieldOffset, fieldValue )" )
-        .def( "fieldName", &kdlib::TypedVar::getElementName,
+        .def( "fieldName", TypedVarAdapter::getElementName,
             "Return name of struct field by index" )
-         .def("deref", &kdlib::TypedVar::deref,
+         .def("deref",TypedVarAdapter::deref,
             "Return value by pointer" )
-        .def("type", &kdlib::TypedVar::getType,
+        .def("type", TypedVarAdapter::getType,
             "Return typeInfo instance" )
         .def("__getattr__", TypedVarAdapter::getField,
             "Return field of structure as an object attribute" )
-        .def( "__str__", &TypedVarAdapter::print )
-        .def("__len__", &kdlib::TypedVar::getElementCount )
-        .def("__getitem__", &TypedVarAdapter::getElementByIndex )
+        .def( "__str__", TypedVarAdapter::print )
+        .def("__len__", TypedVarAdapter::getElementCount )
+        .def("__getitem__", TypedVarAdapter::getElementByIndex )
         //.def("__getitem__", &kdlib::TypedVar::getElementByIndexPtr )
         ;
 
@@ -585,26 +598,30 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::class_<kdlib::StackFrame, kdlib::StackFramePtr, boost::noncopyable>( "stackFrame",
         "class for stack's frame representation", python::no_init  )
-        .def_readonly( "ip", &kdlib::StackFrame::getIP, "instruction pointer" )
-        .def_readonly( "ret", &kdlib::StackFrame::getRET, "return pointer" )
-        .def_readonly( "fp", &kdlib::StackFrame::getFP, "frame pointer" )
-        .def_readonly( "sp", &kdlib::StackFrame::getSP, "stack pointer" )
-        .def( "__str__", &printStackFrame );
+        .add_property( "ip", StackFrameAdapter::getIP, "instruction pointer" )
+        .add_property( "instructionOffset", StackFrameAdapter::getIP, "Return a frame's instruction offset" )
+        .add_property( "ret",StackFrameAdapter::getRET, "return pointer" )
+        .add_property( "returnOffset",StackFrameAdapter::getRET, "Return a frame's return offset" )
+        .add_property( "fp", StackFrameAdapter::getFP, "frame pointer" )
+        .add_property( "frameOffset",StackFrameAdapter::getFP, "Return a frame's offset" )
+        .add_property( "sp", StackFrameAdapter::getSP, "stack pointer" )
+        .add_property( "stackOffset", StackFrameAdapter::getSP, "Return a frame's stack offset" )
+        .def( "__str__", StackFrameAdapter::print );
 
     python::class_<kdlib::CPUContext, kdlib::CPUContextPtr, boost::noncopyable>( "cpu",
         "class for CPU context representation", python::no_init  )
-         .def("__init__", python::make_constructor(&kdlib::loadCPUCurrentContext) )
-         .def("__init__", python::make_constructor(&kdlib::loadCPUContextByIndex) )
-         .add_property("ip", &kdlib::CPUContext::getIP )
-         .add_property("sp", &kdlib::CPUContext::getSP )
-         .add_property("fp", &kdlib::CPUContext::getSP )
-         .def("getCPUType", &kdlib::CPUContext::getCPUType )
-         .def("getCPUMode",  &kdlib::CPUContext::getCPUMode )
-         .def("setCPUMode", &kdlib::CPUContext::setCPUMode )
-         .def("switchCPUMode", &kdlib::CPUContext::switchCPUMode )
-         .def("getStack",  &CPUContextAdaptor::getStack )
-         .def("__getattr__",  &CPUContextAdaptor::getRegisterByName )
-         .def("__getitem__",  &CPUContextAdaptor::getRegisterByIndex );
+         .def("__init__", python::make_constructor(pykd::loadCPUCurrentContext) )
+         .def("__init__", python::make_constructor(pykd::loadCPUContextByIndex) )
+         .add_property("ip", CPUContextAdapter::getIP )
+         .add_property("sp", CPUContextAdapter::getSP )
+         .add_property("fp", CPUContextAdapter::getSP )
+         .def("getCPUType", CPUContextAdapter::getCPUType )
+         .def("getCPUMode",  CPUContextAdapter::getCPUMode )
+         .def("setCPUMode", CPUContextAdapter::setCPUMode )
+         .def("switchCPUMode", CPUContextAdapter::switchCPUMode )
+         .def("getStack",  CPUContextAdapter::getStack )
+         .def("__getattr__",  CPUContextAdapter::getRegisterByName )
+         .def("__getitem__",  CPUContextAdapter::getRegisterByIndex );
 
     python::class_<kdlib::SystemInfo>(
         "systemVersion", "Operation system version", python::no_init)
@@ -622,7 +639,7 @@ BOOST_PYTHON_MODULE( pykd )
         //    "String for the service pack level of the target computer")
         //.def_readonly( "isCheckedBuild", &SystemVersion::isCheckedBuild,
         //    "Checked build flag")
-        .def("__str__", &printSystemVersion,
+        .def("__str__", pykd::printSystemVersion,
             "Return object as a string");
 
 
@@ -640,7 +657,7 @@ BOOST_PYTHON_MODULE( pykd )
             "The address where the exception occurred")
         .add_property( "parameters", &getExceptionInfoParameters,
             "An array of additional arguments that describe the exception")
-        .def( "__str__", &printExceptionInfo,
+        .def( "__str__", pykd::printExceptionInfo,
             "Return object as a string");
 
    // python::enum_<EVENT_TYPE>("eventType", "Type of debug event")
@@ -667,22 +684,22 @@ BOOST_PYTHON_MODULE( pykd )
    //     "Function reads the kernel bug check code and related parameters\n"
    //     "And return tuple: (code, arg1, arg2, arg3, arg4)" );
 
-    python::class_<kdlib::Disasm>("disasm", "Class disassemble a processor instructions" )
-        .def( python::init<>( "constructor" ) )
-        .def( python::init<ULONG64>( boost::python::args("offset"), "constructor" ) )
-        .def( "disasm", &kdlib::Disasm::disassemble, "Disassemble next instruction" )
-        .def( "disasm", &kdlib::Disasm::jump, "Disassemble from the specified offset" )
-        .def( "asm", &kdlib::Disasm::assembly, "Insert assemblied instuction to current offset" )
-        .def( "begin", &kdlib::Disasm::begin, "Return begin offset" )
-        .def( "current", &kdlib::Disasm::current, "Return current offset" )
-        .def( "length", &kdlib::Disasm::length, "Return current instruction length" )
-        .def( "instruction", &kdlib::Disasm::instruction, "Returm current disassembled instruction" )
-        .def( "ea", &kdlib::Disasm::ea, "Return effective address for last disassembled instruction or 0" )
-        .def( "reset", &kdlib::Disasm::reset, "Reset current offset to begin" )
-        .def( "findOffset", &kdlib::Disasm::getNearInstruction, "Return the location of a processor instruction relative to a given location" )
-        .def( "jump", &kdlib::Disasm::jump, "Change the current instruction" )
-        .def( "jumprel", &kdlib::Disasm::jumprel, "Change the current instruction" )
-        .def( "__str__", &kdlib::Disasm::instruction );
+    python::class_<kdlib::Disasm>("disasm", "Class disassemble a processor instructions",python::no_init)
+        .def( "__init__", python::make_constructor(pykd::loadDisasm ) )
+        .def( "__init__", python::make_constructor(pykd::loadDisasmWithOffset ) )
+        .def( "disasm", DisasmAdapter::disassemble, "Disassemble next instruction" )
+        .def( "disasm", DisasmAdapter::jump, "Disassemble from the specified offset" )
+        .def( "asm", DisasmAdapter::assembly, "Insert assemblied instuction to current offset" )
+        .def( "begin", DisasmAdapter::begin, "Return begin offset" )
+        .def( "current", DisasmAdapter::current, "Return current offset" )
+        .def( "length", DisasmAdapter::length, "Return current instruction length" )
+        .def( "instruction", DisasmAdapter::instruction, "Returm current disassembled instruction" )
+        .def( "ea", DisasmAdapter::ea, "Return effective address for last disassembled instruction or 0" )
+        .def( "reset", DisasmAdapter::reset, "Reset current offset to begin" )
+        .def( "findOffset", DisasmAdapter::getNearInstruction, "Return the location of a processor instruction relative to a given location" )
+        .def( "jump",DisasmAdapter::jump, "Change the current instruction" )
+        .def( "jumprel", DisasmAdapter::jumprel, "Change the current instruction" )
+        .def( "__str__", DisasmAdapter::instruction );
 
 
     python::enum_<kdlib::DebugCallbackResult>("eventResult", "Return value of event handler")

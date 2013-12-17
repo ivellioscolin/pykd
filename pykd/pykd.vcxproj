@@ -233,27 +233,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="cpucontext.h" />
-    <ClInclude Include="dbgengine.h" />
     <ClInclude Include="dbgexcept.h" />
-    <ClInclude Include="eventhandler.h" />
-    <ClInclude Include="memaccess.h" />
-    <ClInclude Include="module.h" />
+    <ClInclude Include="pycpucontext.h" />
+    <ClInclude Include="pydisasm.h" />
+    <ClInclude Include="pydbgeng.h" />
     <ClInclude Include="pydbgio.h" />
+    <ClInclude Include="pyeventhandler.h" />
     <ClInclude Include="pykdver.h" />
-    <ClInclude Include="pystate.h" />
+    <ClInclude Include="pymemaccess.h" />
+    <ClInclude Include="pymodule.h" />
+    <ClInclude Include="pysymengine.h" />
+    <ClInclude Include="pythreadstate.h" />
+    <ClInclude Include="pytypedvar.h" />
+    <ClInclude Include="pytypeinfo.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="stladaptor.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="typedvar.h" />
-    <ClInclude Include="typeinfo.h" />
     <ClInclude Include="variant.h" />
     <ClInclude Include="windbgext.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cpucontext.cpp" />
-    <ClCompile Include="dbgengine.cpp" />
     <ClCompile Include="dbgexcept.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -275,9 +275,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="eventhandler.cpp" />
-    <ClCompile Include="memaccess.cpp" />
+    <ClCompile Include="pycpucontext.cpp" />
+    <ClCompile Include="pydbgeng.cpp" />
+    <ClCompile Include="pyeventhandler.cpp" />
+    <ClCompile Include="pymemaccess.cpp" />
     <ClCompile Include="pymod.cpp" />
+    <ClCompile Include="pymodule.cpp" />
+    <ClCompile Include="pytypedvar.cpp" />
+    <ClCompile Include="pytypeinfo.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

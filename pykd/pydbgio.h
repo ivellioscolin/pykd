@@ -2,7 +2,7 @@
 
 #include "kdlib/windbg.h"
 
-#include "pystate.h"
+#include "pythreadstate.h"
 
 namespace pykd {
 
