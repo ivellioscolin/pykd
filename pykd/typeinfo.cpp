@@ -721,20 +721,6 @@ std::string UdtTypeInfoBase::print()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-ULONG UdtTypeInfoBase::getAlignReq()
-{
-    //ULONG alignReq = 1;
-    //const ULONG fieldCount = getFieldCount();
-    //for ( ULONG i = 0; i < fieldCount; ++i )
-    //    alignReq = max(alignReq, lookupField(i).m_type->getAlignReq());
-
-    //return alignReq;
-
-    throw ImplementException( __FILE__, __LINE__, "TODO" );
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
 void UdtTypeInfoBase::getVirtualDisplacement( const std::string& fieldName, ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize )
 {
     const UdtFieldPtr &field = lookupField(fieldName);
@@ -747,7 +733,7 @@ void UdtTypeInfoBase::getVirtualDisplacement( const std::string& fieldName, ULON
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void  UdtTypeInfoBase::getVirtualDisplacementByIndex( ULONG index, ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize )
+void UdtTypeInfoBase::getVirtualDisplacementByIndex( ULONG index, ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize )
 {
     const UdtFieldPtr &field = lookupField(index);
 
@@ -755,6 +741,19 @@ void  UdtTypeInfoBase::getVirtualDisplacementByIndex( ULONG index, ULONG &virtua
         throw TypeException( getName(), "field is not a virtual member" );
 
     field->getVirtualDisplacement( virtualBasePtr, virtualDispIndex, virtualDispSize );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+ULONG UdtTypeInfoBase::getAlignReq()
+{
+    ULONG alignReq = 1;
+    for (ULONG i = 0; i < getFieldCount(); ++i)
+    {
+        const ULONG fieldAlignReq = getFieldByIndex(i)->getAlignReq();
+        alignReq = (fieldAlignReq > alignReq) ? fieldAlignReq : alignReq;
+    }
+    return alignReq;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

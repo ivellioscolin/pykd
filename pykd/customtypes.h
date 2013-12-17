@@ -53,9 +53,12 @@ private:
 
 class CustomBase : public UdtTypeInfoBase 
 {
+public:
+
+    virtual ULONG getSize();
 
 protected:
-    
+
     CustomBase( const std::string &name, ULONG pointerSize, ULONG align ) :
         UdtTypeInfoBase( name )
         {
@@ -64,14 +67,12 @@ protected:
             m_size = 0;
         }
 
+    static ULONG alignUp(ULONG val, ULONG align);
+
     void throwIfFiledExist(const std::string &fieldName);
     void throwIfTypeRecursive(TypeInfoPtr type);
 
-protected:
-
-    virtual ULONG getSize() {
-        return m_size;
-    }
+    void checkAppendField(const std::string &fieldName, TypeInfoPtr &fieldType);
 
 protected:
 
@@ -85,15 +86,12 @@ protected:
 class CustomStruct : public CustomBase 
 {
 public:
-    
+
     CustomStruct( const std::string &name, ULONG ptrSize, ULONG align ) :
         CustomBase( name, ptrSize, align )
         {}
 
-private:
-
-    virtual void appendField(const std::string &fieldName, TypeInfoPtr &fieldType );
-
+    virtual void appendField(const std::string &fieldName, TypeInfoPtr &fieldType);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -101,115 +99,14 @@ private:
 class CustomUnion : public CustomBase 
 {
 public:
-    
+
     CustomUnion( const std::string &name, ULONG ptrSize, ULONG align ) :
         CustomBase( name, ptrSize, align )
         {}
 
-private:
-
-    virtual  void appendField(const std::string &fieldName, TypeInfoPtr &fieldType );
-
+    virtual  void appendField(const std::string &fieldName, TypeInfoPtr &fieldType);
 };
 
-////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//////////////////////////////////////////////////////////////////////////////////
-//
-//class CustomTypeBase : public UdtFieldColl
-//{
-//    typedef UdtFieldColl Base;
-//protected:
-//    CustomTypeBase(const std::string &name, ULONG pointerSize);
-//
-//    void throwIfFiledExist(const std::string &fieldName);
-//    void throwIfTypeRecursive(TypeInfoPtr type);
-//
-//private:
-//    void throwIfTypeRecursiveImpl(TypeInfoPtr type);
-//};
-//
-//////////////////////////////////////////////////////////////////////////////////
-//
-//class CustomStruct : public CustomTypeBase
-//{
-//    typedef CustomTypeBase Base;
-//public:
-//    static TypeInfoPtr create(const std::string &name, ULONG align = 0, ULONG pointerSize = 0);
-//
-//protected:
-//    CustomStruct(const std::string &name, ULONG align, ULONG pointerSize)
-//        : Base(name, pointerSize), m_name(name), m_align(align) 
-//    {
-//    }
-//
-//    virtual std::string getName() override {
-//        return m_name;
-//    }
-//
-//    virtual ULONG getSize() override;
-//
-//    virtual void appendField(const std::string &fieldName, TypeInfoPtr fieldType) override;
-//
-//    virtual std::string getTypeString() const override {
-//        return "custom struct";
-//    }
-//
-//private:
-//    std::string m_name;
-//    ULONG m_align;
-//};
-//
-//////////////////////////////////////////////////////////////////////////////////
-//
-//class CustomUnion : public CustomTypeBase
-//{
-//    typedef CustomTypeBase Base;
-//public:
-//    static TypeInfoPtr create(const std::string &name, ULONG pointerSize = 0);
-//
-//protected:
-//    CustomUnion(const std::string &name, ULONG pointerSize) 
-//        : Base(name, pointerSize)
-//    {
-//    }
-//
-//    virtual ULONG getSize() override;
-//
-//    virtual void appendField(const std::string &fieldName, TypeInfoPtr fieldType) override;
-//
-//    virtual std::string getTypeString() const override {
-//        return "custom union";
-//    }
-//
-//private:
-//    std::string m_name;
-//};
-//
-//////////////////////////////////////////////////////////////////////////////////
-//
-//TypeInfoPtr PtrToVoid();
-//
 //////////////////////////////////////////////////////////////////////////////////
 
 }   // namespace pykd

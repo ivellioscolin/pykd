@@ -6,9 +6,8 @@ import pykd
 
 class CustomTypesTest(unittest.TestCase):
     def testCommonStruct(self):
-
         tb = pykd.typeBuilder()
-   
+
         mySubStruct =tb.createStruct("MySubCustomStruct")
         mySubStruct.append( "m_uint1", tb.UInt1B )
         mySubStruct.append( "m_uint2", tb.UInt2B )
@@ -42,12 +41,9 @@ class CustomTypesTest(unittest.TestCase):
         self.assertTrue( myType.fieldOffset("m_struct") < myType.fieldOffset("m_union") )
         self.assertTrue( myType.fieldOffset("m_struct") + myType.m_struct.size() <= myType.fieldOffset("m_union") )
 
-        # print myType
-
     def testCommonUnion(self):
-
         tb = pykd.typeBuilder()
-        
+
         myType = tb.createUnion("MyCustomStruct")
         myType.append( "m_uint1", tb.UInt1B )
         myType.append( "m_uint4", tb.UInt4B )
@@ -77,9 +73,8 @@ class CustomTypesTest(unittest.TestCase):
         self.assertEqual( 0, myEmptyUnion1.size() )
 
     def testDupFieldName(self):
-    
         tb = pykd.typeBuilder()
-    
+
         myType = tb.createStruct("MyCustomStruct")
         exceptionRised = False
         myType.append( "m_uint1", tb.UInt1B )
@@ -97,7 +92,7 @@ class CustomTypesTest(unittest.TestCase):
         except pykd.TypeException:
             exceptionRised = True
         self.assertTrue(exceptionRised)
-        
+
     def testBasicType(self):
         tb = pykd.typeBuilder()
         self.assertEqual( 1, tb.UInt1B.size() )
@@ -121,7 +116,7 @@ class CustomTypesTest(unittest.TestCase):
         self.assertEqual( 4, pykd.typeBuilder(4).UInt1B.ptrTo().size() )
         self.assertEqual( 8, pykd.typeBuilder(8).UInt1B.ptrTo().size() )
         self.assertEqual( pykd.ptrSize(), pykd.typeBuilder().UInt1B.ptrTo().size() )
-        
+
     def testPtrToCustomType(self):
         tb = pykd.typeBuilder()
         mySubStruct =tb.createStruct("MySubCustomStruct")
@@ -129,7 +124,7 @@ class CustomTypesTest(unittest.TestCase):
         mySubStruct.append( "m_uint2", tb.UInt2B )
         mySubStructPtr = mySubStruct.ptrTo()
         self.assertEqual( pykd.ptrSize(), mySubStructPtr.size() )
-        
+
     def testAlign(self):
         tb = pykd.typeBuilder()
         struct = tb.createStruct(name ="MyAlignStruct", align=4)
@@ -146,3 +141,19 @@ class CustomTypesTest(unittest.TestCase):
         self.assertEqual( 16, struct.size() )
         struct.append( "m_field7", tb.UInt1B.arrayOf(5) )
         self.assertEqual( 20, struct.size() )
+
+    def testWi12591(self):
+        tb = pykd.typeBuilder()
+        struct = tb.createStruct(name ="MyAlignStruct", align=4)
+        struct.append( "m_field1", tb.UInt1B )
+        struct.append( "m_field2", tb.UInt1B.arrayOf(2) )
+        self.assertEqual( struct.size(), 3 )
+        self.assertEqual( struct.fieldOffset("m_field2"), 1 )
+
+    def testWi12592(self):
+        tb = pykd.typeBuilder()
+        struct = tb.createStruct(name ="MyAlignStruct", align=4)
+        struct.append( "field1", tb.UInt4B )
+        struct.append( "field2", tb.UInt1B )
+        self.assertEqual( struct.size(), 8 )
+        self.assertEqual( struct.fieldOffset("field2"), 4 )

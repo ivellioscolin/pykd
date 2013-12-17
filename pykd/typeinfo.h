@@ -215,10 +215,6 @@ public:
 
     TypeInfoPtr arrayOf( ULONG count );
 
-    virtual ULONG getAlignReq() {
-        return 1;
-    }
-
     void setConstant( const BaseTypeVariant& var )
     {
         m_constant = true;
@@ -236,6 +232,10 @@ public:
     ULONG ptrSize() const {
         return m_ptrSize;
     }
+
+    // http://msdn.microsoft.com/en-us/library/hx1b6kkd.aspx
+    // "Padding and Alignment of Structure Members"
+    virtual ULONG getAlignReq() = 0;
 
 protected:
 
@@ -266,7 +266,11 @@ public:
         m_ptrSize = pointerSize;
     }
 
-private:
+    virtual ULONG getAlignReq() {
+        return getSize();
+    }
+
+protected:
 
     virtual std::string getName() {
         return m_name;
@@ -284,6 +288,8 @@ private:
         T t = static_cast<T>(-1);
         return t < 0;
     }
+
+private:
 
     std::string     m_name;
 };
@@ -321,12 +327,12 @@ public:
         return m_bitWidth;
     }
 
-    virtual ULONG getAlignReq() override {
-        return m_size;
-    }
-
     virtual bool isSigned() {
         return m_signed;
+    }
+
+    virtual ULONG getAlignReq() {
+        return getSize();
     }
 
 private:
@@ -410,8 +416,6 @@ protected:
         return true;
     }
 
-    virtual ULONG getAlignReq() override;
-
     virtual bool isVirtualMember( const std::string& fieldName )
     {
         return lookupField(fieldName)->isVirtualMember();
@@ -424,6 +428,8 @@ protected:
 
     virtual void getVirtualDisplacement( const std::string& fieldName, ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize );
     virtual void getVirtualDisplacementByIndex( ULONG index, ULONG &virtualBasePtr, ULONG &virtualDispIndex, ULONG &virtualDispSize );
+
+    virtual ULONG getAlignReq();
 
 protected:
 
@@ -512,6 +518,10 @@ public:
       m_dia( symbol )
       {}
 
+    virtual ULONG getAlignReq() {
+        return getSize();
+    }
+
 protected:
 
     virtual std::string getName() {
@@ -537,10 +547,6 @@ protected:
     }
 
     virtual std::string print();
-
-    virtual ULONG getAlignReq() override {
-        return getSize();
-    }
 
     virtual ULONG getElementCount() {
         return getFieldCount();
@@ -583,10 +589,6 @@ public:
         return getDerefType();
     }
 
-    virtual ULONG getAlignReq() override {
-        return m_size;
-    }
-
     TypeInfoPtr getDerefType() {
         if (!m_derefType)
             throw TypeException("<ptr>", "this pointer can not be dereferenced");
@@ -601,6 +603,10 @@ public:
         if (m_derefName.empty())
             throw TypeException("<ptr>", "this pointer can not be dereferenced");
         return m_derefName;
+    }
+
+    virtual ULONG getAlignReq() {
+        return getSize();
     }
 
 private:
@@ -652,12 +658,12 @@ public:
         return m_derefType;
     }
 
-    virtual ULONG getAlignReq() override {
-        return m_derefType->getAlignReq();
-    }
-
     TypeInfoPtr getDerefType() {
         return m_derefType;
+    }
+
+    virtual ULONG getAlignReq() {
+        return getDerefType()->getAlignReq();
     }
 
 private:
