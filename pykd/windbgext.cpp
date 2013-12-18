@@ -38,9 +38,9 @@ void PykdExt::setUp()
 
     PyImport_AppendInittab("pykd", initpykd ); 
 
-    Py_Initialize();
-
     PyEval_InitThreads();
+
+    Py_Initialize();
 
     python::object  main = boost::python::import("__main__");
 
@@ -172,29 +172,20 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
 
     PyThreadState   *localState = NULL;
     PyThreadState   *globalState = NULL;
-    PyGILState_STATE  gilState;
 
     PyEval_RestoreThread( m_pyState );
 
     if ( !global )
     {
-        globalState = Py_NewInterpreter();
+        globalState = PyThreadState_Swap( NULL );
 
-        localState = PyEval_SaveThread();
-
-        gilState = PyGILState_Ensure();
+        localState = Py_NewInterpreter();
 
         python::object       sys = python::import("sys");
 
         sys.attr("stdout") = python::object( pykd::DbgOut() );
         sys.attr("stderr") = python::object( pykd::DbgOut() );
         sys.attr("stdin") = python::object( pykd::DbgIn() );
-    }
-    else
-    {
-        m_pyState = PyEval_SaveThread();
-
-        gilState = PyGILState_Ensure();
     }
 
     if ( args.size() == 0 )
@@ -223,9 +214,7 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
         python::object  global(main.attr("__dict__"));
 
         try {
-            
             PykdInterruptWatch  interruptWatch;
-            
             python::exec_file( scriptFileName.c_str(), global );
         }
         catch( python::error_already_set const & )
@@ -234,18 +223,30 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
         }
     }
 
-    PyGILState_Release(gilState);
-
     if ( !global )
     {
-        PyEval_RestoreThread( localState );
+        PyInterpreterState  *interpreter = localState->interp;
 
-        Py_EndInterpreter(localState);
+        while( interpreter->tstate_head != NULL )
+        {
+            PyThreadState   *threadState = (PyThreadState*)(interpreter->tstate_head);
+
+            PyThreadState_Clear(threadState);
+
+            PyThreadState_Swap( NULL );
+
+            PyThreadState_Delete(threadState);
+        }
+    
+        PyInterpreterState_Clear(interpreter);
+
+        PyInterpreterState_Delete(interpreter);
 
         PyThreadState_Swap( globalState );
-
-        m_pyState = PyEval_SaveThread();
     }
+
+    m_pyState = PyEval_SaveThread();
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
