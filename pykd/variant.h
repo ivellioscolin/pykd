@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dbgexcept.h"
+
 namespace pykd {
 
 typedef boost::variant<LONG, ULONG, LONG64, ULONG64, bool>      BaseTypeVariant;
@@ -81,6 +83,11 @@ public:
     }
 };
 
+inline bool isConvertable( python::object&  obj )
+{
+    return  PyInt_Check(obj.ptr()) || PyLong_Check(obj.ptr()) || PyBool_Check(obj.ptr());
+}
+
 
 class intBase {
 
@@ -114,11 +121,25 @@ public:
     }
 
     python::object eq( python::object&  obj ) {
-        return boost::apply_visitor( VariantToPyobj(), getValue() ) == obj;
+
+        try {
+            return boost::apply_visitor( VariantToPyobj(), getValue() ) == obj;
+        } 
+        catch( DbgException& )
+        {}
+
+        return python::object(false);
     }
 
     python::object ne( python::object&  obj ) {
-        return  boost::apply_visitor( VariantToPyobj(), getValue() ) != obj;
+
+        try {
+            return boost::apply_visitor( VariantToPyobj(), getValue() ) != obj;
+        } 
+        catch( DbgException& )
+        {}
+
+        return python::object(true);
     }
 
     python::object lt( python::object&  obj ) {
