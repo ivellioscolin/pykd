@@ -241,11 +241,15 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertTrue( "UInt8B[10]", ti.name() )
         
     def testCompareWihNone(self):
-        ti = None
+        ti = pykd.typeInfo("UInt8B")
         if ti == None:
-            ti = pykd.typeInfo("UInt8B")
-            if ti == None:
-                pass
+            pass
+        if ti != None:
+            pass
+        if not ti:
+            pass
+        if ti:
+            pass
 
     def testFunction(self):
         functype = target.module.typedVar( "CdeclFuncPtr" ).type().deref()

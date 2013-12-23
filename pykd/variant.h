@@ -1,6 +1,7 @@
 #pragma once
 
 #include "kdlib/variant.h"
+#include "kdlib/exceptions.h"
 
 namespace pykd {
 
@@ -87,12 +88,26 @@ public:
 
 public:
 
-    static python::object eq( kdlib::NumBehavior& var, python::object&  obj ) {
-        return convertToPython(var) == obj;
+    static python::object eq( kdlib::NumBehavior& var, python::object&  obj )
+    {
+        try {
+            return convertToPython(var) == obj;
+        } 
+        catch( kdlib::DbgException& )
+        {}
+
+        return python::object(false);
     }
 
-    static python::object ne( kdlib::NumBehavior& var, python::object&  obj ) {
-        return convertToPython(var) != obj;
+    static python::object ne( kdlib::NumBehavior& var, python::object&  obj ) 
+    {
+        try {
+            return convertToPython(var) != obj;
+        } 
+        catch( kdlib::DbgException& )
+        {}
+
+        return python::object(true);
     }
 
     static python::object lt( kdlib::NumBehavior& var, python::object&  obj ) {
@@ -184,7 +199,13 @@ public:
     }
 
     static python::object nonzero(kdlib::NumBehavior& var) {
-        return convertToPython(var) != 0;
+        try {
+            return convertToPython(var) != 0;
+        } 
+        catch( kdlib::DbgException& )
+        {}
+
+        return python::object(true);
     }
 
     static python::object long_(kdlib::NumBehavior& var ) {
