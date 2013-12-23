@@ -264,7 +264,7 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
         args.erase( foundArg );
     }
 
-    if ( global & local )
+    if ( global && local )
     {
        eprintln( L"-g(--global) and -l(--local) cannot be set together" );
        return;
@@ -281,11 +281,11 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
             return;
         }
 
-        global = !(global | local ) ? false : global ; //set local by default
+        global = !(global || local ) ? false : global ; //set local by default
     }
     else
     {
-        global = !(global | local ) ? true : global ; //set global by default
+        global = !(global || local ) ? true : global ; //set global by default
     }
 
     PyThreadState   *localState = NULL;
