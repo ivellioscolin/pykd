@@ -289,8 +289,6 @@ BOOST_PYTHON_MODULE( pykd )
     python::def("containingRecord", pykd::containingRecordByType,
         "Return instance of the typedVar class. It's value are loaded from the target memory."
         "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" );
-    //python::def("createStruct", &kdlib::defineStruct,
-    //    "Return custom defined struct" );
     python::def( "createStruct", &pykd::defineStruct, createStruct_( python::args( "name", "align" ),
         "Create custom struct" ) );
     python::def( "createUnion", &pykd::defineUnion, createUnion_( python::args( "name", "align" ),
@@ -317,16 +315,14 @@ BOOST_PYTHON_MODULE( pykd )
         "Return a current stack as a list of stackFrame objects" );
     python::def( "getFrame", pykd::getCurrentFrame,
         "Return a current stack frame" );
-
-
    // python::def( "getStackWow64", &getCurrentStackWow64,
    //     "Return a stack for wow64 context as a list of stackFrame objects" );
-   // python::def( "getFrame", &getCurrentStackFrame,
-   //     "Return a current stack frame" );
    // python::def( "getLocals", &getLocals, 
    //     "Get list of local variables" );
-   // python::def( "getParams", &getParams, 
-   //     "Get list of function arguments" );
+    python::def( "getParams", pykd::getParams, 
+        "Get list of function arguments as list of tuple (name, value ) " );
+    python::def( "getParam", pykd::getParam, 
+        "Get the function argument by name" );
 
     // breakpoints
     python::def( "setBp", pykd::softwareBreakPointSet,
@@ -599,14 +595,28 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::class_<kdlib::StackFrame, kdlib::StackFramePtr, boost::noncopyable>( "stackFrame",
         "class for stack's frame representation", python::no_init  )
-        .add_property( "ip", StackFrameAdapter::getIP, "instruction pointer" )
-        .add_property( "instructionOffset", StackFrameAdapter::getIP, "Return a frame's instruction offset" )
-        .add_property( "ret",StackFrameAdapter::getRET, "return pointer" )
-        .add_property( "returnOffset",StackFrameAdapter::getRET, "Return a frame's return offset" )
-        .add_property( "fp", StackFrameAdapter::getFP, "frame pointer" )
-        .add_property( "frameOffset",StackFrameAdapter::getFP, "Return a frame's offset" )
-        .add_property( "sp", StackFrameAdapter::getSP, "stack pointer" )
-        .add_property( "stackOffset", StackFrameAdapter::getSP, "Return a frame's stack offset" )
+        .add_property( "ip", StackFrameAdapter::getIP, 
+            "instruction pointer" )
+        .add_property( "instructionOffset", StackFrameAdapter::getIP,
+            "Return a frame's instruction offset" )
+        .add_property( "ret",StackFrameAdapter::getRET,
+            "return pointer" )
+        .add_property( "returnOffset",StackFrameAdapter::getRET,
+            "Return a frame's return offset" )
+        .add_property( "fp", StackFrameAdapter::getFP,
+            "frame pointer" )
+        .add_property( "frameOffset",StackFrameAdapter::getFP,
+            "Return a frame's offset" )
+        .add_property( "sp", StackFrameAdapter::getSP, 
+            "stack pointer" )
+        .add_property( "stackOffset", StackFrameAdapter::getSP,
+            "Return a frame's stack offset" )
+        .def( "getParams", StackFrameAdapter::getParamsList, 
+            "return set of function's parameters  as a  list of tuple (name, value ) ")
+        .add_property( "params", StackFrameAdapter::getParamsDict,
+            "return set of function's parameters as a dict (name : value)")
+        .def( "getParam", StackFrameAdapter::getParam,
+            "return function param by it's name")
         .def( "__str__", StackFrameAdapter::print );
 
     python::class_<kdlib::CPUContext, kdlib::CPUContextPtr, boost::noncopyable>( "cpu",

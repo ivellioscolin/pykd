@@ -29,4 +29,12 @@ class StackTest(unittest.TestCase):
 
         self.assertEqual( expectedStack, realStack )
 
-
+    def testGetParams(self):
+        expectedParams = ["a", "b", "c"]
+        self.assertEqual( expectedParams, [ name for name, param in pykd.getParams()]  )
+        self.assertEqual( 10, dict(pykd.getParams())["a"].deref() )
+        self.assertEqual( 10, pykd.getParam("a").deref() )
+         
+        self.assertEqual( 10, pykd.getStack()[1].params["a"] )
+        self.assertEqual( 10, pykd.getStack()[1].getParam("a") )
+        self.assertEqual( 10, dict( pykd.getStack()[1].getParams() )["a"] )

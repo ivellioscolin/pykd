@@ -17,31 +17,41 @@ class StackFrameAdapter {
 
 public:
 
-    static kdlib::MEMOFFSET_64 getIP( kdlib::StackFrame& frame ) 
+    static kdlib::MEMOFFSET_64 getIP( kdlib::StackFramePtr& frame ) 
     {
         AutoRestorePyState  pystate;
-        return frame.getIP();
+        return frame->getIP();
     }
 
-    static kdlib::MEMOFFSET_64 getRET( kdlib::StackFrame& frame ) 
+    static kdlib::MEMOFFSET_64 getRET( kdlib::StackFramePtr& frame ) 
     {
        AutoRestorePyState  pystate;
-        return frame.getRET();
+        return frame->getRET();
     }
 
-    static kdlib::MEMOFFSET_64  getFP( kdlib::StackFrame& frame ) 
+    static kdlib::MEMOFFSET_64  getFP( kdlib::StackFramePtr& frame ) 
     {
         AutoRestorePyState  pystate;
-        return frame.getFP();
+        return frame->getFP();
     }
 
-    static kdlib::MEMOFFSET_64  getSP( kdlib::StackFrame& frame ) 
+    static kdlib::MEMOFFSET_64  getSP( kdlib::StackFramePtr& frame ) 
     {
         AutoRestorePyState  pystate;
-        return frame.getSP();
+        return frame->getSP();
     }
 
-    static std::wstring print( kdlib::StackFrame& frame );
+    static std::wstring print( kdlib::StackFramePtr& frame );
+
+    static python::list getParamsList( kdlib::StackFramePtr& frame);
+
+    static python::dict getParamsDict( kdlib::StackFramePtr& frame);
+
+    static kdlib::TypedVarPtr getParam( kdlib::StackFramePtr& frame, const std::wstring &paramName ) 
+    {
+        AutoRestorePyState  pystate;
+        return frame->getTypedParam(paramName);
+    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -94,6 +104,13 @@ inline kdlib::StackFramePtr getCurrentFrame() {
     return kdlib::getStack()->getFrame(0);
 }
 
+inline python::list getParams() {
+    return StackFrameAdapter::getParamsList( getCurrentFrame() );
+}
+
+inline kdlib::TypedVarPtr getParam( const std::wstring &name ) {
+    return StackFrameAdapter::getParam( getCurrentFrame(), name );
+}
 
 class CPUContextAdapter
 {
