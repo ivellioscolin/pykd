@@ -94,124 +94,6 @@ void PykdExt::tearDown()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class InterprterVirt
-{
-public:
-    InterprterVirt()
-    {
-        PyThreadState   *threadState = PyGILState_GetThisThreadState();
-
-        modules = threadState->interp->modules;
-        modules_reloading = threadState->interp->modules_reloading;
-        sysdict = threadState->interp->sysdict;
-        builtins = threadState->interp->builtins;
-        codec_search_path = threadState->interp->codec_search_path;
-        codec_search_cache = threadState->interp->codec_search_cache;
-        codec_error_registry = threadState->interp->codec_error_registry;
-
-        newThread = NULL;
-    }
-
-    ~InterprterVirt()
-    {
-        PyThreadState   *threadState =PyGILState_GetThisThreadState();
-
-        if ( threadState->interp->modules != modules )
-        {
-            Py_DECREF(threadState->interp->modules);
-            threadState->interp->modules = modules;
-        }
-
-        if ( threadState->interp->modules_reloading != modules_reloading )
-        {
-            Py_DECREF(threadState->interp->modules_reloading);
-            threadState->interp->modules_reloading = modules_reloading;
-        }
-
-        if ( threadState->interp->sysdict != sysdict )
-        {
-            Py_DECREF(threadState->interp->sysdict);
-            threadState->interp->sysdict = sysdict;
-        }
-
-        if ( threadState->interp->builtins != builtins )
-        {
-            Py_DECREF(threadState->interp->builtins);
-            threadState->interp->builtins = builtins;
-        }
-
-        if ( threadState->interp->codec_search_path != codec_search_path )
-        {
-            Py_DECREF(threadState->interp->codec_search_path);
-            threadState->interp->codec_search_path = codec_search_path;
-        }
-
-        if ( threadState->interp->codec_search_cache != codec_search_cache )
-        {
-            Py_DECREF(threadState->interp->codec_search_cache);
-            threadState->interp->codec_search_cache = codec_search_cache;
-        }
-
-        if ( threadState->interp->codec_error_registry != codec_error_registry )
-        {
-            Py_DECREF(threadState->interp->codec_error_registry);
-            threadState->interp->codec_search_cache = codec_error_registry;
-        }
-
-        if (newThread)
-        {
-            PyThreadState*  current = PyThreadState_Get();
-            PyThreadState_Swap(newThread);
-            Py_EndInterpreter(newThread);
-            PyThreadState_Swap(current);
-        }
-
-    }
-    
-    void fork()
-    {
-        PyThreadState  *threadState =PyGILState_GetThisThreadState();
-        newThread = Py_NewInterpreter();
-
-        threadState->interp->modules = newThread->interp->modules;
-        Py_INCREF(threadState->interp->modules);
-
-        threadState->interp->modules_reloading = newThread->interp->modules_reloading;
-        Py_INCREF(threadState->interp->modules_reloading);
-
-        threadState->interp->sysdict = newThread->interp->sysdict;
-        Py_INCREF(threadState->interp->sysdict);
-
-        threadState->interp->builtins = newThread->interp->builtins;
-        Py_INCREF(threadState->interp->builtins);
-
-        threadState->interp->codec_search_path = newThread->interp->codec_search_path;
-        Py_INCREF(threadState->interp->codec_search_path);
-
-        threadState->interp->codec_search_cache = newThread->interp->codec_search_cache;
-        Py_INCREF(threadState->interp->codec_search_cache);
-
-        threadState->interp->codec_error_registry = newThread->interp->codec_error_registry;
-        Py_INCREF(threadState->interp->codec_error_registry);
-
-        PyThreadState_Swap(threadState);
-    }
-   
-
-private:
-
-    PyObject *modules;
-    PyObject *sysdict;
-    PyObject *builtins;
-    PyObject *modules_reloading;
-    PyObject *codec_search_path;
-    PyObject *codec_search_cache;
-    PyObject *codec_error_registry;
-
-    PyThreadState  *newThread;
-};
-
-
 KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
 {
     ArgsList   args = getArgs();
@@ -293,57 +175,76 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
 
     PyEval_RestoreThread( m_pyState );
 
-    do {
+    if ( !global )
+    {
+        globalState = Py_NewInterpreter();
 
-        InterprterVirt   interpretrVirt;
+        localState = PyThreadState_Get();
 
-        if ( !global )
-        {
-            interpretrVirt.fork();
+        python::object       sys = python::import("sys");
 
-            python::object       sys = python::import("sys");
+        sys.attr("stdout") = python::object( pykd::DbgOut() );
+        sys.attr("stderr") = python::object( pykd::DbgOut() );
+        sys.attr("stdin") = python::object( pykd::DbgIn() );
+    }
 
-            sys.attr("stdout") = python::object( pykd::DbgOut() );
-            sys.attr("stderr") = python::object( pykd::DbgOut() );
-            sys.attr("stdin") = python::object( pykd::DbgIn() );
+    if ( args.size() == 0 )
+    {
+        startConsole();
+    }
+    else
+    {
+        std::string  scriptFileName = getScriptFileName( args[0] );
+
+        // устанавиливаем питоновские аргументы
+        char  **pythonArgs = new char* [ args.size() ];
+
+        pythonArgs[0] = const_cast<char*>(scriptFileName.c_str());
+
+        for ( size_t  i = 1; i < args.size(); ++i )
+            pythonArgs[i] = const_cast<char*>( args[i].c_str() );
+
+        PySys_SetArgv( (int)args.size(), pythonArgs );
+
+        delete[]  pythonArgs;
+
+        // получаем достпу к глобальному мапу ( нужен для вызова exec_file )
+        python::object  main =  python::import("__main__");
+
+        python::object  global(main.attr("__dict__"));
+
+        try {
+            PykdInterruptWatch  interruptWatch;
+            python::exec_file( scriptFileName.c_str(), global );
         }
-
-        if ( args.size() == 0 )
+        catch( python::error_already_set const & )
         {
-            startConsole();
+            printException();
         }
-        else
+    }
+
+    if ( !global )
+    {
+
+        PyInterpreterState  *interpreter = localState->interp;
+
+        while( interpreter->tstate_head != NULL )
         {
-            std::string  scriptFileName = getScriptFileName( args[0] );
+            PyThreadState   *threadState = (PyThreadState*)(interpreter->tstate_head);
 
-            // устанавиливаем питоновские аргументы
-            char  **pythonArgs = new char* [ args.size() ];
+            PyThreadState_Clear(threadState);
 
-            pythonArgs[0] = const_cast<char*>(scriptFileName.c_str());
+            PyThreadState_Swap( NULL );
 
-            for ( size_t  i = 1; i < args.size(); ++i )
-                pythonArgs[i] = const_cast<char*>( args[i].c_str() );
-
-            PySys_SetArgv( (int)args.size(), pythonArgs );
-
-            delete[]  pythonArgs;
-
-            // получаем достпу к глобальному мапу ( нужен для вызова exec_file )
-            python::object  main =  python::import("__main__");
-
-            python::object  global(main.attr("__dict__"));
-
-            try {
-                PykdInterruptWatch  interruptWatch;
-                python::exec_file( scriptFileName.c_str(), global );
-            }
-            catch( python::error_already_set const & )
-            {
-                printException();
-            }
+            PyThreadState_Delete(threadState);
         }
+    
+        PyInterpreterState_Clear(interpreter);
 
-    } while( false);
+        PyInterpreterState_Delete(interpreter);
+
+        PyThreadState_Swap( globalState );
+    }
 
     m_pyState = PyEval_SaveThread();
 
