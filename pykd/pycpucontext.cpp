@@ -133,4 +133,62 @@ python::dict StackFrameAdapter::getParamsDict( kdlib::StackFramePtr&  frame)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+python::list StackFrameAdapter::getLocalsList(kdlib::StackFramePtr& frame)
+{
+    typedef std::vector< std::pair< std::wstring, kdlib::TypedVarPtr> >  LocalVarList;
+
+    LocalVarList  localLst;
+    unsigned long  localCount;
+
+    do {
+        AutoRestorePyState  pystate;
+        localCount = frame->getLocalVarCount();
+        for ( unsigned long i = 0; i < localCount; ++i )
+        {
+            kdlib::TypedVarPtr  param = frame->getLocalVar(i);
+            std::wstring  paramName =  frame->getLocalVarName(i);
+
+            localLst.push_back( std::make_pair( paramName, param) );
+        }
+    } while(false);
+
+    python::list  pyLst;
+
+    for ( unsigned long i = 0; i < localCount; ++i )
+        pyLst.append( python::make_tuple( localLst[i].first, localLst[i].second ) );
+
+    return pyLst;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+python::dict StackFrameAdapter::getLocalsDict(kdlib::StackFramePtr& frame)
+{
+    typedef std::vector< std::pair< std::wstring, kdlib::TypedVarPtr> >  LocalVarList;
+
+    LocalVarList  localLst;
+    unsigned long  localCount;
+
+    do {
+        AutoRestorePyState  pystate;
+        localCount = frame->getLocalVarCount();
+        for ( unsigned long i = 0; i < localCount; ++i )
+        {
+            kdlib::TypedVarPtr  param = frame->getLocalVar(i);
+            std::wstring  paramName =  frame->getLocalVarName(i);
+
+            localLst.push_back( std::make_pair( paramName, param) );
+        }
+    } while(false);
+
+    python::dict  pyLst;
+
+    for ( unsigned long i = 0; i < localCount; ++i )
+        pyLst[localLst[i].first] = localLst[i].second;
+
+    return pyLst;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // end namespace pykd

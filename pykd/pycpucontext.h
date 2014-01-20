@@ -7,6 +7,7 @@ namespace python = boost::python;
 #include "kdlib/cpucontext.h"
 #include "kdlib/stack.h"
 
+#include "dbgexcept.h"
 #include "pythreadstate.h"
 
 namespace pykd {
@@ -51,6 +52,15 @@ public:
     {
         AutoRestorePyState  pystate;
         return frame->getTypedParam(paramName);
+    }
+
+    static python::list getLocalsList(kdlib::StackFramePtr& frame);
+
+    static python::dict getLocalsDict(kdlib::StackFramePtr& frame);
+
+    static kdlib::TypedVarPtr getLocal( kdlib::StackFramePtr& frame, const std::wstring &paramName ) {
+        AutoRestorePyState  pystate;
+        return frame->getLocalVar(paramName);
     }
 };
 
@@ -111,6 +121,15 @@ inline python::list getParams() {
 inline kdlib::TypedVarPtr getParam( const std::wstring &name ) {
     return StackFrameAdapter::getParam( getCurrentFrame(), name );
 }
+
+inline python::list getLocals() {
+    return StackFrameAdapter::getLocalsList( getCurrentFrame() );
+}
+
+inline kdlib::TypedVarPtr getLocal( const std::wstring &name ) {
+    return StackFrameAdapter::getLocal( getCurrentFrame(), name );
+}
+
 
 class CPUContextAdapter
 {

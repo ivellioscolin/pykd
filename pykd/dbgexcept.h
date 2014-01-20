@@ -98,5 +98,8 @@ void printException();
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+#define PYKD_NOT_IMPLEMENTED()   throw kdlib::ImplementException( __FILE__, __LINE__, "Not Implemented" );
+#define PYKD_TODO(x) throw kdlib::ImplementException( __FILE__, __LINE__, x );
+
 }; // namespace pykd
 

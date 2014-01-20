@@ -38,3 +38,9 @@ class StackTest(unittest.TestCase):
         self.assertEqual( 10, pykd.getStack()[1].params["a"] )
         self.assertEqual( 10, pykd.getStack()[1].getParam("a") )
         self.assertEqual( 10, dict( pykd.getStack()[1].getParams() )["a"] )
+
+    def testGetLocals(self):
+        expectedLocals = ["localDouble", "localFloat", "localChars"]
+        self.assertEqual( expectedLocals, [name for name, param in pykd.getStack()[1].getLocals() ] )
+        self.assertEqual( 0.0, pykd.getStack()[1].locals["localDouble"] )
+

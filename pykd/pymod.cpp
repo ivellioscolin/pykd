@@ -317,8 +317,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Return a current stack frame" );
    // python::def( "getStackWow64", &getCurrentStackWow64,
    //     "Return a stack for wow64 context as a list of stackFrame objects" );
-   // python::def( "getLocals", &getLocals, 
-   //     "Get list of local variables" );
+    python::def( "getLocals", pykd::getLocals, 
+        "Get list of local variables" );
+    python::def( "getLocal", pykd::getLocal,
+        "Get the fucntion's local variable by name" );
     python::def( "getParams", pykd::getParams, 
         "Get list of function arguments as list of tuple (name, value ) " );
     python::def( "getParam", pykd::getParam, 
@@ -617,6 +619,12 @@ BOOST_PYTHON_MODULE( pykd )
             "return set of function's parameters as a dict (name : value)")
         .def( "getParam", StackFrameAdapter::getParam,
             "return function param by it's name")
+        .def( "getLocals", StackFrameAdapter::getLocalsList,
+            "return set of function's local variables  as a  list of tuple (name, value ) ")
+        .add_property("locals", StackFrameAdapter::getLocalsDict,
+            "return a set of  function's local variables as a dict ( name : value)")
+        .def( "getLocal", StackFrameAdapter::getLocal,
+            "return the function's local variable  by it's name")
         .def( "__str__", StackFrameAdapter::print );
 
     python::class_<kdlib::CPUContext, kdlib::CPUContextPtr, boost::noncopyable>( "cpu",
