@@ -99,6 +99,8 @@ BOOST_PYTHON_MODULE( pykd )
    // DbgEng services 
     python::def( "setSymSrvDir", pykd::setSymSrvDir,
         "Set directory of SYMSRV.dll library.\nUsually this is a directory of WinDbg");
+    python::def( "getExtensionSearchPath", pykd::getExtensionSearchPath,
+        "Return the extension DLL search path" );
     python::def( "loadExt", pykd::loadExtension,
         "Load a WinDBG extension. Return handle of the loaded extension" );
     python::def( "removeExt", pykd::removeExtension,

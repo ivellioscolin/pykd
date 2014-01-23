@@ -291,6 +291,13 @@ unsigned long getCurrentTime()
 ///////////////////////////////////////////////////////////////////////////////
 
 inline
+std::wstring getExtensionSearchPath()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getExtensionSearchPath();
+}
+
+inline
 kdlib::EXTENSION_ID loadExtension(const std::wstring &extPath ) 
 {
     AutoRestorePyState  pystate;
