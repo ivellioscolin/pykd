@@ -1298,7 +1298,23 @@ ULONG64 loadExtension(const std::wstring &extPath )
 
     hres = g_dbgEng->control->AddExtensionWide( extPath.c_str(), 0, &handle );
     if ( FAILED( hres ) )
-        throw DbgException( "IDebugControl::AddExtension failed" );
+        throw DbgException( "IDebugControl::AddExtension", hres );
+
+    return handle;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ULONG64 getExtension(const std::wstring &extPath )
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    HRESULT  hres;
+    ULONG64  handle = 0;
+
+    hres = g_dbgEng->control->GetExtensionByPathWide( extPath.c_str(), &handle );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetExtensionByPath", hres );
 
     return handle;
 }
@@ -1325,8 +1341,8 @@ std::wstring callExtension( ULONG64 extHandle, const std::wstring command, const
     hres = g_dbgEng->control->CallExtensionWide( extHandle, command.c_str(), params.c_str() );
 
     if ( FAILED( hres ) )
-        throw  DbgException( "IDebugControl::CallExtension  failed" ); 
-        
+        throw DbgException( "IDebugControl::CallExtension", hres ); 
+
     return std::wstring( outReader.Line() );
 }
 

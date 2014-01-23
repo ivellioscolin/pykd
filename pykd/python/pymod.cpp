@@ -84,6 +84,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Set directory of SYMSRV.dll library.\nUsually this is a directory of WinDbg");
     python::def( "loadExt", &loadExtension,
         "Load a WinDBG extension. Return handle of the loaded extension" );
+    python::def( "getExt", &getExtension,
+        "Return handle of the loaded extension" );
     python::def( "removeExt", &removeExtension,
         "Unload a WinDBG extension. Parameters: handle returned by loadExt" );
     python::def( "callExt", &callExtension,

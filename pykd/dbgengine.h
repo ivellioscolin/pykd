@@ -204,6 +204,7 @@ void appendSymbolPath(const std::string &symPath);
 
 // Extensions
 ULONG64 loadExtension(const std::wstring &extPath );
+ULONG64 getExtension(const std::wstring &extPath );
 void removeExtension( ULONG64 extHandle );
 std::wstring callExtension( ULONG64 extHandle, const std::wstring command, const std::wstring  &params  );
 
