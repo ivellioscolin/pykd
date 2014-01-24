@@ -81,7 +81,9 @@ BOOST_PYTHON_MODULE( pykd )
 
     // DbgEng services 
     python::def( "setSymSrvDir", &setSymSrvDir,
-        "Set directory of SYMSRV.dll library.\nUsually this is a directory of WinDbg");
+        "Set directory of SYMSRV.dll library.\nUsually this is a directory of WinDbg" );
+    python::def( "getExtensionSearchPath", &getExtensionSearchPath,
+        "Return the extension DLL search path" );
     python::def( "loadExt", &loadExtension,
         "Load a WinDBG extension. Return handle of the loaded extension" );
     python::def( "getExt", &getExtension,
@@ -90,7 +92,6 @@ BOOST_PYTHON_MODULE( pykd )
         "Unload a WinDBG extension. Parameters: handle returned by loadExt" );
     python::def( "callExt", &callExtension,
         "Call a WinDBG extension's routine. Parameters: handle returned by loadExt; string command line" );
-
 
     // Manage debug target 
 

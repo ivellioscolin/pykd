@@ -203,6 +203,7 @@ void setSymbolPath(const std::string &symPath);
 void appendSymbolPath(const std::string &symPath);
 
 // Extensions
+std::wstring getExtensionSearchPath();
 ULONG64 loadExtension(const std::wstring &extPath );
 ULONG64 getExtension(const std::wstring &extPath );
 void removeExtension( ULONG64 extHandle );
