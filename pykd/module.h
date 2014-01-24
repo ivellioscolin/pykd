@@ -128,6 +128,8 @@ public:
 
     python::tuple getVersion();
 
+    boost::shared_ptr< struct FixedFileInfo > getFixedFileInfo();
+
 private:
     void completeConstruct();  // call from ctor
 

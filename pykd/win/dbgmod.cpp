@@ -410,6 +410,39 @@ std::string getModuleVersionInfo( ULONG64 baseOffset, const std::string &value )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+FixedFileInfo::FixedFileInfo(ULONG64 baseOffset)
+{
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    VS_FIXEDFILEINFO Pod;
+    HRESULT hres = 
+        g_dbgEng->symbols->GetModuleVersionInformation( 
+            DEBUG_ANY_ID,
+            baseOffset,
+            "\\",
+            &Pod,
+            sizeof(Pod),
+            NULL );
+    if ( hres != S_OK )
+        throw DbgException("IDebugSymbols::GetModuleVersionInformation", hres);
+
+    Signature = Pod.dwSignature;
+    StrucVersion = Pod.dwStrucVersion;
+    FileVersionMS = Pod.dwFileVersionMS;
+    FileVersionLS = Pod.dwFileVersionLS;
+    ProductVersionMS = Pod.dwProductVersionMS;
+    ProductVersionLS = Pod.dwProductVersionLS;
+    FileFlagsMask = Pod.dwFileFlagsMask;
+    FileFlags = Pod.dwFileFlags;
+    FileOS = Pod.dwFileOS;
+    FileType = Pod.dwFileType;
+    FileSubtype = Pod.dwFileSubtype;
+    FileDateMS = Pod.dwFileDateMS;
+    FileDateLS = Pod.dwFileDateLS;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 }   // namespace pykd
 
 ///////////////////////////////////////////////////////////////////////////////

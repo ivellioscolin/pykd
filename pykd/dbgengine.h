@@ -70,6 +70,35 @@ bool isModuleUserMode( ULONG64 baseOffset );
 std::string getModuleVersionInfo( ULONG64 baseOffset, const std::string &value );
 void getModuleFileVersion( ULONG64 baseOffset, USHORT &majorHigh, USHORT &majorLow, USHORT &minorHigh, USHORT &minorLow );
 
+struct FixedFileInfo : protected boost::noncopyable {
+    DWORD Signature;
+    DWORD StrucVersion;
+    DWORD FileVersionMS;
+    DWORD FileVersionLS;
+    DWORD ProductVersionMS;
+    DWORD ProductVersionLS;
+    DWORD FileFlagsMask;
+    DWORD FileFlags;
+    DWORD FileOS;
+    DWORD FileType;
+    DWORD FileSubtype;
+    DWORD FileDateMS;
+    DWORD FileDateLS;
+
+    FixedFileInfo(ULONG64 baseOffset);
+};
+typedef boost::shared_ptr< FixedFileInfo > FixedFileInfoPtr;
+
+enum FileFlag
+{
+    FileFlagDebug           = 0x00000001,
+    FileFlagPreRelease      = 0x00000002,
+    FileFlagPatched         = 0x00000004,
+    FileFlagPrivateBuild    = 0x00000008,
+    FileFlagInfoInferred    = 0x00000010,
+    FileFlagSpecialBuild    = 0x00000020,
+};
+
 // CPU registers
 ULONG getRegIndexByName( const std::string &regName );
 std::string getRegNameByIndex( ULONG index );

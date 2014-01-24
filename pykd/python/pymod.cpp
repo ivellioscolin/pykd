@@ -380,6 +380,44 @@ BOOST_PYTHON_MODULE( pykd )
     python::implicitly_convertible<intBase,ULONG>();
     python::implicitly_convertible<intBase,LONG>();
 
+    python::class_<FixedFileInfo, FixedFileInfoPtr, boost::noncopyable>( "FixedFileInfo", 
+         "Version information for a file", python::no_init )
+        .def_readonly( "Signature", &FixedFileInfo::Signature,
+            "Contains the value 0xFEEF04BD" )
+        .def_readonly( "StrucVersion", &FixedFileInfo::StrucVersion,
+            "The binary version number of this structure" )
+        .def_readonly( "FileVersionMS", &FixedFileInfo::FileVersionMS,
+            "The most significant 32 bits of the file's binary version number" )
+        .def_readonly( "FileVersionLS", &FixedFileInfo::FileVersionLS,
+            "The least significant 32 bits of the file's binary version number" )
+        .def_readonly( "ProductVersionMS", &FixedFileInfo::ProductVersionMS,
+            "The most significant 32 bits of the binary version number of the product with which this file was distributed" )
+        .def_readonly( "ProductVersionLS", &FixedFileInfo::ProductVersionLS,
+            "The least significant 32 bits of the binary version number of the product with which this file was distributed" )
+        .def_readonly( "FileFlagsMask", &FixedFileInfo::FileFlagsMask,
+            "Contains a bitmask that specifies the valid bits in FileFlags" )
+        .def_readonly( "FileFlags", &FixedFileInfo::FileFlags,
+            "Contains a bitmask that specifies the Boolean attributes of the file: FileFlag" )
+        .def_readonly( "FileOS", &FixedFileInfo::FileOS,
+            "The operating system for which this file was designed" )
+        .def_readonly( "FileType", &FixedFileInfo::FileType,
+            "The general type of file" )
+        .def_readonly( "FileSubtype", &FixedFileInfo::FileSubtype,
+            "The function of the file. The possible values depend on the value of FileType" )
+        .def_readonly( "FileDateMS", &FixedFileInfo::FileDateMS,
+            "The most significant 32 bits of the file's 64-bit binary creation date and time stamp" )
+        .def_readonly( "FileDateLS", &FixedFileInfo::FileDateLS,
+            "The least significant 32 bits of the file's 64-bit binary creation date and time stamp" );
+
+    python::enum_<FileFlag>("FileFlag", "Attributes of the file")
+        .value("Debug", FileFlagDebug)
+        .value("PreRelease", FileFlagPreRelease)
+        .value("Patched", FileFlagPatched)
+        .value("PrivateBuild", FileFlagPrivateBuild)
+        .value("InfoInferred", FileFlagInfoInferred)
+        .value("SpecialBuild", FileFlagSpecialBuild)
+        .export_values();
+
     python::class_<Module, ModulePtr, python::bases<intBase> >("module", "Class representing executable module", python::no_init )
         .def("__init__", python::make_constructor(Module::loadModuleByName) )
         .def("__init__", python::make_constructor(Module::loadModuleByOffset) )
@@ -440,6 +478,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return string from the module's version resources" )
         .def("getVersion",  &Module::getVersion,
             "Return tuple of the module's file version" )
+        .def("getFixedFileInfo", &Module::getFixedFileInfo,
+            "Return FixedFileInfo" )
         .def("__getattr__", &Module::getSymbolOffset,
             "Return address of the symbol" )
         .def( "__str__", &Module::print );
@@ -591,8 +631,6 @@ BOOST_PYTHON_MODULE( pykd )
             "An array of additional arguments that describe the exception")
         .def( "__str__", &ExceptionInfo::print,
             "Return object as a string");
-
-
 
     python::enum_<EVENT_TYPE>("eventType", "Type of debug event")
         .value("Breakpoint", EventTypeBreakpoint)
