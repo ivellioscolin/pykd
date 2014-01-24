@@ -239,6 +239,7 @@
     <ClInclude Include="pydbgeng.h" />
     <ClInclude Include="pydbgio.h" />
     <ClInclude Include="pyeventhandler.h" />
+    <ClInclude Include="pyevents.h" />
     <ClInclude Include="pykdver.h" />
     <ClInclude Include="pymemaccess.h" />
     <ClInclude Include="pymodule.h" />

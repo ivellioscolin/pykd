@@ -14,6 +14,7 @@
 #include "pydbgeng.h"
 #include "pydbgio.h"
 #include "pydisasm.h"
+#include "pyevents.h"
 #include "pyeventhandler.h"
 #include "pymemaccess.h"
 #include "pymodule.h"
@@ -381,6 +382,14 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "setImplicitThread", pykd::setImplicitThread,
         "Set implicit thread" );
 
+    // events
+    python::def("getLastEvent", pykd::getLastEvent,
+        "Get last debug event information");
+    python::def("getLastException", pykd::getLastException,
+        "Get last exception  information");
+
+
+
    // // symbol path
    // python::def( "getSymbolPath", &getSymbolPath, "Returns current symbol path");
    // python::def( "setSymbolPath", &setSymbolPath, "Set current symbol path");
@@ -681,24 +690,28 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__str__", pykd::printExceptionInfo,
             "Return object as a string");
 
-   // python::enum_<EVENT_TYPE>("eventType", "Type of debug event")
-   //     .value("Breakpoint", EventTypeBreakpoint)
-   //     .value("Exception", EventTypeException)
-   //     .value("CreateThread", EventTypeCreateThread)
-   //     .value("ExitThread", EventTypeExitThread)
-   //     .value("CreateProcess", EventTypeCreateProcess)
-   //     .value("ExitProcess", EventTypeExitProcess)
-   //     .value("LoadModule", EventTypeLoadModule)
-   //     .value("UnloadModule", EventTypeUnloadModule)
-   //     .value("SystemError", EventTypeSystemError)
-   //     .value("SessionStatus", EventTypeSessionStatus)
-   //     .value("ChangeDebuggeeState", EventTypeChangeDebuggeeState)
-   //     .value("ChangeEngineState", EventTypeChangeEngineState)
-   //     .value("ChangeSymbolState", EventTypeChangeSymbolState)
-   //     .export_values();
+    python::enum_<kdlib::EventType>("eventType", "Type of debug event")
+        .value("Breakpoint", kdlib::EventTypeBreakpoint)
+        .value("Exception", kdlib::EventTypeException)
+        .value("CreateThread", kdlib::EventTypeCreateThread)
+        .value("ExitThread", kdlib::EventTypeExitThread)
+        .value("CreateProcess", kdlib::EventTypeCreateProcess)
+        .value("ExitProcess", kdlib::EventTypeExitProcess)
+        .value("LoadModule", kdlib::EventTypeLoadModule)
+        .value("UnloadModule", kdlib::EventTypeUnloadModule)
+        .value("SystemError", kdlib::EventTypeSystemError)
+        .value("SessionStatus", kdlib::EventTypeSessionStatus)
+        .value("ChangeDebuggeeState", kdlib::EventTypeChangeDebuggeeState)
+        .value("ChangeEngineState", kdlib::EventTypeChangeEngineState)
+        .value("ChangeSymbolState", kdlib::EventTypeChangeSymbolState)
+        .export_values();
 
-   // python::def( "lastEvent", &getLastEventType,
-   //     "Return type of last event: eventType" );
+    python::class_<pykd::DebugEvent>("debugEvent", "Debug evemt descriptions", python::no_init)
+        .def_readonly("type", &DebugEvent::eventType)
+        .def_readonly("process", &DebugEvent::process)
+        .def_readonly("thread", &DebugEvent::thread)
+        ;
+
    // python::def( "lastException", &getLastExceptionInfo,
    //     "Return data of last exception event: exceptionInfo" );
    // python::def( "bugCheckData", &pysupport::getBugCheckData,
