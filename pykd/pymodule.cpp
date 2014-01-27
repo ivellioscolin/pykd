@@ -6,6 +6,18 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+FixedFileInfoPtr ModuleAdapter::getFixedFileInfo( kdlib::Module& module )
+{
+    AutoRestorePyState  pystate;
+
+    kdlib::FixedFileInfo fixedFileInfo;
+    module.getFixedFileInfo(fixedFileInfo);
+
+    return FixedFileInfoPtr( new kdlib::FixedFileInfo(fixedFileInfo) );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 std::wstring ModuleAdapter::print( kdlib::Module& module ) 
 {
     AutoRestorePyState  pystate;

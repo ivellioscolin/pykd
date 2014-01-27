@@ -489,10 +489,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Returns a flag that the module was unloaded" )
         .def("um", ModuleAdapter::isUserMode,
             "Returns a flag that the module is a user-mode module" )
-        //.def("queryVersion", &Module::queryVersion,
-        //    "Return string from the module's version resources" )
-        //.def("getVersion",  &Module::getVersion,
-        //    "Return tuple of the module's file version" )
+        .def("queryVersion", ModuleAdapter::getVersionInfo,
+            "Return string from the module's version resources" )
+        .def("getFixedFileInfo", ModuleAdapter::getFixedFileInfo,
+            "Return FixedFileInfo" )
         .def("__getattr__", ModuleAdapter::getSymbolVa,
             "Return address of the symbol" )
         .def( "__str__", &ModuleAdapter::print );
@@ -672,6 +672,34 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__str__", pykd::printSystemVersion,
             "Return object as a string");
 
+    python::class_<kdlib::FixedFileInfo, FixedFileInfoPtr>(
+        "FixedFileInfo", "Version information for a file", python::no_init )
+        .def_readonly( "Signature", &kdlib::FixedFileInfo::Signature,
+            "Contains the value 0xFEEF04BD" )
+        .def_readonly( "StrucVersion", &kdlib::FixedFileInfo::StrucVersion,
+            "The binary version number of this structure" )
+        .def_readonly( "FileVersionMS", &kdlib::FixedFileInfo::FileVersionMS,
+            "The most significant 32 bits of the file's binary version number" )
+        .def_readonly( "FileVersionLS", &kdlib::FixedFileInfo::FileVersionLS,
+            "The least significant 32 bits of the file's binary version number" )
+        .def_readonly( "ProductVersionMS", &kdlib::FixedFileInfo::ProductVersionMS,
+            "The most significant 32 bits of the binary version number of the product with which this file was distributed" )
+        .def_readonly( "ProductVersionLS", &kdlib::FixedFileInfo::ProductVersionLS,
+            "The least significant 32 bits of the binary version number of the product with which this file was distributed" )
+        .def_readonly( "FileFlagsMask", &kdlib::FixedFileInfo::FileFlagsMask,
+            "Contains a bitmask that specifies the valid bits in FileFlags" )
+        .def_readonly( "FileFlags", &kdlib::FixedFileInfo::FileFlags,
+            "Contains a bitmask that specifies the Boolean attributes of the file: FileFlag" )
+        .def_readonly( "FileOS", &kdlib::FixedFileInfo::FileOS,
+            "The operating system for which this file was designed" )
+        .def_readonly( "FileType", &kdlib::FixedFileInfo::FileType,
+            "The general type of file" )
+        .def_readonly( "FileSubtype", &kdlib::FixedFileInfo::FileSubtype,
+            "The function of the file. The possible values depend on the value of FileType" )
+        .def_readonly( "FileDateMS", &kdlib::FixedFileInfo::FileDateMS,
+            "The most significant 32 bits of the file's 64-bit binary creation date and time stamp" )
+        .def_readonly( "FileDateLS", &kdlib::FixedFileInfo::FileDateLS,
+            "The least significant 32 bits of the file's 64-bit binary creation date and time stamp" );
 
     python::class_<kdlib::ExceptionInfo>(
         "exceptionInfo", "Exception information", python::no_init )
@@ -689,6 +717,15 @@ BOOST_PYTHON_MODULE( pykd )
             "An array of additional arguments that describe the exception")
         .def( "__str__", pykd::printExceptionInfo,
             "Return object as a string");
+
+    python::enum_<kdlib::FileFlag>("FileFlag", "Attributes of the file")
+        .value("Debug", kdlib::FileFlagDebug)
+        .value("PreRelease", kdlib::FileFlagPreRelease)
+        .value("Patched", kdlib::FileFlagPatched)
+        .value("PrivateBuild", kdlib::FileFlagPrivateBuild)
+        .value("InfoInferred", kdlib::FileFlagInfoInferred)
+        .value("SpecialBuild", kdlib::FileFlagSpecialBuild)
+        .export_values();
 
     python::enum_<kdlib::EventType>("eventType", "Type of debug event")
         .value("Breakpoint", kdlib::EventTypeBreakpoint)

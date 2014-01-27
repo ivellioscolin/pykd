@@ -9,6 +9,7 @@
 
 namespace pykd {
 
+typedef boost::shared_ptr< kdlib::FixedFileInfo > FixedFileInfoPtr;
 
 struct ModuleAdapter : public kdlib::Module 
 {
@@ -139,6 +140,14 @@ struct ModuleAdapter : public kdlib::Module
         AutoRestorePyState  pystate;
         return module.isUserMode();
     }
+
+    static std::string getVersionInfo( kdlib::Module& module, const std::string &value )
+    {
+        AutoRestorePyState  pystate;
+        return module.getVersionInfo(value);
+    }
+
+    static FixedFileInfoPtr getFixedFileInfo( kdlib::Module& module );
 
     static std::wstring print( kdlib::Module& module );
 
