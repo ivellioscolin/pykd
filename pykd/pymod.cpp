@@ -485,10 +485,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
         .def("timestamp", ModuleAdapter::getTimeDataStamp,
             "Return a low 32 bits of the time stamp of the image: IMAGE_FILE_HEADER.TimeDateStamp" )
-        //.def("unloaded", &Module::isUnloaded,
-        //    "Returns a flag that the module was unloaded")
-        //.def("um", &Module::isUserMode,
-        //    "Returns a flag that the module is a user-mode module")
+        .def("unloaded", ModuleAdapter::isUnloaded,
+            "Returns a flag that the module was unloaded" )
+        .def("um", ModuleAdapter::isUserMode,
+            "Returns a flag that the module is a user-mode module" )
         //.def("queryVersion", &Module::queryVersion,
         //    "Return string from the module's version resources" )
         //.def("getVersion",  &Module::getVersion,

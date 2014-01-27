@@ -128,6 +128,18 @@ struct ModuleAdapter : public kdlib::Module
         return module.getTimeDataStamp();
     }
 
+    static bool isUnloaded( kdlib::Module& module )
+    {
+        AutoRestorePyState  pystate;
+        return module.isUnloaded();
+    }
+
+    static bool isUserMode( kdlib::Module& module )
+    {
+        AutoRestorePyState  pystate;
+        return module.isUserMode();
+    }
+
     static std::wstring print( kdlib::Module& module );
 
     static python::list enumSymbols( kdlib::Module& module, const std::wstring  &mask = L"*" );
