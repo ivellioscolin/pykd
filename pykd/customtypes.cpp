@@ -23,9 +23,20 @@ TypeInfoPtr TypeBuilder::createUnion( const std::string &name, ULONG align )
 
 ////////////////////////////////////////////////////////////////////////////////
 
+CustomBase::CustomBase( const std::string &name, ULONG pointerSize, ULONG align ) :
+    UdtTypeInfoBase( name )
+{
+    m_ptrSize = pointerSize;
+    m_align = align ? align : m_ptrSize;
+    m_size = 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 ULONG CustomBase::getSize()
 {
-    return alignUp( m_size, getAlignReq() );
+    const ULONG alignReq = getAlignReq();
+    return alignUp( m_size, alignReq < m_align ? alignReq : m_align );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

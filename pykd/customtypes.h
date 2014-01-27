@@ -59,13 +59,7 @@ public:
 
 protected:
 
-    CustomBase( const std::string &name, ULONG pointerSize, ULONG align ) :
-        UdtTypeInfoBase( name )
-        {
-            m_ptrSize = pointerSize;
-            m_align = align ? align : m_ptrSize;
-            m_size = 0;
-        }
+    CustomBase( const std::string &name, ULONG pointerSize, ULONG align ); 
 
     static ULONG alignUp(ULONG val, ULONG align);
 
