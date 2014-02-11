@@ -46,6 +46,10 @@ public:
 
     python::object getParamByName( const std::string& name );
 
+    bool isContainsLocal( const std::string& name );
+
+    bool isContainsParam( const std::string& name );
+
     python::object getLocalByIndex( ULONG index );
 
     python::object getParamByIndex( ULONG index );
@@ -71,6 +75,7 @@ public:
     virtual ULONG getVarCount() const = 0;
     virtual python::object getVarByName( const std::string &name ) = 0;
     virtual python::object getVarByIndex(ULONG index) const  = 0 ;
+    virtual bool isContainsVar( const std::string &name ) = 0;
 
 protected:
 
@@ -100,6 +105,10 @@ private:
     python::object getVarByIndex(ULONG index) const {
         return m_frame->getLocalByIndex( index );
     }
+
+    bool isContainsVar( const std::string &name ) {
+        return m_frame->isContainsLocal(name);
+    }
 };
 
 
@@ -123,6 +132,10 @@ private:
 
     python::object getVarByIndex(ULONG index) const {
         return m_frame->getParamByIndex(index);
+    }
+
+    bool isContainsVar( const std::string &name ) {
+        return m_frame->isContainsParam(name);
     }
 };
 

@@ -47,6 +47,10 @@ class IntBaseTest( unittest.TestCase ):
         self.assertTrue( -0x8000000000000000 - 1 != intBase(-0x8000000000000000) )
         self.assertTrue( intBase(1) != intBase(2) )
         
+    def testIs( self ):
+        a = b = intBase(0x1)
+        self.assertTrue( a is b )
+        
     def testLtGt( self ):
         self.assertTrue( 0xFE < intBase(0xFF) and intBase(0xFE) < 0xFF )
         self.assertFalse( -99 < intBase(-100) and intBase(-99) < - 100 )

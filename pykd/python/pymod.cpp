@@ -77,7 +77,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_findSymbol, Module::getSymbolName
 
 BOOST_PYTHON_MODULE( pykd )
 {
-    python::scope().attr("version") = pykdVersion;
+    python::scope().attr("__version__") = pykdVersion;
 
     // DbgEng services 
     python::def( "setSymSrvDir", &setSymSrvDir,
@@ -574,7 +574,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Class for access to local vars",  python::no_init  )
             .def("__len__", &ScopeVars::getVarCount )
             .def("__getitem__", &ScopeVars::getVarByIndex )
-            .def("__getitem__", &ScopeVars::getVarByName );
+            .def("__getitem__", &ScopeVars::getVarByName )
+            .def("__contains__", &ScopeVars::isContainsVar );
 
     python::class_<StackFrame, StackFramePtr,boost::noncopyable>( "stackFrame", 
          "Class representing a frame of the call stack", python::no_init )

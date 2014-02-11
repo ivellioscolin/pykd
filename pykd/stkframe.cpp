@@ -260,15 +260,20 @@ python::object StackFrame::getParamByName( const std::string& name )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ULONG StackFrame::getLocalCount()
+bool StackFrame::isContainsLocal( const std::string& name )
 {
-    ULONG count = 0;
-
-    ModulePtr mod;
-    mod = Module::loadModuleByOffset( m_instructionOffset);
+   ModulePtr mod = Module::loadModuleByOffset( m_instructionOffset);
 
     LONG displacemnt;
-    SymbolPtr func = mod->getSymbolByVa( m_instructionOffset, SymTagFunction, &displacemnt );
+    SymbolPtr func;
+    
+    try {
+        func = mod->getSymbolByVa( m_instructionOffset, SymTagFunction, &displacemnt );
+    }
+    catch(SymbolException&)
+    {
+        return false;
+    }
 
 #ifdef _DEBUG
     std::string funcName;
@@ -277,7 +282,120 @@ ULONG StackFrame::getLocalCount()
 
     if (!IsInDebugRange(func, static_cast<ULONG>( m_instructionOffset - mod->getBase())))
     {
-        throw DbgException("is not debug range");
+        return false;
+    }
+
+    // find var in current scope
+    SymbolPtrList symList = func->findChildren(SymTagData);
+    SymbolPtrList::iterator itVar = symList.begin();
+    for (; itVar != symList.end(); ++itVar)
+    {
+        if ( (*itVar)->getName() == name )
+        {
+            return true;
+        }
+    }
+
+    if ( itVar == symList.end() )
+    {
+        // find inners scopes
+        SymbolPtrList scopeList = func->findChildren(SymTagBlock);
+        SymbolPtrList::iterator itScope = scopeList.begin();
+
+        ULONG ipRva = static_cast<ULONG>( m_instructionOffset - mod->getBase());
+
+        for (; itScope != scopeList.end(); ++itScope)
+        {
+            SymbolPtr scope = *itScope;
+            ULONG scopeRva = scope->getRva();
+            if (scopeRva <= ipRva && (scopeRva + scope->getSize()) > ipRva)
+            {
+                SymbolPtrList symList = scope->findChildren(SymTagData);
+                SymbolPtrList::iterator itVar = symList.begin();
+
+                for (; itVar != symList.end(); ++itVar)
+                {
+                    if ( (*itVar)->getName() == name )
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+bool StackFrame::isContainsParam( const std::string& name )
+{
+    ModulePtr mod = Module::loadModuleByOffset( m_instructionOffset);
+
+    LONG displacemnt;
+    SymbolPtr func;
+    
+    try {
+        func = mod->getSymbolByVa( m_instructionOffset, SymTagFunction, &displacemnt );
+    }
+    catch(SymbolException&)
+    {
+        return false;
+    }
+
+#ifdef _DEBUG
+    std::string funcName;
+    funcName = func->getName();
+#endif  // _DEBUG
+
+    if (!IsInDebugRange(func, static_cast<ULONG>( m_instructionOffset - mod->getBase())))
+    {
+        return false;
+    }
+
+    // find var in current scope
+    SymbolPtrList symList = func->findChildren(SymTagData);
+    SymbolPtrList::iterator itVar = symList.begin();
+    for (; itVar != symList.end(); ++itVar)
+    {
+        if ( (*itVar)->getDataKind() == DataIsParam && (*itVar)->getName() == name )
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ULONG StackFrame::getLocalCount()
+{
+    ULONG count = 0;
+
+    ModulePtr mod;
+    mod = Module::loadModuleByOffset( m_instructionOffset);
+
+    LONG displacemnt;
+    SymbolPtr func;
+    
+    try {
+        func = mod->getSymbolByVa( m_instructionOffset, SymTagFunction, &displacemnt );
+    }
+    catch(SymbolException&)
+    {
+        return 0;
+    }
+
+#ifdef _DEBUG
+    std::string funcName;
+    funcName = func->getName();
+#endif  // _DEBUG
+
+    if (!IsInDebugRange(func, static_cast<ULONG>( m_instructionOffset - mod->getBase())))
+    {
+        return 0;
     }
 
     // find var in current scope
@@ -320,7 +438,15 @@ ULONG StackFrame::getParamCount()
     mod = Module::loadModuleByOffset( m_instructionOffset);
 
     LONG displacemnt;
-    SymbolPtr func = mod->getSymbolByVa( m_instructionOffset, SymTagFunction, &displacemnt );
+    SymbolPtr func;
+    
+    try {
+        func = mod->getSymbolByVa( m_instructionOffset, SymTagFunction, &displacemnt );
+    }
+    catch(SymbolException&)
+    {
+        return 0;
+    }
 
 #ifdef _DEBUG
     std::string funcName;
@@ -329,7 +455,7 @@ ULONG StackFrame::getParamCount()
 
     if (!IsInDebugRange(func, static_cast<ULONG>( m_instructionOffset - mod->getBase())))
     {
-        throw DbgException("is not debug range");
+        return 0;
     }
 
     // find var in current scope
@@ -352,7 +478,15 @@ python::object  StackFrame::getLocalByIndex( ULONG index )
     ModulePtr mod = Module::loadModuleByOffset( m_instructionOffset);
 
     LONG displacemnt;
-    SymbolPtr func = mod->getSymbolByVa( m_instructionOffset, SymTagFunction, &displacemnt );
+    SymbolPtr func;
+    
+    try {
+        func = mod->getSymbolByVa( m_instructionOffset, SymTagFunction, &displacemnt );
+    }
+    catch(SymbolException&)
+    {
+        throw PyException( PyExc_IndexError, "index out of range" );
+    }
 
 #ifdef _DEBUG
     std::string funcName;
@@ -361,7 +495,7 @@ python::object  StackFrame::getLocalByIndex( ULONG index )
 
     if (!IsInDebugRange(func, static_cast<ULONG>( m_instructionOffset - mod->getBase())))
     {
-        throw DbgException("is not debug range");
+       throw PyException( PyExc_IndexError, "index out of range" );
     }
 
     // find var in current scope
@@ -445,7 +579,15 @@ python::object StackFrame::getParamByIndex( ULONG index )
     ModulePtr mod = Module::loadModuleByOffset( m_instructionOffset);
 
     LONG displacemnt;
-    SymbolPtr func = mod->getSymbolByVa( m_instructionOffset, SymTagFunction, &displacemnt );
+    SymbolPtr func;
+    
+    try {
+        func = mod->getSymbolByVa( m_instructionOffset, SymTagFunction, &displacemnt );
+    }
+    catch(SymbolException&)
+    {
+        throw PyException( PyExc_IndexError, "index out of range" );
+    }
 
 #ifdef _DEBUG
     std::string funcName;
@@ -454,7 +596,7 @@ python::object StackFrame::getParamByIndex( ULONG index )
 
     if (!IsInDebugRange(func, static_cast<ULONG>( m_instructionOffset - mod->getBase())))
     {
-        throw DbgException("is not debug range");
+        throw PyException( PyExc_IndexError, "index out of range" );
     }
 
     // find var in current scope

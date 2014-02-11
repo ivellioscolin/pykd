@@ -46,4 +46,11 @@ class LocalVarsTest(unittest.TestCase):
             funcParams = pykd.getParams()
             self.assertEqual( len(funcParams), 2 )
             self.assertTrue( funcParams[0] == 7 or funcParams[1] == 7 )
-            
+    
+    def testNoLocals(self):
+        """Start new process and test local variables"""
+        _locProcessId = pykd.startProcess( target.appPath + " -testEnumWindows" )
+        with testutils.ContextCallIt( testutils.KillProcess(_locProcessId) ) as killStartedProcess :
+            #initial break
+            self.assertEqual(0, len(pykd.getLocals()))
+            self.assertEqual(0, len(pykd.getParams()))

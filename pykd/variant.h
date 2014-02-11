@@ -231,7 +231,13 @@ public:
     }
 
     python::object nonzero() {
-        return boost::apply_visitor( VariantToPyobj(), getValue() ) != 0;
+        try {
+            return boost::apply_visitor( VariantToPyobj(), getValue() ) != 0;
+        } 
+        catch( DbgException& )
+        {}
+
+        return python::object(true);
     }
 
     operator ULONG64() {
