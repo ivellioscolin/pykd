@@ -78,6 +78,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_findSymbol, Module::getSymbolName
 BOOST_PYTHON_MODULE( pykd )
 {
     python::scope().attr("__version__") = pykdVersion;
+    python::scope().attr("version") = pykdVersion;
 
     // DbgEng services 
     python::def( "setSymSrvDir", &setSymSrvDir,

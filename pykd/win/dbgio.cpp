@@ -14,13 +14,20 @@ void dprint( const std::wstring &str, bool dml )
     {
         PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
 
-        g_dbgEng->control->ControlledOutputWide(  
-            dml ? DEBUG_OUTCTL_AMBIENT_DML : DEBUG_OUTCTL_AMBIENT_TEXT,
-            DEBUG_OUTPUT_NORMAL, 
-            L"%ws",
-            str.c_str()
-            );
+        std::wstringstream  sstr(str);
+        std::wstring  line;
 
+        while (std::getline(sstr, line)) 
+        {
+            line += L'\n';
+
+            g_dbgEng->control->ControlledOutputWide(  
+                dml ? DEBUG_OUTCTL_AMBIENT_DML : DEBUG_OUTCTL_AMBIENT_TEXT,
+                DEBUG_OUTPUT_NORMAL, 
+                L"%ws",
+                line.c_str()
+                );
+        }
     }
     else
     {
