@@ -1333,10 +1333,11 @@ std::wstring getExtensionSearchPath()
 
 ULONG64 loadExtension(const std::wstring &extPath )
 {
-    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+    HRESULT   hres;
 
-    HRESULT  hres;
-    ULONG64  handle = 0;
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+    
+     ULONG64  handle = 0;
 
     std::vector< wchar_t > rawPath(MAX_PATH + 1, L'\0');
     DWORD ret = 
@@ -1357,7 +1358,11 @@ ULONG64 loadExtension(const std::wstring &extPath )
         HMODULE m_hmod;
     } scoped_lib(&rawPath[0]);
     if (!scoped_lib.m_hmod)
-        throw DbgException( "extension not found" );
+    {
+        std::stringstream  sstr;
+        sstr << "failed to load extension with error " << std::dec << GetLastError();
+        throw DbgException( sstr.str() );
+    }
 
     hres = g_dbgEng->control->AddExtensionWide( extPath.c_str(), 0, &handle );
     if ( FAILED( hres ) )
@@ -1366,6 +1371,24 @@ ULONG64 loadExtension(const std::wstring &extPath )
     // inderect call of dbgeng!ExtensionInfo::Load
     FARPROC dummy = NULL;
     g_dbgEng->control->GetExtensionFunctionWide(handle, L"dummy", &dummy);
+
+    return handle;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+ULONG64 addExtension(const std::wstring &extPath )
+{
+    HRESULT   hres;
+
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+
+    ULONG64  handle = 0;
+
+    hres = g_dbgEng->control->AddExtensionWide( extPath.c_str(), 0, &handle );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::AddExtension", hres );
 
     return handle;
 }
@@ -1384,6 +1407,23 @@ ULONG64 getExtension(const std::wstring &extPath )
         throw DbgException( "IDebugControl::GetExtensionByPath", hres );
 
     return handle;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void removeExtension(const std::wstring &extPath )
+{
+    HRESULT  hres;
+
+    PyThread_StateRestore pyThreadRestore( g_dbgEng->pystate );
+    
+    ULONG64  handle = 0;
+
+    hres = g_dbgEng->control->GetExtensionByPathWide( extPath.c_str(), &handle );
+    if ( FAILED( hres ) )
+        throw DbgException( "IDebugControl::GetExtensionByPath", hres );
+
+    g_dbgEng->control->RemoveExtension( handle );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

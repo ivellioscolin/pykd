@@ -89,8 +89,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Load a WinDBG extension. Return handle of the loaded extension" );
     python::def( "getExt", &getExtension,
         "Return handle of the loaded extension" );
-    python::def( "removeExt", &removeExtension,
+    python::def( "removeExt", (void(*)(ULONG64))&removeExtension,
         "Unload a WinDBG extension. Parameters: handle returned by loadExt" );
+    python::def( "removeExt", (void(*)(const std::wstring&))&removeExtension,
+        "Unload a WinDBg extension. Parameters: extension path" );
     python::def( "callExt", &callExtension,
         "Call a WinDBG extension's routine. Parameters: handle returned by loadExt; string command line" );
 
