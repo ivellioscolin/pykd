@@ -298,7 +298,7 @@ std::wstring getExtensionSearchPath()
 }
 
 inline
-kdlib::EXTENSION_ID loadExtension(const std::wstring &extPath ) 
+kdlib::EXTENSION_ID loadExtension( const std::wstring &extPath ) 
 {
     AutoRestorePyState  pystate;
     return kdlib::loadExtension(extPath);
@@ -309,6 +309,13 @@ void removeExtension( kdlib::EXTENSION_ID extId )
 {
     AutoRestorePyState  pystate;
     kdlib::removeExtension(extId);
+}
+
+inline
+void removeExtension( const std::wstring &extPath ) 
+{
+    AutoRestorePyState  pystate;
+    kdlib::removeExtension(extPath);
 }
 
 inline

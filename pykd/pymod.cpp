@@ -90,7 +90,7 @@ BOOST_PYTHON_MODULE( pykd )
     kdlib::dbgerr = &sysPykdErr;
     kdlib::dbgin = &sysPykdIn;
 
-    python::scope().attr("version") = pykdVersion;
+    python::scope().attr("__version__") = pykdVersion;
 
     python::def( "initialize", &kdlib::initialize,
         "Initialize debug engine, only for console mode" );
@@ -104,8 +104,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Return the extension DLL search path" );
     python::def( "loadExt", pykd::loadExtension,
         "Load a WinDBG extension. Return handle of the loaded extension" );
-    python::def( "removeExt", pykd::removeExtension,
-        "Unload a WinDBG extension. Parameters: handle returned by loadExt" );
+    python::def( "removeExt", (void(*)(kdlib::EXTENSION_ID))&pykd::removeExtension,
+        "Unload a WinDBG extension. Parameter: handle returned by loadExt" );
+    python::def( "removeExt", (void (*)(const std::wstring& ))&pykd::removeExtension,
+        "Unload a WinDBG extension. Parameter: extension path" );
     python::def( "callExt", pykd::callExtension,
         "Call a WinDBG extension's routine. Parameters: handle returned by loadExt; string command line" );
 
