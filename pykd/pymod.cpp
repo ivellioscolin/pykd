@@ -187,20 +187,20 @@ BOOST_PYTHON_MODULE( pykd )
         "Return systemVersion");
 
     // Manage target memory access
-    python::def( "addr64", &kdlib::addr64,
+    python::def( "addr64", pykd::addr64,
         "Extend address to 64 bits formats" );
-    python::def( "isValid", &kdlib::isVaValid,
+    python::def( "isValid", pykd::isVaValid,
         "Check if the virtual address is valid" );
-    python::def( "compareMemory", &kdlib::compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
+    python::def( "compareMemory", pykd::compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
         "Compare two memory buffers by virtual or physical addresses" ) );
-    python::def( "searchMemory", &pykd::searchMemoryLst, 
+    python::def( "searchMemory", pykd::searchMemoryLst, 
         "Search in virtual memory" );
-    python::def( "searchMemory", &pykd::searchMemoryStr, 
+    python::def( "searchMemory", pykd::searchMemoryStr, 
         "Search in virtual memory" );
-    //python::def( "findMemoryRegion", &kdlib::findMemoryRegion,
-    //    "Return address of begining valid memory region nearest to offset" );
-    //python::def( "getVaProtect", &kdlib::getVaProtect,
-    //    "Return memory attributes" );
+    python::def( "findMemoryRegion", pykd::findMemoryRegion,
+        "Return address of begining valid memory region nearest to offset" );
+    python::def( "getVaProtect", pykd::getVaProtect,
+        "Return memory attributes" );
 
     python::def( "ptrByte", pykd::ptrByte,
         "Read an unsigned 1-byte integer from the target memory" );
@@ -818,6 +818,17 @@ BOOST_PYTHON_MODULE( pykd )
     python::enum_<kdlib::CPUType>("CPUType", "type of CPU")
         .value("I386", kdlib::CPU_I386 )
         .value("AMD64", kdlib::CPU_AMD64 )
+        .export_values();
+
+    python::enum_<kdlib::MemoryProtect>("memoryProtect", "Memory protection attribiuties")
+        .value("PageNoAccess", kdlib::PageNoAccess)
+        .value("PageReadOnly", kdlib::PageReadOnly)
+        .value("PageReadWrite", kdlib::PageReadWrite)
+        .value("PageWriteCopy", kdlib::PageReadOnly)
+        .value("PageExecute", kdlib::PageExecute)
+        .value("PageExecuteRead", kdlib::PageExecuteRead)
+        .value("PageExecuteReadWrite", kdlib::PageExecuteReadWrite)
+        .value("PageExecuteWriteCopy", kdlib::PageExecuteWriteCopy)
         .export_values();
 
     python::class_<EventHandler, EventHandlerPtr, boost::noncopyable>(
