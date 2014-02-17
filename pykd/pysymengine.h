@@ -13,5 +13,25 @@ void setSymSrvDir(const std::wstring &symSrvDirectory)
 	kdlib::setSymSrvDir(symSrvDirectory);
 }
 
+inline
+std::wstring getSymbolPath() 
+{
+	AutoRestorePyState  pystate;
+	return kdlib::getSymbolPath();
+}
+
+inline
+void setSymbolPath(const std::wstring &symPath)
+{
+	AutoRestorePyState  pystate;
+	kdlib::setSymbolPath(symPath);
+}
+
+inline
+void appendSymbolPath(const std::wstring &symPath)
+{
+	AutoRestorePyState  pystate;
+	kdlib::appendSymbolPath(symPath);
+}
 
 } // namespace pykd

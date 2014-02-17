@@ -390,12 +390,13 @@ BOOST_PYTHON_MODULE( pykd )
     python::def("getLastException", pykd::getLastException,
         "Get last exception  information");
 
-
-
-   // // symbol path
-   // python::def( "getSymbolPath", &getSymbolPath, "Returns current symbol path");
-   // python::def( "setSymbolPath", &setSymbolPath, "Set current symbol path");
-   // python::def( "appendSymbolPath", &appendSymbolPath, "Append current symbol path");
+    // symbol path
+    python::def("getSymbolPath", pykd::getSymbolPath,
+        "Returns current symbol path");
+    python::def("setSymbolPath", pykd::setSymbolPath, 
+        "Set current symbol path");
+    python::def("appendSymbolPath", pykd::appendSymbolPath, 
+        "Append current symbol path");
 
     python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVariant", python::no_init )
         .def("__init__", python::make_constructor(&NumVariantAdaptor::getVariant) )
