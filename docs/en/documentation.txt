@@ -1,0 +1,199 @@
+﻿{anchor:tableofcontents}
+! Table of contents
+* [1. Introduction|#introduction]
+** [1.1 General information|#introduction-generalinformation]
+** [1.2 Quick start|#introduction-quickstart]
+** [1.3 Building from source|#introduction-buildingfromsource]
+** [1.4 Manual installation|#introduction-manualinstallation]
+** [1.5 API changes|#introduction-apichanges]
+* [2. WinDbg commands|#windbgcommands]
+** [2.1 Loading the extension|#windbgcommands-loadingtheextension]
+** [2.2 Running scripts|#windbgcommands-runningscripts]
+** [2.3 Console mode|#windbgcommands-consolemode]
+* [3. Manage debugging|#managedebugging]
+** [3.1 Stopping and restarting debugged processed|#managedebugging-stoppingrestarting]
+{anchor:introduction}
+! 1. Introduction
+{anchor:introduction-generalinformation}
+!! 1.1 General information
+The Pykd project started in 2010. The main reason was the inconvenience of scripting debugging with the built-in tools for WinDbg. Python language was chosen as an alternative scripting engine for many reasons: ease of learning of the language itself, the presence of a huge standard library and the presence of the powerful framework for creating extensions. Pykd is a module for the CPython interpreter. Pykd itself is written in C++ and uses Boost.Python to export functions and classes to Python. Pykd controls debugging on the Windows platform through he Debug Engine library and receives symbolic information through the MS DIA library. Note that pykd does not give direct access to the COM interfaces of Debug Engine and MS DIA. Instead, it implements its own interface which makes the development process faster and more convenient (we hope).
+
+Pykd can operate in two modes: 
+* as a plugin for WinDbg, in which case it provides commands to run scripts in the context of debugging sessions
+* as a separate module for the Python interpreter. This mode can be useful for creating automatic tools that parse crash dumps, for example.
+[←Table of contents|#tableofcontents]
+{anchor:introduction-quickstart}
+!! 1.2 Quick start
+For a quick start, best download the automatic installer. It will install all necessary components (including Python if not already installed). To verify that the installation was successful, run WinDbg, start debugging an application or dump file, then load pykd:
+{{
+.load pykd.pyd
+}}
+If there was no error message, everything is fine. But anyway, let's make sure that everything really works:
+{{
+0:000> !pycmd
+Python 2.6.5 (r265: 79096 , Mar 19 2010 , 18:02:59) [MSC v.1500 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> print "Hello world!"
+Hello world!
+>>> quit ()
+0:000>
+}}
+Try to run some example scripts:
+{{
+0:000> !py help
+0:000> !py samples
+}}
+If everything worked, you can start writing your own scripts.
+[←Table of contents|#tableofcontents]
+{anchor:introduction-buildingfromsource}
+!! 1.3 Building from source
+# Take the source code from [url:the repository|http://pykd.codeplex.com/SourceControl/list/changesets].
+# Install [url:Python|http://www.python.org].
+# Install and configure [url:Boost|http://www.boost.org]. There is also a manual installation and assembly.
+# Set the environment variables:
+:{"$(DIA_SDK_ROOT)"} - path to the MS DIA library. It is installed with Visual Studio and the path should look similar to C:\Program Files (x86)\Microsoft Visual Studio 9.0\DIA SDK.
+:{"$(DBG_SDK_ROOT)"} - path to the Debug Engine SDK. It is installed with the Debugging Tools for Windows and the path should look like C:\Program Files (x86)\Debugging Tools for Windows (x86)\SDK.
+:{"$(BOOST_ROOT)"} - path to the directory where you installed Boost.
+:{"$(PYTHON_ROOT)"} - path to the installation directory of Python. It is assumed that the system has both, x86 and x64, versions of Python in a directory structure like this: C:\Python26\x86\... and C:\Python26\x64\... in this case, {"$(PYTHON_ROOT)"} should be equal to C:\Python26. If the installation path is missing Python and does not indicate the platform, it is necessary to tweak the project file.
+# Build the Boost.Python library
+:To assemble the required static Boost.Python libraries, the following paths point to the library:
+:{"$(BOOST_ROOT)"}\stage - for x86 assembly
+:{"$(BOOST_ROOT)"}\stage64 - for x64 assembly
+:You can collect them with the following commands:
+{{
+bjam --stagedir=stage --with-python stage
+bjam address-model=64 --stagedir=stage64 --with-python stage
+}}
+If you have not installed yet, [url:download bjam|http://www.boost.org/users/download/boost_jam_3_1_18.html].
+[←Table of contents|#tableofcontents]
+{anchor:introduction-manualinstallation}
+!! 1.4 Manual installation
+To manually install pykd.pyd, you have to install the C++ runtime from Visual Studio (vcredist). If you compile it yourself, this shouldn't be a problem. If you downloaded pykd from the website, it also shouldn't be a problem since the ZIP file contains the desired redistributable (as long as we didn't mess with the release :-)).
+
+*Where to copy pykd.pyd?*
+It depends on the scenario. If pykd shall be used as a plugin to WinDbg, it makes sense to copy it into the winext subdirectory of your WinDbg installation. In this case you can rename it to pykd.dll so that you can omit the file extension when loading the extension:
+{{
+0:000> .load pykd
+}}
+If pykd shall be used to write a Python program,it must be put in a place where it can find a Python interpreter. These are the three options:
+* in the lib subdirectory of the Python installation.
+* any directory. In this case, the $(PYTHONPATH) environment variable must be set.
+* any directory, if you start Python from the directory where pykd.pyd is located.
+
+*Installing Visual C++ redistributable*
+Of course you need to install VCRedist. Otherwise, why would we ask you to download it?
+
+*Registering MS DIA*
+The MS DIA library will be installed during the installation of VCRedist. In order to work properly, it must also be registered. To do this, find the directory where msdia90.dll was installed an run the command
+{{
+regsvr32 msdia90.dll
+}}
+
+If you compiled pykd yourself using Visual Studio, no action needs to be considered regarding VCRedist. It's already installed on your machine and MS DIA is also in place.
+
+[←Table of contents|#tableofcontents]
+{anchor:introduction-apichanges}
+!! 1.5 API changes
+*loadModule*
+The function loadModule was removed. Use the module class instead.
+{{
+# mod = loadModule("mymodule")
+mod = module("mymodule")
+}}
+[←Table of contents|#tableofcontents]
+{anchor:windbgcommands}
+! 2. WinDbg Commands
+{anchor:windbgcommands-loadingtheextension}
+!! 2.1 Loading the extension
+To load the extension in WinDbg, type:
+{{
+0:000> .load pykd_path\pykd.pyd
+}}
+If pykd is in the winext subdirectory of Debugging Tools for Windows, the path can be omitted:
+{{
+0:000> .load pykd.pyd
+}}
+If pykd.pyd was renamed to pykd.dll, the extension may be omitted as well:
+{{
+0:000> .load pykd
+}}
+To see all WinDbg extensions which have been loaded successfully, run
+{{
+0:000> .chain
+}}
+To unload the extension use the same path as for loading:
+{{
+0:000> .unload pykd_path\pykd.pyd
+0:000> .unload pykd.pyd
+0:000> .unload pykd
+}}
+If you don't want to load pykd manually every time, load it and choose "Save workspace". Next time, pykd will be loaded as part of the workspace automatically.
+[←Table of contents|#tableofcontents]
+{anchor:windbgcommands-runningscripts}
+!! 2.2 Running scripts
+Run scripts using the *!py* command:
+{{
+0:000> !py script_path\script_name.py [param1 [param2] [...]]]
+}}
+The extension .py can be omitted. If you don't want to specify the full path, register the environment variable $(PYTHONPATH) or - and this is the preferred way - add pykd to the Registry
+{{
+HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\2.6\PythonPath
+}}
+In this case, the path specified in the Default value will be used for searching scripts.
+
+The parameters passed to the script can be accessed through the sys.argv list:
+{{
+import sys
+print "script path: " + sys.argv[0]
+print "param1: " + sys.argv[1]
+print "param2: " + sys.argv[2]
+}}
+[←Table of contents|#tableofcontents]
+{anchor:windbgcommands-consolemode}
+!! 2.3 Console mode
+The console is run with the pykd command *!pycmd*:
+{{
+0:000> !pycmd
+Python 2.6.5 (r265: 79096 , Mar 19 2010 , 18:02:59) [MSC v.1500 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>>
+}}
+Before it starts, it automatically imports the pykd module, so that all functions of pykd can immediately be called. Remember that the console mode can be exited using the quit() function. This will persist the Python session:
+{{
+>>> a = 10
+>>> quit()
+0:000> !pycmd
+Python 2.6.5 (r265: 79096 , Mar 19 2010 , 18:02:59) [MSC v.1500 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> print a
+10
+>>>
+}}
+[←Table of contents|#tableofcontents]
+{anchor:managedebugging}
+! 3. Manage debugging
+{anchor:managedebugging-stoppingrestarting}
+!! 3.1 Stopping and restarting debugged processed
+WinDbg provides keyboard shortcuts for _go_ (F5) and _break_ (Ctrl+Break).
+Their counterparts in pykd are 
+*go()*
+*breakin()*
+
+*go()* resumes the debugged process and returns control to the debugger only when the debugger is stopped again - triggered by a breakpoint or when debugging is stopped manually via Ctrl+Break. This behavior should be considered when writing scripts. The function can also result in an exception. This usually happens if the debugged process terminates.
+{{
+try:
+    while true:
+        go()
+        print "break"
+except:
+    print "process terminated"
+}}
+Above script will handle any debugger stops automatically and resume execution.
+
+Using *breakin()* is hardly needed during normal operation due to the fact that the script is usually run while the debugger is already breaking. And at this time, the breakin() method does not make sense. In order to be able to stop a running process, the script has to create a separate thread and then call the function.
+
+*Attention!* Do not attempt to use breakin() or go() inside debug events such as conditional breakpoints.
+[←Table of contents|#tableofcontents]

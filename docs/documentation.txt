@@ -1,0 +1,15 @@
+﻿! русский
+
+[PYKD 0.2. Рукводство пользователя.]
+[PYKD 0.2. Tutorial]
+
+[PYKD 0.1. Рукводство пользователя.]
+
+[Pykd 0.0 documentation]
+
+! English
+
+[PYKD 0.2. Documentation]
+[PYKD 0.2. API Reference]
+
+[PYKD 0.1. API Reference]
