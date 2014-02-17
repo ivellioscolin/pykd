@@ -4,6 +4,7 @@
 #include "kdlib/typeinfo.h"
 
 #include "pydbgeng.h"
+#include "stladaptor.h"
 #include "variant.h"
 
 namespace pykd {
@@ -92,6 +93,51 @@ std::wstring printExceptionInfo( kdlib::ExceptionInfo& exceptionInfo )
     }
 
     return sstream.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+python::list getProcessThreads()
+{
+    std::vector<kdlib::MEMOFFSET_64>  threadList;
+
+    do {
+
+        AutoRestorePyState  pystate;
+
+        unsigned long  threadNumber = getNumberThreads();
+
+        for ( unsigned long i = 0; i < threadNumber; ++i )
+        {
+            kdlib::THREAD_DEBUG_ID threadId = kdlib::getThreadIdByIndex(i);
+            threadList.push_back( kdlib::getThreadOffset(threadId) );
+        }
+
+    } while(false);
+
+    return vectorToList(threadList);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+python::list getTargetProcesses()
+{
+    std::vector<kdlib::PROCESS_DEBUG_ID>  processList;
+
+    do {
+
+        AutoRestorePyState  pystate;
+
+        unsigned long  processNumber = getNumberProcesses();
+
+        for ( unsigned long i = 0; i < processNumber; ++i )
+        {
+            processList.push_back( kdlib::getProcessIdByIndex(i) );
+        }
+
+    } while(false);
+
+    return vectorToList(processList);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
