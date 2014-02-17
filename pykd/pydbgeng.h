@@ -350,6 +350,8 @@ python::list getExceptionInfoParameters( kdlib::ExceptionInfo& exceptionInfo );
 
 std::wstring printExceptionInfo( kdlib::ExceptionInfo& exceptionInfo );
 
+python::tuple getBugCheckData();
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } //end namespace pykd

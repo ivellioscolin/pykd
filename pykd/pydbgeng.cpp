@@ -142,4 +142,26 @@ python::list getTargetProcesses()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+python::tuple getBugCheckData()
+{
+    kdlib::SystemCrashInfo  crashInfo = {};
+
+    do {
+
+        AutoRestorePyState  pystate;
+        getSystemCrashInfo( crashInfo );
+
+    } while(false);
+
+    python::list  lst;
+    lst.append(crashInfo.code);
+
+    for ( unsigned long i = 0; i < crashInfo.paramterCount; ++i)
+        lst.append(crashInfo.parameters[i]);
+
+    return python::tuple(lst);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } //end namespace pykd

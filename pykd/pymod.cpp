@@ -185,6 +185,9 @@ BOOST_PYTHON_MODULE( pykd )
         "Return the number of seconds since the beginning of 1970" );
     python::def("getSystemVersion", pykd::getSystemVersion,
         "Return systemVersion");
+    python::def( "bugCheckData", pykd::getBugCheckData,
+        "Function reads the kernel bug check code and related parameters\n"
+        "And return tuple: (code, arg1, arg2, arg3, arg4)" );
 
     // Manage target memory access
     python::def( "addr64", pykd::addr64,
@@ -755,12 +758,6 @@ BOOST_PYTHON_MODULE( pykd )
         .def_readonly("process", &DebugEvent::process)
         .def_readonly("thread", &DebugEvent::thread)
         ;
-
-   // python::def( "lastException", &getLastExceptionInfo,
-   //     "Return data of last exception event: exceptionInfo" );
-   // python::def( "bugCheckData", &pysupport::getBugCheckData,
-   //     "Function reads the kernel bug check code and related parameters\n"
-   //     "And return tuple: (code, arg1, arg2, arg3, arg4)" );
 
     python::class_<kdlib::Disasm>("disasm", "Class disassemble a processor instructions",python::no_init)
         .def( "__init__", python::make_constructor(pykd::loadDisasm ) )
