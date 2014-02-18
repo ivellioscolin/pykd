@@ -225,10 +225,10 @@ The first function determines whether the debugger is doing live debugging or an
 [←Table of contents|#tableofcontents]
 {anchor:managedebugging-printingdebuginformation}
 !! 3.4 Printing debug information
-To display information on the screen you can use the default Python print method, but it is recommended to use the special functions
+To display information on the screen you can use the default Python _print_ method, but it is recommended to use the special functions
 *dprint(message, dml = False)*
 *dprintln(message, dml = False)*
-The second function differs from the first in that it automatically adds a newline. The optional parameter _dml_ includes output of DML. DML is specific to WinDbg and can be considered as very simple HTML. You can turn DML support on or off in WinDbg using _.prefer_dml_. Text formatting can be done using the following tags:
+The second function differs from the first in that it automatically adds a newline. The optional parameter _dml_ includes output of DML. DML is specific to WinDbg and can be considered as very simple HTML. You can turn DML support on or off in WinDbg using _.prefer{"_"}dml_. Text formatting can be done using the following tags:
 * <b>...</b> - emphasize
 * <i>...</i> - italics
 * <u>...</u> - underline
