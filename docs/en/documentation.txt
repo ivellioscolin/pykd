@@ -12,6 +12,9 @@
 ** [2.3 Console mode|#windbgcommands-consolemode]
 * [3. Manage debugging|#managedebugging]
 ** [3.1 Stopping and restarting debugged processed|#managedebugging-stoppingrestarting]
+** [3.2 Stepping|#managedebugging-stepping]
+** [3.3 Working with Python debugging applications|#managedebugging-debuggingapplications]
+** [3.4 Printing debug information|#managedebugging-printingdebuginformation]
 {anchor:introduction}
 ! 1. Introduction
 {anchor:introduction-generalinformation}
@@ -196,4 +199,43 @@ Above script will handle any debugger stops automatically and resume execution.
 Using *breakin()* is hardly needed during normal operation due to the fact that the script is usually run while the debugger is already breaking. And at this time, the breakin() method does not make sense. In order to be able to stop a running process, the script has to create a separate thread and then call the function.
 
 *Attention!* Do not attempt to use breakin() or go() inside debug events such as conditional breakpoints.
+[←Table of contents|#tableofcontents]
+{anchor:managedebugging-stepping}
+!! 3.2 Stepping
+Stepping (tracing) is served by the two functions
+*step()*
+*trace()*
+These actions are similar to the debugger commands _trace into_ and _trace over_. Both functions can result in a DbgException if the debugged process has already ended.
+[←Table of contents|#tableofcontents]
+{anchor:managedebugging-debuggingapplications}
+!! 3.3 Working with Python debugging applications
+If you want to run scripts outside of WinDbg, the first step is to create a debug session. More detailed session management will be discussed in the relevant section. As long as your application does not use multiple debugging sessions, it's not needed to take care of them - the first session will be created automatically with the following calls:
+*loadDump(dumpName)* - loads the crash dump
+*id=startProcess(imageName)* - runs a new process in debug mode
+*id=attachProcess(processId)* - attaches the debugger to an existing process
+*attachKernel(parameterStr)* - attaches the debugger to the kernel debugging system
+
+To detach the debugger from the debugged process call *detachProcess(id)*.
+To stop debugging and terminate the debugged process call *killProcess(id)*.
+
+To find out what you are debugging, use
+*isDumpAnalyzing()*
+*isKernelDebugging()*
+The first function determines whether the debugger is doing live debugging or analysing a memory dump. The second function distinguishes between user mode debugging and kernel mode debugging. If the script is specific to one of those debugging methods, it will be useful to insert such a test at the beginning of the script. Please inform the user that he is trying to run the script in the wrong context.
+[←Table of contents|#tableofcontents]
+{anchor:managedebugging-printingdebuginformation}
+!! 3.4 Printing debug information
+To display information on the screen you can use the default Python print method, but it is recommended to use the special functions
+*dprint(message, dml = False)*
+*dprintln(message, dml = False)*
+The second function differs from the first in that it automatically adds a newline. The optional parameter _dml_ includes output of DML. DML is specific to WinDbg and can be considered as very simple HTML. You can turn DML support on or off in WinDbg using _.prefer_dml_. Text formatting can be done using the following tags:
+* <b>...</b> - emphasize
+* <i>...</i> - italics
+* <u>...</u> - underline
+* <link cmd="command">...</link> - execute a command (similar to <a> in HTML)
+Example:
+{{
+dprintln("<b><u>The following command reloads all symbols</b></u>", True)
+dprintln("<link cmd=\".reload /f\">reload</link>", True)
+}}
 [←Table of contents|#tableofcontents]
