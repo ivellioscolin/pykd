@@ -15,6 +15,10 @@
 ** [3.2 Stepping|#managedebugging-stepping]
 ** [3.3 Working with Python debugging applications|#managedebugging-debuggingapplications]
 ** [3.4 Printing debug information|#managedebugging-printingdebuginformation]
+** [3.5 Executing debugger commands|#managedebugging-executingdebuggercommands]
+** [3.6 Creating crash dumps|#managedebugging-creatingcrashdumps]
+* [4. Working with memory and registers|#memoryandregisters]
+** [4.1 Access to the general purpose registers|#memoryandregisters-generalpurpose]
 {anchor:introduction}
 ! 1. Introduction
 {anchor:introduction-generalinformation}
@@ -238,4 +242,67 @@ Example:
 dprintln("<b><u>The following command reloads all symbols</b></u>", True)
 dprintln("<link cmd=\".reload /f\">reload</link>", True)
 }}
+[←Table of contents|#tableofcontents]
+{anchor:managedebugging-executingdebuggercommands}
+!! 3.5 Executing debugger commands
+The method to execute debugger commands is
+*commandOutput = dbgCommand(commandStr)*
+{{
+s = dbgCommand("!analyze -v")
+dprint(s)
+}}
+To evaluate an expression the method is
+*expr(expressionStr)*
+{{
+expr("@rax+10")
+}}
+Within a Python application you may want to use WinDbg extensions. Those extensions have to be loaded manually, which is done by
+*extHandle = loadExt(extensionPath)*
+The return value is a handle to the extension which is needed to call an extension function
+*commandOutput = callExt(extHandle, command, params)*
+(note that _command_ does not include the exclamation mark)
+and if necessary, dispose the extension
+*removeExt(exthandle)*
+Attention: working with extensions in pykd 0.2 differs from version 0.1. In version 0.2, the _ext_ class has been removed and cannot be used to load extensions.
+[←Table of contents|#tableofcontents]
+{anchor:managedebugging-creatingcrashdumps}
+!! 3.6 Creating crash dumps
+Saving the state of the application or system in the form of a crash dump can be done using
+*writeDump(fileName, dumpType)*
+The function is available in kernel mode and user mode. The second parameter specifies the type of the dump (True: minidump, False: full dump).
+{{
+writeDump(r"c:\dump\fulldump.dmp", False)
+writeDump(r"c:\dump\minidump.dmp", True)
+}}
+[←Table of contents|#tableofcontents]
+{anchor:memoryandregisters}
+! 4. Working with memory and registers
+{anchor:memoryandregisters-generalpurpose}
+!! 4.1 Access to the general purpose registers
+Access the general purpose registers (GPR) using
+*cpuReg=reg(regName)*
+*cpuReg=reg(regIndex)*
+The first variant takes the symbolic register name, the second takes a register index. The second form can be used to transfer registers, e.g.
+{{
+import pykd
+
+try:
+    i = 0
+    while True:
+        r = pykd.reg(i)
+        pykd.dprintln("%s %x (%d)" % (r.name(), r, r))
+        i += 1
+except pykd.BaseException:
+    pass
+}}
+Both versions return an instance of the _cpuReg_ class. If the information on the register cannot be obtained, an exception of type BaseException will be thrown.
+The _cpuReg_ class has two methods:
+*name()*
+*index()*
+The class _cpuReg_ can be used in integer calculations without additional considerations of its type:
+{{
+r = reg("eax")
+print r/10*234
+}}
+Note: the current implementation of pykd supports only integer registers. Working with FPU, MMX or SSE registers is not supported.
 [←Table of contents|#tableofcontents]
