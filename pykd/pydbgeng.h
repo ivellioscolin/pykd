@@ -111,6 +111,12 @@ inline unsigned long getNumberThreads()
     return kdlib::getNumberThreads();
 }
 
+inline kdlib::THREAD_DEBUG_ID getThreadIdByIndex(unsigned long index)
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getThreadIdByIndex(index);
+}
+
 inline kdlib::THREAD_DEBUG_ID getCurrentThreadId()
 {
     AutoRestorePyState  pystate;
@@ -123,7 +129,7 @@ inline kdlib::THREAD_DEBUG_ID getThreadIdByOffset(kdlib::MEMOFFSET_64 offset)
     return kdlib::getThreadIdByOffset(offset);
 }
 
-inline kdlib::THREAD_DEBUG_ID getThreadIdBySystemId(kdlib::THREAD_ID tid)
+inline kdlib::THREAD_DEBUG_ID getThreadIdBySystemId(kdlib::THREAD_ID tid = -1)
 {
     AutoRestorePyState  pystate;
     return kdlib::getThreadIdBySystemId(tid);
@@ -139,6 +145,12 @@ inline kdlib::MEMOFFSET_64 getThreadOffset(kdlib::THREAD_DEBUG_ID id = -1)
 {  
     AutoRestorePyState  pystate;
     return kdlib::getThreadOffset(id);
+}
+
+inline kdlib::MEMOFFSET_64 getCurrentThread()
+{  
+    AutoRestorePyState  pystate;
+    return kdlib::getThreadOffset(kdlib::getCurrentThreadId());
 }
 
 inline void setCurrentThread(kdlib::THREAD_DEBUG_ID id)
@@ -165,10 +177,16 @@ inline unsigned long getNumberProcesses()
     return kdlib::getNumberProcesses();
 }
 
-inline kdlib::PROCESS_DEBUG_ID getCurrentProcessId()
+inline kdlib::PROCESS_DEBUG_ID getProcessIdByIndex(unsigned long index)
 {
     AutoRestorePyState  pystate;
-    return kdlib::getCurrentProcessId();
+    return kdlib::getProcessIdByIndex(index);
+}
+
+inline kdlib::MEMOFFSET_64 getCurrentProcess()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getProcessOffset( kdlib::getCurrentProcessId() );
 }
 
 inline kdlib::PROCESS_DEBUG_ID getProcessIdByOffset( kdlib::MEMOFFSET_64 offset )
@@ -177,7 +195,7 @@ inline kdlib::PROCESS_DEBUG_ID getProcessIdByOffset( kdlib::MEMOFFSET_64 offset 
     return kdlib::getProcessIdByOffset(offset);
 }
 
-inline kdlib::PROCESS_DEBUG_ID getProcessIdBySystemId( kdlib::PROCESS_ID pid )
+inline kdlib::PROCESS_DEBUG_ID getProcessIdBySystemId( kdlib::PROCESS_ID pid = -1 )
 {
     AutoRestorePyState  pystate;
     return kdlib::getProcessIdBySystemId(pid);

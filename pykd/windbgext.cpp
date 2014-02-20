@@ -11,9 +11,7 @@ namespace python = boost::python;
 #include "dbgexcept.h"
 #include "pydbgio.h"
 
-using namespace kdlib;
 using namespace kdlib::windbg;
-using namespace pykd;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -148,7 +146,7 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
 
     if ( global && local )
     {
-       eprintln( L"-g(--global) and -l(--local) cannot be set together" );
+       pykd::eprintln( L"-g(--global) and -l(--local) cannot be set together" );
        return;
     }
 
@@ -159,7 +157,7 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
 
         if ( scriptFileName.empty() )
         {
-            eprintln( L"script file not found" );
+            pykd::eprintln( L"script file not found" );
             return;
         }
 
@@ -177,7 +175,9 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
 
     if ( !global )
     {
-        globalState = Py_NewInterpreter();
+        globalState =  PyThreadState_Swap(NULL);
+
+        Py_NewInterpreter();
 
         localState = PyThreadState_Get();
 
@@ -219,13 +219,12 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
         }
         catch( python::error_already_set const & )
         {
-            printException();
+            pykd::printException();
         }
     }
 
     if ( !global )
     {
-
         PyInterpreterState  *interpreter = localState->interp;
 
         while( interpreter->tstate_head != NULL )
@@ -266,7 +265,7 @@ void PykdExt::startConsole()
     }
     catch( python::error_already_set const & )
     {
-        printException();
+        pykd::printException();
     }
 }
 
@@ -274,10 +273,10 @@ void PykdExt::startConsole()
 
 void PykdExt::printUsage()
 {
-    dprintln( L"usage: !py [options] [file]" );
-    dprintln( L"Options:" );
-    dprintln( L"-g --global  : run code in the common namespace" );
-    dprintln( L"-l --local   : run code in the isolate namespace" );
+    pykd::dprintln( L"usage: !py [options] [file]" );
+    pykd::dprintln( L"Options:" );
+    pykd::dprintln( L"-g --global  : run code in the common namespace" );
+    pykd::dprintln( L"-l --local   : run code in the isolate namespace" );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

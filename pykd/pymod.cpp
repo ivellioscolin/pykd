@@ -3,8 +3,6 @@
 
 #include <boost/bind.hpp>
 
-#include "kdlib/kdlib.h"
-
 #include "pykdver.h"
 
 #include "variant.h"
@@ -42,8 +40,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( terminateProcess_,  pykd::terminateProcess, 0, 
 BOOST_PYTHON_FUNCTION_OVERLOADS( attachKernel_,  pykd::attachKernel, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( evaluate_, pykd::evaluate, 1, 2 );
 
-BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, kdlib::dprint, 1, 2 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, kdlib::dprintln, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, pykd::dprint, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, pykd::dprintln, 1, 2 );
 
 //BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_findSymbol, Module::getSymbolNameByVa, 1, 2 );
 
@@ -65,23 +63,25 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, pykd::getSourceFile, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, pykd::getSourceLine, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, pykd::findSymbol, 1, 2 );
 
-//BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBp_, setHardwareBp, 3, 4 );
-//
-BOOST_PYTHON_FUNCTION_OVERLOADS( createStruct_, kdlib::defineStruct, 1, 2 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( createUnion_, kdlib::defineUnion, 1, 2 );
-//
+BOOST_PYTHON_FUNCTION_OVERLOADS( getProcessOffset_, pykd::getProcessOffset, 0, 1);
+BOOST_PYTHON_FUNCTION_OVERLOADS( getProcessSystemId_, pykd::getProcessSystemId, 0, 1);
+BOOST_PYTHON_FUNCTION_OVERLOADS( getProcessIdBySystemId_, pykd::getProcessIdBySystemId, 0, 1 );
+
+BOOST_PYTHON_FUNCTION_OVERLOADS( getThreadOffset_, pykd::getThreadOffset, 0, 1);
+BOOST_PYTHON_FUNCTION_OVERLOADS( getThreadSystemId_, pykd::getThreadSystemId, 0, 1);
+BOOST_PYTHON_FUNCTION_OVERLOADS( getThreadIdBySystemId_, pykd::getThreadIdBySystemId, 0, 1);
+
+BOOST_PYTHON_FUNCTION_OVERLOADS( createStruct_, pykd::defineStruct, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( createUnion_, pykd::defineUnion, 1, 2 );
+
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_enumSymbols, ModuleAdapter::enumSymbols, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_findSymbol, ModuleAdapter::findSymbol, 2, 3 );
 
-
 BOOST_PYTHON_FUNCTION_OVERLOADS( TypeInfo_ptrTo, TypeInfoAdapter::ptrTo, 1, 2 ); 
-
-//BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( Module_findSymbol, Module::getSymbolNameByVa, 1, 2 );
 
 pykd::SysDbgOut   sysPykdOut;
 pykd::SysDbgOut   sysPykdErr;
 pykd::SysDbgIn    sysPykdIn;
-
 
 BOOST_PYTHON_MODULE( pykd )
 {
@@ -91,6 +91,7 @@ BOOST_PYTHON_MODULE( pykd )
     kdlib::dbgin = &sysPykdIn;
 
     python::scope().attr("__version__") = pykdVersion;
+    python::scope().attr("version") = pykdVersion;
 
     python::def( "initialize", &kdlib::initialize,
         "Initialize debug engine, only for console mode" );
@@ -157,9 +158,9 @@ BOOST_PYTHON_MODULE( pykd )
         "Return current execution status" );
 
    // Debug output
-    python::def( "dprint", &kdlib::dprint, dprint_( python::args( "str", "dml" ), 
+    python::def( "dprint", &pykd::dprint, dprint_( python::args( "str", "dml" ), 
         "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
-    python::def( "dprintln", &kdlib::dprintln, dprintln_( python::args( "str", "dml" ), 
+    python::def( "dprintln", &pykd::dprintln, dprintln_( python::args( "str", "dml" ), 
         "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
 
     // Python debug output console helper classes
@@ -348,20 +349,20 @@ BOOST_PYTHON_MODULE( pykd )
     // processes and threads
     python::def ( "getNumberProcesses", pykd::getNumberProcesses,
         "Return number of processes on the target system" );
-    python::def( "getCurrentProcess", pykd::getCurrentProcessId,
-        "Return ID of the current process. This ID can be used with terminateProcess" );
-    python::def( "getProcessOffset", pykd::getProcessOffset,
-        "Return the location in the target's memory of the process structure ( PEB )" );
-    python::def( "getProcessSystemID", pykd::getProcessSystemId,
-        "Return system process ID ( PID )" );
-    python::def( "getProcessId", pykd::getProcessIdByOffset,
-        "Return process ID by the location in the target's memory of the process structure" );
-    python::def( "getProcessId", pykd::getProcessIdBySystemId,
-        "Return process ID by the system's process ID ( PID )" );
+    python::def( "getProcessId", pykd::getProcessIdByIndex,
+        "Return process ID by index" );
+    python::def( "getProcessOffset", pykd::getProcessOffset, getProcessOffset_( python::args( "Id" ), 
+        "Return the location in the target's memory of the process structure ( PEB )" ) );
+    python::def( "getProcessSystemID", pykd::getProcessSystemId, getProcessSystemId_(  python::args( "Id" ), 
+        "Return system process ID ( PID )" ) );
+    python::def( "getProcessIdBySystemID", pykd::getProcessIdBySystemId, getProcessIdBySystemId_( python::args("Pid"),
+        "Return process ID by the system's process ID ( PID )" ) );
     python::def( "setCurrentProcess", pykd::setCurrentProcess,
         "Set current process by ID" );
     python::def( "getImplicitProcess", pykd::getImplicitProcessOffset,
         "Return implicit process" );
+    python::def( "getCurrentProcess", pykd::getCurrentProcess, 
+        "Return current offset" );
     python::def( "setImplicitProcess", pykd::setImplicitProcess,
         "Set implicit process" );
    // python::def( "getCurrentProcessExeName", &getCurrentProcessExecutableName,
@@ -371,19 +372,20 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "getTargetProcesses", pykd::getTargetProcesses,
         "Get all target processes " );
 
-
     python::def ( "getNumberThreads", pykd::getNumberThreads,
         "Return number of threads on the target system" );
-    python::def( "getCurrentThread", pykd::getCurrentThreadId,
-        "Return ID of the current thread" );
-    python::def( "getThreadOffset", pykd::getThreadOffset,
-        "Return the location in the target's memory of the thread structure ( TEB )" );
-    python::def( "getThreadSystemID", pykd::getThreadSystemId,
-        "Return system thread ID ( TID )" );
+    python::def( "getThreadId", pykd::getThreadIdByIndex,
+        "Return thread id by index");
+    python::def( "getThreadOffset", pykd::getThreadOffset, getThreadOffset_( python::args("Id"),
+        "Return the location in the target's memory of the thread structure ( TEB )" ) );
+    python::def( "getThreadSystemID", pykd::getThreadSystemId, getThreadSystemId_( python::args("Id"),
+        "Return system thread ID ( TID )" ) );
     python::def( "getThreadId", pykd::getThreadIdByOffset,
         "Return thread ID by the location in the target's memory of the thread structure" );
-    python::def( "getThreadId", pykd::getThreadIdBySystemId,
-        "Return thread ID by the system's thread ID ( PID )" );
+    python::def( "getThreadId", pykd::getThreadIdBySystemId, getThreadIdBySystemId_( python::args("Tid"),
+        "Return thread ID by the system's thread ID ( PID )" ) );
+    python::def( "getCurrentThread", pykd::getCurrentThread,
+        "Return current thread offset" );
     python::def("setCurrentThread", pykd::setCurrentThread,
         "Set current thread" );
     python::def( "getImplicitThread", pykd::getImplicitThreadOffset,
