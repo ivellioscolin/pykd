@@ -365,8 +365,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return current offset" );
     python::def( "setImplicitProcess", pykd::setImplicitProcess,
         "Set implicit process" );
-   // python::def( "getCurrentProcessExeName", &getCurrentProcessExecutableName,
-   //     "Return name of executable file loaded in the current process");
+    python::def( "getCurrentProcessExeName", pykd::getCurrentProcessExecutableName,
+        "Return name of executable file loaded in the current process");
     python::def( "getProcessThreads", pykd::getProcessThreads,
         "Get all process's threads " );
     python::def( "getTargetProcesses", pykd::getTargetProcesses,
