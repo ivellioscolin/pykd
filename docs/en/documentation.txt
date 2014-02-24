@@ -19,6 +19,9 @@
 ** [3.6 Creating crash dumps|#managedebugging-creatingcrashdumps]
 * [4. Working with memory and registers|#memoryandregisters]
 ** [4.1 Access to the general purpose registers|#memoryandregisters-generalpurpose]
+** [4.2 Access to model-specific registers (MSR)|#memoryandregisters-accesstomodelspecificregisters]
+** [4.3 Normalization of virtual addresses|#memoryandregisters-normalizationofvirtualaddresses]
+{anchor:memoryandregisters-accesstomodelspecificregisters}
 {anchor:introduction}
 ! 1. Introduction
 {anchor:introduction-generalinformation}
@@ -305,4 +308,28 @@ r = reg("eax")
 print r/10*234
 }}
 Note: the current implementation of pykd supports only integer registers. Working with FPU, MMX or SSE registers is not supported.
+[←Table of contents|#tableofcontents]
+! 4.2 Access to model-specific registers (MSR)
+Model-specific registers are accessed through the function *rdmsr(msrNumber)*:
+{{
+>>> print findSymbol(rdmsr(0x176))
+nt!KiFastCallEntry
+}}
+[←Table of contents|#tableofcontents]
+{anchor:memoryandregisters-normalizationofvirtualaddresses}
+! 4.3 Normalization of virtual addresses
+All functions return virtual addresses in a so-called normalized form which is a 64 bit integer. For 32 bit platforms the address will be extended to 64 bit. The operation in C is
+{{
+ULONG64 addr64 = (ULONG64)(LONG)addr;
+}}
+Thus addresses will be converted as follows:
+0x00100000 -> 0x00000000 00100000
+0x80100000 -> 0xFFFFFFFF 80100000
+This should be considered when doing arithmetic operations on addresses returned by pykd. To avoid possible errors in comparisons, it's recommended to use the function *addr64()*:
+{{
+import pykd
+nt = pykd.module("nt")
+if nt > addr64( 0x80000000 ):
+    print "nt module is in highest address space"
+}}
 [←Table of contents|#tableofcontents]
