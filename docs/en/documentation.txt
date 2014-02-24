@@ -24,6 +24,9 @@
 ** [4.4 Direct memory access|#memoryandregisters-directmemoryaccess]
 ** [4.5 Memory access errors|#memoryandregisters-memoryaccesserrors]
 ** [4.6 Reading strings from memory|#memoryandregisters-readingstringsfrommemory]
+* [5. Modules|#modules]
+** [5.1 Module class|#modules-moduleclass]
+** [5.2 Processing module load and unload events|#modules-processingmoduleloadandunloadevents]
 {anchor:introduction}
 ! 1. Introduction
 {anchor:introduction-generalinformation}
@@ -394,4 +397,107 @@ Both return a string (loadWStr in unicode format). Note: These functions are not
 The Windows kernel uses the structures {"UNICODE_STRING"} and {"ANSI_STRING"} to represent strings. To work with those, the commands are
 * loadAnsiString
 * loadUnicodeString
+[←Table of contents|#tableofcontents]
+{anchor:modules}
+! 5. Modules
+{anchor:modules-moduleclass}
+!! 5.1 Module class
+A module is an executable file which is mapped to memory. A regular program consists of a main module (usually with .exe extension) and a set of libraries. Working with modules is done with the *module* class.
+[←Table of contents|#tableofcontents]
+!!! 5.1.1 Creating an instance of the module class
+The module class constructor has two forms:
+* module( moduleName )
+* module( va )
+The first form creates a module by its name, the second uses a virtual address which belongs to the module. If the module is not found, the constructor will raise a *BaseException*.
+Example:
+{{
+from pykd import *
+try
+    ntdll = module( "ntdll" )
+    print ntdll.name(), hex(ntdll.begin()), hex(ntdll.size()) 
+except BaseException:
+    print "module not found"
+}}
+[←Table of contents|#tableofcontents]
+!!! 5.1.2 Obtaining information about the module
+The following functions of the module class are designed to get more information:
+* name() - Returns the name of the module
+* image() - Returns the name of the executable file
+* pdb() - returns the name and full path to the file with symbolic information
+* begin() - returns the virtual address at which the module is loaded
+* end() - returns the virtual address of the end of the module
+* checksum() - returns the checksum
+* timestamp() - returns the time stamp
+* getVersion() - returns a tuple for the version of the module . For example: (1 , 0, 6452 , 0)
+* queryVersion(valueName) - returns the value of the resources module
+[←Table of contents|#tableofcontents]
+!!! 5.1.3 Loading and accessing symbols
+To download symbol information use *reload()*.
+To find the virtual address which corresponds to a desired symbol, the method is *offset(symName)*. If it is indicated that the symbol is not found, an exception of type BaseException will be thrown. Instead of an explicit call to *offset()*, the address of a symbol can be obtained using the method at the module class:
+{{
+>>> nt = module("nt")
+>>> print hex( nt.offset("PsLoadedModuleList") )
+0xfffff801acb5ae80L
+>>> print hex( nt.__getattr__("PsLoadedModuleList") )
+0xfffff801acb5ae80L
+>>> print hex( nt.PsLoadedModuleList )
+0xfffff801acb5ae80L
+}}
+Sometimes you may need the RVA symbols which you can get via *rva(symName)*.
+[←Table of contents|#tableofcontents]
+!!! 5.1.4 Casting to other types
+An instance of the module class has operators to cast to string and integer.
+{{
+>>> nt = module("nt")
+>>> print nt
+Module: nt
+Start: fffff801ac882000 End: fffff801acfc8000 Size: 746000
+Image: ntkrnlmp.exe
+Pdb: c:\sym\ntkrnlmp.pdb\569F266AE67D457D969D92298F8F98082\ntkrnlmp.pdb
+Timestamp: 4f7118bb
+Check Sum: 6b3b15
+
+>>> print hex(nt)
+fffff801ac882000
+}}
+The start address will be used when the module class is involved in arithmetic operations:
+{{
+>>> print hex( nt + 10 )
+0xfffff801ac88200aL
+}}
+[←Table of contents|#tableofcontents]
+!!! 5.1.5 Obtaining information about a contained type
+Besides describing variables and functions (entities that have an RVA), symbols can also describe types. Types of course don't have an RVA.
+If a module has information about types, it can be accessed through the function *type(typeName)*. The function returns an instance of class typeInfo, which will be discussed in detail later.
+{{
+>>> nt = module("nt")
+>>> print nt.type("_MDL")
+struct/class: _MDL Size: 0x1c (28)
+   +0000 Next                : _MDL*
+   +0004 Size                : Int2B
+   +0006 MdlFlags            : Int2B
+   +0008 Process             : _EPROCESS*
+   +000c MappedSystemVa      : Void*
+   +0010 StartVa             : Void*
+   +0014 ByteCount           : ULong
+   +0018 ByteOffset          : ULong
+}}
+[←Table of contents|#tableofcontents]
+!!! 5.1.6 Typed variables
+Pykd allows to simplify work with complex types such as classes and structures. The function responsible for that is *typedVar()*. To get an instance of class or structure, call typedVar() on the module:
+* typedVar( va )
+* typedVar( symbolName )
+* typedVar( typeName, va )
+{{
+>>> nt = module("nt")
+>>> print nt.typedVar( "_LIST_ENTRY", nt.PsLoadedModuleList )
+struct/class: _LIST_ENTRY at 0xfffff8000369c650
+   +0000 Flink               : _LIST_ENTRY*   0xfffffa8003c64890
+   +0008 Blink               : _LIST_ENTRY*   0xfffffa80092f8f30
+}}
+[←Table of contents|#tableofcontents]
+{anchor:modules-processingmoduleloadandunloadevents}
+!! 5.2 Processing module load and unload events
+For processing module load and unload events, you must inherit from the *eventHandler* class.
+Event processing is carried out by overriding the *onLoadModule* event. For unloading, this is *onUnloadModule*.
 [←Table of contents|#tableofcontents]
