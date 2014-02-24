@@ -21,7 +21,9 @@
 ** [4.1 Access to the general purpose registers|#memoryandregisters-generalpurpose]
 ** [4.2 Access to model-specific registers (MSR)|#memoryandregisters-accesstomodelspecificregisters]
 ** [4.3 Normalization of virtual addresses|#memoryandregisters-normalizationofvirtualaddresses]
-{anchor:memoryandregisters-accesstomodelspecificregisters}
+** [4.4 Direct memory access|#memoryandregisters-directmemoryaccess]
+** [4.5 Memory access errors|#memoryandregisters-memoryaccesserrors]
+** [4.6 Reading strings from memory|#memoryandregisters-readingstringsfrommemory]
 {anchor:introduction}
 ! 1. Introduction
 {anchor:introduction-generalinformation}
@@ -309,7 +311,8 @@ print r/10*234
 }}
 Note: the current implementation of pykd supports only integer registers. Working with FPU, MMX or SSE registers is not supported.
 [←Table of contents|#tableofcontents]
-! 4.2 Access to model-specific registers (MSR)
+{anchor:memoryandregisters-accesstomodelspecificregisters}
+!! 4.2 Access to model-specific registers (MSR)
 Model-specific registers are accessed through the function *rdmsr(msrNumber)*:
 {{
 >>> print findSymbol(rdmsr(0x176))
@@ -317,7 +320,7 @@ nt!KiFastCallEntry
 }}
 [←Table of contents|#tableofcontents]
 {anchor:memoryandregisters-normalizationofvirtualaddresses}
-! 4.3 Normalization of virtual addresses
+!! 4.3 Normalization of virtual addresses
 All functions return virtual addresses in a so-called normalized form which is a 64 bit integer. For 32 bit platforms the address will be extended to 64 bit. The operation in C is
 {{
 ULONG64 addr64 = (ULONG64)(LONG)addr;
@@ -332,4 +335,63 @@ nt = pykd.module("nt")
 if nt > addr64( 0x80000000 ):
     print "nt module is in highest address space"
 }}
+[←Table of contents|#tableofcontents]
+{anchor:memoryandregisters-directmemoryaccess}
+!! 4.4 Direct memory access
+Accessing memory of the debugged system is a great feature of pykd.
+To read unsigned values, the following functions are available:
+* ptrByte( va )
+* ptrWord( va )
+* ptrDWord( va )
+* ptrQWord( va )
+These functions serve a similar purpose for signed values:
+* ptrSignByte( va )
+* ptrSignWord( va )
+* ptrSignDWord( va )
+* ptrSignQWord( va )
+For convenience, the cross-platform functions are:
+* ptrMWord(va)
+* ptrSignMWord(va)
+* ptrPtr(va)
+They return the result depending on the bitness of the target platform (32 or 64 bit).
+It's also often required to read a block of memory. These functions are designed for that:
+* loadBytes( va, count )
+* loadWords( va, count )
+* loadDWords( va, count )
+* loadQWords( va, count )
+* loadSignBytes( va, count )
+* loadSignWords( va, count )
+* loadSignDWords( va, count )
+* loadSignQWords( va, count )
+* loadPtrs( va, count )
+All those functions return a list of objects.
+[←Table of contents|#tableofcontents]
+{anchor:memoryandregisters-memoryaccesserrors}
+!! 4.5 Memory access errors
+All memory related functions result in a *MemoryException* if the memory at the given address cannot be read.
+{{
+try:
+    a = ptrByte( 0 )
+except MemoryException:
+    print "memory exception occurred"
+}}
+To check the validity of a virtual address, you can use the *isValid(va)* function.
+[←Table of contents|#tableofcontents]
+{anchor:memoryandregisters-readingstringsfrommemory}
+!! 4.6 Reading strings from memory
+It is often necessary to read string data from memory. Of course this could be done with *loadBytes()*, but it is not always convenient. Therefore pykd added a set of functions that return data as a string. There are:
+* loadChars(  va, count )
+* loadWChars(  va, count )
+They work similar to *loadBytes()* and *loadWords()* but they return the value as a string rather a list. This allows you to use them in conjunction with the struct module:
+{{
+from struct import unpack
+shortField1, shortField2, longField = unpack('hhl', loadChars( addr, 8 ) )
+}}
+To read NUL-terminated strings, the functions are
+* loadСStr( va )
+* loadWStr( va )
+Both return a string (loadWStr in unicode format). Note: These functions are not safe. The presence of a terminating NUL character is not guaranteed. *Attention*: the maximum length of a string returned by these functions is 64k. Reading a longer string results in a MemoryException.
+The Windows kernel uses the structures {"UNICODE_STRING"} and {"ANSI_STRING"} to represent strings. To work with those, the commands are
+* loadAnsiString
+* loadUnicodeString
 [←Table of contents|#tableofcontents]
