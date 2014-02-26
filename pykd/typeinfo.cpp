@@ -215,16 +215,21 @@ BaseTypeVariant  TypeInfo::getValue()
 
 TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &symScope, const std::string &symName )
 {
-    size_t pos = symName.find_first_of( "*[" );
+    TypeInfoPtr    basePtr = getBaseTypeInfo( symName, getTypePointerSize(symScope) );
+    if ( basePtr != 0 )
+        return basePtr;
 
-    if ( pos == std::string::npos )
+    SymbolPtr  symType;
+
+    try {
+
+        symType = symScope->getChildByName( symName );
+
+    }catch(SymbolException&)
+    {}
+
+    if ( symType )
     {
-        TypeInfoPtr    basePtr = getBaseTypeInfo( symName, getTypePointerSize(symScope) );
-        if ( basePtr != 0 )
-            return basePtr;
-
-        SymbolPtr  symType = symScope->getChildByName( symName );
-
         if ( symType->getSymTag() == SymTagData )
         {
             if ( symType->getLocType() == LocIsBitField )
@@ -247,7 +252,12 @@ TypeInfoPtr  TypeInfo::getTypeInfo( SymbolPtr &symScope, const std::string &symN
         return getTypeInfo( symType );
     }
 
-    return  getComplexType( symScope, symName );
+    size_t pos = symName.find_first_of( "*[" );
+
+    if ( pos != std::string::npos )
+        return  getComplexType( symScope, symName );
+
+    throw TypeException( symName, "symbol name is not found" );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
