@@ -24,7 +24,7 @@ SetCompressor LZMA
 
 !define PRODUCT_SHORT_NAME "pykd"
 !define PRODUCT_FULL_NAME  "Python extension for WinDbg"
-!define PRODUCT_VERSION "0.2.0.14"
+!define PRODUCT_VERSION "0.3.0.1"
 !define PRODUCT_URL  "http://pykd.codeplex.com/"
 !define PRODUCT_NAME_AND_VERSION "${PRODUCT_FULL_NAME} ${PRODUCT_ARCH} ${PRODUCT_VERSION}"
 !define PRODUCT_MANUFACTURER "PyKd Team"
@@ -110,7 +110,7 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName"     "${PRODUCT_SHORT_NAME}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "Comments"        "${PRODUCT_NAME_AND_VERSION}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName"     "${PRODUCT_MANUFACTURER}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalTrademarks" "${PRODUCT_SHORT_NAME} is a trademark of ${PRODUCT_MANUFACTURER}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright"  "© All rights reserved 2010-2012"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright"  "© All rights reserved 2010-2014"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "${PRODUCT_SHORT_NAME} setup"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion"     "${PRODUCT_VERSION}"
 
