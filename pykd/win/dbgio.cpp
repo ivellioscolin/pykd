@@ -19,7 +19,8 @@ void dprint( const std::wstring &str, bool dml )
 
         while (std::getline(sstr, line)) 
         {
-            line += L'\n';
+            if ( !sstr.eof() )
+                line += L'\n';
 
             g_dbgEng->control->ControlledOutputWide(  
                 dml ? DEBUG_OUTCTL_AMBIENT_DML : DEBUG_OUTCTL_AMBIENT_TEXT,
