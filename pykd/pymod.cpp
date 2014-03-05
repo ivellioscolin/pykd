@@ -311,11 +311,11 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "wrmsr", pykd::setMSR,
         "Set MSR value" );
     python::def( "getProcessorMode", pykd::getProcessorMode, 
-        "Return current processor mode as string: X86, ARM, IA64 or X64" );
+        "Return current processor mode: CPUType" );
     python::def( "getProcessorType", pykd::getProcessorType,
-        "Return type of physical processor: X86, ARM, IA64 or X64" );
+        "Return type of physical processor: CPUType" );
     python::def( "setProcessorMode",pykd::setProcessorMode,
-        "Set current processor mode  (X86, ARM, IA64 or X64)" );
+        "Set current processor mode (CPUType)" );
     python::def( "switchProcessorMode", pykd::switchProcessorMode,
         "Switch processor mode ( X86 <-> X64 )" );
 
