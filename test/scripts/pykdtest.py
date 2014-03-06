@@ -22,9 +22,9 @@ import breakpoint
 import regtest
 import stacktest
 import customtypestest
+import mspdbtest
 
 
-#import mspdbtest
 #import ehexcepttest
 #import ehstatustest
 #import ehsymbolstest
@@ -62,11 +62,10 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest ),
 
                 unittest.TestLoader().loadTestsFromTestCase( breakpoint.BreakpointTest ),
-
                 unittest.TestLoader().loadTestsFromTestCase( stacktest.StackTest ),
+                unittest.TestLoader().loadTestsFromTestCase( mspdbtest.MsPdbTest ),
 
                 #unittest.TestLoader().loadTestsFromTestCase(  localstest.LocalVarsTest )
-                #unittest.TestLoader().loadTestsFromTestCase( mspdbtest.MsPdbTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( ehstatustest.EhStatusTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( ehsymbolstest.EhSymbolsTest ),
