@@ -528,6 +528,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return field's type" )
         .def( "fieldName", TypeInfoAdapter::getElementName,
             "Return name of struct field by index" )
+        .def( "fields", TypeInfoAdapter::getFields,
+            "Return list of tuple ( filedName, fieldType )" )
         .def( "deref", TypeInfoAdapter::deref,
             "Return type of pointer" )
         .def( "append", TypeInfoAdapter::appendField,
@@ -580,7 +582,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return field of structure as an object attribute" )
         .def("field", TypedVarAdapter::getElementByIndex,
             "Return field of structure as an object attribute" )
-        .add_property( "fields", TypedVarAdapter::getFields,
+        .def( "fields", TypedVarAdapter::getFields,
             "Return list of tuple ( filedName, fieldOffset, fieldValue )" )
         .def( "fieldName", TypedVarAdapter::getElementName,
             "Return name of struct field by index" )

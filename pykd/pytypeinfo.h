@@ -206,6 +206,8 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo.str();
     }
 
+    static python::list getFields( kdlib::TypeInfo &typeInfo );
+
 };
 
 struct BaseTypesEnum {

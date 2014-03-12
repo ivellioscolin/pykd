@@ -154,10 +154,6 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( 0, ti.fieldOffset("m_structValue") )
         self.assertEqual( ti.size(), ti.m_structValue.size() )
 
-    def testAsMap(self):
-        ti = target.module.type("enumType")
-        self.assertEqual( { 1 : "ONE", 2 : "TWO", 3 : "THREE" }, ti.asMap() )
-
     def testDeref(self):
         ti = pykd.typeInfo("Int1B*")
         self.assertEqual( "Int1B", ti.deref().name() )
@@ -222,6 +218,12 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( 6, len(ti) )
         for field in ti:
              str( field )
+
+    def testEnumSubscribe(self):
+        ti = pykd.typeInfo( "enumType" )
+        self.assertEqual( 3, len(ti) )
+        self.assertEqual( [ 1, 2, 3], [ long(field) for field in ti ] )
+        self.assertEqual( [ ( "ONE", 1), ("TWO", 2), ("THREE", 3) ], ti.fields() )
 
     def testStructNullSize(self):
         ti = target.module.type("structNullSize")
