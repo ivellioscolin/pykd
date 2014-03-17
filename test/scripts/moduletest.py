@@ -100,7 +100,7 @@ class ModuleTest( unittest.TestCase ):
         lst = target.module.enumSymbols( "*Const")
         self.assertEqual( 3, len(lst) )
         lst = target.module.enumSymbols( "*cal?Func")
-        self.assertEqual( 2, len(lst) )
+        self.assertEqual( 4, len(lst) )
         lst = target.module.enumSymbols( "*virtMethod*") 
         self.assertNotEqual( 0, len(lst) )
         lst = target.module.enumSymbols( "classChild" )

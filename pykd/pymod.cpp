@@ -74,14 +74,36 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( getThreadIdBySystemId_, pykd::getThreadIdBySyst
 BOOST_PYTHON_FUNCTION_OVERLOADS( createStruct_, pykd::defineStruct, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( createUnion_, pykd::defineUnion, 1, 2 );
 
+BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBreakpoint_, pykd::setSoftwareBreakpoint, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBreakpoint_, pykd::setHardwareBreakpoint, 3, 4 );
+
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_enumSymbols, ModuleAdapter::enumSymbols, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_findSymbol, ModuleAdapter::findSymbol, 2, 3 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( TypeInfo_ptrTo, TypeInfoAdapter::ptrTo, 1, 2 ); 
 
+
 pykd::SysDbgOut   sysPykdOut;
 pykd::SysDbgOut   sysPykdErr;
 pykd::SysDbgIn    sysPykdIn;
+
+namespace pykd {
+
+void initialize()
+{
+    kdlib::initialize();
+
+    globalEventHandler = new InternalEventHandler();
+}
+
+void uninitialize()
+{
+    delete globalEventHandler;
+
+    kdlib::uninitialize();
+}
+
+}
 
 BOOST_PYTHON_MODULE( pykd )
 {
@@ -93,9 +115,9 @@ BOOST_PYTHON_MODULE( pykd )
     python::scope().attr("__version__") = pykdVersion;
     python::scope().attr("version") = pykdVersion;
 
-    python::def( "initialize", &kdlib::initialize,
+    python::def( "initialize", &pykd::initialize,
         "Initialize debug engine, only for console mode" );
-    python::def( "deinitialize", &kdlib::uninitialize,
+    python::def( "deinitialize", &pykd::uninitialize,
         "Deintialize debug engine, only for console mode" );
 
    // DbgEng services 
@@ -336,15 +358,14 @@ BOOST_PYTHON_MODULE( pykd )
         "Get the function argument by name" );
 
     // breakpoints
-    python::def( "setBp", pykd::softwareBreakPointSet,
-        "Set software breakpoint on executiont" );
+    python::def( "setBp", pykd::setSoftwareBreakpoint, setSoftwareBreakpoint_( python::args( "offset", "callback" ),
+        "Set software breakpoint on executiont" ) );
+    python::def( "setBp", pykd::setHardwareBreakpoint, setHardwareBreakpoint_( python::args( "offset", "size", "accsessType", "callback" ) ,
+        "Set hardware breakpoint" ) );
     python::def( "removeBp", pykd::breakPointRemove,
         "Remove breapoint by IDs" );
-
-    //python::def( "setBp", &setHardwareBp, setHardwareBp_( python::args( "offset", "size", "accsessType", "callback" ) ,
-    //    "Set hardware breakpoint" ) );
-   // //python::def( "removeAllBp", &removeAllBp,
-   // //    "Remove all breapoints" );
+   python::def( "removeAllBp", &breakPointRemoveAll,
+       "Remove all breapoints" );
 
     // processes and threads
     python::def ( "getNumberProcesses", pykd::getNumberProcesses,
@@ -615,10 +636,10 @@ BOOST_PYTHON_MODULE( pykd )
         .add_static_property( "VoidPtr", &BaseTypesEnum::getVoidPtr )
         ;
 
-   python::class_<Breakpoint, BreakpointPtr, boost::noncopyable>( "breakpoint",
-        "class for breakpoint representation", python::no_init  )
-        .def("__init__", python::make_constructor(Breakpoint::setSoftwareBreakpoint) )
-        ;
+   //python::class_<Breakpoint, BreakpointPtr, boost::noncopyable>( "breakpoint",
+   //     "class for breakpoint representation", python::no_init  )
+   //     .def("__init__", python::make_constructor(Breakpoint::setSoftwareBreakpoint) )
+   //     ;
 
     python::class_<kdlib::StackFrame, kdlib::StackFramePtr, boost::noncopyable>( "stackFrame",
         "class for stack's frame representation", python::no_init  )
