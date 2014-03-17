@@ -59,13 +59,16 @@ class ModuleTest( unittest.TestCase ):
         self.assertEqual( "StdcallFunc", target.module.findSymbol( target.module.offset("StdcallFunc") ) )
         self.assertEqual( "FastcallFunc", target.module.findSymbol( target.module.offset("FastcallFunc") ) )
         self.assertEqual( "_UnderscoreFunc", target.module.findSymbol( target.module.offset("_UnderscoreFunc") ) )
+        self.assertEqual( "PureCStdcallFunc", target.module.findSymbol( target.module.offset("PureCStdcallFunc") ) )
+        self.assertEqual( "PureCCdeclFunc", target.module.findSymbol( target.module.offset("PureCCdeclFunc") ) )
+        self.assertEqual( "PureCFastcallFunc", target.module.findSymbol( target.module.offset("PureCFastcallFunc") ) )
         #self.assertEqual( "targetapp!FuncWithName0", pykd.findSymbol( target.module.offset("FuncWithName0") ) )
         #self.assertEqual( "targetapp!_FuncWithName2", pykd.findSymbol( target.module.offset("_FuncWithName2") ) )
         #self.assertEqual( "_FuncWithName2+10", target.module.findSymbol( target.module.offset("_FuncWithName2") + 0x10 ) )
         #self.assertEqual( "_FuncWithName2", target.module.findSymbol( target.module.offset("_FuncWithName2") + 0x10, showDisplacement = False ) )
         #self.assertEqual( "targetapp!_FuncWithName2+10", pykd.findSymbol( target.module.offset("_FuncWithName2") + 0x10 ) )
         #self.assertEqual( "targetapp!_FuncWithName2", pykd.findSymbol( target.module.offset("_FuncWithName2") + 0x10, showDisplacement = False ) )
-        pass
+
 
     def testFindSymbolAndDisp( self ):
         #vaFuncWithName0 = target.module.offset("FuncWithName0")
