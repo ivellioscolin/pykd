@@ -154,9 +154,8 @@ inline bool compareMemory( kdlib::MEMOFFSET_64 addr1, kdlib::MEMOFFSET_64 addr2,
 
 inline python::tuple findMemoryRegion( kdlib::MEMOFFSET_64 offset )
 {
-
-    kdlib::MEMOFFSET_64   regionOffset;
-    size_t  regionLength;
+    kdlib::MEMOFFSET_64 regionOffset;
+    unsigned long long  regionLength;
 
     AutoRestorePyState  pystate;
     
