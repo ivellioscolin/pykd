@@ -150,13 +150,19 @@ inline kdlib::MEMOFFSET_64 getThreadOffset(kdlib::THREAD_DEBUG_ID id = -1)
 inline kdlib::MEMOFFSET_64 getCurrentThread()
 {  
     AutoRestorePyState  pystate;
-    return kdlib::getThreadOffset(kdlib::getCurrentThreadId());
+    return kdlib::getCurrentThread();
 }
 
-inline void setCurrentThread(kdlib::THREAD_DEBUG_ID id)
+inline void setCurrentThreadId(kdlib::THREAD_DEBUG_ID id)
 {
     AutoRestorePyState  pystate;
-    kdlib::setCurrentThread(id);
+    kdlib::setCurrentThreadById(id);
+}
+
+inline void setCurrentThread(kdlib::MEMOFFSET_64 offset)
+{
+    AutoRestorePyState  pystate;
+    kdlib::setCurrentThread(offset);
 }
 
 inline void setImplicitThread(kdlib::MEMOFFSET_64 offset)
@@ -186,7 +192,19 @@ inline kdlib::PROCESS_DEBUG_ID getProcessIdByIndex(unsigned long index)
 inline kdlib::MEMOFFSET_64 getCurrentProcess()
 {
     AutoRestorePyState  pystate;
-    return kdlib::getProcessOffset( kdlib::getCurrentProcessId() );
+    return kdlib::getCurrentProcess();
+}
+
+inline void setCurrentProcess(kdlib::MEMOFFSET_64 offset)
+{   
+    AutoRestorePyState  pystate;
+    kdlib::setCurrentProcess(offset);
+}
+
+inline void setCurrentProcessId( kdlib::PROCESS_DEBUG_ID id )
+{
+    AutoRestorePyState  pystate;
+    kdlib::setCurrentProcessById(id);
 }
 
 inline kdlib::PROCESS_DEBUG_ID getProcessIdByOffset( kdlib::MEMOFFSET_64 offset )
@@ -211,12 +229,6 @@ inline kdlib::MEMOFFSET_64 getProcessOffset( kdlib::PROCESS_DEBUG_ID id  = -1)
 {
     AutoRestorePyState  pystate;
     return kdlib::getProcessOffset(id);
-}
-
-inline void setCurrentProcess(kdlib::PROCESS_DEBUG_ID id)
-{   
-    AutoRestorePyState  pystate;
-    kdlib::setCurrentProcess(id);
 }
 
 inline void setImplicitProcess(kdlib::MEMOFFSET_64 offset)

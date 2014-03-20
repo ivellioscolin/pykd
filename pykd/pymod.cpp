@@ -378,12 +378,14 @@ BOOST_PYTHON_MODULE( pykd )
         "Return system process ID ( PID )" ) );
     python::def( "getProcessIdBySystemID", pykd::getProcessIdBySystemId, getProcessIdBySystemId_( python::args("Pid"),
         "Return process ID by the system's process ID ( PID )" ) );
-    python::def( "setCurrentProcess", pykd::setCurrentProcess,
-        "Set current process by ID" );
-    python::def( "getImplicitProcess", pykd::getImplicitProcessOffset,
-        "Return implicit process" );
     python::def( "getCurrentProcess", pykd::getCurrentProcess, 
         "Return current offset" );
+    python::def( "setCurrentProcess", pykd::setCurrentProcess,
+        "Set current process" );
+    python::def( "setCurrentProcessId", pykd::setCurrentProcessId,
+        "Set current process by debug ID" );
+    python::def( "getImplicitProcess", pykd::getImplicitProcessOffset,
+        "Return implicit process" );
     python::def( "setImplicitProcess", pykd::setImplicitProcess,
         "Set implicit process" );
     python::def( "getCurrentProcessExeName", pykd::getCurrentProcessExecutableName,
@@ -409,6 +411,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return current thread offset" );
     python::def("setCurrentThread", pykd::setCurrentThread,
         "Set current thread" );
+    python::def("setCurrentThreadId",pykd::setCurrentThreadId,
+        "Set current thread by debug ID");
     python::def( "getImplicitThread", pykd::getImplicitThreadOffset,
         "Return implicit thread" );
     python::def( "setImplicitThread", pykd::setImplicitThread,
