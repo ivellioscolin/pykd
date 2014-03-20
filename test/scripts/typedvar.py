@@ -312,7 +312,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( fieldName, "m_baseField" )
         self.assertEqual( fieldVal, tv.m_baseField )
 
-        for field in tv.fields:
+        for field in tv.fields():
             str( field )
 
     def testDeadlockList(self):
