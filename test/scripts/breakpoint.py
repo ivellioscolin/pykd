@@ -9,22 +9,14 @@ class callCounter(object):
     def __init__(self,func):
         self.count = 0
         self.func = func
-    def __call__(self,val):
+    def __call__(self):
         self.count = self.count+1
-        return self.func(val)
+        return self.func()
 
-
-class breakpoint(object):
-    def __init__(self, offset, callback):
-        self.id = pykd.setBp(offset,callback)
-    def __del__(self):
-        pykd.removeBp(self.id)
-
-
-def stopOnBreak(id):
+def stopOnBreak():
     return pykd.eventResult.Break
 
-def continueOnBreak(id):
+def continueOnBreak():
     return pykd.eventResult.Proceed
 
 
@@ -65,7 +57,7 @@ class BreakpointTest( unittest.TestCase ):
 
             breakCount = callCounter(stopOnBreak)
 
-            bp = breakpoint( targetModule.CdeclFunc, breakCount )
+            bp = pykd.setBp( targetModule.CdeclFunc, breakCount )
 
             self.assertEqual( pykd.Break, pykd.go() )
 
@@ -80,7 +72,7 @@ class BreakpointTest( unittest.TestCase ):
 
             breakCount = callCounter(continueOnBreak)
 
-            bp = breakpoint( targetModule.CdeclFunc, breakCount )
+            bp = pykd.setBp( targetModule.CdeclFunc, breakCount )
 
             self.assertEqual( pykd.NoDebuggee, pykd.go() )
 

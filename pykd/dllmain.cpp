@@ -18,6 +18,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         break;
 
 	case DLL_PROCESS_DETACH:
+        int  a;
+        a = 10;
 		break;
 	}
 	return TRUE;

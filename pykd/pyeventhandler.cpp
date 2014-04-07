@@ -7,189 +7,6 @@
 
 namespace pykd {
 
-pykd::InternalEventHandler  *globalEventHandler = NULL;
-
-///////////////////////////////////////////////////////////////////////////////////
-
-InternalEventHandler::~InternalEventHandler()
-{
-    breakPointRemoveAll();
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-kdlib::BREAKPOINT_ID InternalEventHandler::setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset, python::object &callback )
-{
-    kdlib::BREAKPOINT_ID  id;
-    kdlib::PROCESS_DEBUG_ID  processId;
-
-    boost::recursive_mutex::scoped_lock  l(m_breakPointLock);
-
-    do {
-        AutoRestorePyState  pystate;
-        id = kdlib::softwareBreakPointSet(offset);
-        processId = kdlib::getCurrentProcessId();
-    } while(false);
-
-    m_breakPointMap[id] = Breakpoint(id, processId, callback);
-
-    return id;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-kdlib::BREAKPOINT_ID InternalEventHandler::setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType, python::object &callback )
-{
-    kdlib::BREAKPOINT_ID  id;
-    kdlib::PROCESS_DEBUG_ID  processId;
-
-    boost::recursive_mutex::scoped_lock  l(m_breakPointLock);
-
-    do {
-        AutoRestorePyState  pystate;
-        id = kdlib::hardwareBreakPointSet(offset,size,accessType);
-        processId = kdlib::getCurrentProcessId();
-    } while(false);
-
-    m_breakPointMap[id] = Breakpoint(id, processId, callback);
-
-    return id;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void InternalEventHandler::breakPointRemove(kdlib::BREAKPOINT_ID bpId)
-{
-    boost::recursive_mutex::scoped_lock  l(m_breakPointLock);
-    
-    BreakpointMap::iterator  it = m_breakPointMap.find(bpId);
-
-    if ( it != m_breakPointMap.end() )
-    {
-        m_breakPointMap.erase(it);
-
-        try {
-            AutoRestorePyState  pystate;
-            kdlib::breakPointRemove(bpId);
-        } catch(kdlib::DbgException&)
-        {}
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void InternalEventHandler::breakPointRemoveAll()
-{
-    boost::recursive_mutex::scoped_lock  l(m_breakPointLock);
-
-    BreakpointMap::iterator  it;
-
-    for ( it = m_breakPointMap.begin(); it != m_breakPointMap.end(); ++it )
-    {
-        try {
-            AutoRestorePyState  pystate;
-            kdlib::breakPointRemove(it->first);
-        } catch(kdlib::DbgException&)
-        {}
-    }
-
-    m_breakPointMap.clear();
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-kdlib::DebugCallbackResult InternalEventHandler::onBreakpoint( kdlib::BREAKPOINT_ID bpId )
-{
-    kdlib::DebugCallbackResult  result = kdlib::DebugCallbackNoChange;
-
-    boost::recursive_mutex::scoped_lock  l(m_breakPointLock);
-    
-    BreakpointMap::iterator  it = m_breakPointMap.find(bpId);
-    if ( it != m_breakPointMap.end() )
-    {
-        PyEval_RestoreThread( m_pystate );
-
-        do {
-
-            python::object &callback = it->second.getCallback();
-
-            if ( !callback )
-            {
-                result = kdlib::DebugCallbackBreak;
-                break;
-            }
-
-            try {
-
-                python::object  resObj = callback( bpId );
-
-                if ( resObj.is_none() )
-                {
-                    result = kdlib::DebugCallbackNoChange;
-                    break;
-                }
-                
-                int retVal = python::extract<int>( resObj );
-
-                if ( retVal >= kdlib::DebugCallbackMax )
-                {
-                    result = kdlib::DebugCallbackBreak;
-                    break;
-                }
-                
-                result = kdlib::DebugCallbackResult(retVal);
-
-            }
-            catch (const python::error_already_set &) 
-            {
-                printException();
-                result =  kdlib::DebugCallbackBreak;
-            }
-
-        } while( false);
-
-        m_pystate = PyEval_SaveThread();
-    }
-    else
-    {
-        result =  kdlib::DebugCallbackNoChange;
-    }
-
-    return result;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-kdlib::DebugCallbackResult InternalEventHandler::onProcessExit( kdlib::PROCESS_DEBUG_ID processId, kdlib::ProcessExitReason  reason, unsigned long exitCode )
-{
-
-    boost::recursive_mutex::scoped_lock  l(m_breakPointLock);
-
-    BreakpointMap::iterator  it = m_breakPointMap.begin(); 
-
-    while( it != m_breakPointMap.end() )
-    {
-        if ( it->second.getProcessId() == processId )
-        {
-            kdlib::breakPointRemove(it->first);
-
-            PyEval_RestoreThread( m_pystate );
-
-            m_breakPointMap.erase(it);
-            
-            m_pystate = PyEval_SaveThread();
-
-            it = m_breakPointMap.begin(); 
-        }
-        else
-        {
-            ++it;
-        }
-    }
-
-    return kdlib::DebugCallbackNoChange;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 EventHandler::EventHandler()
@@ -421,6 +238,148 @@ kdlib::DebugCallbackResult  EventHandler::onModuleUnload( kdlib::MEMOFFSET_64 of
     m_pystate = PyEval_SaveThread();
 
     return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+class CallbackBreakpoint : public kdlib::BaseBreakpoint
+{
+
+public:
+
+    static kdlib::BREAKPOINT_ID setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset, python::object  &callback);
+    static kdlib::BREAKPOINT_ID setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType, python::object  &callback );
+    static void removeBreakpoint( kdlib::BREAKPOINT_ID  id );
+
+private:
+
+    virtual kdlib::DebugCallbackResult  onHit();
+
+    python::object  m_callback;
+    PyThreadState*  m_pystate;
+
+    typedef std::map<kdlib::BREAKPOINT_ID, CallbackBreakpoint*>  BreakpointMap;
+    static boost::recursive_mutex  m_breakpointLock;
+    static BreakpointMap  m_breakpointMap;
+};
+
+CallbackBreakpoint::BreakpointMap  CallbackBreakpoint::m_breakpointMap;
+boost::recursive_mutex CallbackBreakpoint::m_breakpointLock;
+
+///////////////////////////////////////////////////////////////////////////////
+
+kdlib::BREAKPOINT_ID CallbackBreakpoint::setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset, python::object  &callback)
+{
+    boost::recursive_mutex::scoped_lock l(m_breakpointLock);
+
+    CallbackBreakpoint  *bp = new CallbackBreakpoint();
+    bp->m_pystate = PyThreadState_Get();
+    bp->m_callback = callback;
+    bp->set(offset);
+
+    m_breakpointMap[bp->m_id] = bp;
+
+    return bp->m_id;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+kdlib::BREAKPOINT_ID CallbackBreakpoint::setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType, python::object  &callback  )
+{
+    boost::recursive_mutex::scoped_lock l(m_breakpointLock);
+
+    CallbackBreakpoint  *bp = new CallbackBreakpoint();
+    bp->m_pystate = PyThreadState_Get();
+    bp->m_callback = callback;
+    bp->set(offset,size,accessType);
+
+    m_breakpointMap[bp->m_id] = bp;
+
+    return bp->m_id;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void CallbackBreakpoint::removeBreakpoint( kdlib::BREAKPOINT_ID  id )
+{
+    boost::recursive_mutex::scoped_lock l(m_breakpointLock);
+
+    BreakpointMap::iterator  it = m_breakpointMap.find(id);
+    if ( it != m_breakpointMap.end() )
+        m_breakpointMap.erase(it);
+
+    kdlib::breakPointRemove(id);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+kdlib::DebugCallbackResult  CallbackBreakpoint::onHit()
+{
+    kdlib::DebugCallbackResult  result = kdlib::DebugCallbackNoChange;
+
+    PyEval_RestoreThread( m_pystate );
+
+    try {
+
+        do {
+
+            if ( !m_callback )
+            {
+                result = kdlib::DebugCallbackBreak;
+                break;
+            }
+
+            python::object  resObj = m_callback();
+
+            if ( resObj.is_none() )
+            {
+                result = kdlib::DebugCallbackNoChange;
+                break;
+            }
+
+            int retVal = python::extract<int>( resObj );
+
+            if ( retVal >= kdlib::DebugCallbackMax )
+            {
+                result = kdlib::DebugCallbackBreak;
+                break;
+            }
+                
+            result = kdlib::DebugCallbackResult(retVal);
+
+        } while( FALSE );
+
+    }
+    catch (const python::error_already_set &) 
+    {
+        printException();
+        result =  kdlib::DebugCallbackBreak;
+    }
+
+    m_pystate = PyEval_SaveThread();
+
+    return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+kdlib::BREAKPOINT_ID setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset, python::object  &callback)
+{
+    return CallbackBreakpoint::setSoftwareBreakpoint(offset,callback);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+kdlib::BREAKPOINT_ID setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType,python::object  &callback) 
+{
+    return CallbackBreakpoint::setHardwareBreakpoint(offset, size, accessType,callback);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void breakPointRemove( kdlib::BREAKPOINT_ID id )
+{
+    CallbackBreakpoint::removeBreakpoint(id);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

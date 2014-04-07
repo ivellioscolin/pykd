@@ -92,14 +92,10 @@ namespace pykd {
 void initialize()
 {
     kdlib::initialize();
-
-    globalEventHandler = new InternalEventHandler();
 }
 
 void uninitialize()
 {
-    delete globalEventHandler;
-
     kdlib::uninitialize();
 }
 
@@ -364,8 +360,6 @@ BOOST_PYTHON_MODULE( pykd )
         "Set hardware breakpoint" ) );
     python::def( "removeBp", pykd::breakPointRemove,
         "Remove breapoint by IDs" );
-   python::def( "removeAllBp", &breakPointRemoveAll,
-       "Remove all breapoints" );
 
     // processes and threads
     python::def ( "getNumberProcesses", pykd::getNumberProcesses,
@@ -640,9 +634,10 @@ BOOST_PYTHON_MODULE( pykd )
         .add_static_property( "VoidPtr", &BaseTypesEnum::getVoidPtr )
         ;
 
-   //python::class_<Breakpoint, BreakpointPtr, boost::noncopyable>( "breakpoint",
+   //python::class_<kdlib::Breakpoint, kdlib::BreakpointPtr, boost::noncopyable>( "breakpoint",
    //     "class for breakpoint representation", python::no_init  )
-   //     .def("__init__", python::make_constructor(Breakpoint::setSoftwareBreakpoint) )
+   //     .def("__init__", python::make_constructor(pykd::Breakpoint::setSoftwareBreakpoint) )
+   //     .def("__init__", python::make_constructor(pykd::Breakpoint::setHardwareBreakpoint) )
    //     ;
 
     python::class_<kdlib::StackFrame, kdlib::StackFramePtr, boost::noncopyable>( "stackFrame",

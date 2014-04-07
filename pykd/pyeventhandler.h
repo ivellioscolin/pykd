@@ -6,6 +6,7 @@
 
 #include "kdlib/dbgengine.h"
 #include "kdlib/eventhandler.h"
+#include "kdlib/breakpoint.h"
 
 #include "boost/shared_ptr.hpp"
 #include "boost/noncopyable.hpp"
@@ -40,98 +41,33 @@ private:
     PyThreadState*  m_pystate;
 };
 
-///////////////////////////////////////////////////////////////////////////////
-
-class Breakpoint
-{
-public:
-
-    Breakpoint()
-    {}
-
-    Breakpoint(
-        kdlib::BREAKPOINT_ID&  bpId,
-        kdlib::PROCESS_DEBUG_ID&  targetId,
-        python::object&  callback
-        ) : m_bpId(bpId), m_processId(targetId), m_callback(callback)
-    {}
-
-    kdlib::BREAKPOINT_ID  getId() const {
-        return m_bpId;
-    }
-
-    kdlib::PROCESS_DEBUG_ID getProcessId() const {
-        return m_processId;
-    }
-
-    python::object& getCallback() {
-        return m_callback;
-    }
-
-private:
-
-    kdlib::BREAKPOINT_ID  m_bpId;
-    kdlib::PROCESS_DEBUG_ID  m_processId;
-    python::object  m_callback;
-};
-
-class InternalEventHandler: public kdlib::EventHandler
-{
-public:
-    
-    InternalEventHandler() {
-        m_pystate = PyThreadState_Get();
-    }
-
-    ~InternalEventHandler();
-
-    kdlib::BREAKPOINT_ID setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset, python::object &callback = python::object() );
-
-    kdlib::BREAKPOINT_ID setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size = 0, kdlib::ACCESS_TYPE accessType = 0, python::object &callback = python::object() );
-
-    void breakPointRemove(kdlib::BREAKPOINT_ID bpId);
-
-    void breakPointRemoveAll();
-
-private:
-
-    virtual kdlib::DebugCallbackResult onBreakpoint( kdlib::BREAKPOINT_ID bpId );
-
-    virtual kdlib::DebugCallbackResult onProcessExit( kdlib::PROCESS_DEBUG_ID processid, kdlib::ProcessExitReason  reason, unsigned long exitCode );
-
-private:
-
-    PyThreadState*  m_pystate;
-
-    typedef std::map<kdlib::BREAKPOINT_ID, Breakpoint>  BreakpointMap;
-    boost::recursive_mutex  m_breakPointLock;
-    BreakpointMap  m_breakPointMap;
-
-};
-
-extern pykd::InternalEventHandler  *globalEventHandler;
-
 /////////////////////////////////////////////////////////////////////////////////
 
-inline kdlib::BREAKPOINT_ID setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset, python::object &callback = python::object() ) 
-{
-    return globalEventHandler->setSoftwareBreakpoint(offset, callback);
-}
+kdlib::BREAKPOINT_ID setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset, python::object  &callback = python::object() );
+kdlib::BREAKPOINT_ID setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType,python::object  &callback = python::object()) ;
+void breakPointRemove( kdlib::BREAKPOINT_ID id );
 
-inline kdlib::BREAKPOINT_ID setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size = 0, kdlib::ACCESS_TYPE accessType = 0, python::object &callback = python::object() ) 
-{
-    return globalEventHandler->setHardwareBreakpoint( offset, size, accessType, callback);
-}
 
-inline void breakPointRemove( kdlib::BREAKPOINT_ID id )
-{
-    globalEventHandler->breakPointRemove(id);
-}
-
-inline void breakPointRemoveAll()
-{
-    globalEventHandler->breakPointRemoveAll();
-}
+//class Breakpoint : public kdlib::BaseBreakpoint {
+//
+//public:
+//
+//    static kdlib::BreakpointPtr setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset ) 
+//    static kdlib::BreakpointPtr setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType );
+//    static void breakPointRemove( kdlib::BREAKPOINT_ID id );
+//
+//    ~Breakpoint();
+//
+//protected:
+//
+//    static BreakpointMap  m_breakpointMap;
+//    static boost::recursive_mutex  m_breakpointLock;
+//
+//    kdlib::BREAKPOINT_ID  m_id;
+//
+//    PyThreadState*  m_pystate;
+//
+//};
 
 ///////////////////////////////////////////////////////////////////////////////
 
