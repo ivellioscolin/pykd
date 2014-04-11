@@ -384,5 +384,81 @@ void breakPointRemove( kdlib::BREAKPOINT_ID id )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+kdlib::BreakpointPtr Breakpoint::setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset )
+{
+    Breakpoint  *bp = new Breakpoint();
+
+    AutoRestorePyState  pystate(&bp->m_pystate);
+
+    bp->set(offset);
+
+    return kdlib::BreakpointPtr(bp);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+kdlib::BreakpointPtr Breakpoint::setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType )
+{
+    Breakpoint  *bp = new Breakpoint();
+
+    AutoRestorePyState  pystate(&bp->m_pystate);
+
+    bp->set(offset, size, accessType);
+
+    return kdlib::BreakpointPtr(bp);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+kdlib::DebugCallbackResult Breakpoint::onHit()
+{
+    kdlib::DebugCallbackResult  result = kdlib::DebugCallbackNoChange;
+
+    PyEval_RestoreThread( m_pystate );
+
+    try {
+
+        do {
+
+            python::override pythonHandler = get_override( "onHit" );
+            if ( !pythonHandler )
+            {
+                result = kdlib::BaseBreakpoint::onHit();
+                break;
+            }
+
+            python::object  resObj = pythonHandler();
+
+            if ( resObj.is_none() )
+            {
+                result = kdlib::DebugCallbackNoChange;
+                break;
+            }
+
+            int retVal = python::extract<int>( resObj );
+
+            if ( retVal >= kdlib::DebugCallbackMax )
+            {
+                result = kdlib::DebugCallbackBreak;
+                break;
+            }
+                
+            result = kdlib::DebugCallbackResult(retVal);
+
+        } while( FALSE );
+
+    }
+    catch (const python::error_already_set &) 
+    {
+        printException();
+        result =  kdlib::DebugCallbackBreak;
+    }
+
+    m_pystate = PyEval_SaveThread();
+
+    return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // end namespace pykd

@@ -103,7 +103,32 @@ class BreakpointTest( unittest.TestCase ):
             self.assertEqual( pykd.Break, pykd.go() )
 
             self.assertEqual( 1, handler.count )
-        
+
+    def testBreakpointClass(self):
+
+        class MyBreakpoint(pykd.breakpoint):
+             def __init__(self,offset):
+                 super(MyBreakpoint, self).__init__(offset)
+                 self.count = 0
+
+             def onHit(self):
+                 self.count = self.count + 1
+
+        processId = pykd.startProcess( target.appPath + " breakhandlertest" )
+        targetModule = pykd.module( target.moduleName )
+        targetModule.reload()
+        with testutils.ContextCallIt( testutils.KillProcess(processId) ) as killStartedProcess :
+
+            pykd.go()
+
+            bp = MyBreakpoint( targetModule.CdeclFunc )
+
+            pykd.setBp( targetModule.CdeclFunc )
+
+            self.assertEqual( pykd.Break, pykd.go() )
+
+            self.assertEqual( 1, bp.count )
+
 
 
 

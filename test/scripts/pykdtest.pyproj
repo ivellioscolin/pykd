@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>3f0be77e-19b0-4192-b432-44a25805bcb8</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>pykdtest.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>..\..\Debug_2.7</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>pykdtest</Name>
+    <RootNamespace>pykdtest</RootNamespace>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <CommandLineArguments>targetapp.exe</CommandLineArguments>
+    <InterpreterPath />
+    <InterpreterArguments>
+    </InterpreterArguments>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <InterpreterId>
+    </InterpreterId>
+    <InterpreterVersion>
+    </InterpreterVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="basetest.py" />
+    <Compile Include="breakpoint.py" />
+    <Compile Include="clienttest.py" />
+    <Compile Include="customtypestest.py" />
+    <Compile Include="dbgcmd.py" />
+    <Compile Include="ehexcepttest.py" />
+    <Compile Include="ehloadtest.py" />
+    <Compile Include="ehstatustest.py" />
+    <Compile Include="ehsymbolstest.py" />
+    <Compile Include="eventtest.py" />
+    <Compile Include="intbase.py" />
+    <Compile Include="localstest.py" />
+    <Compile Include="memtest.py" />
+    <Compile Include="moduletest.py" />
+    <Compile Include="mspdbtest.py" />
+    <Compile Include="pykdtest.py" />
+    <Compile Include="regtest.py" />
+    <Compile Include="stacktest.py" />
+    <Compile Include="synsymtest.py" />
+    <Compile Include="target.py" />
+    <Compile Include="testutils.py" />
+    <Compile Include="thrdctxtest.py" />
+    <Compile Include="typedvar.py" />
+    <Compile Include="typeinfo.py" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+</Project>

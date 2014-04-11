@@ -48,26 +48,20 @@ kdlib::BREAKPOINT_ID setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t s
 void breakPointRemove( kdlib::BREAKPOINT_ID id );
 
 
-//class Breakpoint : public kdlib::BaseBreakpoint {
-//
-//public:
-//
-//    static kdlib::BreakpointPtr setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset ) 
-//    static kdlib::BreakpointPtr setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType );
-//    static void breakPointRemove( kdlib::BREAKPOINT_ID id );
-//
-//    ~Breakpoint();
-//
-//protected:
-//
-//    static BreakpointMap  m_breakpointMap;
-//    static boost::recursive_mutex  m_breakpointLock;
-//
-//    kdlib::BREAKPOINT_ID  m_id;
-//
-//    PyThreadState*  m_pystate;
-//
-//};
+class Breakpoint : public python::wrapper<kdlib::Breakpoint>, public kdlib::BaseBreakpoint {
+
+public:
+
+    static kdlib::BreakpointPtr setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset );
+    static kdlib::BreakpointPtr setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType );
+
+private:
+
+    kdlib::DebugCallbackResult onHit();
+
+    PyThreadState*  m_pystate;
+
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 

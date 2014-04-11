@@ -634,11 +634,6 @@ BOOST_PYTHON_MODULE( pykd )
         .add_static_property( "VoidPtr", &BaseTypesEnum::getVoidPtr )
         ;
 
-   //python::class_<kdlib::Breakpoint, kdlib::BreakpointPtr, boost::noncopyable>( "breakpoint",
-   //     "class for breakpoint representation", python::no_init  )
-   //     .def("__init__", python::make_constructor(pykd::Breakpoint::setSoftwareBreakpoint) )
-   //     .def("__init__", python::make_constructor(pykd::Breakpoint::setHardwareBreakpoint) )
-   //     ;
 
     python::class_<kdlib::StackFrame, kdlib::StackFramePtr, boost::noncopyable>( "stackFrame",
         "class for stack's frame representation", python::no_init  )
@@ -881,6 +876,14 @@ BOOST_PYTHON_MODULE( pykd )
    //         "Triggered debug symbols unloaded. Parameter - module base or 0 (all modules)\n"
    //         "There is no return value");
       ;
+
+   python::class_<kdlib::Breakpoint, kdlib::BreakpointPtr, boost::noncopyable>( "breakpoint",
+        "class for breakpoint representation", python::no_init  )
+        .def("__init__", python::make_constructor(pykd::Breakpoint::setSoftwareBreakpoint) )
+        .def("__init__", python::make_constructor(pykd::Breakpoint::setHardwareBreakpoint) )
+        .def("onHit", &kdlib::Breakpoint::onHit,
+            "Breakpoint hit callback")
+        ;
 
     // C++ exception translation to python
     pykd::registerExceptions();
