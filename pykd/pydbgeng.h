@@ -195,6 +195,12 @@ inline kdlib::MEMOFFSET_64 getCurrentProcess()
     return kdlib::getCurrentProcess();
 }
 
+inline kdlib::PROCESS_DEBUG_ID getCurrentProcessId()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getCurrentProcessId();
+}
+
 inline void setCurrentProcess(kdlib::MEMOFFSET_64 offset)
 {   
     AutoRestorePyState  pystate;

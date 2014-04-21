@@ -374,6 +374,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return process ID by the system's process ID ( PID )" ) );
     python::def( "getCurrentProcess", pykd::getCurrentProcess, 
         "Return current offset" );
+    python::def( "getCurrentProcessId", pykd::getCurrentProcessId,
+        "Return current process ID" );
     python::def( "setCurrentProcess", pykd::setCurrentProcess,
         "Set current process" );
     python::def( "setCurrentProcessId", pykd::setCurrentProcessId,
@@ -399,10 +401,12 @@ BOOST_PYTHON_MODULE( pykd )
         "Return system thread ID ( TID )" ) );
     python::def( "getThreadId", pykd::getThreadIdByOffset,
         "Return thread ID by the location in the target's memory of the thread structure" );
-    python::def( "getThreadId", pykd::getThreadIdBySystemId, getThreadIdBySystemId_( python::args("Tid"),
-        "Return thread ID by the system's thread ID ( PID )" ) );
+    python::def( "getThreadIdBySystemID", pykd::getThreadIdBySystemId, getThreadIdBySystemId_( python::args("Tid"),
+        "Return thread ID by the system's thread ID ( TID )" ) );
     python::def( "getCurrentThread", pykd::getCurrentThread,
         "Return current thread offset" );
+    python::def( "getCurrentThreadId", pykd::getCurrentThreadId,
+        "Return current thread ID" );
     python::def("setCurrentThread", pykd::setCurrentThread,
         "Set current thread" );
     python::def("setCurrentThreadId",pykd::setCurrentThreadId,
