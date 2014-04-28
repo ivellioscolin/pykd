@@ -328,13 +328,13 @@ BOOST_PYTHON_MODULE( pykd )
         "Return MSR value" );
     python::def( "wrmsr", pykd::setMSR,
         "Set MSR value" );
-    python::def( "getProcessorMode", pykd::getProcessorMode, 
+    python::def( "getCPUMode", pykd::getProcessorMode, 
         "Return current processor mode: CPUType" );
-    python::def( "getProcessorType", pykd::getProcessorType,
+    python::def( "getCPUType", pykd::getProcessorType,
         "Return type of physical processor: CPUType" );
-    python::def( "setProcessorMode",pykd::setProcessorMode,
+    python::def( "setCPUMode",pykd::setProcessorMode,
         "Set current processor mode (CPUType)" );
-    python::def( "switchProcessorMode", pykd::switchProcessorMode,
+    python::def( "switchCPUMode", pykd::switchProcessorMode,
         "Switch processor mode ( X86 <-> X64 )" );
 
    // stack and local variables
@@ -342,8 +342,6 @@ BOOST_PYTHON_MODULE( pykd )
         "Return a current stack as a list of stackFrame objects" );
     python::def( "getFrame", pykd::getCurrentFrame,
         "Return a current stack frame" );
-   // python::def( "getStackWow64", &getCurrentStackWow64,
-   //     "Return a stack for wow64 context as a list of stackFrame objects" );
     python::def( "getLocals", pykd::getLocals, 
         "Get list of local variables" );
     python::def( "getLocal", pykd::getLocal,
@@ -671,20 +669,20 @@ BOOST_PYTHON_MODULE( pykd )
             "return the function's local variable  by it's name")
         .def( "__str__", StackFrameAdapter::print );
 
-    python::class_<kdlib::CPUContext, kdlib::CPUContextPtr, boost::noncopyable>( "cpu",
-        "class for CPU context representation", python::no_init  )
-         .def("__init__", python::make_constructor(pykd::loadCPUCurrentContext) )
-         .def("__init__", python::make_constructor(pykd::loadCPUContextByIndex) )
-         .add_property("ip", CPUContextAdapter::getIP )
-         .add_property("sp", CPUContextAdapter::getSP )
-         .add_property("fp", CPUContextAdapter::getSP )
-         .def("getCPUType", CPUContextAdapter::getCPUType )
-         .def("getCPUMode",  CPUContextAdapter::getCPUMode )
-         .def("setCPUMode", CPUContextAdapter::setCPUMode )
-         .def("switchCPUMode", CPUContextAdapter::switchCPUMode )
-         .def("getStack",  CPUContextAdapter::getStack )
-         .def("__getattr__",  CPUContextAdapter::getRegisterByName )
-         .def("__getitem__",  CPUContextAdapter::getRegisterByIndex );
+    //python::class_<kdlib::CPUContext, kdlib::CPUContextPtr, boost::noncopyable>( "cpu",
+    //    "class for CPU context representation", python::no_init  )
+    //     .def("__init__", python::make_constructor(pykd::loadCPUCurrentContext) )
+    //     .def("__init__", python::make_constructor(pykd::loadCPUContextByIndex) )
+    //     .add_property("ip", CPUContextAdapter::getIP )
+    //     .add_property("sp", CPUContextAdapter::getSP )
+    //     .add_property("fp", CPUContextAdapter::getSP )
+    //     .def("getCPUType", CPUContextAdapter::getCPUType )
+    //     .def("getCPUMode",  CPUContextAdapter::getCPUMode )
+    //     .def("setCPUMode", CPUContextAdapter::setCPUMode )
+    //     .def("switchCPUMode", CPUContextAdapter::switchCPUMode )
+    //     .def("getStack",  CPUContextAdapter::getStack )
+    //     .def("__getattr__",  CPUContextAdapter::getRegisterByName )
+    //     .def("__getitem__",  CPUContextAdapter::getRegisterByIndex );
 
     python::class_<kdlib::SystemInfo>(
         "systemVersion", "Operation system version", python::no_init)
