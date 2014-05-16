@@ -854,7 +854,7 @@ BOOST_PYTHON_MODULE( pykd )
         .value("PageExecuteWriteCopy", kdlib::PageExecuteWriteCopy)
         .export_values();
 
-    python::class_<EventHandler, EventHandlerPtr, boost::noncopyable>(
+    python::class_<EventHandler, boost::noncopyable>(
         "eventHandler", "Base class for overriding and handling debug notifications" )
          .def( "onBreakpoint", &EventHandler::onBreakpoint,
             "Triggered breakpoint event. Parameter is int: ID of breakpoint\n"
@@ -879,11 +879,11 @@ BOOST_PYTHON_MODULE( pykd )
    //         "There is no return value");
       ;
 
-   python::class_<kdlib::Breakpoint, kdlib::BreakpointPtr, boost::noncopyable>( "breakpoint",
+   python::class_<Breakpoint, boost::noncopyable>( "breakpoint",
         "class for breakpoint representation", python::no_init  )
-        .def("__init__", python::make_constructor(pykd::Breakpoint::setSoftwareBreakpoint) )
-        .def("__init__", python::make_constructor(pykd::Breakpoint::setHardwareBreakpoint) )
-        .def("onHit", &kdlib::Breakpoint::onHit,
+        .def( python::init<kdlib::MEMOFFSET_64>() )
+        .def( python::init<kdlib::MEMOFFSET_64, size_t, kdlib::ACCESS_TYPE>() )
+        .def("onHit", &Breakpoint::onHit,
             "Breakpoint hit callback")
         ;
 

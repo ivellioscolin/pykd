@@ -384,28 +384,18 @@ void breakPointRemove( kdlib::BREAKPOINT_ID id )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-kdlib::BreakpointPtr Breakpoint::setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset )
+Breakpoint::Breakpoint( kdlib::MEMOFFSET_64 offset )
 {
-    Breakpoint  *bp = new Breakpoint();
-
-    AutoRestorePyState  pystate(&bp->m_pystate);
-
-    bp->set(offset);
-
-    return kdlib::BreakpointPtr(bp);
+    AutoRestorePyState  pystate(&m_pystate);
+    set(offset);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-kdlib::BreakpointPtr Breakpoint::setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType )
+Breakpoint::Breakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType )
 {
-    Breakpoint  *bp = new Breakpoint();
-
-    AutoRestorePyState  pystate(&bp->m_pystate);
-
-    bp->set(offset, size, accessType);
-
-    return kdlib::BreakpointPtr(bp);
+    AutoRestorePyState  pystate(&m_pystate);
+    set(offset, size, accessType);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

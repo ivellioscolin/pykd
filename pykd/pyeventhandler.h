@@ -21,8 +21,6 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class EventHandler;
-typedef boost::shared_ptr<EventHandler>  EventHandlerPtr;
 
 class EventHandler : public python::wrapper<kdlib::EventHandler>, public kdlib::EventHandler
 {
@@ -48,16 +46,16 @@ kdlib::BREAKPOINT_ID setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t s
 void breakPointRemove( kdlib::BREAKPOINT_ID id );
 
 
-class Breakpoint : public python::wrapper<kdlib::Breakpoint>, public kdlib::BaseBreakpoint {
+class Breakpoint : public python::wrapper<kdlib::BaseBreakpoint>, public kdlib::BaseBreakpoint {
 
 public:
 
-    static kdlib::BreakpointPtr setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset );
-    static kdlib::BreakpointPtr setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType );
+    Breakpoint( kdlib::MEMOFFSET_64 offset );
+    Breakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType );
+
+    virtual kdlib::DebugCallbackResult onHit();
 
 private:
-
-    kdlib::DebugCallbackResult onHit();
 
     PyThreadState*  m_pystate;
 

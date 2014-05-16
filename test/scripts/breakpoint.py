@@ -123,15 +123,35 @@ class BreakpointTest( unittest.TestCase ):
 
             bp = MyBreakpoint( targetModule.CdeclFunc )
 
-            pykd.setBp( targetModule.CdeclFunc )
-
             self.assertEqual( pykd.Break, pykd.go() )
 
             self.assertEqual( 1, bp.count )
 
+    def testBreakpointCondition(self):
+
+        def makebpcallback(n):
+
+            def bpcallback():
+                if pykd.getParam("b") > n:
+                    return pykd.eventResult.Break
+                return pykd.eventResult.Proceed
+            return bpcallback
+
+        processId = pykd.startProcess( target.appPath + " breakhandlertest" )
+        targetModule = pykd.module( target.moduleName )
+        targetModule.reload()
+        with testutils.ContextCallIt( testutils.KillProcess(processId) ) as killStartedProcess :
+            pykd.go()
+            bp = pykd.setBp( targetModule.CdeclFunc, makebpcallback(1) )
+            self.assertEqual( pykd.Break, pykd.go() )
 
 
-
- 
+        processId = pykd.startProcess( target.appPath + " breakhandlertest" )
+        targetModule = pykd.module( target.moduleName )
+        targetModule.reload()
+        with testutils.ContextCallIt( testutils.KillProcess(processId) ) as killStartedProcess :
+            pykd.go()
+            bp = pykd.setBp( targetModule.CdeclFunc, makebpcallback(100) )
+            self.assertEqual( pykd.NoDebuggee, pykd.go() )
 
 
