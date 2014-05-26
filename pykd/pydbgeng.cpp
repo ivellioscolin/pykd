@@ -105,7 +105,7 @@ python::list getProcessThreads()
 
         AutoRestorePyState  pystate;
 
-        unsigned long  threadNumber = getNumberThreads();
+        unsigned long  threadNumber = kdlib::getNumberThreads();
 
         for ( unsigned long i = 0; i < threadNumber; ++i )
         {
@@ -128,7 +128,7 @@ python::list getTargetProcesses()
 
         AutoRestorePyState  pystate;
 
-        unsigned long  processNumber = getNumberProcesses();
+        unsigned long  processNumber = kdlib::getNumberProcesses();
 
         for ( unsigned long i = 0; i < processNumber; ++i )
         {
@@ -149,7 +149,7 @@ python::tuple getBugCheckData()
     do {
 
         AutoRestorePyState  pystate;
-        getSystemCrashInfo( crashInfo );
+        kdlib::getSystemCrashInfo( crashInfo );
 
     } while(false);
 
