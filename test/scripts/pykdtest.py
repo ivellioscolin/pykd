@@ -23,11 +23,7 @@ import regtest
 import stacktest
 import customtypestest
 import mspdbtest
-
-
-#import ehexcepttest
-#import ehstatustest
-#import ehsymbolstest
+import excepttest
 
 pykd.initialize()
 
@@ -42,7 +38,6 @@ class StartProcessWithoutParamsTest(unittest.TestCase):
 class TerminateProcessTest(unittest.TestCase):
     def testKill(self):
         pykd.killProcess( target.processId )
-        #pykd.detachProcess( target.processId )
 
 def getTestSuite( singleName = "" ):
     if singleName == "":
@@ -64,11 +59,7 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( breakpoint.BreakpointTest ),
                 unittest.TestLoader().loadTestsFromTestCase( stacktest.StackTest ),
                 unittest.TestLoader().loadTestsFromTestCase( mspdbtest.MsPdbTest ),
-
-                #unittest.TestLoader().loadTestsFromTestCase(  localstest.LocalVarsTest )
-                #unittest.TestLoader().loadTestsFromTestCase( ehexcepttest.EhExceptionTest ),
-                #unittest.TestLoader().loadTestsFromTestCase( ehstatustest.EhStatusTest ),
-                #unittest.TestLoader().loadTestsFromTestCase( ehsymbolstest.EhSymbolsTest ),
+                unittest.TestLoader().loadTestsFromTestCase( excepttest.ExceptionTest ),
             ] ) 
     else:
        return unittest.TestSuite(

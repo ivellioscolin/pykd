@@ -38,7 +38,7 @@
     <Compile Include="clienttest.py" />
     <Compile Include="customtypestest.py" />
     <Compile Include="dbgcmd.py" />
-    <Compile Include="ehexcepttest.py" />
+    <Compile Include="excepttest.py" />
     <Compile Include="ehloadtest.py" />
     <Compile Include="ehstatustest.py" />
     <Compile Include="ehsymbolstest.py" />
