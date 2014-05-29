@@ -93,14 +93,17 @@ def printProcess(process,processFilter,threadFilter,moduleFilter,funcFilter,prin
     if processFilter and not processFilter(process, process.UniqueProcessId, processName ):
         return
 
+    dprintln( "" )
     dprintln( "Process %x" %  process )
     dprintln( "Name: %s  Pid: %#x" %  ( processName, process.UniqueProcessId ) )
     dprintln( "" )
 
+    wow64reloaded = False
+
     try:
 
         dbgCommand(".process /p /r %x" % process )
-        dbgCommand( ".reload /user" )   
+        dbgCommand( ".reload /user" )
 
         threadLst = typedVarList(process.ThreadListHead, ETHREAD, "ThreadListEntry.Flink")
 
@@ -111,69 +114,80 @@ def printProcess(process,processFilter,threadFilter,moduleFilter,funcFilter,prin
             if threadFilter and not threadFilter( thread.Tcb, thread.Cid.UniqueThread ):
                 continue
 
-            setCurrentThread( thread )
+            try:
 
-            stkNative = getStack()
-            stkWow64 = []
+                setCurrentThread( thread )
 
-            if printopt.showWow64stack == True:
-                try:
+                stkNative = getStack()
+                stkWow64 = []
 
-                    switchCPUMode();
-
+                if printopt.showWow64stack == True:
                     try:
-                        stkWow64 = getStack()
 
-                    except MemoryException:
+                        switchCPUMode();
+
+                        try:
+                            if not wow64reloaded:
+                                dbgCommand( ".reload /user" )
+                                wow64reloaded = True
+                            stkWow64 = getStack()
+
+                        except MemoryException:
+                            pass
+
+                        switchCPUMode();
+
+                    except DbgException:
                         pass
 
-                    switchCPUMode();
-
-                except DbgException:
-                    pass
-
             
-            stk = []
+                stk = []
 
-            for frame in stkNative:
+                for frame in stkNative:
 
-                mod = getModule(frame.instructionOffset)
+                    mod = getModule(frame.instructionOffset)
 
-                if mod and printopt.combineWow64 and stkWow64:
-                    if mod.name() == "wow64cpu":
-                        break
+                    if mod and printopt.combineWow64 and stkWow64:
+                        if mod.name() == "wow64cpu":
+                            break
 
-                frame.cpuType = str(getCPUMode())
-                stk.append(frame)
+                    frame.cpuType = str(getCPUMode())
+                    stk.append(frame)
 
-            for frame in stkWow64:
+                for frame in stkWow64:
 
-                frame.cpuType = "WOW64"
-                stk.append(frame)
+                    frame.cpuType = "WOW64"
+                    stk.append(frame)
 
-            if printopt.showUnique:
-                stackHash= getStackHash(stk)
-                if stackHash in stackHashes:
-                    continue
-                stackHashes.add( stackHash )
+                if printopt.showUnique:
+                    stackHash= getStackHash(stk)
+                    if stackHash in stackHashes:
+                        continue
+                    stackHashes.add( stackHash )
 
-            if moduleFilter:
-                if not [ m for m in getStackModules(stk) if moduleFilter( m, m.name() ) ]:
-                     continue
+                if moduleFilter:
+                    if not [ m for m in getStackModules(stk) if moduleFilter( m, m.name() ) ]:
+                         continue
 
-            if funcFilter:
-                match = False
-                for sym in getStackSymbols(stk):
-                    if funcFilter(sym) or ( len( sym.split('!', 1) ) == 2 and funcFilter( sym.split('!', 1)[1] ) ):
-                        match = True
-                        break
-                if not match:
-                    continue
+                if funcFilter:
+                    match = False
+                    for sym in getStackSymbols(stk):
+                        if funcFilter(sym) or ( len( sym.split('!', 1) ) == 2 and funcFilter( sym.split('!', 1)[1] ) ):
+                            match = True
+                            break
+                    if not match:
+                        continue
 
-            printThread( thread, process )
+                printThread( thread, process )
 
-            for frame in stk:
-                printFrame(frame, printopt)
+                for frame in stk:
+                    printFrame(frame, printopt)
+
+            except DbgException:
+
+                printThread( thread, process )
+                dprintln( "Failed to get stack")
+
 
 
     except DbgException:
