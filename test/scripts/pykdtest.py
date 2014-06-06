@@ -75,6 +75,8 @@ if __name__ == "__main__":
 
     target.appPath = sys.argv[1]
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
-    
+
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
+
+    # raw_input("Press <ENTER>...")
 

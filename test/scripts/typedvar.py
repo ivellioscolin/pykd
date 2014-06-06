@@ -325,3 +325,9 @@ class TypedVarTest( unittest.TestCase ):
     def testHresult(self):
         tv = pykd.typedVar( "g_atlException" )
         self.assertEqual( tv.m_hr, 0x8000FFFF )
+
+    def testFunctionDebugRange(self):
+        tv = pykd.typedVar( "startChildProcess" )
+
+        self.assertTrue( tv.getDebugStart() >= tv.getAddress() )
+        self.assertTrue( tv.getDebugEnd() <= tv.getAddress() + tv.sizeof() )

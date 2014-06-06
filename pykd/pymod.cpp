@@ -595,6 +595,10 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__init__", python::make_constructor(pykd::getTypedVarByTypeInfo) )
         .def("getAddress", TypedVarAdapter::getAddress, 
             "Return virtual address" )
+        .def("getDebugStart", TypedVarAdapter::getDebugStart, 
+            "Return end location of the function's prologue code (virtual address)" )
+        .def("getDebugEnd", TypedVarAdapter::getDebugEnd, 
+            "Return beginning location of the function's epilogue code (virtual address)" )
         .def("sizeof", TypedVarAdapter::getSize,
             "Return size of a variable in the target memory" )
         .def("fieldOffset", TypedVarAdapter::getFieldOffsetByName,

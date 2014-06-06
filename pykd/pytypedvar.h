@@ -56,6 +56,18 @@ struct TypedVarAdapter {
         return typedVar.getAddress();
     }
 
+    static kdlib::MEMOFFSET_64 getDebugStart( kdlib::TypedVar& typedVar )
+    {
+        AutoRestorePyState  pystate;
+        return typedVar.getDebugStart();
+    }
+
+    static kdlib::MEMOFFSET_64 getDebugEnd( kdlib::TypedVar& typedVar )
+    {
+        AutoRestorePyState  pystate;
+        return typedVar.getDebugEnd();
+    }
+
     static size_t getSize( kdlib::TypedVar& typedVar ) 
     {
         AutoRestorePyState  pystate;
