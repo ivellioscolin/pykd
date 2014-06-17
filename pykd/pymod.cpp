@@ -91,7 +91,14 @@ namespace pykd {
 
 void initialize()
 {
+    AutoRestorePyState  pystate;
     kdlib::initialize();
+}
+
+void remote_initialize( const std::wstring& remoteOptions )
+{ 
+    AutoRestorePyState  pystate;
+    kdlib::remote_initialize(remoteOptions);
 }
 
 void uninitialize()
@@ -111,9 +118,11 @@ BOOST_PYTHON_MODULE( pykd )
     python::scope().attr("__version__") = pykdVersion;
     python::scope().attr("version") = pykdVersion;
 
-    python::def( "initialize", &pykd::initialize,
-        "Initialize debug engine, only for console mode" );
-    python::def( "deinitialize", &pykd::uninitialize,
+    python::def( "initialize", pykd::initialize,
+        "Initialize local debug engine, only for console mode" );
+    python::def( "remote_initialize",pykd::remote_initialize,
+        "Initialize debug engine for remoting, only for console mode" );
+    python::def( "deinitialize", pykd::uninitialize,
         "Deintialize debug engine, only for console mode" );
 
    // DbgEng services 
