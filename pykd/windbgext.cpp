@@ -102,52 +102,25 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
  
     ArgsList::iterator  foundArg;
 
-    foundArg = std::find( args.begin(), args.end(), "-h" );
-    if ( foundArg !=  args.end() )
+    if ( !args.empty() )
     {
-        printUsage();
-        return;
-    }
-
-    foundArg = std::find( args.begin(), args.end(), "--help" );
-    if ( foundArg !=  args.end() )
-    {
-        printUsage();
-        return;
-    }
-
-    foundArg = std::find( args.begin(), args.end(), "-g" );
-    if ( foundArg != args.end() )
-    {
-        global = true;
-        args.erase( foundArg );
-    }
-
-    foundArg = std::find( args.begin(), args.end(), "--global" );
-    if ( foundArg != args.end() )
-    {
-        global = true;
-        args.erase( foundArg );
-    }
-
-    foundArg = std::find( args.begin(), args.end(), "-l" );
-    if ( foundArg != args.end() )
-    {
-        local = true;
-        args.erase( foundArg );
-    }
-
-    foundArg = std::find( args.begin(), args.end(), "--local" );
-    if ( foundArg != args.end() )
-    {
-        local = true;
-        args.erase( foundArg );
-    }
-
-    if ( global && local )
-    {
-       pykd::eprintln( L"-g(--global) and -l(--local) cannot be set together" );
-       return;
+        if ( args[0] ==  "-h" || args[0] == "--help" )
+        {
+            printUsage();
+            return;
+        }
+        else
+        if ( args[0] ==  "-g" || args[0] == "--global" )
+        {
+            global = true;
+            args.erase( args.begin() );
+        }
+        else
+        if ( args[0] ==  "-l" || args[0] == "--local" )
+        {
+            local = true;
+            args.erase( args.begin() );
+        }
     }
 
     std::string  scriptFileName;
