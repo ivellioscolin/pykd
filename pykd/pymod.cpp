@@ -120,7 +120,7 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::def( "initialize", pykd::initialize,
         "Initialize local debug engine, only for console mode" );
-    python::def( "remote_initialize",pykd::remote_initialize,
+    python::def( "remoteConnect",pykd::remote_initialize,
         "Initialize debug engine for remoting, only for console mode" );
     python::def( "deinitialize", pykd::uninitialize,
         "Deintialize debug engine, only for console mode" );
