@@ -289,12 +289,12 @@ class TypeInfoTest( unittest.TestCase ):
         funcptrtype = target.module.typedVar( "CdeclFuncPtr" ).type()
         self.assertEqual(funcptrtype.name(), "Void(__cdecl*)(Int4B, Float)")
 
-        functype = target.module.typedVar( "MethodPtr" ).type().deref()
+        functype = target.module.typedVar( "MethodPtr" ).type()
         self.assertEqual(functype.name(), "Void(__thiscall FuncTestClass::*)()")
 
     def testFunctionArrName(self):
         funcptrtype = target.module.typedVar( "ArrayOfCdeclFuncPtr" ).type()
         self.assertEqual(funcptrtype.name(), "Void(__cdecl*[3])(Int4B, Float)")
 
-        functype = target.module.typedVar( "ArrayOfMethodPtr" ).type().deref()
+        functype = target.module.typedVar( "ArrayOfMethodPtr" ).type()
         self.assertEqual(functype.name(), "Void(__thiscall FuncTestClass::*[2])()")
