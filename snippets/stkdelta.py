@@ -6,14 +6,18 @@ def printThreadInfo():
 
     nt = module("nt")
     
-    thread = nt.typedVar( "_KTHREAD", getThreadOffset( getCurrentThread() ) )
+    thread = nt.typedVar( "_KTHREAD", getCurrentThread() )
     
     stackPointer = addr64( reg("rsp") if is64bitSystem() else reg("esp") )
     
-    dprintln("")    
-    
-    dprintln( "Stack Base: %x Limit: %x Current: %x Used: %x Unused: %x" % 
-        ( thread.InitialStack, thread.StackLimit, stackPointer, thread.InitialStack - stackPointer, stackPointer - thread.StackLimit  )  )
+    dprintln("")
+
+    if stackPointer >= addr64(thread.StackLimit):
+        dprintln( "Stack Base: %x Limit: %x Current: %x Used: %x Unused: %x" % 
+             ( thread.InitialStack, thread.StackLimit, stackPointer, addr64(thread.InitialStack) - stackPointer, stackPointer - addr64(thread.StackLimit) ) )
+    else:
+        dprintln( "Stack Base: %x Limit: %x Current: %x Used: %x !!!Overflow!!!: %x" % 
+             ( thread.InitialStack, thread.StackLimit, stackPointer, addr64(thread.InitialStack) - stackPointer, addr64(thread.StackLimit) - stackPointer ) )
         
 
 def printDeltaStat():
