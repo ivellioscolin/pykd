@@ -293,15 +293,9 @@ class TypedVarTest( unittest.TestCase ):
        # self.assertEqual( derivedFiledVal, "toaster" )
          self.assertEqual( 678, pykd.typedVar( "g_virtChild" ).m_member )
 
-
-
     def testDiamondVirtualInherit(self):
         tv = pykd.typedVar( "g_virtChild" )
         self.assertEqual( -100, tv.m_baseField )
-
-    def testDinkumwareMap(self):
-        g_map = target.module.typedVar( "g_map" )
-        self.assertEqual( 1, g_map._Mysize )
 
     def testUdtSubscribe(self):
         tv = pykd.typedVar( "g_virtChild" )
