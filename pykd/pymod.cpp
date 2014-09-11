@@ -769,7 +769,7 @@ BOOST_PYTHON_MODULE( pykd )
         .value("PrivateBuild", kdlib::FileFlagPrivateBuild)
         .value("InfoInferred", kdlib::FileFlagInfoInferred)
         .value("SpecialBuild", kdlib::FileFlagSpecialBuild)
-        .export_values();
+        ;
 
     python::enum_<kdlib::EventType>("eventType", "Type of debug event")
         .value("Breakpoint", kdlib::EventTypeBreakpoint)
@@ -785,7 +785,7 @@ BOOST_PYTHON_MODULE( pykd )
         .value("ChangeDebuggeeState", kdlib::EventTypeChangeDebuggeeState)
         .value("ChangeEngineState", kdlib::EventTypeChangeEngineState)
         .value("ChangeSymbolState", kdlib::EventTypeChangeSymbolState)
-        .export_values();
+        ;
 
     python::class_<pykd::DebugEvent>("debugEvent", "Debug evemt descriptions", python::no_init)
         .def_readonly("type", &DebugEvent::eventType)
@@ -815,14 +815,14 @@ BOOST_PYTHON_MODULE( pykd )
         .value("Proceed", kdlib::DebugCallbackProceed)
         .value("NoChange", kdlib::DebugCallbackNoChange)
         .value("Break", kdlib::DebugCallbackBreak)
-        .export_values();
+        ;
 
     python::enum_<kdlib::ExecutionStatus>("executionStatus", "Execution Status")
         .value("NoChange", kdlib::DebugStatusNoChange )
         .value("Go", kdlib::DebugStatusGo )
         .value("Break", kdlib::DebugStatusBreak )
         .value("NoDebuggee", kdlib::DebugStatusNoDebuggee )
-        .export_values();
+        ;
 
     python::enum_<kdlib::CallingConventionType>("callingConvention", "Calling convention for a function")
         .value("NearC", kdlib::CallConv_NearC )
@@ -849,12 +849,12 @@ BOOST_PYTHON_MODULE( pykd )
         .value("M32RCall", kdlib::CallConv_M32RCall )
         .value("ClrCall", kdlib::CallConv_ClrCall )
         .value("Inline", kdlib::CallConv_Inline )
-        .export_values();
+        ;
 
     python::enum_<kdlib::CPUType>("CPUType", "type of CPU")
         .value("I386", kdlib::CPU_I386 )
         .value("AMD64", kdlib::CPU_AMD64 )
-        .export_values();
+        ;
 
     python::enum_<kdlib::MemoryProtect>("memoryProtect", "Memory protection attribiuties")
         .value("PageNoAccess", kdlib::PageNoAccess)
@@ -865,7 +865,7 @@ BOOST_PYTHON_MODULE( pykd )
         .value("PageExecuteRead", kdlib::PageExecuteRead)
         .value("PageExecuteReadWrite", kdlib::PageExecuteReadWrite)
         .value("PageExecuteWriteCopy", kdlib::PageExecuteWriteCopy)
-        .export_values();
+        ;
 
     python::class_<EventHandler, boost::noncopyable>(
         "eventHandler", "Base class for overriding and handling debug notifications" )
