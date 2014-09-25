@@ -682,20 +682,17 @@ BOOST_PYTHON_MODULE( pykd )
             "return the function's local variable  by it's name")
         .def( "__str__", StackFrameAdapter::print );
 
-    //python::class_<kdlib::CPUContext, kdlib::CPUContextPtr, boost::noncopyable>( "cpu",
-    //    "class for CPU context representation", python::no_init  )
-    //     .def("__init__", python::make_constructor(pykd::loadCPUCurrentContext) )
-    //     .def("__init__", python::make_constructor(pykd::loadCPUContextByIndex) )
-    //     .add_property("ip", CPUContextAdapter::getIP )
-    //     .add_property("sp", CPUContextAdapter::getSP )
-    //     .add_property("fp", CPUContextAdapter::getSP )
-    //     .def("getCPUType", CPUContextAdapter::getCPUType )
-    //     .def("getCPUMode",  CPUContextAdapter::getCPUMode )
-    //     .def("setCPUMode", CPUContextAdapter::setCPUMode )
-    //     .def("switchCPUMode", CPUContextAdapter::switchCPUMode )
-    //     .def("getStack",  CPUContextAdapter::getStack )
-    //     .def("__getattr__",  CPUContextAdapter::getRegisterByName )
-    //     .def("__getitem__",  CPUContextAdapter::getRegisterByIndex );
+    python::class_<kdlib::CPUContext, kdlib::CPUContextPtr, boost::noncopyable>( "cpu",
+         "class for CPU context representation", python::no_init  )
+         .def("__init__", python::make_constructor(CPUContextAdapter::getCPUContext) )
+         .add_property("ip", CPUContextAdapter::getIP )
+         .add_property("sp", CPUContextAdapter::getSP )
+         .add_property("fp", CPUContextAdapter::getSP )
+         .def("getCPUType", CPUContextAdapter::getCPUType )
+         .def("getCPUMode",  CPUContextAdapter::getCPUMode )
+         .def("__getattr__",  CPUContextAdapter::getRegisterByName )
+         .def("__getitem__",  CPUContextAdapter::getRegisterByIndex )
+         .def("__len__", CPUContextAdapter::getRegisterNumber );
 
     python::class_<kdlib::SystemInfo>(
         "systemVersion", "Operation system version", python::no_init)
