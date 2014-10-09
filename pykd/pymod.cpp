@@ -155,6 +155,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Detach from all process then terminate them");
     python::def( "loadDump", pykd::loadDump,
         "Load crash dump");
+    python::def( "closeDump", pykd::closeDump,
+        "Close crash dump");
     python::def( "isLocalKernelDebuggerEnabled", pykd::isLocalKernelDebuggerEnabled,
         "Check whether kernel debugging is enabled for the local kernel");
     python::def( "attachKernel", pykd::attachKernel, attachKernel_( boost::python::args( "connectOptions" ),

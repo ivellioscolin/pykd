@@ -54,10 +54,17 @@ void terminateAllProcesses()
 }
 
 inline
-void loadDump( const std::wstring &fileName )
+kdlib::PROCESS_DEBUG_ID loadDump( const std::wstring &fileName )
 {
     AutoRestorePyState  pystate;
-    kdlib::loadDump(fileName);
+    return kdlib::loadDump(fileName);
+}
+
+inline 
+void closeDump(kdlib::PROCESS_DEBUG_ID processId = -1)
+{
+    AutoRestorePyState  pystate;
+    kdlib::closeDump(processId);
 }
 
 inline
