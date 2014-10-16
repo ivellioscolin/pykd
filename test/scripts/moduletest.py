@@ -97,8 +97,15 @@ class ModuleTest( unittest.TestCase ):
         self.assertNotEqual( 0, len(lst) )
         lst = target.module.enumSymbols("hello*Str")
         self.assertEqual( 2, len(lst) )
+
+        # 0:000> x targetapp!*Const
+        # targetapp!ulonglongConst = 0xffff`ff000000
+        # targetapp!boolConst = true
+        # targetapp!ulongConst = 0x5555
+        # targetapp!classChild::m_staticConst = <no type information>
         lst = target.module.enumSymbols( "*Const")
-        self.assertEqual( 3, len(lst) )
+        self.assertEqual( 4, len(lst) )
+
         lst = target.module.enumSymbols( "*cal?Func")
         self.assertEqual( 4, len(lst) )
         lst = target.module.enumSymbols( "*virtMethod*") 
