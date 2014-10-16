@@ -38,11 +38,11 @@ class TypedVarTest( unittest.TestCase ):
         tvDiaStruct = pykd.typedVar( target.module.type("structTest").ptrTo(), target.module.offset("g_structTestPtr") )
         self.assertEqual( 500, tvDiaStruct.deref().m_field1 )
 
-        #customStructTest = pykd.typeBuilder().createStruct("customStructTest", 4)
-        #customStructTest.append("m_field0", pykd.typeInfo("UInt4B"))
-        #customStructTest.append("m_field1", pykd.typeInfo("UInt8B"))
-        #tvCustomStruct = pykd.typedVar( customStructTest.ptrTo(), target.module.offset("g_structTestPtr") )
-        #self.assertEqual( 500, tvCustomStruct.deref().m_field1 )
+        customStructTest = pykd.createStruct(name="customStructTest", align=4)
+        customStructTest.append("m_field0", pykd.baseTypes.UInt4B)
+        customStructTest.append("m_field1", pykd.baseTypes.UInt8B)
+        tvCustomStruct = pykd.typedVar( customStructTest.ptrTo(), target.module.offset("g_structTestPtr") )
+        self.assertEqual( 500, tvCustomStruct.deref().m_field1 )
 
     def testArrayOf(self):
         arrayType = pykd.typeInfo("UInt8B").arrayOf(5)
