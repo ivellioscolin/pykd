@@ -225,6 +225,8 @@ struct BaseTypesEnum {
     static kdlib::TypeInfoPtr getChar() { return pykd::getTypeInfoByName(L"Char"); }
     static kdlib::TypeInfoPtr getWChar() { return pykd::getTypeInfoByName(L"WChar"); }
     static kdlib::TypeInfoPtr getVoidPtr() { return pykd::getTypeInfoByName(L"Void*"); }
+    static kdlib::TypeInfoPtr getFloat() { return pykd::getTypeInfoByName(L"Float"); }
+    static kdlib::TypeInfoPtr getDouble() { return pykd::getTypeInfoByName(L"Double"); }
 };
 
 } // end namespace pykd

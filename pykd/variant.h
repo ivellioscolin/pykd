@@ -226,6 +226,11 @@ public:
             return v.asHex();
     }
 
+    static bool isInteger(kdlib::NumBehavior& var) { 
+        kdlib::NumVariant  v = var;
+        return v.isInteger();
+    }
+
     static void registerNumConvertion()  {
         python::converter::registry::push_back( &numConvertible, &numConstruct<long>, python::type_id<long>() );
         python::converter::registry::push_back( &numConvertible, &numConstruct<unsigned long>, python::type_id<unsigned long>() );

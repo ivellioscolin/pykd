@@ -477,6 +477,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__int__", &NumVariantAdaptor::int_ )
         .def( "__index__", &NumVariantAdaptor::long_ )
         .def( "__hash__", &NumVariantAdaptor::long_ )
+        .def( "isInteger", &NumVariantAdaptor::isInteger )
         ;
 
         NumVariantAdaptor::registerNumConvertion();
@@ -649,6 +650,8 @@ BOOST_PYTHON_MODULE( pykd )
         .add_static_property( "Char", &BaseTypesEnum::getChar )
         .add_static_property( "WChar", &BaseTypesEnum::getWChar )
         .add_static_property( "VoidPtr", &BaseTypesEnum::getVoidPtr )
+        .add_static_property( "Float", &BaseTypesEnum::getFloat )
+        .add_static_property( "Double", &BaseTypesEnum::getDouble )
         ;
 
 
