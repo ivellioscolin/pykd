@@ -44,11 +44,12 @@ class ModuleInfo:
 
     def __init__ (self, module):
         self.funcs = sorted( [ item for item in module.__dict__.values() if type(item).__name__ == "function" ], key=lambda x: x.__name__ ) 
-        self.classes = sorted( [ item for item in module.__dict__.values() if type(item).__name__ == "class" ],  key=lambda x: x.__name__ )      
+        self.classes = sorted( [ item for item in module.__dict__.values() if type(item).__name__ == "class" or type(item).__name__ == "type" ],  key=lambda x: x.__name__ )
 
         for cls in  self.classes:
             cls.methods = sorted( [ item for item in cls.__dict__.values() if type(item).__name__ == "function" ], key=lambda x: x.__name__ ) 
             cls.properties = sorted( [ item for item in cls.__dict__.items() if type(item[1]).__name__ == "property" ], key=lambda x: x[0] )
+            cls.enum = cls.__dict__.get("names", [] )
 
 
 def buildDoc( ioStream, formatter, apiInfo ):
@@ -76,24 +77,36 @@ def buildDoc( ioStream, formatter, apiInfo ):
         ioStream.write( formatter.header3( "Class " + cls.__name__ ) )
         if cls.__doc__ != None:
             ioStream.write( formatter.escapeMarkup( cls.__doc__)  + formatter.endl() )
-         
-        if cls.properties:
-            ioStream.write( formatter.header4( "Properties:") )            
-            for p in cls.properties:  
-                ioStream.write( formatter.bulletItem( formatter.link( p[0],  cls.__name__ + "." + p[0]) ) )                  
 
-        if  cls.methods:
-            ioStream.write( formatter.header4( "Methods:") )                 
+        ioStream.write( formatter.header4( "Base classes:") )
+        for b in cls.__bases__:
+            if b in apiInfo.classes:
+                ioStream.write( formatter.link( b.__name__,  b.__name__ ) + formatter.endl() )
+            else:
+                ioStream.write( b.__name__ + formatter.endl() )
+
+        if cls.properties:
+            ioStream.write( formatter.header4( "Properties:") )
+            for p in cls.properties:  
+                ioStream.write( formatter.bulletItem( formatter.link( p[0],  cls.__name__ + "." + p[0]) ) )
+
+        if cls.methods:
+            ioStream.write( formatter.header4( "Methods:") )
             for m in cls.methods:
                 if m.__doc__ != None:
                     ioStream.write( formatter.bulletItem( formatter.link( m.__name__,  cls.__name__ + "." + m.__name__) ) )
+
+        if cls.enum:
+            ioStream.write( formatter.header4( "Values:") )
+            for v in cls.enum.items():
+                ioStream.write( formatter.bulletItem( "%s: %d" % v ) )
         
         if cls.properties:
             for p in cls.properties:  
                 if p[1].__doc__ != None:
                     ioStream.write( formatter.anchor( cls.__name__ + "." + p[0] ) )
                     ioStream.write( formatter.header4( formatter.escapeMarkup( "Property  " + cls.__name__  + "."  +  p[0] ) ) )
-                    ioStream.write( formatter.escapeMarkup( p[1].__doc__ ) + formatter.endl() )                     
+                    ioStream.write( formatter.escapeMarkup( p[1].__doc__ ) + formatter.endl() )
 
         if  cls.methods:
             for m in cls.methods:
@@ -122,7 +135,7 @@ def main():
 
             formatter = CodeplexFormatter()
 
-            buildDoc( wikiIo, formatter, apiInfo )         
+            buildDoc( wikiIo, formatter, apiInfo )
 
     except ImportWarning:
 
