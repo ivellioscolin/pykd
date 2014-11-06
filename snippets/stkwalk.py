@@ -225,13 +225,18 @@ def main():
     
     (options, args) = parser.parse_args()
 
-    if not isWindbgExt():
-        initialize()
-        loadDump( options.dumpname )
-    
     if not isKernelDebugging():
        dprintln("This script is only for kernel debugging")
        return
+
+    if not isWindbgExt():
+        try:
+            initialize()
+        except DbgException:
+            pass
+
+        if getNumberProcesses() == 0:
+            loadDump( options.dumpname )
 
     setupGlobalObject()
 
