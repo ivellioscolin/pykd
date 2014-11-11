@@ -41,7 +41,9 @@ std::wstring findSymbol(  kdlib::MEMOFFSET_64 offset, bool showDisplacement )
         } catch( kdlib::DbgException& )
         {
             std::wstringstream  sstr;
-            sstr << mod->getName() << '+' << std::hex << ( offset - mod->getBase() );
+            sstr << mod->getName();
+            if (showDisplacement)
+                sstr << '+' << std::hex << ( offset - mod->getBase() );
             return sstr.str();
         }
 
