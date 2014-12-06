@@ -410,8 +410,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return the location in the target's memory of the thread structure ( TEB )" ) );
     python::def( "getThreadSystemID", pykd::getThreadSystemId, getThreadSystemId_( python::args("Id"),
         "Return system thread ID ( TID )" ) );
-    python::def( "getThreadId", pykd::getThreadIdByOffset,
-        "Return thread ID by the location in the target's memory of the thread structure" );
+    python::def( "getThreadIdByOffset", pykd::getThreadIdByOffset,
+        "Return thread ID by the location in the targ et's memory of the thread structure" );
     python::def( "getThreadIdBySystemID", pykd::getThreadIdBySystemId, getThreadIdBySystemId_( python::args("Tid"),
         "Return thread ID by the system's thread ID ( TID )" ) );
     python::def( "getCurrentThread", pykd::getCurrentThread,
