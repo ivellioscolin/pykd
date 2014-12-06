@@ -37,15 +37,14 @@ class BreakpointTest( unittest.TestCase ):
             pykd.setBp( targetModule.CdeclFunc )
             self.assertEqual( pykd.executionStatus.Break, pykd.go() )
 
-
     def testRemoveBp(self):
         processId = pykd.startProcess( target.appPath + " breakhandlertest" )
         targetModule = pykd.module( target.moduleName )
         targetModule.reload()
         with testutils.ContextCallIt( testutils.KillProcess(processId) ) as killStartedProcess :
             pykd.go()
-            bpid = pykd.setBp(  targetModule.CdeclFunc )
-            pykd.removeBp( bpid )
+            bp = pykd.setBp(  targetModule.CdeclFunc )
+            bp.remove()
             self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
 
     def testBreakCallback(self):
@@ -54,14 +53,25 @@ class BreakpointTest( unittest.TestCase ):
         targetModule.reload()
         with testutils.ContextCallIt( testutils.KillProcess(processId) ) as killStartedProcess :
             pykd.go()
-
             breakCount = callCounter(stopOnBreak)
-
-            bp = pykd.setBp( targetModule.CdeclFunc, breakCount )
-
+            pykd.setBp( targetModule.CdeclFunc, breakCount )
             self.assertEqual( pykd.executionStatus.Break, pykd.go() )
-
             self.assertEqual( 1, breakCount.count )
+
+    def testBpScope(self):
+
+        def setBpFunc():
+           #breakpoint must be set until remove method will be called explicitly
+           pykd.setBp(targetModule.CdeclFunc)
+
+        processId = pykd.startProcess( target.appPath + " breakhandlertest" )
+        targetModule = pykd.module( target.moduleName )
+        targetModule.reload()
+        with testutils.ContextCallIt( testutils.KillProcess(processId) ) as killStartedProcess :
+            pykd.go()
+            setBpFunc()
+            self.assertEqual( pykd.executionStatus.Break, pykd.go() )
+            
 
     def testNoBreakCallback(self):
         processId = pykd.startProcess( target.appPath + " breakhandlertest" )
@@ -72,7 +82,7 @@ class BreakpointTest( unittest.TestCase ):
 
             breakCount = callCounter(continueOnBreak)
 
-            bp = pykd.setBp( targetModule.CdeclFunc, breakCount )
+            pykd.setBp( targetModule.CdeclFunc, breakCount )
 
             self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
 
@@ -127,6 +137,7 @@ class BreakpointTest( unittest.TestCase ):
 
             self.assertEqual( 1, bp.count )
 
+
     def testBreakpointCondition(self):
 
         def makebpcallback(n):
@@ -154,4 +165,21 @@ class BreakpointTest( unittest.TestCase ):
             bp = pykd.setBp( targetModule.CdeclFunc, makebpcallback(100) )
             self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
 
+
+    def testBreakpointEnum(self):
+        processId = pykd.startProcess( target.appPath + " breakhandlertest" )
+        targetModule = pykd.module( target.moduleName )
+        targetModule.reload()
+        with testutils.ContextCallIt( testutils.KillProcess(processId) ) as killStartedProcess :
+            pykd.go()
+            
+            pykd.setBp( targetModule.CdeclFunc)
+            pykd.setBp( targetModule.CdeclFunc + 1)
+            pykd.setBp( targetModule.CdeclFunc + 2)
+
+            self.assertEqual(3, pykd.getNumberBreakpoints());
+            bpLst = [pykd.getBp(i) for i in xrange(3)]
+            self.assertEqual(3, len(bpLst))
+            map( lambda bp: bp.remove(), bpLst)
+            self.assertEqual(0, pykd.getNumberBreakpoints());
 

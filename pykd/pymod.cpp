@@ -74,8 +74,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( getThreadIdBySystemId_, pykd::getThreadIdBySyst
 BOOST_PYTHON_FUNCTION_OVERLOADS( createStruct_, pykd::defineStruct, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( createUnion_, pykd::defineUnion, 1, 2 );
 
-BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBreakpoint_, pykd::setSoftwareBreakpoint, 1, 2 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBreakpoint_, pykd::setHardwareBreakpoint, 3, 4 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBreakpoint_, Breakpoint::setSoftwareBreakpoint, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBreakpoint_, Breakpoint::setHardwareBreakpoint, 3, 4 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_enumSymbols, ModuleAdapter::enumSymbols, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_findSymbol, ModuleAdapter::findSymbol, 2, 3 );
@@ -363,12 +363,14 @@ BOOST_PYTHON_MODULE( pykd )
         "Get the function argument by name" );
 
     // breakpoints
-    python::def( "setBp", pykd::setSoftwareBreakpoint, setSoftwareBreakpoint_( python::args( "offset", "callback" ),
-        "Set software breakpoint on executiont" ) );
-    python::def( "setBp", pykd::setHardwareBreakpoint, setHardwareBreakpoint_( python::args( "offset", "size", "accsessType", "callback" ) ,
-        "Set hardware breakpoint" ) );
-    python::def( "removeBp", pykd::breakPointRemove,
-        "Remove breapoint by IDs" );
+    python::def( "setBp", &Breakpoint::setSoftwareBreakpoint,
+        setSoftwareBreakpoint_( python::args( "offset", "callback" ),"Set software breakpoint on executiont" )[python::return_value_policy<python::manage_new_object>()]);
+    python::def( "setBp", &Breakpoint::setHardwareBreakpoint, 
+        setHardwareBreakpoint_( python::args( "offset", "size", "accsessType", "callback" ),"Set hardware breakpoint")[python::return_value_policy<python::manage_new_object>()]);
+    python::def( "getNumberBreakpoints", &Breakpoint::getNumberBreakpoints,
+        "Return number of breakpoints in the current process" );
+    python::def( "getBp", &Breakpoint::getBreakpointByIndex, python::return_value_policy<python::manage_new_object>(), 
+        "Return breakpoint object by index");
 
     // processes and threads
     python::def ( "getNumberProcesses", pykd::getNumberProcesses,
@@ -401,7 +403,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Get all target processes " );
 
     python::def ( "getNumberThreads", pykd::getNumberThreads,
-        "Return number of threads on the target system" );
+        "Return number of threads on the current system" );
     python::def( "getThreadId", pykd::getThreadIdByIndex,
         "Return thread id by index");
     python::def( "getThreadOffset", pykd::getThreadOffset, getThreadOffset_( python::args("Id"),
@@ -654,7 +656,6 @@ BOOST_PYTHON_MODULE( pykd )
         .add_static_property( "Double", &BaseTypesEnum::getDouble )
         ;
 
-
     python::class_<kdlib::StackFrame, kdlib::StackFramePtr, boost::noncopyable>( "stackFrame",
         "class for stack's frame representation", python::no_init  )
         .add_property( "ip", StackFrameAdapter::getIP, 
@@ -886,18 +887,25 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "onExecutionStatusChange", &EventHandler::onExecutionStatusChange,
             "Triggered execution status changed. Parameter - execution status.\n"
             "There is no return value" )
+        .def( "onCurrentThreadChange", &EventHandler::onCurrentThreadChange,
+            "The current thread has changed, which implies that the current target and current process might also have changed.\n"
+             "There is no return value" )
    //     .def( "onSymbolsLoaded", &EventHandlerWrap::onSymbolsLoaded,
    //         "Triggered debug symbols loaded. Parameter - module base or 0\n"
    //         "There is no return value")
    //     .def( "onSymbolsUnloaded", &EventHandlerWrap::onSymbolsUnloaded,
    //         "Triggered debug symbols unloaded. Parameter - module base or 0 (all modules)\n"
    //         "There is no return value");
-      ;
+        ;
 
-   python::class_<Breakpoint, boost::noncopyable>( "breakpoint",
-        "class for breakpoint representation", python::no_init  )
-        .def( python::init<kdlib::MEMOFFSET_64>() )
+
+    python::class_<Breakpoint, boost::noncopyable>( "breakpoint",
+        "class for CPU context representation", python::init<kdlib::MEMOFFSET_64>()) 
         .def( python::init<kdlib::MEMOFFSET_64, size_t, kdlib::ACCESS_TYPE>() )
+        .def("getId", &Breakpoint::getId,
+            "Return breakpoint ID" )
+        .def("remove", &Breakpoint::remove,
+            "Remove breakpoint" )
         .def("onHit", &Breakpoint::onHit,
             "Breakpoint hit callback")
         ;
