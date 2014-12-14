@@ -914,6 +914,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def( python::init<kdlib::MEMOFFSET_64, size_t, kdlib::ACCESS_TYPE>() )
         .def("getId", &Breakpoint::getId,
             "Return breakpoint ID" )
+        .def("getOffset", &Breakpoint::getOffset,
+            "Return breakpoint's memory offset")
         .def("remove", &Breakpoint::remove,
             "Remove breakpoint" )
         .def("onHit", &Breakpoint::onHit,
