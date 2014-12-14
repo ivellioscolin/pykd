@@ -264,6 +264,28 @@ void EventHandler::onCurrentThreadChange(kdlib::THREAD_DEBUG_ID  threadid)
 
 /////////////////////////////////////////////////////////////////////////////////
 
+void EventHandler::onChangeLocalScope()
+{
+    PyEval_RestoreThread( m_pystate );
+
+    try {
+
+        python::override pythonHandler = get_override("onChangeLocalScope");
+        if ( pythonHandler )
+        {
+            pythonHandler();
+        }
+    }
+    catch (const python::error_already_set &) 
+    {
+        printException();
+    }
+
+    m_pystate = PyEval_SaveThread();
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
 Breakpoint::Breakpoint(kdlib::BreakpointPtr bp)
 {
     m_pystate = PyThreadState_Get();

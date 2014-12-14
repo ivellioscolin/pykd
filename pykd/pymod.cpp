@@ -894,8 +894,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Triggered execution status changed. Parameter - execution status.\n"
             "There is no return value" )
         .def( "onCurrentThreadChange", &EventHandler::onCurrentThreadChange,
-            "The current thread has changed, which implies that the current target and current process might also have changed.\n"
+            "The current thread has been changed, which implies that the current target and current process might also have changed.\n"
              "There is no return value" )
+        .def( "onChangeLocalScope", &EventHandler::onChangeLocalScope,
+            "The current local scope has been changed.\n"
+             "There is no return value" )
+
    //     .def( "onSymbolsLoaded", &EventHandlerWrap::onSymbolsLoaded,
    //         "Triggered debug symbols loaded. Parameter - module base or 0\n"
    //         "There is no return value")
