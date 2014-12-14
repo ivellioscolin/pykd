@@ -105,8 +105,24 @@ python::list getCurrentStack();
 
 inline kdlib::StackFramePtr getCurrentFrame() {
     AutoRestorePyState  pystate;
-    return kdlib::getStack()->getFrame(0);
+    return kdlib::getCurrentStackFrame();
 }
+
+inline void setCurrentFrame( kdlib::StackFramePtr& stackFrame) {
+    AutoRestorePyState  pystate;
+    kdlib::setCurrentStackFrame(stackFrame);
+}
+
+inline void setCurrentFrameByIndex( unsigned long frameIndex) {
+    AutoRestorePyState  pystate;
+    kdlib::StackFramePtr  stackFrame = kdlib::getStack()->getFrame(frameIndex);
+    kdlib::setCurrentStackFrame(stackFrame);
+}
+
+inline void resetCurrentFrame() {
+    AutoRestorePyState  pystate;
+    kdlib::resetCurrentStackFrame();
+} 
 
 inline python::list getParams() {
     return StackFrameAdapter::getParamsList( getCurrentFrame() );

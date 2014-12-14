@@ -353,6 +353,12 @@ BOOST_PYTHON_MODULE( pykd )
         "Return a current stack as a list of stackFrame objects" );
     python::def( "getFrame", pykd::getCurrentFrame,
         "Return a current stack frame" );
+    python::def( "setFrame", pykd::setCurrentFrame,
+        "Change current local scope" );
+    python::def( "setFrame", pykd::setCurrentFrameByIndex,
+        "Change current local scope" );
+    python::def( "resetFrame", pykd::resetCurrentFrame,
+        "Resets the current local scope to the default scope of the current thread" );
     python::def( "getLocals", pykd::getLocals, 
         "Get list of local variables" );
     python::def( "getLocal", pykd::getLocal,
