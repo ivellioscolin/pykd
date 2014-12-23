@@ -25,9 +25,9 @@ bool PykdExt::isInit() {
 
 extern "C" void initpykd();
 
-pykd::DbgOut   pykdOut;
-pykd::DbgOut   pykdErr;
-pykd::DbgIn    pykdIn;
+//pykd::DbgOut   pykdOut;
+//pykd::DbgOut   pykdErr;
+//pykd::DbgIn    pykdIn;
 
 
 void PykdExt::setUp() 
@@ -58,16 +58,16 @@ void PykdExt::setUp()
         main_namespace[ key ] = pykd_namespace[ key ];
     }
 
-    // перенаправление стандартных потоков ВВ
-    kdlib::dbgout =&pykdOut;
-    kdlib::dbgerr = &pykdErr;
-    kdlib::dbgin = &pykdIn;
+    //// перенаправление стандартных потоков ВВ
+    //kdlib::dbgout =&pykdOut;
+    //kdlib::dbgerr = &pykdErr;
+    //kdlib::dbgin = &pykdIn;
 
     python::object       sys = python::import("sys");
 
-    sys.attr("stdout") = python::object( &pykdOut );
-    sys.attr("stderr") = python::object( &pykdErr );
-    sys.attr("stdin") = python::object( &pykdIn );
+    sys.attr("stdout") = python::object( pykd::DbgOut() );
+    sys.attr("stderr") = python::object( pykd::DbgOut() );
+    sys.attr("stdin") = python::object( pykd::DbgIn() );
 
     python::list pathList(sys.attr("path"));
 

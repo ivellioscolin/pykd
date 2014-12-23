@@ -30,4 +30,25 @@ private:
     PyThreadState*    m_state;
 };
 
+class AutoSavePythonState
+{
+public:
+
+    explicit AutoSavePythonState(PyThreadState **state) {
+        PyEval_RestoreThread(*state);
+        m_state = state;
+    }
+
+    ~AutoSavePythonState() {
+        *m_state = PyEval_SaveThread();
+
+    }
+
+private:
+
+    PyThreadState**    m_state;
+
+
+};
+
 }

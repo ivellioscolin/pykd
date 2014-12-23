@@ -12,6 +12,16 @@ class DbgOut : public  kdlib::windbg::WindbgOut
 {
 public:
 
+    virtual void write( const std::wstring& str ) {
+        AutoRestorePyState  pystate;
+        kdlib::windbg::WindbgOut::write(str);
+    }
+
+    virtual void writedml( const std::wstring& str ) {
+        AutoRestorePyState  pystate;
+        kdlib::windbg::WindbgOut::writedml(str);
+    }
+
     void flush() {
     }
 
@@ -42,14 +52,24 @@ class SysDbgOut : public DbgOut
 {
 public:
 
+    SysDbgOut() {
+         m_state = PyThreadState_Get();
+    }
+
     virtual void write( const std::wstring& str)  {
+        AutoSavePythonState  pystate( &m_state );
         python::object       sys = python::import("sys");
         sys.attr("stdout").attr("write")( str );
     }
 
     virtual void writedml( const std::wstring& str) {
+        AutoSavePythonState  pystate( &m_state );
         write(str);
     }
+
+private:
+
+    PyThreadState*    m_state;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,16 +78,26 @@ class SysDbgIn : public DbgIn
 {
 public:
 
+    SysDbgIn() {
+         m_state = PyThreadState_Get();
+    }
+
     virtual std::wstring readline() {
+        AutoSavePythonState  pystate( &m_state );
         python::object    sys = python::import("sys");
         return python::extract<std::wstring>( sys.attr("stdin").attr("readline") );
     }
+
+private:
+
+    PyThreadState*    m_state;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
 inline void dprint( const std::wstring &str, bool dml = false )
 {
+    AutoRestorePyState  pystate;
     kdlib::dprint(str,dml);
 }
 
@@ -75,6 +105,7 @@ inline void dprint( const std::wstring &str, bool dml = false )
 
 inline void dprintln( const std::wstring &str, bool dml = false )
 {
+    AutoRestorePyState  pystate;
     kdlib::dprintln(str,dml);
 }
 
@@ -82,6 +113,7 @@ inline void dprintln( const std::wstring &str, bool dml = false )
 
 inline void eprint( const std::wstring &str )
 {
+    AutoRestorePyState  pystate;
     kdlib::eprint(str);
 }
 
@@ -89,6 +121,7 @@ inline void eprint( const std::wstring &str )
 
 inline void eprintln( const std::wstring &str )
 {
+    AutoRestorePyState  pystate;
     kdlib::eprintln(str);
 }
 

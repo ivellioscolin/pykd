@@ -286,6 +286,28 @@ void EventHandler::onChangeLocalScope()
 
 /////////////////////////////////////////////////////////////////////////////////
 
+void EventHandler::onDebugOutput(const std::wstring& text)
+{
+    PyEval_RestoreThread( m_pystate );
+
+    try {
+
+        python::override pythonHandler = get_override("onDebugOutput");
+        if ( pythonHandler )
+        {
+            pythonHandler(text);
+        }
+    }
+    catch (const python::error_already_set &) 
+    {
+        printException();
+    }
+
+    m_pystate = PyEval_SaveThread();
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
 Breakpoint::Breakpoint(kdlib::BreakpointPtr bp)
 {
     m_pystate = PyThreadState_Get();

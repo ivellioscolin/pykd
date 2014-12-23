@@ -39,6 +39,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_,  pykd::detachProcess, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( terminateProcess_,  pykd::terminateProcess, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( attachKernel_,  pykd::attachKernel, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( evaluate_, pykd::evaluate, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( debugCommand_, pykd::debugCommand, 1, 2 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, pykd::dprint, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, pykd::dprintln, 1, 2 );
@@ -83,16 +84,22 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( Module_findSymbol, ModuleAdapter::findSymbol, 2
 BOOST_PYTHON_FUNCTION_OVERLOADS( TypeInfo_ptrTo, TypeInfoAdapter::ptrTo, 1, 2 ); 
 
 
-pykd::SysDbgOut   sysPykdOut;
-pykd::SysDbgOut   sysPykdErr;
-pykd::SysDbgIn    sysPykdIn;
-
 namespace pykd {
 
 void initialize()
 {
+    pykd::SysDbgOut  *sysPykdOut  =  new pykd::SysDbgOut();
+    pykd::SysDbgOut  *sysPykdErr  =  new pykd::SysDbgOut();
+    pykd::SysDbgIn   *sysPykdIn = new pykd::SysDbgIn();
+
     AutoRestorePyState  pystate;
+    
     kdlib::initialize();
+
+    // использовать вместо консоли потоки из sys
+    kdlib::dbgout = sysPykdOut;
+    kdlib::dbgerr = sysPykdErr;
+    kdlib::dbgin = sysPykdIn;
 }
 
 void remote_initialize( const std::wstring& remoteOptions )
@@ -110,11 +117,6 @@ void uninitialize()
 
 BOOST_PYTHON_MODULE( pykd )
 {
-    // использовать вместо консоли потоки из sys
-    kdlib::dbgout =&sysPykdOut;
-    kdlib::dbgerr = &sysPykdErr;
-    kdlib::dbgin = &sysPykdIn;
-
     python::scope().attr("__version__") = pykdVersion;
     python::scope().attr("version") = pykdVersion;
 
@@ -173,10 +175,10 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::def( "breakin", pykd::targetBreak,
         "Break into debugger" );
-    python::def( "expr", pykd::evaluate, evaluate_( boost::python::args( "expression", "cplusplus" ),
+    python::def( "expr", pykd::evaluate, evaluate_( python::args( "expression", "cplusplus" ),
         "Evaluate windbg expression" ) );
-    python::def( "dbgCommand", pykd::debugCommand,
-        "Run a debugger's command and return it's result as a string" );
+    python::def( "dbgCommand", &pykd::debugCommand, 
+        debugCommand_( python::args( "command", "suppressOutput"), "Run a debugger's command and return it's result as a string" ) );
     python::def( "go", pykd::targetGo,
         "Go debugging"  );
     python::def( "step", pykd::targetStep,
@@ -898,7 +900,9 @@ BOOST_PYTHON_MODULE( pykd )
              "There is no return value" )
         .def( "onChangeLocalScope", &EventHandler::onChangeLocalScope,
             "The current local scope has been changed.\n"
-             "There is no return value" )
+            "There is no return value" )
+        .def( "onDebugOutput", &EventHandler::onDebugOutput,
+            "Request debug output" );
 
    //     .def( "onSymbolsLoaded", &EventHandlerWrap::onSymbolsLoaded,
    //         "Triggered debug symbols loaded. Parameter - module base or 0\n"
@@ -907,7 +911,6 @@ BOOST_PYTHON_MODULE( pykd )
    //         "Triggered debug symbols unloaded. Parameter - module base or 0 (all modules)\n"
    //         "There is no return value");
         ;
-
 
     python::class_<Breakpoint, boost::noncopyable>( "breakpoint",
         "class for CPU context representation", python::init<kdlib::MEMOFFSET_64>()) 

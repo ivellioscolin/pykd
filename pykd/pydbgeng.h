@@ -103,10 +103,19 @@ bool isKernelDebugging()
 }
 
 inline
-std::wstring debugCommand( const std::wstring &command )
+python::object debugCommand( const std::wstring &command,  bool suppressOutput = true)
 {
-    AutoRestorePyState  pystate;
-    return kdlib::debugCommand(command);
+    std::wstring  debugResult;
+
+    {
+        AutoRestorePyState  pystate;
+        debugResult = kdlib::debugCommand(command, suppressOutput);
+    }
+
+    if (debugResult.size() > 0 )
+        return python::object(debugResult);
+
+    return python::object();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -377,8 +386,6 @@ std::wstring callExtension( kdlib::EXTENSION_ID extId, const std::wstring comman
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-std::wstring debugCommand( const std::wstring &command );
 
 python::object evaluate( const std::wstring  &expression, bool cplusplus = false );
 
