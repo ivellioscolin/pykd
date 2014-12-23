@@ -1,5 +1,7 @@
 #pragma once
 
+#include <comutil.h>
+
 #include "kdlib/variant.h"
 #include "kdlib/exceptions.h"
 
@@ -221,9 +223,9 @@ public:
             return v.asStr();
     }
 
-    static std::wstring hex(kdlib::NumBehavior& var) { 
+    static std::string hex(kdlib::NumBehavior& var) { 
             kdlib::NumVariant  v = var;
-            return v.asHex();
+            return std::string("0x") + std::string(_bstr_t(v.asHex().c_str()));
     }
 
     static bool isInteger(kdlib::NumBehavior& var) { 

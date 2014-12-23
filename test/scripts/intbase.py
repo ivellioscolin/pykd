@@ -169,5 +169,9 @@ class IntBaseTest( unittest.TestCase ):
     def testConvert( self ):
         self.assertEqual( "100", "%d" % numVariant(100) )
         self.assertEqual( "64", "%x" % numVariant(100) )
-       
-            
+
+    def testStr(self):
+        self.assertEqual( "100", str(numVariant(100)) )
+
+    def testHex(self):
+        self.assertEqual( "0x64", hex(numVariant(100)) )
