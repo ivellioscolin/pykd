@@ -17,7 +17,7 @@ class BinaryDistribution(Distribution):
         return False
 
 _name = "pykd"
-_version = "0.3.0.11"
+_version = "0.3.0.16"
 _desc = "python windbg extension"
 
 setup(
