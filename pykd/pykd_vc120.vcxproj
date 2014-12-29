@@ -23,6 +23,8 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>pykd</RootNamespace>
     <ProjectName>pykd</ProjectName>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'" Label="Configuration">
@@ -66,7 +68,9 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="UserMacros">
+    <NuGetPackageImportStamp>445589a8</NuGetPackageImportStamp>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <TargetExt>.pyd</TargetExt>
@@ -91,7 +95,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\kdlibcpp\include;$(BOOST_ROOT);$(PYTHON_27_X86_ROOT)\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\kdlibcpp\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -113,7 +117,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\kdlibcpp\include;$(BOOST_ROOT);$(PYTHON_27_X64_ROOT)\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\kdlibcpp\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -137,7 +141,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\kdlibcpp\include;$(BOOST_ROOT);$(PYTHON_27_X86_ROOT)\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\kdlibcpp\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -156,7 +160,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\kdlibcpp\include;$(BOOST_ROOT);$(PYTHON_27_X64_ROOT)\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\kdlibcpp\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -222,41 +226,41 @@
     <ClCompile Include="windbgext.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.pykd_vc120.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="pykd.def" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="pykd.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\kdlibcpp\source\kdlib_vc110.vcxproj">
+    <ProjectReference Include="..\kdlibcpp\source\kdlib_vc120.vcxproj">
       <Project>{3e9c538f-f060-4e86-ab7d-d44439615b63}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\boost.1.55.0.16\build\native\boost.targets" Condition="Exists('..\packages\boost.1.55.0.16\build\native\boost.targets')" />
-    <Import Project="..\packages\boost_thread-vc110.1.55.0.16\build\native\boost_thread-vc110.targets" Condition="Exists('..\packages\boost_thread-vc110.1.55.0.16\build\native\boost_thread-vc110.targets')" />
-    <Import Project="..\packages\boost_system-vc110.1.55.0.16\build\native\boost_system-vc110.targets" Condition="Exists('..\packages\boost_system-vc110.1.55.0.16\build\native\boost_system-vc110.targets')" />
-    <Import Project="..\packages\boost_date_time-vc110.1.55.0.16\build\native\boost_date_time-vc110.targets" Condition="Exists('..\packages\boost_date_time-vc110.1.55.0.16\build\native\boost_date_time-vc110.targets')" />
-    <Import Project="..\packages\boost_chrono-vc110.1.55.0.16\build\native\boost_chrono-vc110.targets" Condition="Exists('..\packages\boost_chrono-vc110.1.55.0.16\build\native\boost_chrono-vc110.targets')" />
-    <Import Project="..\packages\boost_regex-vc110.1.55.0.16\build\native\boost_regex-vc110.targets" Condition="Exists('..\packages\boost_regex-vc110.1.55.0.16\build\native\boost_regex-vc110.targets')" />
-    <Import Project="..\packages\boost_atomic-vc110.1.55.0.16\build\native\boost_atomic-vc110.targets" Condition="Exists('..\packages\boost_atomic-vc110.1.55.0.16\build\native\boost_atomic-vc110.targets')" />
+    <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+    <Import Project="..\packages\boost.1.57.0.0\build\native\boost.targets" Condition="Exists('..\packages\boost.1.57.0.0\build\native\boost.targets')" />
     <Import Project="..\packages\Python27.2.7.6\build\python27.targets" Condition="Exists('..\packages\Python27.2.7.6\build\python27.targets')" />
-    <Import Project="..\packages\boost_python27-vc110.1.55.0.16\build\boost_python27-vc110.targets" Condition="Exists('..\packages\boost_python27-vc110.1.55.0.16\build\boost_python27-vc110.targets')" />
+    <Import Project="..\packages\boost_python.1.57.0.0\build\native\boost_python.targets" Condition="Exists('..\packages\boost_python.1.57.0.0\build\native\boost_python.targets')" />
+    <Import Project="..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets" Condition="Exists('..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets')" />
+    <Import Project="..\packages\boost_system.1.57.0.0\build\native\boost_system.targets" Condition="Exists('..\packages\boost_system.1.57.0.0\build\native\boost_system.targets')" />
+    <Import Project="..\packages\boost_date_time.1.57.0.0\build\native\boost_date_time.targets" Condition="Exists('..\packages\boost_date_time.1.57.0.0\build\native\boost_date_time.targets')" />
+    <Import Project="..\packages\boost_chrono.1.57.0.0\build\native\boost_chrono.targets" Condition="Exists('..\packages\boost_chrono.1.57.0.0\build\native\boost_chrono.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\boost.1.55.0.16\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.55.0.16\build\native\boost.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_thread-vc110.1.55.0.16\build\native\boost_thread-vc110.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_thread-vc110.1.55.0.16\build\native\boost_thread-vc110.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_system-vc110.1.55.0.16\build\native\boost_system-vc110.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_system-vc110.1.55.0.16\build\native\boost_system-vc110.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_date_time-vc110.1.55.0.16\build\native\boost_date_time-vc110.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_date_time-vc110.1.55.0.16\build\native\boost_date_time-vc110.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_chrono-vc110.1.55.0.16\build\native\boost_chrono-vc110.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_chrono-vc110.1.55.0.16\build\native\boost_chrono-vc110.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_regex-vc110.1.55.0.16\build\native\boost_regex-vc110.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_regex-vc110.1.55.0.16\build\native\boost_regex-vc110.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_atomic-vc110.1.55.0.16\build\native\boost_atomic-vc110.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_atomic-vc110.1.55.0.16\build\native\boost_atomic-vc110.targets'))" />
+    <Error Condition="!Exists('..\packages\boost.1.57.0.0\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.57.0.0\build\native\boost.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
     <Error Condition="!Exists('..\packages\Python27.2.7.6\build\python27.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Python27.2.7.6\build\python27.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_python27-vc110.1.55.0.16\build\boost_python27-vc110.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_python27-vc110.1.55.0.16\build\boost_python27-vc110.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_python.1.57.0.0\build\native\boost_python.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_python.1.57.0.0\build\native\boost_python.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_system.1.57.0.0\build\native\boost_system.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_system.1.57.0.0\build\native\boost_system.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_date_time.1.57.0.0\build\native\boost_date_time.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_date_time.1.57.0.0\build\native\boost_date_time.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_chrono.1.57.0.0\build\native\boost_chrono.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_chrono.1.57.0.0\build\native\boost_chrono.targets'))" />
   </Target>
 </Project>
