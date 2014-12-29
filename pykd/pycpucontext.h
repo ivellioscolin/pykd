@@ -115,8 +115,7 @@ inline void setCurrentFrame( kdlib::StackFramePtr& stackFrame) {
 
 inline void setCurrentFrameByIndex( unsigned long frameIndex) {
     AutoRestorePyState  pystate;
-    kdlib::StackFramePtr  stackFrame = kdlib::getStack()->getFrame(frameIndex);
-    kdlib::setCurrentStackFrame(stackFrame);
+    kdlib::setCurrentStackFrameByIndex(frameIndex);
 }
 
 inline void resetCurrentFrame() {
