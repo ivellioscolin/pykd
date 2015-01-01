@@ -3,6 +3,7 @@
 #include "kdlib/dbgio.h"
 
 #include "dbgexcept.h"
+#include "pydbgio.h"
 
 namespace pykd {
 
@@ -43,7 +44,7 @@ void printException()
     for ( long i = 0; i < python::len(lst); ++i )
         sstr << std::wstring( python::extract<std::wstring>(lst[i]) ) << std::endl;
 
-    kdlib::eprintln( sstr.str() );
+    eprintln( sstr.str() );
 }
 
 
