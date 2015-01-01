@@ -25,10 +25,6 @@ bool PykdExt::isInit() {
 
 extern "C" void initpykd();
 
-//pykd::DbgOut   pykdOut;
-//pykd::DbgOut   pykdErr;
-//pykd::DbgIn    pykdIn;
-
 
 void PykdExt::setUp() 
 {
@@ -57,11 +53,6 @@ void PykdExt::setUp()
 
         main_namespace[ key ] = pykd_namespace[ key ];
     }
-
-    //// перенаправление стандартных потоков ВВ
-    //kdlib::dbgout =&pykdOut;
-    //kdlib::dbgerr = &pykdErr;
-    //kdlib::dbgin = &pykdIn;
 
     python::object       sys = python::import("sys");
 
@@ -130,7 +121,7 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
 
         if ( scriptFileName.empty() )
         {
-            pykd::eprintln( L"script file not found" );
+            kdlib::eprintln( L"script file not found" );
             return;
         }
 
@@ -246,10 +237,10 @@ void PykdExt::startConsole()
 
 void PykdExt::printUsage()
 {
-    pykd::dprintln( L"usage: !py [options] [file]" );
-    pykd::dprintln( L"Options:" );
-    pykd::dprintln( L"-g --global  : run code in the common namespace" );
-    pykd::dprintln( L"-l --local   : run code in the isolate namespace" );
+    kdlib::dprintln( L"usage: !py [options] [file]" );
+    kdlib::dprintln( L"Options:" );
+    kdlib::dprintln( L"-g --global  : run code in the common namespace" );
+    kdlib::dprintln( L"-l --local   : run code in the isolate namespace" );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
