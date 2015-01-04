@@ -26,6 +26,12 @@ public:
             return var;
         }
         
+        if (PyFloat_Check(obj.ptr()))
+        {
+            var->m_variant.setDouble(PyFloat_AsDouble(obj.ptr()));
+            return var;
+        }
+
         if ( PyInt_CheckExact( obj.ptr() ) )
         {
              var->m_variant.setLong( PyLong_AsLong( obj.ptr() ) );
@@ -73,10 +79,10 @@ public:
             return python::object( var.asUInt() );
 
         if ( var.isFloat() )
-            return python::object( var.asFloat() );
+            return python::object( var.asInt() );
 
         if ( var.isDouble() )
-            return python::object( var.asDouble() );
+            return python::object( var.asInt() );
 
         return python::object( var.asInt() );
    }
@@ -212,6 +218,10 @@ public:
 
     static python::object long_(kdlib::NumBehavior& var ) {
         return convertToPython(var);
+    }
+
+    static python::object float_(kdlib::NumBehavior& var) {
+        return python::object(var.asDouble());
     }
 
     static python::object int_(kdlib::NumBehavior& var) {

@@ -489,6 +489,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__int__", &NumVariantAdaptor::int_ )
         .def( "__index__", &NumVariantAdaptor::long_ )
         .def( "__hash__", &NumVariantAdaptor::long_ )
+        .def( "__float__", &NumVariantAdaptor::float_)
         .def( "isInteger", &NumVariantAdaptor::isInteger )
         ;
 

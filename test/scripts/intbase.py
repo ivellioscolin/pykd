@@ -161,17 +161,22 @@ class IntBaseTest( unittest.TestCase ):
         
     def testLongConvert( self ):
         self.assertEqual( "100", "%d" % numVariant(100) )
+        self.assertEqual( "64", "%x" % numVariant(100) )
         self.assertEqual( "FFFF", "%X" % numVariant(0xFFFF) )
         self.assertEqual( "-70000000000", "%d" % numVariant(-70000000000) )
         self.assertEqual( "FFFFFFFFFFFFFF", "%X" % numVariant(0xFFFFFFFFFFFFFF) )
         self.assertEqual( "0", "%d" % numVariant(False) )
-        
-    def testConvert( self ):
-        self.assertEqual( "100", "%d" % numVariant(100) )
-        self.assertEqual( "64", "%x" % numVariant(100) )
 
+    def testFloatConvert(self):
+        self.assertEqual( "1.0", "%1.1f" % float(numVariant(1.0)))
+        self.assertEqual( "1", "%d" % int(numVariant(1.0)))
+        self.assertEqual( "1.0", "%1.1f" % numVariant(1.0))
+        self.assertEqual( "1", "%d" % numVariant(1.0))
+        
     def testStr(self):
         self.assertEqual( "100", str(numVariant(100)) )
 
     def testHex(self):
         self.assertEqual( "0x64", hex(numVariant(100)) )
+
+
