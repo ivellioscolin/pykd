@@ -108,6 +108,11 @@ inline kdlib::StackFramePtr getCurrentFrame() {
     return kdlib::getCurrentStackFrame();
 }
 
+inline unsigned long getCurrentFrameNumber() {
+    AutoRestorePyState  pystate;
+    return kdlib::getCurrentStackFrameNumber();
+}
+
 inline void setCurrentFrame( kdlib::StackFramePtr& stackFrame) {
     AutoRestorePyState  pystate;
     kdlib::setCurrentStackFrame(stackFrame);

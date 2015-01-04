@@ -35,6 +35,7 @@ public:
     virtual kdlib::DebugCallbackResult onModuleUnload( kdlib::MEMOFFSET_64 offset, const std::wstring &name );
     virtual void onCurrentThreadChange(kdlib::THREAD_DEBUG_ID  threadid);
     virtual void onChangeLocalScope();
+    virtual void onChangeBreakpoints();
     virtual void onDebugOutput(const std::wstring& text);
 
 private:

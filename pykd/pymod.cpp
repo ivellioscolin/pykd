@@ -355,6 +355,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return a current stack as a list of stackFrame objects" );
     python::def( "getFrame", pykd::getCurrentFrame,
         "Return a current stack frame" );
+    python::def("getFrameNumber", pykd::getCurrentFrameNumber,
+        "Return current frame number");
     python::def( "setFrame", pykd::setCurrentFrame,
         "Change current local scope" );
     python::def( "setFrame", pykd::setCurrentFrameByIndex,
@@ -901,6 +903,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "onChangeLocalScope", &EventHandler::onChangeLocalScope,
             "The current local scope has been changed.\n"
             "There is no return value" )
+        .def("onChangeBreakpoints", &EventHandler::onChangeBreakpoints,
+            "Breakpoints is changed for current process" )
         .def( "onDebugOutput", &EventHandler::onDebugOutput,
             "Request debug output" );
 
