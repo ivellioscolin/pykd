@@ -3,6 +3,7 @@
 #include "kdlib/disasm.h"
 
 #include "pythreadstate.h"
+#include "stladaptor.h"
 
 namespace pykd {
 
@@ -63,6 +64,24 @@ public:
     {
         AutoRestorePyState  pystate;
         return disasm.instruction();
+    }
+
+    static python::list opcode(kdlib::Disasm& disasm)
+    {
+        std::vector<unsigned char>  lst;
+
+        do {
+            AutoRestorePyState  pystate;
+            lst = disasm.opcode();
+        } while (false);
+
+        return vectorToList(lst);
+    }
+
+    static std::wstring opmnemo(kdlib::Disasm& disasm)
+    {
+        AutoRestorePyState  pystate;
+        return disasm.opmnemo();
     }
 
     static kdlib::MEMOFFSET_64 begin( kdlib::Disasm& disasm )

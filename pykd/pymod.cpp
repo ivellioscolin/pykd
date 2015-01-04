@@ -809,18 +809,34 @@ BOOST_PYTHON_MODULE( pykd )
     python::class_<kdlib::Disasm>("disasm", "Class disassemble a processor instructions",python::no_init)
         .def( "__init__", python::make_constructor(pykd::loadDisasm ) )
         .def( "__init__", python::make_constructor(pykd::loadDisasmWithOffset ) )
-        .def( "disasm", DisasmAdapter::disassemble, "Disassemble next instruction" )
-        .def( "disasm", DisasmAdapter::jump, "Disassemble from the specified offset" )
-        .def( "asm", DisasmAdapter::assembly, "Insert assemblied instuction to current offset" )
-        .def( "begin", DisasmAdapter::begin, "Return begin offset" )
-        .def( "current", DisasmAdapter::current, "Return current offset" )
-        .def( "length", DisasmAdapter::length, "Return current instruction length" )
-        .def( "instruction", DisasmAdapter::instruction, "Returm current disassembled instruction" )
-        .def( "ea", DisasmAdapter::ea, "Return effective address for last disassembled instruction or 0" )
-        .def( "reset", DisasmAdapter::reset, "Reset current offset to begin" )
-        .def( "findOffset", DisasmAdapter::getNearInstruction, "Return the location of a processor instruction relative to a given location" )
-        .def( "jump",DisasmAdapter::jump, "Change the current instruction" )
-        .def( "jumprel", DisasmAdapter::jumprel, "Change the current instruction" )
+        .def( "disasm", DisasmAdapter::disassemble, 
+            "Disassemble next instruction" )
+        .def( "disasm", DisasmAdapter::jump, 
+            "Disassemble from the specified offset" )
+        .def( "asm", DisasmAdapter::assembly,
+            "Insert assemblied instuction to current offset" )
+        .def( "begin", DisasmAdapter::begin,
+            "Return begin offset" )
+        .def( "current", DisasmAdapter::current, 
+            "Return current offset" )
+        .def( "length", DisasmAdapter::length,
+            "Return current instruction length" )
+        .def( "instruction", DisasmAdapter::instruction, 
+            "Returm current disassembled instruction" )
+        .def("opcode", DisasmAdapter::opcode,
+            "Return list of bytes of the instruction opcode" )
+        .def("opmnemo", DisasmAdapter::opmnemo,
+            "Return mnemocode of the instruction")
+        .def( "ea", DisasmAdapter::ea, 
+            "Return effective address for last disassembled instruction or 0" )
+        .def( "reset", DisasmAdapter::reset,
+            "Reset current offset to begin" )
+        .def( "findOffset", DisasmAdapter::getNearInstruction,
+            "Return the location of a processor instruction relative to a given location" )
+        .def( "jump",DisasmAdapter::jump, 
+            "Change the current instruction" )
+        .def( "jumprel", DisasmAdapter::jumprel, 
+            "Change the current instruction" )
         .def( "__str__", DisasmAdapter::instruction );
 
 

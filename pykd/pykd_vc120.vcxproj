@@ -126,7 +126,7 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(ProjectDir)..\Debug\targetapp.exe $(OutDir)targetapp.exe</Command>
+      <Command>copy $(ProjectDir)..\x64\Debug\targetapp.exe $(OutDir)targetapp.exe</Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
