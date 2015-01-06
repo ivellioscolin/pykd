@@ -462,6 +462,7 @@ Breakpoint* Breakpoint::getBreakpointByIndex(unsigned long index)
 
 void Breakpoint::remove() 
 {
+    AutoRestorePyState  pystate;
     m_breakpoint->remove();
     m_breakpoint = 0;
 }

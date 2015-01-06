@@ -114,6 +114,7 @@ class BreakpointTest( unittest.TestCase ):
 
             self.assertEqual( 1, handler.count )
 
+
     def testBreakpointClass(self):
 
         class MyBreakpoint(pykd.breakpoint):
@@ -165,7 +166,6 @@ class BreakpointTest( unittest.TestCase ):
             bp = pykd.setBp( targetModule.CdeclFunc, makebpcallback(100) )
             self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
 
-
     def testBreakpointEnum(self):
         processId = pykd.startProcess( target.appPath + " breakhandlertest" )
         targetModule = pykd.module( target.moduleName )
@@ -183,3 +183,19 @@ class BreakpointTest( unittest.TestCase ):
             map( lambda bp: bp.remove(), bpLst)
             self.assertEqual(0, pykd.getNumberBreakpoints());
 
+    def testBreakpointChangeHandler(self):
+
+        class BreakpointChangeHandler( pykd.eventHandler ):
+
+            def onChangeBreakpoints(self):
+                pass
+
+        processId = pykd.startProcess( target.appPath + " breakhandlertest" )
+        targetModule = pykd.module( target.moduleName )
+        targetModule.reload()
+        with testutils.ContextCallIt( testutils.KillProcess(processId) ) as killStartedProcess :
+            pykd.go()
+            handler = BreakpointChangeHandler()
+            bp = pykd.setBp( targetModule.CdeclFunc)
+            bp.remove()
+            self.assertEqual(0, pykd.getNumberBreakpoints())
