@@ -11,7 +11,7 @@
 // Windows Header Files:
 #include <windows.h>
 
-//#define BOOST_PYTHON_STATIC_LIB
+#define BOOST_PYTHON_STATIC_LIB
 
 #pragma warning(push)
 // 'return' : conversion from 'Py_ssize_t' to 'unsigned int', possible loss of data
