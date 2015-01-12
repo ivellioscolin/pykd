@@ -66,7 +66,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, pykd::findSymbol, 1, 2 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( getProcessOffset_, pykd::getProcessOffset, 0, 1);
 BOOST_PYTHON_FUNCTION_OVERLOADS( getProcessSystemId_, pykd::getProcessSystemId, 0, 1);
-BOOST_PYTHON_FUNCTION_OVERLOADS( getProcessIdBySystemId_, pykd::getProcessIdBySystemId, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( getProcessExecutableName_, pykd::getProcessExecutableName, 0, 1);
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( getThreadOffset_, pykd::getThreadOffset, 0, 1);
 BOOST_PYTHON_FUNCTION_OVERLOADS( getThreadSystemId_, pykd::getThreadSystemId, 0, 1);
@@ -391,8 +391,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Return the location in the target's memory of the process structure ( PEB )" ) );
     python::def( "getProcessSystemID", pykd::getProcessSystemId, getProcessSystemId_(  python::args( "Id" ), 
         "Return system process ID ( PID )" ) );
-    python::def( "getProcessIdBySystemID", pykd::getProcessIdBySystemId, getProcessIdBySystemId_( python::args("Pid"),
-        "Return process ID by the system's process ID ( PID )" ) );
+    python::def("getProcessExeName", pykd::getProcessExecutableName, getProcessExecutableName_(python::args("Id"),
+        "Return name of executable file of the process"));
+    python::def( "getProcessIdBySystemID", pykd::getProcessIdBySystemId, 
+        "Return process ID by the system's process ID ( PID )" );
     python::def( "getCurrentProcess", pykd::getCurrentProcess, 
         "Return current offset" );
     python::def( "getCurrentProcessId", pykd::getCurrentProcessId,
@@ -405,8 +407,6 @@ BOOST_PYTHON_MODULE( pykd )
         "Return implicit process" );
     python::def( "setImplicitProcess", pykd::setImplicitProcess,
         "Set implicit process" );
-    python::def( "getCurrentProcessExeName", pykd::getCurrentProcessExecutableName,
-        "Return name of executable file loaded in the current process");
     python::def( "getProcessThreads", pykd::getProcessThreads,
         "Get all process's threads " );
     python::def( "getTargetProcesses", pykd::getTargetProcesses,

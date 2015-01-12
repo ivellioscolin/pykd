@@ -235,7 +235,7 @@ inline kdlib::PROCESS_DEBUG_ID getProcessIdByOffset( kdlib::MEMOFFSET_64 offset 
     return kdlib::getProcessIdByOffset(offset);
 }
 
-inline kdlib::PROCESS_DEBUG_ID getProcessIdBySystemId( kdlib::PROCESS_ID pid = -1 )
+inline kdlib::PROCESS_DEBUG_ID getProcessIdBySystemId( kdlib::PROCESS_ID pid)
 {
     AutoRestorePyState  pystate;
     return kdlib::getProcessIdBySystemId(pid);
@@ -253,6 +253,12 @@ inline kdlib::MEMOFFSET_64 getProcessOffset( kdlib::PROCESS_DEBUG_ID id  = -1)
     return kdlib::getProcessOffset(id);
 }
 
+inline std::wstring getProcessExecutableName(kdlib::PROCESS_DEBUG_ID id = -1)
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getProcessExecutableName(id);
+}
+
 inline void setImplicitProcess(kdlib::MEMOFFSET_64 offset)
 {
     AutoRestorePyState  pystate;
@@ -264,11 +270,6 @@ inline kdlib::MEMOFFSET_64 getImplicitProcessOffset()
     return kdlib::getImplicitProcessOffset();
 }
 
-inline std::wstring getCurrentProcessExecutableName()
-{
-    AutoRestorePyState  pystate;
-    return kdlib::getCurrentProcessExecutableName();
-}
 
 python::list getProcessThreads();
 python::list getTargetProcesses();
