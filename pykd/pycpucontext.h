@@ -68,6 +68,13 @@ public:
 
 python::object getRegisterByName( const std::wstring &name );
 
+python::object getRegisterByIndex( unsigned long index );
+
+inline unsigned long getNumberRegisters() {
+    AutoRestorePyState  pystate;
+    return kdlib::getRegisterNumber();
+}
+
 inline unsigned long long loadMSR( unsigned long  msrIndex ) 
 {
     AutoRestorePyState  pystate;

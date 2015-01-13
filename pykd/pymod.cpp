@@ -337,6 +337,10 @@ BOOST_PYTHON_MODULE( pykd )
     // CPU registers
     python::def( "reg", pykd::getRegisterByName,
         "Return a CPU regsiter value by the register's name" );
+    python::def( "reg", pykd::getRegisterByIndex,
+        "Return a CPU register value by the register's number");
+    python::def( "getNumberRegisters", pykd::getNumberRegisters,
+        "Return a number of CPU registers");
     python::def ( "rdmsr", pykd::loadMSR,
         "Return MSR value" );
     python::def( "wrmsr", pykd::setMSR,

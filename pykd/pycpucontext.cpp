@@ -26,6 +26,23 @@ python::object getRegisterByName( const std::wstring &name )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+python::object getRegisterByIndex(unsigned long index)
+{
+    kdlib::NumVariant var;
+
+    do {
+
+        AutoRestorePyState  pystate;
+
+        var = kdlib::getRegisterByIndex(index);
+    
+    } while(false);
+
+    return NumVariantAdaptor::convertToPython( var );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 python::list getCurrentStack()
 {
     kdlib::StackPtr  stack;
