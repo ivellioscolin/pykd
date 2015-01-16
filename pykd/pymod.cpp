@@ -574,6 +574,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Return bit field's offset" )
         .def( "bitWidth", TypeInfoAdapter::getBitWidth,
             "Return bit field's length" )
+        .def( "getNumberFields", TypeInfoAdapter::getElementCount,
+            "Return number of fields" )
+        .def( "field", TypeInfoAdapter::getElementByIndex,
+            "Return field's type by index" )
         .def( "field", TypeInfoAdapter::getElementByName,
             "Return field's type" )
         .def( "fieldName", TypeInfoAdapter::getElementName,
@@ -632,6 +636,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return size of a variable in the target memory" )
         .def("fieldOffset", TypedVarAdapter::getFieldOffsetByName,
             "Return target field offset" )
+        .def("getNumberFields", TypedVarAdapter::getElementCount,
+            "Return number of fields")
         .def("field", TypedVarAdapter::getField,
             "Return field of structure as an object attribute" )
         .def("field", TypedVarAdapter::getElementByIndex,
