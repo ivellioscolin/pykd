@@ -25,6 +25,7 @@ private:
     virtual void tearDown();
 
     std::string getScriptFileName( const std::string &scriptName );
+    std::string findScript( const std::string &fullFileName );
 
     std::vector<std::string> m_paths;
 

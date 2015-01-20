@@ -117,7 +117,7 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
     std::string  scriptFileName;
     if ( args.size() > 0 )
     {
-       scriptFileName  = getScriptFileName( args[0] );
+        scriptFileName  = getScriptFileName( args[0] );
 
         if ( scriptFileName.empty() )
         {
@@ -247,16 +247,18 @@ void PykdExt::printUsage()
 
 std::string PykdExt::getScriptFileName( const std::string &scriptName )
 {
-    bool fileHasPyExt = false;
+    std::string scriptFileName = findScript( scriptName );
 
-    if ( scriptName.length() > 3 )
-        fileHasPyExt = scriptName.rfind(".py") == scriptName.length() - 3;
-    
-    std::string  fullFileName = scriptName;
+    if ( scriptFileName.empty() && (scriptName.rfind(".py") != scriptName.length() - 3) )
+        scriptFileName = findScript( scriptName + ".py" );
 
-    if (!fileHasPyExt)
-        fullFileName += ".py";
-    
+    return scriptFileName;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::string PykdExt::findScript( const std::string &fullFileName )
+{
     if ( GetFileAttributesA(fullFileName.c_str()) != INVALID_FILE_ATTRIBUTES )
         return fullFileName;
 
@@ -287,10 +289,9 @@ std::string PykdExt::getScriptFileName( const std::string &scriptName )
             
             if (bufSize > 0)
             {
-                fullFileName = std::string(&fullFileNameCStr[0]);
-                return fullFileName;
+                return std::string(&fullFileNameCStr[0]);
             }
-        }                  
+        }
     }
 
     return "";
