@@ -20,6 +20,7 @@
 #include "pytypedvar.h"
 #include "pytypeinfo.h"
 #include "pycpucontext.h"
+#include "pyprocess.h"
 
 using namespace pykd;
 
@@ -499,6 +500,30 @@ BOOST_PYTHON_MODULE( pykd )
 
         NumVariantAdaptor::registerNumConvertion();
 
+    python::class_<kdlib::TargetProcess, kdlib::TargetProcessPtr,  boost::noncopyable>("targetProcess", "Class representing process in the target system", python::no_init )
+        .def("getNumber", TargetProcessAdapter::getNumberProcesses,
+            "Return number of processes" ).staticmethod("getNumber")
+        .def("getCurrent", TargetProcessAdapter::getCurrent,
+            "Return a current process" ).staticmethod("getCurrent")
+        .def("getProcess", TargetProcessAdapter::getProcess,
+            "Return process by index").staticmethod("getProcess")
+        .def("systemID", TargetProcessAdapter::getSystemId,
+            "Retrun system process ID ( PID )" )
+        .def("peb", TargetProcessAdapter::getPebOffset,
+            "Return PEB address" )
+        .def("getNumberThreads", TargetProcessAdapter::getNumberThreads,
+            "Return number of threads for this process" )
+        .def("thread", TargetProcessAdapter::getThreadByIndex,
+            "Return thread by its index" )
+        ;
+
+    python::class_<kdlib::TargetThread, kdlib::TargetThreadPtr, boost::noncopyable>("targetThread", "Class representing process in the target system", python::no_init )
+        .def("systemID", TargetThreadAdapter::getSystemId,
+            "Retrun system thread ID ( TID )" )
+        .def("teb", TargetThreadAdapter::getTebOffset,
+            "Return TEB address" )
+        ;
+
     python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumBehavior>, boost::noncopyable>("module", "Class representing executable module", python::no_init )
         .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByName ) )
         .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByOffset) )
@@ -558,7 +583,6 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__getattr__", ModuleAdapter::getSymbolVa,
             "Return address of the symbol" )
         .def( "__str__", &ModuleAdapter::print );
-
 
     python::class_<kdlib::TypeInfo, kdlib::TypeInfoPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
         .def("__init__", python::make_constructor( pykd::getTypeInfoByName ) )

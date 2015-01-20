@@ -24,6 +24,7 @@ import stacktest
 import customtypestest
 import mspdbtest
 import excepttest
+import targetprocess
 
 pykd.initialize()
 
@@ -59,6 +60,8 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( breakpoint.BreakpointTest ),
                 unittest.TestLoader().loadTestsFromTestCase( stacktest.StackTest ),
                 unittest.TestLoader().loadTestsFromTestCase( mspdbtest.MsPdbTest ),
+                unittest.TestLoader().loadTestsFromTestCase( targetprocess.ProcessTest ),
+
                 #unittest.TestLoader().loadTestsFromTestCase( excepttest.ExceptionTest ),
             ] ) 
     else:
