@@ -20,22 +20,28 @@ struct TargetProcessAdapter {
         return kdlib::TargetProcess::getByIndex(index);
     }
 
-    static unsigned long getNumberProcesses() 
+    static unsigned long getNumberProcesses()
     {
         AutoRestorePyState  pystate;
         return kdlib::TargetProcess::getNumber();
     }
 
-    static kdlib::PROCESS_ID getSystemId(kdlib::TargetProcess& process )
+    static kdlib::PROCESS_ID getSystemId(kdlib::TargetProcess& process)
     {
         AutoRestorePyState  pystate;
         return process.getSystemId();
     }
 
-    static kdlib::MEMOFFSET_64 getPebOffset(kdlib::TargetProcess& process )
+    static kdlib::MEMOFFSET_64 getPebOffset(kdlib::TargetProcess& process)
     {
         AutoRestorePyState  pystate;
         return process.getPebOffset();
+    }
+
+    static std::wstring getExeName(kdlib::TargetProcess& process)
+    {
+        AutoRestorePyState  pystate;
+        return process.getExecutableName();
     }
 
     static unsigned long getNumberThreads(kdlib::TargetProcess& process )
@@ -48,6 +54,12 @@ struct TargetProcessAdapter {
     {
         AutoRestorePyState  pystate;
         return process.getThreadByIndex(index);
+    }
+
+    static kdlib::TargetThreadPtr getCurrentThread(kdlib::TargetProcess& process)
+    {
+        AutoRestorePyState  pystate;
+        return process.getCurrentThread();
     }
 };
 
@@ -64,6 +76,12 @@ struct TargetThreadAdapter {
     {
         AutoRestorePyState  pystate;
         return thread.getTebOffset();
+    }
+
+    static void setCurrent(kdlib::TargetThread& thread)
+    {
+        AutoRestorePyState  pystate;
+        return thread.setCurrent();
     }
 };
 

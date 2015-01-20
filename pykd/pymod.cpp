@@ -507,21 +507,27 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a current process" ).staticmethod("getCurrent")
         .def("getProcess", TargetProcessAdapter::getProcess,
             "Return process by index").staticmethod("getProcess")
-        .def("systemID", TargetProcessAdapter::getSystemId,
+        .add_property("systemID", TargetProcessAdapter::getSystemId,
             "Retrun system process ID ( PID )" )
-        .def("peb", TargetProcessAdapter::getPebOffset,
+        .add_property("peb", TargetProcessAdapter::getPebOffset,
             "Return PEB address" )
+        .add_property("exeName", TargetProcessAdapter::getExeName,
+            "Return the process executbakle file name")
         .def("getNumberThreads", TargetProcessAdapter::getNumberThreads,
             "Return number of threads for this process" )
         .def("thread", TargetProcessAdapter::getThreadByIndex,
             "Return thread by its index" )
+        .def("currentThread", TargetProcessAdapter::getCurrentThread,
+            "Return current thread" )
         ;
 
     python::class_<kdlib::TargetThread, kdlib::TargetThreadPtr, boost::noncopyable>("targetThread", "Class representing process in the target system", python::no_init )
-        .def("systemID", TargetThreadAdapter::getSystemId,
+        .add_property("systemID", TargetThreadAdapter::getSystemId,
             "Retrun system thread ID ( TID )" )
-        .def("teb", TargetThreadAdapter::getTebOffset,
+        .add_property("teb", TargetThreadAdapter::getTebOffset,
             "Return TEB address" )
+        .def("setCurrent", TargetThreadAdapter::setCurrent,
+            "Set this thread current")
         ;
 
     python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumBehavior>, boost::noncopyable>("module", "Class representing executable module", python::no_init )
