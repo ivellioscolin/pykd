@@ -249,8 +249,18 @@ std::string PykdExt::getScriptFileName( const std::string &scriptName )
 {
     std::string scriptFileName = findScript( scriptName );
 
-    if ( scriptFileName.empty() && (scriptName.rfind(".py") != scriptName.length() - 3) )
-        scriptFileName = findScript( scriptName + ".py" );
+    if ( scriptFileName.empty() )
+    {
+        std::string scriptNameLow;
+        scriptNameLow.resize( scriptName.size() );
+        std::transform(
+            scriptName.begin(),
+            scriptName.end(),
+            scriptNameLow.begin(),
+            ::tolower);
+        if ( scriptNameLow.rfind(".py") != (scriptNameLow.length() - 3) )
+            scriptFileName = findScript( scriptName + ".py" );
+    }
 
     return scriptFileName;
 }
