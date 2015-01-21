@@ -182,6 +182,7 @@
     <ClInclude Include="pykdver.h" />
     <ClInclude Include="pymemaccess.h" />
     <ClInclude Include="pymodule.h" />
+    <ClInclude Include="pyprocess.h" />
     <ClInclude Include="pysymengine.h" />
     <ClInclude Include="pythreadstate.h" />
     <ClInclude Include="pytypedvar.h" />

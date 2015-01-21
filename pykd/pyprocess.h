@@ -61,6 +61,18 @@ struct TargetProcessAdapter {
         AutoRestorePyState  pystate;
         return process.getCurrentThread();
     }
+
+    static unsigned long getNumberBreakpoints(kdlib::TargetProcess& process)
+    {
+        AutoRestorePyState  pystate;
+        return process.getNumberBreakpoints();
+    }
+
+    static kdlib::BreakpointPtr getBreakpointByIndex(kdlib::TargetProcess& process, unsigned long index)
+    {
+        AutoRestorePyState  pystate;
+        return process.getBreakpoint(index);
+    }
 };
 
 
@@ -82,6 +94,12 @@ struct TargetThreadAdapter {
     {
         AutoRestorePyState  pystate;
         return thread.setCurrent();
+    }
+
+    static bool isCurrent(kdlib::TargetThread& thread)
+    {
+        AutoRestorePyState  pystate;
+        return thread.isCurrent();
     }
 };
 

@@ -519,7 +519,11 @@ BOOST_PYTHON_MODULE( pykd )
             "Return thread by its index" )
         .def("currentThread", TargetProcessAdapter::getCurrentThread,
             "Return current thread" )
-        ;
+        .def("getNumberBreakpoints", TargetProcessAdapter::getNumberBreakpoints,
+            "Return number of breakpoints for this process" )
+        .def("breakpoint", TargetProcessAdapter::getBreakpointByIndex,
+            "Return a breakpoint by it's index" )
+         ;
 
     python::class_<kdlib::TargetThread, kdlib::TargetThreadPtr, boost::noncopyable>("targetThread", "Class representing process in the target system", python::no_init )
         .add_property("systemID", TargetThreadAdapter::getSystemId,
@@ -528,6 +532,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return TEB address" )
         .def("setCurrent", TargetThreadAdapter::setCurrent,
             "Set this thread current")
+        .def("isCurrent", TargetThreadAdapter::isCurrent,
+            "Check if this thread is current")
         ;
 
     python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumBehavior>, boost::noncopyable>("module", "Class representing executable module", python::no_init )
