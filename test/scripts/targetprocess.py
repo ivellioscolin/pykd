@@ -42,6 +42,10 @@ class ProcessTest(unittest.TestCase):
             thread = proc.thread(i)
             thread.setCurrent()
 
+    def testGetBreakpoint(self):
+        proc = pykd.targetProcess.getCurrent()
+        self.assertEqual(0, proc.getNumberBreakpoints())
+
 
 
 

@@ -521,7 +521,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return current thread" )
         .def("getNumberBreakpoints", TargetProcessAdapter::getNumberBreakpoints,
             "Return number of breakpoints for this process" )
-        .def("breakpoint", TargetProcessAdapter::getBreakpointByIndex,
+        .def("breakpoint", TargetProcessAdapter::getBreakpointByIndex, python::return_value_policy<python::manage_new_object>(),
             "Return a breakpoint by it's index" )
          ;
 

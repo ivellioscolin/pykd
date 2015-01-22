@@ -3,6 +3,7 @@
 #include <kdlib/process.h>
 
 #include "pythreadstate.h"
+#include "pyeventhandler.h"
 
 namespace pykd {
 
@@ -68,10 +69,16 @@ struct TargetProcessAdapter {
         return process.getNumberBreakpoints();
     }
 
-    static kdlib::BreakpointPtr getBreakpointByIndex(kdlib::TargetProcess& process, unsigned long index)
+    static Breakpoint* getBreakpointByIndex(kdlib::TargetProcess& process, unsigned long index)
     {
-        AutoRestorePyState  pystate;
-        return process.getBreakpoint(index);
+        kdlib::BreakpointPtr  bp;
+
+        {
+            AutoRestorePyState  pystate;
+            bp = process.getBreakpoint(index);
+        }
+
+        return new Breakpoint(bp);
     }
 };
 
