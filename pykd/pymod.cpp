@@ -186,6 +186,12 @@ BOOST_PYTHON_MODULE( pykd )
         "The target is executing a single instruction or--if that instruction is a subroutine call--subroutine" );
     python::def( "trace", pykd::targetStepIn,
         "The target is executing a single instruction" );
+    python::def("stepout", pykd::targetStepOut,
+        "The traget is executing while not returned from the current subroutine");
+    python::def("sourceStep", pykd::sourceStep,
+        "The target is executing a single source line");
+    python::def("sourceStepOver", pykd::sourceStepOver,
+        "The target is executing a single source line");
     python::def( "getExecutionStatus", pykd::targetExecutionStatus,
         "Return current execution status" );
 
@@ -969,7 +975,11 @@ BOOST_PYTHON_MODULE( pykd )
         .def("onChangeBreakpoints", &EventHandler::onChangeBreakpoints,
             "Breakpoints is changed for current process" )
         .def( "onDebugOutput", &EventHandler::onDebugOutput,
-            "Request debug output" );
+            "Request debug output" )
+        .def("onThreadStart", &EventHandler::onThreadStart,
+            "New thread is started in the current process" )
+        .def("onThreadStop", &EventHandler::onThreadStop,
+            "A thread is stopped in the current thread")
 
    //     .def( "onSymbolsLoaded", &EventHandlerWrap::onSymbolsLoaded,
    //         "Triggered debug symbols loaded. Parameter - module base or 0\n"

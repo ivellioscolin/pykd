@@ -29,14 +29,19 @@ public:
     EventHandler();
 
     virtual kdlib::DebugCallbackResult onBreakpoint( kdlib::BREAKPOINT_ID bpId );
-    virtual void onExecutionStatusChange( kdlib::ExecutionStatus executionStatus );
     virtual kdlib::DebugCallbackResult onException( const kdlib::ExceptionInfo &exceptionInfo );
     virtual kdlib::DebugCallbackResult onModuleLoad( kdlib::MEMOFFSET_64 offset, const std::wstring &name );
     virtual kdlib::DebugCallbackResult onModuleUnload( kdlib::MEMOFFSET_64 offset, const std::wstring &name );
+    virtual kdlib::DebugCallbackResult onThreadStart();
+    virtual kdlib::DebugCallbackResult onThreadStop();
+
+    virtual void onExecutionStatusChange(kdlib::ExecutionStatus executionStatus);
     virtual void onCurrentThreadChange(kdlib::THREAD_DEBUG_ID  threadid);
     virtual void onChangeLocalScope();
     virtual void onChangeBreakpoints();
     virtual void onDebugOutput(const std::wstring& text);
+
+
 
 private:
 

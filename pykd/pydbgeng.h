@@ -305,11 +305,33 @@ kdlib::ExecutionStatus targetStepIn()
 }
 
 inline
+kdlib::ExecutionStatus targetStepOut()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::targetStepOut();
+}
+
+inline
 kdlib::ExecutionStatus targetExecutionStatus()
 {
     AutoRestorePyState  pystate;
     return kdlib::targetExecutionStatus();
 }
+
+inline
+kdlib::ExecutionStatus sourceStep()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::sourceStepIn();
+}
+
+inline
+kdlib::ExecutionStatus sourceStepOver()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::sourceStepOver();
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // system properties
