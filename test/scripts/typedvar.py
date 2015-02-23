@@ -325,3 +325,7 @@ class TypedVarTest( unittest.TestCase ):
 
         self.assertTrue( tv.getDebugStart() >= tv.getAddress() )
         self.assertTrue( tv.getDebugEnd() <= tv.getAddress() + tv.sizeof() )
+
+    def testFields(self):
+        tv = pykd.typedVar( "g_classChild")
+        self.assertTrue( len(tv.fields())>0 )

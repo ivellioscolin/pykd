@@ -75,7 +75,11 @@ python::list TypedVarAdapter::getFields( kdlib::TypedVar& typedVar )
         for ( size_t i = 0; i < typedVar.getElementCount(); ++i )
         {
             std::wstring  name = typedVar.getElementName(i);
-            kdlib::MEMOFFSET_32  offset = typedVar.getElementOffset(i);
+            kdlib::MEMOFFSET_32  offset = 0;
+
+            if (!typedVar.getType()->isStaticMember(i) )
+                offset = typedVar.getElementOffset(i);
+
             kdlib::TypedVarPtr  val = typedVar.getElement(i);
 
             lst.push_back( FieldTuple( name, offset, val ) );
