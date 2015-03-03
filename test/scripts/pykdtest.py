@@ -9,6 +9,8 @@ import unittest
 # Dynamically append current pykd.pyd path to PYTHONPATH
 sys.path.insert(0, os.path.dirname(sys.argv[1]))
 
+print os.path.abspath(os.curdir)
+
 import pykd
 
 import target
@@ -25,6 +27,7 @@ import customtypestest
 import mspdbtest
 import excepttest
 import targetprocess
+import ehloadtest
 
 pykd.initialize()
 
@@ -61,6 +64,7 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( stacktest.StackTest ),
                 unittest.TestLoader().loadTestsFromTestCase( mspdbtest.MsPdbTest ),
                 unittest.TestLoader().loadTestsFromTestCase( targetprocess.ProcessTest ),
+                unittest.TestLoader().loadTestsFromTestCase( ehloadtest.EhLoadTest ),
 
                 #unittest.TestLoader().loadTestsFromTestCase( excepttest.ExceptionTest ),
             ] ) 
@@ -74,12 +78,12 @@ def getTestSuite( singleName = "" ):
           
 if __name__ == "__main__":
 
-    print "\nTesting PyKd ver. " + pykd.__version__
+    print "\nTesting PyKd ver.", pykd.__version__, "File:", os.path.dirname(pykd.__file__)
 
     target.appPath = sys.argv[1]
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
 
-    # raw_input("Press <ENTER>...")
+    #raw_input("Press <ENTER>...")
 

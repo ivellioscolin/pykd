@@ -16,7 +16,7 @@ class ModuleLoadHandler(pykd.eventHandler):
         self.wasLoad = 0
         self.wasUnload = False
 
-    def onLoadModule(self, module):
+    def onModuleLoad(self, module):
         """Load module handler"""
 
         if ( fnmatch.fnmatch(module.name().lower(), self.moduleMask) ):
@@ -24,7 +24,7 @@ class ModuleLoadHandler(pykd.eventHandler):
 
         return pykd.DEBUG_STATUS_NO_CHANGE
 
-    def onUnloadModule(self, modBase):
+    def onModuleUnload(self, modBase):
         """Unload module handler"""
 
         if ( self.wasLoad and (self.wasLoad == modBase) ):
@@ -37,15 +37,21 @@ class EhLoadTest(unittest.TestCase):
 
     def testLoadUnload(self):
         """Start new process and track loading and unloading modules"""
-        pykd.startProcess(target.appPath + " -testLoadUnload")
+        pykd.startProcess(target.appPath + " loadunloadmodule")
         with testutils.ContextCallIt( pykd.killProcess ) as contextCallIt:
-            modLoadHandler = ModuleLoadHandler( "*Iphlpapi*" )
-            with testutils.ContextCallIt( getattr(modLoadHandler, "reset") ) as resetEventHandler:
-                try:
-                    while True:
-                        pykd.go()
-                except pykd.WaitEventException:
-                    pass
+
+            pykd.go() # skip initail break
+
+            modLoadHandler = ModuleLoadHandler( "ws2_32*" )
+
+            pykd.go()
+
+            #with testutils.ContextCallIt( getattr(modLoadHandler, "reset") ) as resetEventHandler:
+            #    try:
+            #        while True:
+            #            pykd.go()
+            #    except pykd.WaitEventException:
+            #        pass
 
             self.assertTrue(modLoadHandler.wasLoad)
             self.assertTrue(modLoadHandler.wasUnload)
