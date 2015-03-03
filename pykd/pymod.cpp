@@ -319,7 +319,7 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "findSymbol", pykd::findSymbol, findSymbol_( python::args( "offset", "showDisplacement"),
         "Find symbol by the target virtual memory offset" ) );
     python::def("findSymbolAndDisp", pykd::findSymbolAndDisp,
-        "Return tuple(symbol_name, displacement) by virtual address" );
+        "Return tuple (module_name, symbol_name, displacement) by virtual address" );
     python::def( "sizeof", pykd::getSymbolSize,
         "Return a size of the type or variable" );
     python::def("typedVarList", pykd::getTypedVarListByTypeName,
