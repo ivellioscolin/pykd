@@ -150,7 +150,7 @@ kdlib::DebugCallbackResult  EventHandler::onModuleLoad( kdlib::MEMOFFSET_64 offs
 
         do {
 
-            python::override pythonHandler = get_override( "onModuleLoad" );
+            python::override pythonHandler = get_override( "onLoadModule" );
             if ( !pythonHandler )
             {
                 result = kdlib::EventHandler::onModuleLoad( offset, name );
@@ -201,7 +201,7 @@ kdlib::DebugCallbackResult  EventHandler::onModuleUnload( kdlib::MEMOFFSET_64 of
 
         do {
 
-            python::override pythonHandler = get_override( "onModuleUnload" );
+            python::override pythonHandler = get_override( "onUnloadModule" );
             if ( !pythonHandler )
             {
                 result = kdlib::EventHandler::onModuleUnload( offset, name );

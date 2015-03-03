@@ -16,21 +16,21 @@ class ModuleLoadHandler(pykd.eventHandler):
         self.wasLoad = 0
         self.wasUnload = False
 
-    def onModuleLoad(self, module):
+    def onLoadModule(self, modBase, name):
         """Load module handler"""
 
-        if ( fnmatch.fnmatch(module.name().lower(), self.moduleMask) ):
-            self.wasLoad = module.begin()
+        if ( fnmatch.fnmatch(name.lower(), self.moduleMask) ):
+            self.wasLoad = modBase
 
-        return pykd.DEBUG_STATUS_NO_CHANGE
+        return pykd.executionStatus.NoChange
 
-    def onModuleUnload(self, modBase):
+    def onUnloadModule(self, modBase, name):
         """Unload module handler"""
 
         if ( self.wasLoad and (self.wasLoad == modBase) ):
             self.wasUnload = True
 
-        return pykd.DEBUG_STATUS_NO_CHANGE
+        return pykd.executionStatus.NoChange
 
 class EhLoadTest(unittest.TestCase):
     """Unit tests of [un-]load modules notification"""
