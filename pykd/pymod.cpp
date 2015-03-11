@@ -233,6 +233,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Extend address to 64 bits formats" );
     python::def( "isValid", pykd::isVaValid,
         "Check if the virtual address is valid" );
+    python::def("isVaRegionValid", pykd::isVaRegionValid,
+        "Check if the virtaul addresses region is valid");
     python::def( "compareMemory", pykd::compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
         "Compare two memory buffers by virtual or physical addresses" ) );
     python::def( "searchMemory", pykd::searchMemoryLst, 

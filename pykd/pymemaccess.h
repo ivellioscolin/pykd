@@ -23,6 +23,12 @@ inline bool isVaValid( kdlib::MEMOFFSET_64 offset )
     return kdlib::isVaValid(offset);
 }
 
+inline bool isVaRegionValid(kdlib::MEMOFFSET_64 offset, unsigned long length)
+{
+    AutoRestorePyState  pystate;
+    return kdlib::isVaRegionValid(offset, length);
+}
+
 inline unsigned char ptrByte( kdlib::MEMOFFSET_64 offset ) 
 {
     AutoRestorePyState  pystate;
