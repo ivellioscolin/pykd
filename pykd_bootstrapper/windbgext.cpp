@@ -15,6 +15,8 @@ class PykdBootsTrapper: public windbg::WindbgExtension
 public:
 
     KDLIB_EXT_COMMAND_METHOD(py);
+    KDLIB_EXT_COMMAND_METHOD(install);
+    KDLIB_EXT_COMMAND_METHOD(upgrade);
 
     virtual void setUp();
 
@@ -229,6 +231,10 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
         try {
             InterruptWatch  interruptWatch;
 
+            python::exec("import pykd", global);
+
+            python::exec("from pykd import *", global);
+
             python::exec_file(scriptFileName.c_str(), global);
         }
         catch (python::error_already_set const &)
@@ -264,6 +270,59 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, install)
+{
+    PyEval_RestoreThread(m_pyState);
+
+    // получаем доступ к глобальному мапу ( нужен для вызова exec_file )
+    python::object       main = python::import("__main__");
+
+    python::object       global(main.attr("__dict__"));
+
+    try {
+        InterruptWatch  interruptWatch;
+
+        python::exec("import pip\n", global);
+        python::exec("pip.logger.consumers = []\n", global);
+        python::exec("pip.main(['install', 'pykd'])\n", global);
+
+    }
+    catch (python::error_already_set const &)
+    {
+        printException();
+    }
+
+    m_pyState = PyEval_SaveThread();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, upgrade)
+{
+    PyEval_RestoreThread(m_pyState);
+
+    // получаем доступ к глобальному мапу ( нужен для вызова exec_file )
+    python::object       main = python::import("__main__");
+
+    python::object       global(main.attr("__dict__"));
+
+    try {
+        InterruptWatch  interruptWatch;
+
+        python::exec("import pip\n", global);
+        python::exec("pip.logger.consumers = []\n", global);
+        python::exec("pip.main(['install', '--upgrade', 'pykd'])\n", global);
+    }
+    catch (python::error_already_set const &)
+    {
+        printException();
+    }
+
+    m_pyState = PyEval_SaveThread();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 void PykdBootsTrapper::setUp()
 {
     WindbgExtension::setUp();
@@ -276,19 +335,6 @@ void PykdBootsTrapper::setUp()
 
     python::object  main_namespace = main.attr("__dict__");
 
-    python::object  pykd = python::import("pykd");
-
-    // делаем аналог from pykd import *
-    python::dict     pykd_namespace(pykd.attr("__dict__"));
-
-    python::list     iterkeys(pykd_namespace.iterkeys());
-
-    for (int i = 0; i < boost::python::len(iterkeys); i++)
-    {
-        std::string     key = boost::python::extract<std::string>(iterkeys[i]);
-
-        main_namespace[key] = pykd_namespace[key];
-    }
 
     // Python debug output console helper classes
     python::class_<::DbgOut>("dout", "dout", python::no_init)
@@ -345,10 +391,13 @@ void PykdBootsTrapper::startConsole()
 
 void PykdBootsTrapper::printUsage()
 {
-    kdlib::dprintln(L"usage: !py [options] [file]");
-    kdlib::dprintln(L"Options:");
-    kdlib::dprintln(L"-g --global  : run code in the common namespace");
-    kdlib::dprintln(L"-l --local   : run code in the isolate namespace");
+    kdlib::dprintln(L"usage:");
+    kdlib::dprintln(L"!py [options] [file]");
+    kdlib::dprintln(L"\tOptions:");
+    kdlib::dprintln(L"\t-g --global  : run code in the common namespace");
+    kdlib::dprintln(L"\t-l --local   : run code in the isolate namespace");
+    kdlib::dprintln(L"!install");
+    kdlib::dprintln(L"!upgrade");
 }
 
 //////////////////////////////////////////////////////////////////////////////

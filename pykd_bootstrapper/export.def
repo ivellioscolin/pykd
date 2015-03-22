@@ -2,3 +2,5 @@ EXPORTS
 	DebugExtensionInitialize
 	DebugExtensionUninitialize
 	py
+	install
+	upgrade
