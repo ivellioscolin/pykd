@@ -36,6 +36,8 @@ private:
 
     PyThreadState  *m_pyState;
 
+    bool  m_pykdInitialized;
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -231,9 +233,11 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
         try {
             InterruptWatch  interruptWatch;
 
-            python::exec("import pykd", global);
-
-            python::exec("from pykd import *", global);
+            if (!m_pykdInitialized)
+            {
+                python::exec("__import__('pykd').initialize()", global);
+                m_pykdInitialized = true;
+            }
 
             python::exec_file(scriptFileName.c_str(), global);
         }
@@ -379,6 +383,13 @@ void PykdBootsTrapper::startConsole()
     try {
         InterruptWatch  interruptWatch;
 
+        python::exec("import pykd", global);
+        python::exec("from pykd import *", global);
+        if (!m_pykdInitialized)
+        {
+            python::exec("pykd.initialize()", global);
+            m_pykdInitialized = true;
+        }
         python::exec("__import__('code').InteractiveConsole(__import__('__main__').__dict__).interact()\n", global);
     }
     catch (python::error_already_set const &)
