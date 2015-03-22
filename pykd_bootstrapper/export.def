@@ -1,0 +1,4 @@
+EXPORTS
+	DebugExtensionInitialize
+	DebugExtensionUninitialize
+	py
