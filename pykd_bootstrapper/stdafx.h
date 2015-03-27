@@ -12,5 +12,6 @@
 #include <windows.h>
 
 
+#define BOOST_PYTHON_STATIC_LIB
 
 // TODO: reference additional headers your program requires here

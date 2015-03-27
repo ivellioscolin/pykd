@@ -57,7 +57,8 @@ std::wstring printSystemVersion( kdlib::SystemInfo& sysInfo )
     std::wstringstream sstr;
 
     sstr << L"Major Version: " << sysInfo.majorVersion << std::endl;
-    sstr << L"Minor Version: " << sysInfo.minorVersion << std::endl;;
+    sstr << L"Minor Version: " << sysInfo.minorVersion << std::endl;
+    sstr << L"Build: " << sysInfo.buildNumber << std::endl;
     sstr << L"Description: " << sysInfo.buildDescription << std::endl;
 
     return sstr.str();
