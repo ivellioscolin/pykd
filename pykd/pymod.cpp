@@ -518,12 +518,14 @@ BOOST_PYTHON_MODULE( pykd )
             "Return target system by index").staticmethod("getSystem")
         .add_property("desc", TargetSystemAdapter::getDescription,
             "Retunr target system description")
-        .add_property("isDumpAnalyzing", TargetSystemAdapter::isDumpAnalyzing,
+        .def("isDumpAnalyzing", TargetSystemAdapter::isDumpAnalyzing,
             "Check if it is a dump analyzing ( not living debuggee )")
-        .add_property("isKernelDebugging", TargetSystemAdapter::isKernelDebugging,
+        .def("isKernelDebugging", TargetSystemAdapter::isKernelDebugging,
             "Check if kernel dubugging is running")
-        .add_property("is64bitSystem", TargetSystemAdapter::is64bitSystem,
+        .def("is64bitSystem", TargetSystemAdapter::is64bitSystem,
             "Check if 64 bit system running" )
+        .def("isCurrent", TargetSystemAdapter::isCurrent,
+            "Check if the target is current")
         .def("getNumberProcesses", TargetSystemAdapter::getNumberProcesses,
             "Return processed number of the target system")
         .def("process", TargetSystemAdapter::getProcessByIndex,
@@ -545,6 +547,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return PEB address" )
         .add_property("exeName", TargetProcessAdapter::getExeName,
             "Return the process executbakle file name")
+        .def("isCurrent", TargetSystemAdapter::isCurrent,
+            "Check if the target is current")
         .def("getNumberThreads", TargetProcessAdapter::getNumberThreads,
             "Return number of threads for this process" )
         .def("thread", TargetProcessAdapter::getThreadByIndex,

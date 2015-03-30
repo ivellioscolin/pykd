@@ -68,6 +68,12 @@ struct TargetSystemAdapter {
         AutoRestorePyState  pystate;
         return system.getCurrentProcess(); 
     }
+
+    static bool isCurrent(kdlib::TargetSystem& system)
+    {
+        AutoRestorePyState  pystate;
+        return system.isCurrent();
+    }
 };
 
 
@@ -143,6 +149,12 @@ struct TargetProcessAdapter {
         }
 
         return new Breakpoint(bp);
+    }
+
+    static bool isCurrent(kdlib::TargetProcess& process)
+    {
+        AutoRestorePyState  pystate;
+        return process.isCurrent();
     }
 };
 
