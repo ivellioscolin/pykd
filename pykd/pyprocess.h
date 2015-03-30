@@ -7,6 +7,52 @@
 
 namespace pykd {
 
+struct TargetSystemAdapter {
+
+    static unsigned long getNumberSystems()
+    {
+        AutoRestorePyState  pystate;
+        return kdlib::TargetSystem::getNumber();
+    }
+
+    static kdlib::TargetSystemPtr getCurrent()
+    {
+        AutoRestorePyState  pystate;
+        return kdlib::TargetSystem::getCurrent();
+    }
+
+    static kdlib::TargetSystemPtr getSystem(unsigned long index)
+    {
+        AutoRestorePyState  pystate;
+        return kdlib::TargetSystem::getByIndex(index);
+    }
+
+    static std::wstring getDescription(kdlib::TargetSystem& system)
+    {
+        AutoRestorePyState  pystate;
+        return system.getDescription();
+    }
+
+    static unsigned long getNumberProcesses(kdlib::TargetSystem& system)
+    {
+        AutoRestorePyState  pystate;
+        return system.getNumberProcesses();
+    }
+
+    static kdlib::TargetProcessPtr getProcessByIndex(kdlib::TargetSystem& system, unsigned long index)
+    {
+        AutoRestorePyState  pystate;
+        return system.getProcessByIndex(index);
+    }
+
+    static kdlib::TargetProcessPtr getCurrentProcess(kdlib::TargetSystem& system)
+    {
+        AutoRestorePyState  pystate;
+        return system.getCurrentProcess(); 
+    }
+};
+
+
 struct TargetProcessAdapter {
 
     static kdlib::TargetProcessPtr getCurrent()

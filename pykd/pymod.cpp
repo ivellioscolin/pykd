@@ -508,7 +508,25 @@ BOOST_PYTHON_MODULE( pykd )
 
         NumVariantAdaptor::registerNumConvertion();
 
-    python::class_<kdlib::TargetProcess, kdlib::TargetProcessPtr,  boost::noncopyable>("targetProcess", "Class representing process in the target system", python::no_init )
+
+    python::class_<kdlib::TargetSystem, kdlib::TargetSystemPtr, boost::noncopyable>("targetSystem", "Class representing target system", python::no_init)
+        .def("getNumber", TargetSystemAdapter::getNumberSystems,
+            "Retunr number of systems").staticmethod("getNumber")
+        .def("getCurrent", TargetSystemAdapter::getCurrent,
+            "Return current target system").staticmethod("getCurrent")
+        .def("getSystem", TargetSystemAdapter::getSystem,
+            "Return target system by index").staticmethod("getSystem")
+        .add_property("desc", TargetSystemAdapter::getDescription,
+            "Retunr target system description")
+        .def("getNumberProcesses", TargetSystemAdapter::getNumberProcesses,
+            "Return processed number of the target system")
+        .def("process", TargetSystemAdapter::getProcessByIndex,
+            "Return process by index")
+        .def("currentProcess", TargetSystemAdapter::getCurrentProcess,
+            "Return current process")
+        ;
+
+    python::class_<kdlib::TargetProcess, kdlib::TargetProcessPtr, boost::noncopyable>("targetProcess", "Class representing process in the target system", python::no_init )
         .def("getNumber", TargetProcessAdapter::getNumberProcesses,
             "Return number of processes" ).staticmethod("getNumber")
         .def("getCurrent", TargetProcessAdapter::getCurrent,
