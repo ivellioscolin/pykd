@@ -547,7 +547,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return PEB address" )
         .add_property("exeName", TargetProcessAdapter::getExeName,
             "Return the process executbakle file name")
-        .def("isCurrent", TargetSystemAdapter::isCurrent,
+        .def("isCurrent", TargetProcessAdapter::isCurrent,
             "Check if the target is current")
         .def("getNumberThreads", TargetProcessAdapter::getNumberThreads,
             "Return number of threads for this process" )
