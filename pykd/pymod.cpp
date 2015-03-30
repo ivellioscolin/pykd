@@ -518,6 +518,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Return target system by index").staticmethod("getSystem")
         .add_property("desc", TargetSystemAdapter::getDescription,
             "Retunr target system description")
+        .add_property("isDumpAnalyzing", TargetSystemAdapter::isDumpAnalyzing,
+            "Check if it is a dump analyzing ( not living debuggee )")
+        .add_property("isKernelDebugging", TargetSystemAdapter::isKernelDebugging,
+            "Check if kernel dubugging is running")
+        .add_property("is64bitSystem", TargetSystemAdapter::is64bitSystem,
+            "Check if 64 bit system running" )
         .def("getNumberProcesses", TargetSystemAdapter::getNumberProcesses,
             "Return processed number of the target system")
         .def("process", TargetSystemAdapter::getProcessByIndex,

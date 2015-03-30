@@ -33,6 +33,24 @@ struct TargetSystemAdapter {
         return system.getDescription();
     }
 
+    static bool isDumpAnalyzing(kdlib::TargetSystem& system)
+    {
+        AutoRestorePyState  pystate;
+        return system.isDumpAnalyzing();
+    }
+
+    static bool isKernelDebugging(kdlib::TargetSystem& system)
+    {
+        AutoRestorePyState  pystate;
+        return system.isKernelDebugging();
+    }
+
+    static bool is64bitSystem(kdlib::TargetSystem& system)
+    {
+        AutoRestorePyState  pystate;
+        return system.is64bitSystem();
+    }
+
     static unsigned long getNumberProcesses(kdlib::TargetSystem& system)
     {
         AutoRestorePyState  pystate;
