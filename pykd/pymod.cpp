@@ -801,10 +801,15 @@ BOOST_PYTHON_MODULE( pykd )
             "Major version number of the target's operating system")
         .def_readonly( "win32Minor", &kdlib::SystemInfo::minorVersion,
             "Minor version number of the target's operating system")
-        //.def_readonly( "buildNumber", &SystemVersion::buildNumber,
-        //    "Build number for the target's operating system")
+        .def_readonly("servicePack", &kdlib::SystemInfo::servicePackNumber,
+            "Service Pack Number" )
+        .def_readonly("buildNumber", &kdlib::SystemInfo::buildNumber,
+            "Build number for the target's operating system")
         .def_readonly( "buildString", &kdlib::SystemInfo::buildDescription,
             "String that identifies the build of the system")
+
+
+
         //.def_readonly( "servicePackString", &SystemVersion::servicePackString,
         //    "String for the service pack level of the target computer")
         //.def_readonly( "isCheckedBuild", &SystemVersion::isCheckedBuild,
