@@ -516,8 +516,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Return current target system").staticmethod("getCurrent")
         .def("getSystem", TargetSystemAdapter::getSystem,
             "Return target system by index").staticmethod("getSystem")
+        .def("getSystemById", TargetSystemAdapter::getSystemById,
+            "Return target system by id").staticmethod("getSystemById")
         .add_property("desc", TargetSystemAdapter::getDescription,
             "Retunr target system description")
+        .add_property("id", TargetSystemAdapter::getId,
+            "Return id of the target system" )
         .def("isDumpAnalyzing", TargetSystemAdapter::isDumpAnalyzing,
             "Check if it is a dump analyzing ( not living debuggee )")
         .def("isKernelDebugging", TargetSystemAdapter::isKernelDebugging,
@@ -541,8 +545,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Return a current process" ).staticmethod("getCurrent")
         .def("getProcess", TargetProcessAdapter::getProcess,
             "Return process by index").staticmethod("getProcess")
+        .def("getProcessById", TargetProcessAdapter::getProcessById,
+            "Return process by id").staticmethod("getProcessById")
         .add_property("systemID", TargetProcessAdapter::getSystemId,
             "Retrun system process ID ( PID )" )
+        .add_property("id", TargetProcessAdapter::getId,
+            "Return process id")
         .add_property("peb", TargetProcessAdapter::getPebOffset,
             "Return PEB address" )
         .add_property("exeName", TargetProcessAdapter::getExeName,
@@ -562,6 +570,16 @@ BOOST_PYTHON_MODULE( pykd )
          ;
 
     python::class_<kdlib::TargetThread, kdlib::TargetThreadPtr, boost::noncopyable>("targetThread", "Class representing process in the target system", python::no_init )
+        .def("getNumber", TargetThreadAdapter::getNumberThreads,
+            "Return number of threads").staticmethod("getNumber")
+        .def("getCurrent", TargetThreadAdapter::getCurrent,
+            "Return a current thread").staticmethod("getCurrent")
+        .def("getThread", TargetThreadAdapter::getThread,
+            "Return thread by index").staticmethod("getThread")
+        .def("getThreadById", TargetThreadAdapter::getThreadById,
+            "Return process by id").staticmethod("getThreadById")
+        .add_property("id", TargetThreadAdapter::getId,
+            "Return thread id")
         .add_property("systemID", TargetThreadAdapter::getSystemId,
             "Retrun system thread ID ( TID )" )
         .add_property("teb", TargetThreadAdapter::getTebOffset,

@@ -27,10 +27,22 @@ struct TargetSystemAdapter {
         return kdlib::TargetSystem::getByIndex(index);
     }
 
+    static kdlib::TargetSystemPtr getSystemById(kdlib::SYSTEM_DEBUG_ID id)
+    {
+        AutoRestorePyState  pystate;
+        return kdlib::TargetSystem::getById(id);
+    }
+
     static std::wstring getDescription(kdlib::TargetSystem& system)
     {
         AutoRestorePyState  pystate;
         return system.getDescription();
+    }
+
+    static kdlib::SYSTEM_DEBUG_ID getId(kdlib::TargetSystem& system)
+    {
+        AutoRestorePyState  pystate;
+        return system.getId();
     }
 
     static bool isDumpAnalyzing(kdlib::TargetSystem& system)
@@ -91,6 +103,12 @@ struct TargetProcessAdapter {
         return kdlib::TargetProcess::getByIndex(index);
     }
 
+    static kdlib::TargetProcessPtr getProcessById(kdlib::PROCESS_DEBUG_ID id)
+    {
+        AutoRestorePyState  pystate;
+        return kdlib::TargetProcess::getById(id);
+    }
+
     static unsigned long getNumberProcesses()
     {
         AutoRestorePyState  pystate;
@@ -101,6 +119,12 @@ struct TargetProcessAdapter {
     {
         AutoRestorePyState  pystate;
         return process.getSystemId();
+    }
+
+    static kdlib::PROCESS_DEBUG_ID getId(kdlib::TargetProcess& process)
+    {
+        AutoRestorePyState  pystate;
+        return process.getId();
     }
 
     static kdlib::MEMOFFSET_64 getPebOffset(kdlib::TargetProcess& process)
@@ -160,6 +184,36 @@ struct TargetProcessAdapter {
 
 
 struct TargetThreadAdapter {
+
+    static unsigned long getNumberThreads()
+    {
+        AutoRestorePyState  pystate;
+        return kdlib::TargetThread::getNumber();
+    }
+
+    static kdlib::TargetThreadPtr getCurrent()
+    {
+        AutoRestorePyState  pystate;
+        return  kdlib::TargetThread::getCurrent();
+    }
+
+    static kdlib::TargetThreadPtr getThread(unsigned long index)
+    {
+        AutoRestorePyState  pystate;
+        return kdlib::TargetThread::getByIndex(index);
+    }
+
+    static kdlib::TargetThreadPtr getThreadById(kdlib::THREAD_DEBUG_ID id)
+    {
+        AutoRestorePyState  pystate;
+        return kdlib::TargetThread::getById(id);
+    }
+
+    static kdlib::THREAD_DEBUG_ID getId(kdlib::TargetThread& thread)
+    {
+        AutoRestorePyState  pystate;
+        return thread.getId();
+    }
 
     static kdlib::THREAD_ID getSystemId(kdlib::TargetThread& thread )
     {
