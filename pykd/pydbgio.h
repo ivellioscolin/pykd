@@ -64,7 +64,8 @@ public:
 
     virtual void writedml( const std::wstring& str) {
         AutoSavePythonState  pystate( &m_state );
-        write(str);
+        python::object       sys = python::import("sys");
+        sys.attr("stdout").attr("write")(str);
     }
 
 private:
