@@ -7,9 +7,7 @@ import os
 import unittest
 
 # Dynamically append current pykd.pyd path to PYTHONPATH
-sys.path.insert(0, os.path.dirname(sys.argv[1]))
-
-print os.path.abspath(os.curdir)
+sys.path.insert(0, os.path.abspath(os.curdir) )
 
 import pykd
 

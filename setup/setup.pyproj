@@ -13,7 +13,7 @@
     <Name>setup</Name>
     <RootNamespace>setup</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>install</CommandLineArguments>
+    <CommandLineArguments>bdist_zip --plat-name=win32</CommandLineArguments>
     <InterpreterPath />
     <InterpreterArguments />
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
