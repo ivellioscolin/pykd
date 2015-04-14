@@ -89,18 +89,8 @@ namespace pykd {
 
 void initialize()
 {
-    pykd::SysDbgOut  *sysPykdOut  =  new pykd::SysDbgOut();
-    pykd::SysDbgOut  *sysPykdErr  =  new pykd::SysDbgOut();
-    pykd::SysDbgIn   *sysPykdIn = new pykd::SysDbgIn();
-
     AutoRestorePyState  pystate;
-    
     kdlib::initialize();
-
-    // использовать вместо консоли потоки из sys
-    kdlib::dbgout = sysPykdOut;
-    kdlib::dbgerr = sysPykdErr;
-    kdlib::dbgin = sysPykdIn;
 }
 
 void remote_initialize( const std::wstring& remoteOptions )
@@ -204,6 +194,7 @@ BOOST_PYTHON_MODULE( pykd )
     // Python debug output console helper classes
     python::class_<DbgOut>( "dout", "dout", python::no_init )
         .def( "write", &DbgOut::write )
+        .def( "writedml", &DbgOut::writedml)
         .def( "flush", &DbgOut::flush )
         .add_property( "encoding", &DbgOut::encoding );
 
@@ -532,8 +523,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Check if the target is current")
         .def("getNumberProcesses", TargetSystemAdapter::getNumberProcesses,
             "Return processed number of the target system")
-        .def("process", TargetSystemAdapter::getProcessByIndex,
+        .def("getProcess", TargetSystemAdapter::getProcessByIndex,
             "Return process by index")
+        .def("getProcessById", TargetSystemAdapter::getProcessById,
+            "Return process by id")
         .def("currentProcess", TargetSystemAdapter::getCurrentProcess,
             "Return current process")
         ;
@@ -559,8 +552,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Check if the target is current")
         .def("getNumberThreads", TargetProcessAdapter::getNumberThreads,
             "Return number of threads for this process" )
-        .def("thread", TargetProcessAdapter::getThreadByIndex,
+        .def("getThread", TargetProcessAdapter::getThreadByIndex,
             "Return thread by its index" )
+         .def("getThreadById", TargetProcessAdapter::getThreadById,
+            "Return thread by its index")
         .def("currentThread", TargetProcessAdapter::getCurrentThread,
             "Return current thread" )
         .def("getNumberBreakpoints", TargetProcessAdapter::getNumberBreakpoints,
