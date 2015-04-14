@@ -74,18 +74,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
+    <OutDir>$(SolutionDir)out\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
+    <OutDir>$(SolutionDir)out\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
+    <OutDir>$(SolutionDir)out\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
+    <OutDir>$(SolutionDir)out\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">
     <ClCompile>
@@ -193,7 +197,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="export.def" />
-    <None Include="packages.config" />
     <None Include="packages.pykd_bootstrapper_vc120.config" />
   </ItemGroup>
   <ItemGroup>

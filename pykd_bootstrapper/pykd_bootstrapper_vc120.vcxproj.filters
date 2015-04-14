@@ -125,6 +125,5 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="packages.pykd_bootstrapper_vc120.config" />
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>

@@ -13,7 +13,7 @@ inline void dprint( const std::wstring &str, bool dml = false )
 {
      python::object       sys = python::import("sys");
 
-     if (dml &&  PyObject_HasAttrString(python::object(sys.attr("stdout")).ptr(), "writedml"))
+     if (dml && 0 != PyObject_HasAttrString(python::object(sys.attr("stdout")).ptr(), "writedml"))
         sys.attr("stdout").attr("writedml")(str);
      else
         sys.attr("stdout").attr("write")( str );
@@ -80,6 +80,15 @@ public:
         return L"ascii";
     }
 };
+
+///////////////////////////////////////////////////////////////////////////////
+
+inline
+bool isWindbgExt()
+{
+    python::object  sys = python::import("sys");
+    return 0 != PyObject_HasAttrString(python::object(sys.attr("stdout")).ptr(), "writedml");
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

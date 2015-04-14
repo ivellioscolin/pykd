@@ -343,6 +343,7 @@ void PykdBootsTrapper::setUp()
     // Python debug output console helper classes
     python::class_<::DbgOut>("dout", "dout", python::no_init)
         .def("write", &::DbgOut::write)
+        .def("writedml", &::DbgOut::writedml)
         .def("flush", &::DbgOut::flush)
         .add_property("encoding", &::DbgOut::encoding);
 

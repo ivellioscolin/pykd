@@ -102,6 +102,7 @@ bool isKernelDebugging()
     return kdlib::isKernelDebugging();
 }
 
+
 inline
 python::object debugCommand( const std::wstring &command,  bool suppressOutput = true)
 {

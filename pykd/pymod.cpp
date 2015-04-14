@@ -101,6 +101,7 @@ void remote_initialize( const std::wstring& remoteOptions )
 
 void uninitialize()
 {
+    AutoRestorePyState  pystate;
     kdlib::uninitialize();
 }
 
@@ -159,7 +160,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if it is a dump analyzing ( not living debuggee )" );
     python::def( "isKernelDebugging", pykd::isKernelDebugging,
         "Check if kernel dubugging is running" );
-    python::def( "isWindbgExt", PykdExt::isInit,
+    python::def( "isWindbgExt", pykd::isWindbgExt,
         "Check if script works in windbg context" );
     python::def( "writeDump", pykd::writeDump,
         "Create memory dump file" );
