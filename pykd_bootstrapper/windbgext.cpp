@@ -24,8 +24,6 @@ public:
 
 private:
 
-    void startConsole();
-
     void printUsage();
     
     void printException();
@@ -154,17 +152,17 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
             return;
         }
         else
-            if (args[0] == "-g" || args[0] == "--global")
-            {
-                global = true;
-                args.erase(args.begin());
-            }
-            else
-                if (args[0] == "-l" || args[0] == "--local")
-                {
-                    local = true;
-                    args.erase(args.begin());
-                }
+        if (args[0] == "-g" || args[0] == "--global")
+        {
+            global = true;
+            args.erase(args.begin());
+        }
+        else
+        if (args[0] == "-l" || args[0] == "--local")
+        {
+            local = true;
+            args.erase(args.begin());
+        }
     }
 
     PyThreadState   *localState = NULL;
@@ -172,88 +170,93 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
 
     PyEval_RestoreThread(m_pyState);
 
-    python::handle<>  pykdHandle(python::allow_null(PyImport_ImportModule("pykd")));
-    if (!pykdHandle)
-    {
-        m_pyState = PyEval_SaveThread();
-        kdlib::eprintln(L"Pykd package is not installed. You can install it by command \"!pykd.install\"");
-        return;
-    }
+    try {
 
-    std::string  scriptFileName;
-    if (args.size() > 0)
-    {
-        scriptFileName = getScriptFileName(args[0]);
+        InterruptWatch  interruptWatch;
 
-        if (scriptFileName.empty())
+
+        std::string  scriptFileName;
+        if (args.size() > 0)
         {
-            m_pyState = PyEval_SaveThread();
-            kdlib::eprintln(L"script file not found");
-            return;
-        }
+            scriptFileName = getScriptFileName(args[0]);
 
-        global = !(global || local) ? false : global; //set local by default
-    }
-    else
-    {
-        global = !(global || local) ? true : global; //set global by default
-    }
-
-    if (!global)
-    {
-        globalState = PyThreadState_Swap(NULL);
-
-        Py_NewInterpreter();
-
-        localState = PyThreadState_Get();
-
-        python::object       sys = python::import("sys");
-
-        sys.attr("stdout") = python::object(::DbgOut());
-        sys.attr("stderr") = python::object(::DbgOut());
-        sys.attr("stdin") = python::object(::DbgIn());
-    }
-
-    if (args.size() == 0)
-    {
-        startConsole();
-    }
-    else
-    {
-        // устанавиливаем питоновские аргументы
-        char  **pythonArgs = new char*[args.size()];
-
-        pythonArgs[0] = const_cast<char*>(scriptFileName.c_str());
-
-        for (size_t i = 1; i < args.size(); ++i)
-            pythonArgs[i] = const_cast<char*>(args[i].c_str());
-
-        PySys_SetArgv((int)args.size(), pythonArgs);
-
-        delete[]  pythonArgs;
-
-        // получаем достпу к глобальному мапу ( нужен для вызова exec_file )
-        python::object  main = python::import("__main__");
-
-        python::object  global(main.attr("__dict__"));
-
-        try {
-            InterruptWatch  interruptWatch;
-
-            if (!m_pykdInitialized)
+            if (scriptFileName.empty())
             {
-                python::exec("__import__('pykd').initialize()", global);
-                m_pykdInitialized = true;
+                m_pyState = PyEval_SaveThread();
+
+                kdlib::eprintln(L"script file not found");
+
+                return;
             }
 
-            python::exec_file(scriptFileName.c_str(), global);
+            global = !(global || local) ? false : global; //set local by default
         }
-        catch (python::error_already_set const &)
+        else
         {
-            printException();
+            global = !(global || local) ? true : global; //set global by default
+        }
+
+        if (!global)
+        {
+            globalState = PyThreadState_Swap(NULL);
+
+            Py_NewInterpreter();
+
+            localState = PyThreadState_Get();
+
+            python::object       sys = python::import("sys");
+
+            sys.attr("stdout") = python::object(::DbgOut());
+            sys.attr("stderr") = python::object(::DbgOut());
+            sys.attr("stdin") = python::object(::DbgIn());
+        }
+
+        // получаем доступ к глобальному мапу ( нужен для вызова exec_file )
+        python::object       main = python::import("__main__");
+        python::object       globalScope(main.attr("__dict__"));
+
+
+        if (!m_pykdInitialized)
+        {
+            python::handle<>  pykdHandle(python::allow_null(PyImport_ImportModule("pykd")));
+            if (!pykdHandle)
+            {
+                PyErr_SetString(PyExc_Exception, "Pykd package is not installed. You can install it by command \"!pykd.install\"");
+                python::throw_error_already_set();
+            }
+
+            python::exec("__import__('pykd').initialize()", globalScope);
+            m_pykdInitialized = true;
+        }
+
+        if (args.size() == 0)
+        {
+            python::exec("import pykd", globalScope);
+            python::exec("from pykd import *", globalScope);
+            python::exec("__import__('code').InteractiveConsole(__import__('__main__').__dict__).interact()", globalScope);
+        }
+        else
+        {
+            // устанавиливаем питоновские аргументы
+            char  **pythonArgs = new char*[args.size()];
+
+            pythonArgs[0] = const_cast<char*>(scriptFileName.c_str());
+
+            for (size_t i = 1; i < args.size(); ++i)
+                pythonArgs[i] = const_cast<char*>(args[i].c_str());
+
+            PySys_SetArgv((int)args.size(), pythonArgs);
+
+            delete[]  pythonArgs;
+
+            python::exec_file(scriptFileName.c_str(), globalScope);
         }
     }
-
+    catch (python::error_already_set const &)
+    {
+        printException();
+    }
+    
     if (!global)
     {
         PyInterpreterState  *interpreter = localState->interp;
@@ -277,6 +280,7 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
     }
 
     m_pyState = PyEval_SaveThread();
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -285,12 +289,13 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, install)
 {
     PyEval_RestoreThread(m_pyState);
 
-    // получаем доступ к глобальному мапу ( нужен для вызова exec_file )
-    python::object       main = python::import("__main__");
-
-    python::object       global(main.attr("__dict__"));
-
     try {
+
+        // получаем доступ к глобальному мапу ( нужен для вызова exec_file )
+        python::object       main = python::import("__main__");
+
+        python::object       global(main.attr("__dict__"));
+        
         InterruptWatch  interruptWatch;
 
         python::exec("import pip\n", global);
@@ -312,13 +317,14 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, upgrade)
 {
     PyEval_RestoreThread(m_pyState);
 
-    // получаем доступ к глобальному мапу ( нужен для вызова exec_file )
-    python::object       main = python::import("__main__");
-
-    python::object       global(main.attr("__dict__"));
-
     try {
+
         InterruptWatch  interruptWatch;
+
+        // получаем доступ к глобальному мапу ( нужен для вызова exec_file )
+        python::object       main = python::import("__main__");
+
+        python::object       global(main.attr("__dict__"));
 
         python::exec("import pip\n", global);
         python::exec("pip.logger.consumers = []\n", global);
@@ -372,37 +378,17 @@ void PykdBootsTrapper::tearDown()
 {
     PyEval_RestoreThread(m_pyState);
 
-    Py_Finalize();
+    if (m_pykdInitialized)
+    {
+        python::object       main = python::import("__main__");
+        python::object       globalScope(main.attr("__dict__"));
+        python::exec("__import__('pykd').deinitialize()", globalScope);
+        m_pykdInitialized = false;
+    }
+
+  //  Py_Finalize();
 
     WindbgExtension::tearDown();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-void PykdBootsTrapper::startConsole()
-{
-
-    // получаем доступ к глобальному мапу ( нужен для вызова exec_file )
-    python::object       main = python::import("__main__");
-
-    python::object       global(main.attr("__dict__"));
-
-    try {
-        InterruptWatch  interruptWatch;
-
-        python::exec("import pykd", global);
-        python::exec("from pykd import *", global);
-        if (!m_pykdInitialized)
-        {
-            python::exec("pykd.initialize()", global);
-            m_pykdInitialized = true;
-        }
-        python::exec("__import__('code').InteractiveConsole(__import__('__main__').__dict__).interact()\n", global);
-    }
-    catch (python::error_already_set const &)
-    {
-        printException();
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
