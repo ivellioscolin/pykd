@@ -172,6 +172,14 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
 
     PyEval_RestoreThread(m_pyState);
 
+    python::handle<>  pykdHandle(python::allow_null(PyImport_ImportModule("pykd")));
+    if (!pykdHandle)
+    {
+        m_pyState = PyEval_SaveThread();
+        kdlib::eprintln(L"Pykd package is not installed. You can install it by command \"!pykd.install\"");
+        return;
+    }
+
     std::string  scriptFileName;
     if (args.size() > 0)
     {
@@ -179,6 +187,7 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
 
         if (scriptFileName.empty())
         {
+            m_pyState = PyEval_SaveThread();
             kdlib::eprintln(L"script file not found");
             return;
         }
@@ -350,12 +359,6 @@ void PykdBootsTrapper::setUp()
     python::class_<::DbgIn>("din", "din", python::no_init)
         .def("readline", &::DbgIn::readline)
         .add_property("encoding", &::DbgIn::encoding);
-
-    python::object       sys = python::import("sys");
-
-    sys.attr("stdout") = python::object(::DbgOut());
-    sys.attr("stderr") = python::object(::DbgOut());
-    sys.attr("stdin") = python::object(::DbgIn());
 
     m_pyState = PyEval_SaveThread();
 }
