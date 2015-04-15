@@ -8,7 +8,7 @@ import zipfile
 
 _name = "pykd"
 _desc = "python windbg extension"
-_version = '0.3.0.21'
+_version = '0.3.0.22'
 
 def  makeWheel(args):
 
@@ -81,7 +81,7 @@ def makeZip(args):
     else:
         assert(0)
 
-    zip_str = "pykd-%s-py27-%s.zip" % ( _version, args.plat_name )
+    zip_str = "pykd-%s-py27-%s" % ( _version, args.plat_name )
     zip_name = zip_str + ".zip"
 
     assert(os.path.isdir(bin_dir))

@@ -220,8 +220,6 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
     }
     else
     {
-        std::string  scriptFileName = getScriptFileName(args[0]);
-
         // устанавиливаем питоновские аргументы
         char  **pythonArgs = new char*[args.size()];
 
@@ -348,7 +346,6 @@ void PykdBootsTrapper::setUp()
 
     python::object  main_namespace = main.attr("__dict__");
 
-
     // Python debug output console helper classes
     python::class_<::DbgOut>("dout", "dout", python::no_init)
         .def("write", &::DbgOut::write)
@@ -359,6 +356,12 @@ void PykdBootsTrapper::setUp()
     python::class_<::DbgIn>("din", "din", python::no_init)
         .def("readline", &::DbgIn::readline)
         .add_property("encoding", &::DbgIn::encoding);
+
+    python::object       sys = python::import("sys");
+
+    sys.attr("stdout") = python::object(::DbgOut());
+    sys.attr("stderr") = python::object(::DbgOut());
+    sys.attr("stdin") = python::object(::DbgIn());
 
     m_pyState = PyEval_SaveThread();
 }
