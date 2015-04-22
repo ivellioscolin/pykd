@@ -10,36 +10,6 @@ using namespace kdlib;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class PykdBootsTrapper: public windbg::WindbgExtension
-{
-public:
-
-    KDLIB_EXT_COMMAND_METHOD(py);
-    KDLIB_EXT_COMMAND_METHOD(install);
-    KDLIB_EXT_COMMAND_METHOD(upgrade);
-
-    virtual void setUp();
-
-    virtual void tearDown();
-
-private:
-
-    void printUsage();
-    
-    void printException();
-
-    std::string getScriptFileName(const std::string &scriptName);
-
-    std::string findScript(const std::string &fullFileName);
-
-    PyThreadState  *m_pyState;
-
-    bool  m_pykdInitialized;
-
-};
-
-///////////////////////////////////////////////////////////////////////////////
-
 class AutoRestorePyState
 {
 public:
@@ -64,6 +34,7 @@ private:
 
     PyThreadState*    m_state;
 };
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -104,6 +75,102 @@ public:
         return L"ascii";
     }
 };
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+class PythonSingleton
+{
+
+public:
+
+    static PythonSingleton* get() {
+        if (!m_instance)
+            m_instance = new PythonSingleton();
+
+        return m_instance;
+    }
+
+    void beginPythonCode()
+    {
+        PyEval_RestoreThread(m_pyState);
+    }
+
+    void endPythonCode()
+    {
+        m_pyState = PyEval_SaveThread();
+    }
+
+private:
+
+    PythonSingleton()
+    {
+        PyEval_InitThreads();
+        
+        Py_Initialize();
+        
+        python::object  main = boost::python::import("__main__");
+        
+        python::object  main_namespace = main.attr("__dict__");
+        
+        // Python debug output console helper classes
+        python::class_<::DbgOut>("dout", "dout", python::no_init)
+            .def("write", &::DbgOut::write)
+            .def("writedml", &::DbgOut::writedml)
+            .def("flush", &::DbgOut::flush)
+            .add_property("encoding", &::DbgOut::encoding);
+        
+        python::class_<::DbgIn>("din", "din", python::no_init)
+            .def("readline", &::DbgIn::readline)
+            .add_property("encoding", &::DbgIn::encoding);
+        
+        python::object       sys = python::import("sys");
+        
+        sys.attr("stdout") = python::object(::DbgOut());
+        sys.attr("stderr") = python::object(::DbgOut());
+        sys.attr("stdin") = python::object(::DbgIn());
+        
+        m_pyState = PyEval_SaveThread();
+    }
+
+    static PythonSingleton*  m_instance;
+
+    PyThreadState  *m_pyState;
+};
+
+PythonSingleton*   PythonSingleton::m_instance = 0;
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+class PykdBootsTrapper: public windbg::WindbgExtension
+{
+
+public:
+
+    KDLIB_EXT_COMMAND_METHOD(py);
+    KDLIB_EXT_COMMAND_METHOD(install);
+    KDLIB_EXT_COMMAND_METHOD(upgrade);
+
+    virtual void setUp();
+
+    virtual void tearDown();
+
+private:
+
+    void printUsage();
+    
+    void printException();
+
+    std::string getScriptFileName(const std::string &scriptName);
+
+    std::string findScript(const std::string &fullFileName);
+
+
+    bool  m_pykdInitialized;
+
+};
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -168,12 +235,11 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
     PyThreadState   *localState = NULL;
     PyThreadState   *globalState = NULL;
 
-    PyEval_RestoreThread(m_pyState);
-
     try {
 
         InterruptWatch  interruptWatch;
 
+        PythonSingleton::get()->beginPythonCode();
 
         std::string  scriptFileName;
         if (args.size() > 0)
@@ -182,11 +248,9 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
 
             if (scriptFileName.empty())
             {
-                m_pyState = PyEval_SaveThread();
-
                 kdlib::eprintln(L"script file not found");
 
-                return;
+                python::throw_error_already_set();
             }
 
             global = !(global || local) ? false : global; //set local by default
@@ -279,15 +343,14 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
         PyThreadState_Swap(globalState);
     }
 
-    m_pyState = PyEval_SaveThread();
-
+    PythonSingleton::get()->endPythonCode();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, install)
 {
-    PyEval_RestoreThread(m_pyState);
+    PythonSingleton::get()->beginPythonCode();
 
     try {
 
@@ -308,24 +371,21 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, install)
         printException();
     }
 
-    m_pyState = PyEval_SaveThread();
+    PythonSingleton::get()->endPythonCode();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, upgrade)
 {
-    PyEval_RestoreThread(m_pyState);
+    PythonSingleton::get()->beginPythonCode();
 
     try {
 
         InterruptWatch  interruptWatch;
 
-        // получаем доступ к глобальному мапу ( нужен для вызова exec_file )
         python::object       main = python::import("__main__");
-
         python::object       global(main.attr("__dict__"));
-
         python::exec("import pip\n", global);
         python::exec("pip.logger.consumers = []\n", global);
         python::exec("pip.main(['install', '--upgrade', 'pykd'])\n", global);
@@ -335,58 +395,37 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, upgrade)
         printException();
     }
 
-    m_pyState = PyEval_SaveThread();
+    PythonSingleton::get()->endPythonCode();
 }
 
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 void PykdBootsTrapper::setUp()
 {
     WindbgExtension::setUp();
-
-    PyEval_InitThreads();
-
-    Py_Initialize();
-
-    python::object  main = boost::python::import("__main__");
-
-    python::object  main_namespace = main.attr("__dict__");
-
-    // Python debug output console helper classes
-    python::class_<::DbgOut>("dout", "dout", python::no_init)
-        .def("write", &::DbgOut::write)
-        .def("writedml", &::DbgOut::writedml)
-        .def("flush", &::DbgOut::flush)
-        .add_property("encoding", &::DbgOut::encoding);
-
-    python::class_<::DbgIn>("din", "din", python::no_init)
-        .def("readline", &::DbgIn::readline)
-        .add_property("encoding", &::DbgIn::encoding);
-
-    python::object       sys = python::import("sys");
-
-    sys.attr("stdout") = python::object(::DbgOut());
-    sys.attr("stderr") = python::object(::DbgOut());
-    sys.attr("stdin") = python::object(::DbgIn());
-
-    m_pyState = PyEval_SaveThread();
 }
 
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 void PykdBootsTrapper::tearDown()
 {
-    PyEval_RestoreThread(m_pyState);
-
     if (m_pykdInitialized)
     {
-        python::object       main = python::import("__main__");
-        python::object       globalScope(main.attr("__dict__"));
-        python::exec("__import__('pykd').deinitialize()", globalScope);
-        m_pykdInitialized = false;
-    }
+        PythonSingleton::get()->beginPythonCode();
 
-  //  Py_Finalize();
+        try {
+            python::object  main = python::import("__main__");
+            python::object  global(main.attr("__dict__"));
+            python::exec("__import__('pykd').deinitialize()", global);
+            m_pykdInitialized = false;
+        }
+        catch (python::error_already_set const &)
+        {
+            printException();
+        }
+
+        PythonSingleton::get()->endPythonCode();       
+    }
 
     WindbgExtension::tearDown();
 }
