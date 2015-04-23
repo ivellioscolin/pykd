@@ -132,7 +132,7 @@ class BreakpointTest( unittest.TestCase ):
 
             pykd.go()
 
-            bp = MyBreakpoint( targetModule.CdeclFunc )
+            bp = MyBreakpoint( targetModule.typedVar("CdeclFunc").getDebugStart() )
 
             self.assertEqual( pykd.executionStatus.Break, pykd.go() )
 
@@ -154,7 +154,7 @@ class BreakpointTest( unittest.TestCase ):
         targetModule.reload()
         with testutils.ContextCallIt( testutils.KillProcess(processId) ) as killStartedProcess :
             pykd.go()
-            bp = pykd.setBp( targetModule.CdeclFunc, makebpcallback(1) )
+            bp = pykd.setBp( targetModule.typedVar("CdeclFunc").getDebugStart(), makebpcallback(1) )
             self.assertEqual( pykd.executionStatus.Break, pykd.go() )
 
 
@@ -163,7 +163,7 @@ class BreakpointTest( unittest.TestCase ):
         targetModule.reload()
         with testutils.ContextCallIt( testutils.KillProcess(processId) ) as killStartedProcess :
             pykd.go()
-            bp = pykd.setBp( targetModule.CdeclFunc, makebpcallback(100) )
+            bp = pykd.setBp(targetModule.typedVar("CdeclFunc").getDebugStart(), makebpcallback(100) )
             self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
 
     def testBreakpointEnum(self):

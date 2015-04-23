@@ -15,19 +15,14 @@ class StackTest(unittest.TestCase):
 
         expectedStack = [ 'targetapp!stackTestRun2',
                   'targetapp!stackTestRun1',
-                  'targetapp!stackTestRun',
-                  'targetapp!wmain',
-                  'targetapp!__tmainCRTStartup',
-                  'targetapp!wmainCRTStartup',
-                  'kernel32!BaseThreadInitThunk',
-                  'ntdll!RtlUserThreadStart' ]
+                  'targetapp!stackTestRun']
 
         realStack = []
         for frame in pykd.getStack():
             moduleName, symbolName, disp = pykd.findSymbolAndDisp( frame.ip )
             realStack.append( "%s!%s" % ( moduleName, symbolName ) )
 
-        self.assertEqual( expectedStack, realStack )
+        self.assertEqual( expectedStack, realStack[0:3])
 
     def testGetParams(self):
         expectedParams = ["a", "b", "c"]

@@ -104,7 +104,7 @@ class ModuleTest( unittest.TestCase ):
         # targetapp!ulongConst = 0x5555
         # targetapp!classChild::m_staticConst = <no type information>
         lst = target.module.enumSymbols( "*Const")
-        self.assertEqual( 4, len(lst) )
+        self.assertEqual( 3, len(lst) )
 
         lst = target.module.enumSymbols( "*cal?Func")
         self.assertEqual( 4, len(lst) )

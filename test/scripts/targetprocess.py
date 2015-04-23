@@ -23,7 +23,7 @@ class ProcessTest(unittest.TestCase):
         threadNumber = proc.getNumberThreads()
         self.assertLess(0, threadNumber)
         for i in xrange(threadNumber):
-            thread = proc.thread(i)
+            thread = proc.getThread(i)
             self.assertNotEqual(0, thread.systemID )
             self.assertNotEqual(0, thread.teb )
 
@@ -39,7 +39,7 @@ class ProcessTest(unittest.TestCase):
         threadNumber = proc.getNumberThreads()
         self.assertLess(0, threadNumber)
         for i in xrange(threadNumber):
-            thread = proc.thread(i)
+            thread = proc.getThread(i)
             thread.setCurrent()
 
     def testGetBreakpoint(self):
