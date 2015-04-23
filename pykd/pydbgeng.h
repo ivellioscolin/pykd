@@ -431,6 +431,10 @@ std::wstring printExceptionInfo( kdlib::ExceptionInfo& exceptionInfo );
 
 python::tuple getBugCheckData();
 
+kdlib::SyntheticSymbol addSyntheticSymbol( kdlib::MEMOFFSET_64 offset, unsigned long size, const std::wstring &name );
+void removeSyntheticSymbol(const kdlib::SyntheticSymbol& syntheticSymbol);
+std::wstring printSyntheticSymbol(const kdlib::SyntheticSymbol& syntheticSymbol);
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } //end namespace pykd

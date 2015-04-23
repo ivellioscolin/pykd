@@ -456,6 +456,13 @@ BOOST_PYTHON_MODULE( pykd )
     python::def("appendSymbolPath", pykd::appendSymbolPath, 
         "Append current symbol path");
 
+    // synthetic symbol
+    python::def("addSyntheticSymbol", pykd::addSyntheticSymbol,
+        "The addSyntheticSymbol function adds a synthetic symbol to a module in the current process\n"
+        "Note: reloading the symbols for the module deletes all synthetic symbols associated with that module.");
+    python::def( "removeSyntheticSymbol", pykd::removeSyntheticSymbol,
+        "The removeSyntheticSymbol function removes a synthetic symbol from a module in the current proces" );
+
     python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVariant", python::no_init )
         .def("__init__", python::make_constructor(&NumVariantAdaptor::getVariant) )
         .def( "__eq__", &NumVariantAdaptor::eq )
@@ -821,9 +828,6 @@ BOOST_PYTHON_MODULE( pykd )
             "Build number for the target's operating system")
         .def_readonly( "buildString", &kdlib::SystemInfo::buildDescription,
             "String that identifies the build of the system")
-
-
-
         //.def_readonly( "servicePackString", &SystemVersion::servicePackString,
         //    "String for the service pack level of the target computer")
         //.def_readonly( "isCheckedBuild", &SystemVersion::isCheckedBuild,
@@ -1050,6 +1054,15 @@ BOOST_PYTHON_MODULE( pykd )
         .def("onHit", &Breakpoint::onHit,
             "Breakpoint hit callback")
         ;
+
+    python::class_<kdlib::SyntheticSymbol>(
+        "syntheticSymbol", "Structure describes a synthetic symbol within a module", python::no_init)
+        .def_readonly( "moduleBase", &kdlib::SyntheticSymbol::moduleBase,
+            "The location in the target's virtual address space of the module's base address")
+        .def_readonly( "symbolId", &kdlib::SyntheticSymbol::symbolId,
+            "The symbol ID of the symbol within the module")
+        .def("__str__", pykd::printSyntheticSymbol,
+            "Return object as a string");
 
     // C++ exception translation to python
     pykd::registerExceptions();

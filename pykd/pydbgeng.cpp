@@ -165,4 +165,32 @@ python::tuple getBugCheckData()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+kdlib::SyntheticSymbol addSyntheticSymbol( kdlib::MEMOFFSET_64 offset, unsigned long size, const std::wstring &name )
+{
+    AutoRestorePyState pystate;
+    return kdlib::addSyntheticSymbol(offset, size, name);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void removeSyntheticSymbol(const kdlib::SyntheticSymbol& syntheticSymbol)
+{
+    AutoRestorePyState pystate;
+    return kdlib::removeSyntheticSymbol(syntheticSymbol);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::wstring printSyntheticSymbol(const kdlib::SyntheticSymbol& syntheticSymbol)
+{
+    std::wstringstream sstream;
+
+    sstream << L"moduleBase=0x" << std::hex << syntheticSymbol.moduleBase << std::endl;
+    sstream << L"symbolId= 0x" << std::hex << syntheticSymbol.symbolId << std::endl;
+
+    return sstream.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } //end namespace pykd
