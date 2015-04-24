@@ -26,6 +26,7 @@ import mspdbtest
 import excepttest
 import targetprocess
 import ehloadtest
+import synsymtest
 
 pykd.initialize()
 
@@ -55,6 +56,7 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
                 #unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
                 unittest.TestLoader().loadTestsFromTestCase( customtypestest.CustomTypesTest ),
+                unittest.TestLoader().loadTestsFromTestCase( synsymtest.SynSymTest ),
                 # ^^^
                 unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest ),
 
@@ -83,5 +85,5 @@ if __name__ == "__main__":
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
 
-    #raw_input("Press <ENTER>...")
+    # raw_input("Press <ENTER>...")
 
