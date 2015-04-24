@@ -13,7 +13,8 @@
     <Name>pykdtest</Name>
     <RootNamespace>pykdtest</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>C:\proj\pykd_dev\out\x64\Debug\targetapp.exe</CommandLineArguments>
+    <CommandLineArguments>
+    </CommandLineArguments>
     <InterpreterPath />
     <InterpreterArguments>
     </InterpreterArguments>

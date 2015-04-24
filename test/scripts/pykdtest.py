@@ -80,7 +80,7 @@ if __name__ == "__main__":
 
     print "\nTesting PyKd ver.", pykd.__version__, "File:", os.path.dirname(pykd.__file__)
 
-    target.appPath = sys.argv[1]
+    target.appPath = os.path.join( os.path.dirname(pykd.__file__), "targetapp.exe" )
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
