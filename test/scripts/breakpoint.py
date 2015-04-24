@@ -47,6 +47,16 @@ class BreakpointTest( unittest.TestCase ):
             bp.remove()
             self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
 
+    def testDeleteBp(self):
+        processId = pykd.startProcess( target.appPath + " breakhandlertest" )
+        targetModule = pykd.module( target.moduleName )
+        targetModule.reload()
+        with testutils.ContextCallIt( testutils.KillProcess(processId) ) as killStartedProcess :
+            pykd.go()
+            bp = pykd.setBp(  targetModule.CdeclFunc )
+            del bp
+            self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
+
     def testBreakCallback(self):
         processId = pykd.startProcess( target.appPath + " breakhandlertest" )
         targetModule = pykd.module( target.moduleName )
@@ -199,3 +209,30 @@ class BreakpointTest( unittest.TestCase ):
             bp = pykd.setBp( targetModule.CdeclFunc)
             bp.remove()
             self.assertEqual(0, pykd.getNumberBreakpoints())
+
+    def testLambdaBpContinue(self):
+
+        processId = pykd.startProcess( target.appPath + " breakhandlertest" )
+        targetModule = pykd.module( target.moduleName )
+        targetModule.reload()
+        with testutils.ContextCallIt( testutils.KillProcess(processId) ) as killStartedProcess :
+            pykd.go()
+            bp1 = pykd.setBp(targetModule.CdeclFunc, lambda : None )
+            bp2 = pykd.setBp(targetModule.CdeclFunc, lambda : False )
+            self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
+
+
+    def testLambdaBpBreak(self):
+
+        processId = pykd.startProcess( target.appPath + " breakhandlertest" )
+        targetModule = pykd.module( target.moduleName )
+        targetModule.reload()
+        with testutils.ContextCallIt( testutils.KillProcess(processId) ) as killStartedProcess :
+            pykd.go()
+            bp2 = pykd.setBp(targetModule.CdeclFunc, lambda : True )
+            self.assertEqual( pykd.executionStatus.Break, pykd.go() )
+
+    
+
+
+
