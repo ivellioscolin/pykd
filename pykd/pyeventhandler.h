@@ -79,13 +79,14 @@ public:
 
     Breakpoint(kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType, python::object  &callback);
 
-    ~Breakpoint() 
+    ~Breakpoint()
     {}
 
     virtual kdlib::DebugCallbackResult onHit();
 
-    virtual void onRemove() {
-        delete this;
+    virtual void onRemove()
+    {
+        m_breakpoint = 0;
     }
 
     kdlib::BREAKPOINT_ID getId() const

@@ -47,7 +47,7 @@ class BreakpointTest( unittest.TestCase ):
             bp.remove()
             self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
 
-    def testDeleteBp(self):
+    def disable_testDeleteBp(self):
         processId = pykd.startProcess( target.appPath + " breakhandlertest" )
         targetModule = pykd.module( target.moduleName )
         targetModule.reload()
@@ -108,6 +108,7 @@ class BreakpointTest( unittest.TestCase ):
 
             def onBreakpoint( self, bpid_):
                 self.count = self.count + 1
+                return True
 
         processId = pykd.startProcess( target.appPath + " breakhandlertest" )
         targetModule = pykd.module( target.moduleName )
@@ -134,6 +135,7 @@ class BreakpointTest( unittest.TestCase ):
 
              def onHit(self):
                  self.count = self.count + 1
+                 return True
 
         processId = pykd.startProcess( target.appPath + " breakhandlertest" )
         targetModule = pykd.module( target.moduleName )
@@ -219,6 +221,7 @@ class BreakpointTest( unittest.TestCase ):
             pykd.go()
             bp1 = pykd.setBp(targetModule.CdeclFunc, lambda : None )
             bp2 = pykd.setBp(targetModule.CdeclFunc, lambda : False )
+            bp3 = pykd.setBp(targetModule.CdeclFunc, lambda : 0 )
             self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
 
 

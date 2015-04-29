@@ -35,21 +35,27 @@ kdlib::DebugCallbackResult EventHandler::onBreakpoint( kdlib::BREAKPOINT_ID bpId
 
             python::object  resObj = pythonHandler( bpId );
 
-            if ( resObj.is_none() )
+            if (resObj.is_none())
             {
-                result = kdlib::DebugCallbackNoChange;
+                result = kdlib::DebugCallbackProceed;
                 break;
             }
 
-            int retVal = python::extract<int>( resObj );
-
-            if ( retVal >= kdlib::DebugCallbackMax )
+            if (PyBool_Check(resObj.ptr()))
             {
-                result = kdlib::DebugCallbackBreak;
+                result = python::extract<bool>(resObj) ? kdlib::DebugCallbackBreak : kdlib::DebugCallbackProceed;
                 break;
             }
-                
-            result = kdlib::DebugCallbackResult(retVal);
+
+            python::extract<int>  resInt(resObj);
+            if (resInt.check())
+            {
+                result = resInt < kdlib::DebugCallbackMax ? kdlib::DebugCallbackResult(resInt()) : kdlib::DebugCallbackBreak;
+                break;
+            }
+
+            result = kdlib::DebugCallbackBreak;
+
 
         } while( FALSE );
 
@@ -108,21 +114,27 @@ kdlib::DebugCallbackResult EventHandler::onException( const kdlib::ExceptionInfo
 
             python::object  resObj = pythonHandler( exceptionInfo );
 
-            if ( resObj.is_none() )
+            if (resObj.is_none())
             {
-                result = kdlib::DebugCallbackNoChange;
+                result = kdlib::DebugCallbackProceed;
                 break;
             }
 
-            int retVal = python::extract<int>( resObj );
-
-            if ( retVal >= kdlib::DebugCallbackMax )
+            if (PyBool_Check(resObj.ptr()))
             {
-                result = kdlib::DebugCallbackBreak;
+                result = python::extract<bool>(resObj) ? kdlib::DebugCallbackBreak : kdlib::DebugCallbackProceed;
                 break;
             }
-                
-            result = kdlib::DebugCallbackResult(retVal);
+
+            python::extract<int>  resInt(resObj);
+            if (resInt.check())
+            {
+                result = resInt < kdlib::DebugCallbackMax ? kdlib::DebugCallbackResult(resInt()) : kdlib::DebugCallbackBreak;
+                break;
+            }
+
+            result = kdlib::DebugCallbackBreak;
+
 
         } while( FALSE );
 
@@ -159,21 +171,27 @@ kdlib::DebugCallbackResult  EventHandler::onModuleLoad( kdlib::MEMOFFSET_64 offs
 
             python::object  resObj = pythonHandler( offset, name );
 
-            if ( resObj.is_none() )
+            if (resObj.is_none())
             {
-                result = kdlib::DebugCallbackNoChange;
+                result = kdlib::DebugCallbackProceed;
                 break;
             }
 
-            int retVal = python::extract<int>( resObj );
-
-            if ( retVal >= kdlib::DebugCallbackMax )
+            if (PyBool_Check(resObj.ptr()))
             {
-                result = kdlib::DebugCallbackBreak;
+                result = python::extract<bool>(resObj) ? kdlib::DebugCallbackBreak : kdlib::DebugCallbackProceed;
                 break;
             }
-                
-            result = kdlib::DebugCallbackResult(retVal);
+
+            python::extract<int>  resInt(resObj);
+            if (resInt.check())
+            {
+                result = resInt < kdlib::DebugCallbackMax ? kdlib::DebugCallbackResult(resInt()) : kdlib::DebugCallbackBreak;
+                break;
+            }
+
+            result = kdlib::DebugCallbackBreak;
+
 
         } while( FALSE );
 
@@ -210,21 +228,27 @@ kdlib::DebugCallbackResult  EventHandler::onModuleUnload( kdlib::MEMOFFSET_64 of
 
             python::object  resObj = pythonHandler( offset, name );
 
-            if ( resObj.is_none() )
+            if (resObj.is_none())
             {
-                result = kdlib::DebugCallbackNoChange;
+                result = kdlib::DebugCallbackProceed;
                 break;
             }
 
-            int retVal = python::extract<int>( resObj );
-
-            if ( retVal >= kdlib::DebugCallbackMax )
+            if (PyBool_Check(resObj.ptr()))
             {
-                result = kdlib::DebugCallbackBreak;
+                result = python::extract<bool>(resObj) ? kdlib::DebugCallbackBreak : kdlib::DebugCallbackProceed;
                 break;
             }
-                
-            result = kdlib::DebugCallbackResult(retVal);
+
+            python::extract<int>  resInt(resObj);
+            if (resInt.check())
+            {
+                result = resInt < kdlib::DebugCallbackMax ? kdlib::DebugCallbackResult(resInt()) : kdlib::DebugCallbackBreak;
+                break;
+            }
+
+            result = kdlib::DebugCallbackBreak;
+
 
         } while( FALSE );
 
@@ -263,19 +287,25 @@ kdlib::DebugCallbackResult EventHandler::onThreadStart()
 
             if (resObj.is_none())
             {
-                result = kdlib::DebugCallbackNoChange;
+                result = kdlib::DebugCallbackProceed;
                 break;
             }
 
-            int retVal = python::extract<int>(resObj);
-
-            if (retVal >= kdlib::DebugCallbackMax)
+            if (PyBool_Check(resObj.ptr()))
             {
-                result = kdlib::DebugCallbackBreak;
+                result = python::extract<bool>(resObj) ? kdlib::DebugCallbackBreak : kdlib::DebugCallbackProceed;
                 break;
             }
 
-            result = kdlib::DebugCallbackResult(retVal);
+            python::extract<int>  resInt(resObj);
+            if (resInt.check())
+            {
+                result = resInt < kdlib::DebugCallbackMax ? kdlib::DebugCallbackResult(resInt()) : kdlib::DebugCallbackBreak;
+                break;
+            }
+
+            result = kdlib::DebugCallbackBreak;
+
 
         } while (FALSE);
 
@@ -314,19 +344,24 @@ kdlib::DebugCallbackResult EventHandler::onThreadStop()
 
             if (resObj.is_none())
             {
-                result = kdlib::DebugCallbackNoChange;
+                result = kdlib::DebugCallbackProceed;
                 break;
             }
 
-            int retVal = python::extract<int>(resObj);
-
-            if (retVal >= kdlib::DebugCallbackMax)
+            if (PyBool_Check(resObj.ptr()))
             {
-                result = kdlib::DebugCallbackBreak;
+                result = python::extract<bool>(resObj) ? kdlib::DebugCallbackBreak : kdlib::DebugCallbackProceed;
                 break;
             }
 
-            result = kdlib::DebugCallbackResult(retVal);
+            python::extract<int>  resInt(resObj);
+            if (resInt.check())
+            {
+                result = resInt < kdlib::DebugCallbackMax ? kdlib::DebugCallbackResult(resInt()) : kdlib::DebugCallbackBreak;
+                break;
+            }
+
+            result = kdlib::DebugCallbackBreak;
 
         } while (FALSE);
 
@@ -500,24 +535,28 @@ kdlib::DebugCallbackResult Breakpoint::onHit()
                 resObj = pythonHandler();
             }
 
-            if ( resObj.is_none() )
+            if (resObj.is_none())
             {
-                result = kdlib::DebugCallbackNoChange;
+                result = kdlib::DebugCallbackProceed;
                 break;
             }
 
-            int retVal = python::extract<int>( resObj );
-
-            if ( retVal >= kdlib::DebugCallbackMax )
+            if (PyBool_Check(resObj.ptr()))
             {
-                result = kdlib::DebugCallbackBreak;
+                result = python::extract<bool>(resObj) ? kdlib::DebugCallbackBreak : kdlib::DebugCallbackProceed;
                 break;
             }
-                
-            result = kdlib::DebugCallbackResult(retVal);
+
+            python::extract<int>  resInt(resObj);
+            if (resInt.check())
+            {
+                result = resInt < kdlib::DebugCallbackMax ? kdlib::DebugCallbackResult(resInt()) : kdlib::DebugCallbackBreak;
+                break;
+            }
+
+            result = kdlib::DebugCallbackBreak;
 
         } while( FALSE );
-
     }
     catch (const python::error_already_set &) 
     {
@@ -565,8 +604,11 @@ Breakpoint* Breakpoint::getBreakpointByIndex(unsigned long index)
 void Breakpoint::remove() 
 {
     AutoRestorePyState  pystate;
-    m_breakpoint->remove();
-    m_breakpoint = 0;
+    if (m_breakpoint)
+    {
+        m_breakpoint->remove();
+        m_breakpoint = 0;
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////
