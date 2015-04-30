@@ -42,16 +42,14 @@ def iat( moduleName, mask = "*" ):
     for i in range( 0, ntHeader.OptionalHeader.DataDirectory[12].Size / pSize ):
 
         if ( pSize == 4 ):
-            iatEntry = ptrDWord( iatAddr + i*pSize )
+            iatEntry = addr64(ptrDWord( iatAddr + i*pSize ))
         else:
-            iatEntry = ptrQWord( iatAddr + i*pSize )
+            iatEntry = addr64(ptrQWord( iatAddr + i*pSize ))
 
         if  iatEntry != None and iatEntry != 0:
             symbolName = findSymbol( iatEntry ) 
             if fnmatch.fnmatch( symbolName, mask ): 
-                dprintln( symbolName )
-
- 
+                dprintln( symbolName ) 
 
 
 if __name__ == "__main__":
