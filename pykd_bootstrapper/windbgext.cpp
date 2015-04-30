@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <comutil.h>
+
 #include <boost/python.hpp>
 
 namespace python = boost::python;
@@ -235,30 +237,11 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
     PyThreadState   *localState = NULL;
     PyThreadState   *globalState = NULL;
 
+    PythonSingleton::get()->beginPythonCode();
+
     try {
 
         InterruptWatch  interruptWatch;
-
-        PythonSingleton::get()->beginPythonCode();
-
-        std::string  scriptFileName;
-        if (args.size() > 0)
-        {
-            scriptFileName = getScriptFileName(args[0]);
-
-            if (scriptFileName.empty())
-            {
-                kdlib::eprintln(L"script file not found");
-
-                python::throw_error_already_set();
-            }
-
-            global = !(global || local) ? false : global; //set local by default
-        }
-        else
-        {
-            global = !(global || local) ? true : global; //set global by default
-        }
 
         if (!global)
         {
@@ -273,6 +256,21 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
             sys.attr("stdout") = python::object(::DbgOut());
             sys.attr("stderr") = python::object(::DbgOut());
             sys.attr("stdin") = python::object(::DbgIn());
+        }
+
+        std::string  scriptFileName;
+        if (args.size() > 0)
+        {
+            scriptFileName = getScriptFileName(args[0]);
+
+            if (scriptFileName.empty())
+                throw std::invalid_argument("script not found");
+
+            global = !(global || local) ? false : global; //set local by default
+        }
+        else
+        {
+            global = !(global || local) ? true : global; //set global by default
         }
 
         // получаем доступ к глобальному мапу ( нужен для вызова exec_file )
@@ -316,12 +314,17 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, py)
             python::exec_file(scriptFileName.c_str(), globalScope);
         }
     }
-    catch (python::error_already_set const &)
+    catch (const python::error_already_set&)
     {
         printException();
     }
+    catch (const std::exception& invalidArg)
+    {
+        _bstr_t    bstrInavalidArg(invalidArg.what());
+        kdlib::eprintln(std::wstring(bstrInavalidArg));
+    }
     
-    if (!global)
+    if (!global && localState)
     {
         PyInterpreterState  *interpreter = localState->interp;
 
@@ -370,6 +373,11 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, install)
     {
         printException();
     }
+    catch (const std::exception& invalidArg)
+    {
+        _bstr_t    bstrInavalidArg(invalidArg.what());
+        kdlib::eprintln(std::wstring(bstrInavalidArg));
+    }
 
     PythonSingleton::get()->endPythonCode();
 }
@@ -393,6 +401,11 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdBootsTrapper, upgrade)
     catch (python::error_already_set const &)
     {
         printException();
+    }
+    catch (const std::exception& invalidArg)
+    {
+        _bstr_t    bstrInavalidArg(invalidArg.what());
+        kdlib::eprintln(std::wstring(bstrInavalidArg));
     }
 
     PythonSingleton::get()->endPythonCode();
@@ -504,10 +517,10 @@ std::string PykdBootsTrapper::findScript(const std::string &fullFileName)
                 &fullFileNameCStr[0],
                 &partFileNameCStr);
 
-            if (bufSize > 0)
-            {
+            DWORD   fileAttr = GetFileAttributesA(&fullFileNameCStr[0]);
+
+            if ( (fileAttr & FILE_ATTRIBUTE_DIRECTORY) == 0 )
                 return std::string(&fullFileNameCStr[0]);
-            }
         }
     }
 

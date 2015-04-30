@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <comutil.h>
 
 #include <boost/python.hpp>
 namespace python = boost::python;
@@ -181,10 +182,16 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
             PykdInterruptWatch  interruptWatch;
             python::exec_file( scriptFileName.c_str(), global );
         }
-        catch( python::error_already_set const & )
+        catch( const python::error_already_set& )
         {
             pykd::printException();
         }
+        catch (const std::exception& invalidArg)
+        {
+            _bstr_t    bstrInavalidArg(invalidArg.what());
+            kdlib::eprintln(std::wstring(bstrInavalidArg));
+        }
+
     }
 
     if ( !global )
