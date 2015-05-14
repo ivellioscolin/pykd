@@ -8,7 +8,7 @@ import zipfile
 
 _name = "pykd"
 _desc = "python windbg extension"
-_version = '0.3.0.22'
+_version = '0.3.0.25'
 
 def  makeWheel(args):
 
