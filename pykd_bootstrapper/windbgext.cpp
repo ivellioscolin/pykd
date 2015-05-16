@@ -180,6 +180,8 @@ public:
     {
         delete m_globalInterpreter;
         m_globalInterpreter = 0;
+        PyThreadState_Swap(m_globalState);
+        m_globalState = PyEval_SaveThread();
     }
 
     void start()

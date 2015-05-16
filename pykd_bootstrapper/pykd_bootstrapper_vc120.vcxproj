@@ -105,6 +105,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>export.def</ModuleDefinitionFile>
       <OutputFile>$(OutDir)pykd$(TargetExt)</OutputFile>
+      <AdditionalDependencies>comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">
@@ -121,6 +122,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>export.def</ModuleDefinitionFile>
       <OutputFile>$(OutDir)pykd$(TargetExt)</OutputFile>
+      <AdditionalDependencies>comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">
@@ -142,6 +144,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>export.def</ModuleDefinitionFile>
       <OutputFile>$(OutDir)pykd$(TargetExt)</OutputFile>
+      <AdditionalDependencies>comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">
@@ -163,6 +166,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>export.def</ModuleDefinitionFile>
       <OutputFile>$(OutDir)pykd$(TargetExt)</OutputFile>
+      <AdditionalDependencies>comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -200,11 +204,6 @@
   <ItemGroup>
     <None Include="export.def" />
     <None Include="packages.pykd_bootstrapper_vc120.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\kdlibcpp\source\kdlib_vc120.vcxproj">
-      <Project>{3e9c538f-f060-4e86-ab7d-d44439615b63}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="version.rc" />
