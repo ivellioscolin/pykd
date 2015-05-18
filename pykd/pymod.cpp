@@ -562,14 +562,18 @@ BOOST_PYTHON_MODULE( pykd )
             "Return number of threads for this process" )
         .def("getThread", TargetProcessAdapter::getThreadByIndex,
             "Return thread by its index" )
-         .def("getThreadById", TargetProcessAdapter::getThreadById,
+        .def("getThreadById", TargetProcessAdapter::getThreadById,
             "Return thread by its index")
         .def("currentThread", TargetProcessAdapter::getCurrentThread,
             "Return current thread" )
         .def("getNumberBreakpoints", TargetProcessAdapter::getNumberBreakpoints,
             "Return number of breakpoints for this process" )
-        .def("breakpoint", TargetProcessAdapter::getBreakpointByIndex, python::return_value_policy<python::manage_new_object>(),
+        .def("getBreakpoint", TargetProcessAdapter::getBreakpointByIndex, python::return_value_policy<python::manage_new_object>(),
             "Return a breakpoint by it's index" )
+        .def("getNumberModules", TargetProcessAdapter::getNumberModules,
+            "Return number of modules for this process" )
+        .def("getModule", TargetProcessAdapter::getModuleByIndex,
+            "Return a module object by it's index" )
          ;
 
     python::class_<kdlib::TargetThread, kdlib::TargetThreadPtr, boost::noncopyable>("targetThread", "Class representing process in the target system", python::no_init )

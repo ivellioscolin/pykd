@@ -192,6 +192,18 @@ struct TargetProcessAdapter {
         AutoRestorePyState  pystate;
         return process.isCurrent();
     }
+
+    static unsigned long getNumberModules(kdlib::TargetProcess& process)
+    {
+        AutoRestorePyState  pystate;
+        return process.getNumberModules();
+    }
+
+    static kdlib::ModulePtr getModuleByIndex(kdlib::TargetProcess& process, unsigned long index)
+    {
+        AutoRestorePyState  pystate;
+        return process.getModuleByIndex(index);
+    }
 };
 
 
