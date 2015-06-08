@@ -421,6 +421,12 @@ inline std::wstring getSourceFile(kdlib::MEMOFFSET_64 offset = 0)
     return kdlib::getSourceFile(offset);
 }
 
+inline std::wstring getSourceFileFromSrcSrv(kdlib::MEMOFFSET_64 offset = 0)
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getSourceFileFromSrcSrv(offset);
+}
+
 kdlib::SystemInfo getSystemVersion();
 
 std::wstring printSystemVersion( kdlib::SystemInfo& sysInfo );

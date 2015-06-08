@@ -34,4 +34,25 @@ void appendSymbolPath(const std::wstring &symPath)
 	kdlib::appendSymbolPath(symPath);
 }
 
+inline
+std::wstring getSrcPath()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getSrcPath();
+}
+
+inline
+void setSrcPath(const std::wstring &srcPath)
+{
+    AutoRestorePyState  pystate;
+    kdlib::setSrcPath(srcPath);
+}
+
+inline
+void appendSrcPath(const std::wstring &srcPath)
+{
+    AutoRestorePyState  pystate;
+    kdlib::appendSrcPath(srcPath);
+}
+
 } // namespace pykd

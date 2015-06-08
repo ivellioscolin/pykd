@@ -62,6 +62,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadDoubles_, pykd::loadDoubles, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, pykd::compareMemory, 3, 4 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, pykd::getSourceFile, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFileFromSrcSrv_, pykd::getSourceFileFromSrcSrv, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, pykd::getSourceLine, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, pykd::findSymbol, 1, 2 );
 
@@ -306,8 +307,11 @@ BOOST_PYTHON_MODULE( pykd )
     // types and vaiables
     python::def( "getSourceFile", pykd::getSourceFile, getSourceFile_( python::args( "offset"),
         "Return source file by the specified offset" ) );
+    python::def("getSourceFileFromSrcSrv", pykd::getSourceFileFromSrcSrv, getSourceFileFromSrcSrv_(python::args("offset"),
+        "Load and return source file from source server by the specified offset") );
     python::def( "getSourceLine", pykd::getSourceLine, getSourceLine_( python::args( "offset"),
         "Return source file name, line and displacement by the specified offset" ) );
+
     python::def( "getOffset", pykd::getSymbolOffset,
         "Return traget virtual address for specified symbol" );
     python::def( "findSymbol", pykd::findSymbol, findSymbol_( python::args( "offset", "showDisplacement"),
@@ -455,6 +459,14 @@ BOOST_PYTHON_MODULE( pykd )
         "Set current symbol path");
     python::def("appendSymbolPath", pykd::appendSymbolPath, 
         "Append current symbol path");
+
+    python::def("getSrcPath", pykd::getSrcPath,
+        "Return current source server path");
+    python::def("setSrcPath", pykd::setSrcPath,
+        "Set source path");
+    python::def("appendSrcPath", pykd::appendSrcPath,
+        "Append current source path");
+
 
     // synthetic symbol
     python::def("addSyntheticSymbol", pykd::addSyntheticSymbol,
