@@ -40,7 +40,15 @@ inline void eprintln( const std::wstring &str )
 {
     pykd::eprint(str + L"\n");
 }
+
+///////////////////////////////////////////////////////////////////////////////
     
+inline void dinput(const std::wstring &str)
+{
+    AutoRestorePyState  pystate;
+    kdlib::dinput(str);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 class DbgOut : public  kdlib::windbg::WindbgOut

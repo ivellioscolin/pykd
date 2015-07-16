@@ -192,6 +192,9 @@ BOOST_PYTHON_MODULE( pykd )
         "Print out string. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
     python::def( "dprintln", &pykd::dprintln, dprintln_( python::args( "str", "dml" ), 
         "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
+    python::def("dinput", &pykd::dinput,
+        "Provide input for debugger");
+
 
     // Python debug output console helper classes
     python::class_<DbgOut>( "dout", "dout", python::no_init )
@@ -1045,6 +1048,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Breakpoints is changed for current process" )
         .def( "onDebugOutput", &EventHandler::onDebugOutput,
             "Request debug output" )
+        .def("onStartInput", &EventHandler::onStartInput,
+            "Request debug input" )
+        .def("onStopInput", &EventHandler::onStopInput,
+            "Debug input is completed")
         .def("onThreadStart", &EventHandler::onThreadStart,
             "New thread is started in the current process" )
         .def("onThreadStop", &EventHandler::onThreadStop,

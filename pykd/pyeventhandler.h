@@ -40,8 +40,8 @@ public:
     virtual void onChangeLocalScope();
     virtual void onChangeBreakpoints();
     virtual void onDebugOutput(const std::wstring& text);
-
-
+    virtual void onStartInput();
+    virtual void onStopInput();
 
 private:
 

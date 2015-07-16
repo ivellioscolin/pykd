@@ -8,7 +8,7 @@ import zipfile
 
 _name = "pykd"
 _desc = "python windbg extension"
-_version = '0.3.0.26'
+_version = '0.3.0.27'
 
 def  makeWheel(args):
 
@@ -90,10 +90,6 @@ def makeZip(args):
         shutil.copy( os.path.join(bin_dir, binFile), os.path.join(package_dir, binFile) )
 
     shutil.copy( os.path.join(pykd_dir, 'pykd.pyd'), os.path.join(package_dir, 'pykd.pyd') )
-
-    dist_dir = os.path.join(os.path.curdir, 'dist')
-    if not os.path.exists(dist_dir):
-        os.mkdir(dist_dir)
 
     with zipfile.ZipFile(os.path.join(os.path.curdir, 'dist', zip_name), mode='w' ) as archive:
         for srcFile in os.listdir(package_dir):
