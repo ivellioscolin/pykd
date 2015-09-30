@@ -27,7 +27,7 @@ class PrintOptions:
     def __init__(self):
         self.ignoreNotActiveThread = True
         self.ignoreNotActiveProcess = True
-        self.showWow64stack = True
+        self.showWow64stack = is64bitSystem()
         self.showIP = True
         self.showSP = True
         self.showUnique = False
