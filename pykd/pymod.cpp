@@ -524,12 +524,12 @@ BOOST_PYTHON_MODULE( pykd )
 
 
     python::class_<kdlib::TargetSystem, kdlib::TargetSystemPtr, boost::noncopyable>("targetSystem", "Class representing target system", python::no_init)
+        .def("__init__", python::make_constructor(&kdlib::TargetSystem::getCurrent))
+        .def("__init__", python::make_constructor(&kdlib::TargetSystem::getByIndex))
         .def("getNumber", TargetSystemAdapter::getNumberSystems,
             "Retunr number of systems").staticmethod("getNumber")
         .def("getCurrent", TargetSystemAdapter::getCurrent,
             "Return current target system").staticmethod("getCurrent")
-        .def("getSystem", TargetSystemAdapter::getSystem,
-            "Return target system by index").staticmethod("getSystem")
         .def("getSystemById", TargetSystemAdapter::getSystemById,
             "Return target system by id").staticmethod("getSystemById")
         .add_property("desc", TargetSystemAdapter::getDescription,
@@ -555,12 +555,12 @@ BOOST_PYTHON_MODULE( pykd )
         ;
 
     python::class_<kdlib::TargetProcess, kdlib::TargetProcessPtr, boost::noncopyable>("targetProcess", "Class representing process in the target system", python::no_init )
+        .def("__init__", python::make_constructor(&kdlib::TargetProcess::getByIndex))
+        .def("__init__", python::make_constructor(&kdlib::TargetProcess::getCurrent))
         .def("getNumber", TargetProcessAdapter::getNumberProcesses,
             "Return number of processes" ).staticmethod("getNumber")
         .def("getCurrent", TargetProcessAdapter::getCurrent,
             "Return a current process" ).staticmethod("getCurrent")
-        .def("getProcess", TargetProcessAdapter::getProcess,
-            "Return process by index").staticmethod("getProcess")
         .def("getProcessById", TargetProcessAdapter::getProcessById,
             "Return process by id").staticmethod("getProcessById")
         .add_property("systemID", TargetProcessAdapter::getSystemId,
@@ -592,12 +592,12 @@ BOOST_PYTHON_MODULE( pykd )
          ;
 
     python::class_<kdlib::TargetThread, kdlib::TargetThreadPtr, boost::noncopyable>("targetThread", "Class representing process in the target system", python::no_init )
+        .def("__init__", python::make_constructor(&kdlib::TargetThread::getByIndex))
+        .def("__init__", python::make_constructor(&kdlib::TargetThread::getCurrent))
         .def("getNumber", TargetThreadAdapter::getNumberThreads,
             "Return number of threads").staticmethod("getNumber")
         .def("getCurrent", TargetThreadAdapter::getCurrent,
             "Return a current thread").staticmethod("getCurrent")
-        .def("getThread", TargetThreadAdapter::getThread,
-            "Return thread by index").staticmethod("getThread")
         .def("getThreadById", TargetThreadAdapter::getThreadById,
             "Return process by id").staticmethod("getThreadById")
         .add_property("id", TargetThreadAdapter::getId,

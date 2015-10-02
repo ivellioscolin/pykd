@@ -36,7 +36,7 @@ def main():
         print "Tag must have 4 symbols length"
         return
 
-    tag = argv[1]
+    tag = str(argv[1])
 
     modLst = getModuleList()
     for m in modLst:
