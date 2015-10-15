@@ -722,6 +722,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return flag: type is function" )
         .def( "isConstant", TypeInfoAdapter::isConstant,
             "Return flag: type is constant" )
+        .def("isVtbl", TypeInfoAdapter::isVtbl,
+            "Return true if type is virtual table" )
         .def( "getCallingConvention", TypeInfoAdapter::getCallingConvention,
             "Returns an indicator of a methods calling convention: callingConvention" )
         .def( "getClassParent", TypeInfoAdapter::getClassParent,
