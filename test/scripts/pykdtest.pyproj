@@ -13,12 +13,11 @@
     <Name>pykdtest</Name>
     <RootNamespace>pykdtest</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>
-    </CommandLineArguments>
+    <CommandLineArguments>C:\proj\pykd-dev\out\x64\Debug\targetapp.exe</CommandLineArguments>
     <InterpreterPath />
     <InterpreterArguments>
     </InterpreterArguments>
-    <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <IsWindowsApplication>False</IsWindowsApplication>
     <InterpreterId>{9a7a9026-48c1-4688-9d5d-e5699d47d074}</InterpreterId>
     <InterpreterVersion>2.7</InterpreterVersion>

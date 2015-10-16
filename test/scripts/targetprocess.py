@@ -30,7 +30,7 @@ class ProcessTest(unittest.TestCase):
     def testEnumProcesses(self):
         processNumber = pykd.targetProcess.getNumber()
         for i in xrange(processNumber):
-            proc = pykd.targetProcess.getProcess(i)
+            proc = pykd.targetProcess(i)
             self.assertNotEqual(0, proc.systemID)
             self.assertNotEqual(0, proc.peb)
 

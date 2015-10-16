@@ -71,9 +71,9 @@ def getTestSuite( singleName = "" ):
     else:
        return unittest.TestSuite(
           [
-                unittest.TestLoader().loadTestsFromTestCase( StartProcessWithoutParamsTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( StartProcessWithoutParamsTest ),
                 unittest.TestLoader().loadTestsFromName( singleName ),
-                unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest )
+                #unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest )
           ] )
           
 if __name__ == "__main__":
@@ -85,5 +85,5 @@ if __name__ == "__main__":
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
 
-    # raw_input("Press <ENTER>...")
+    raw_input("Press <ENTER>...")
 

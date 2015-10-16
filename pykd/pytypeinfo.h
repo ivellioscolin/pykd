@@ -84,6 +84,12 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo.getElementOffset( name );
     }
 
+    static kdlib::MEMOFFSET_32 getElementOffsetByIndex(kdlib::TypeInfo &typeInfo, size_t index)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo.getElementOffset(index);
+    }
+
     static std::wstring getElementName( kdlib::TypeInfo &typeInfo, size_t index ) 
     {
         AutoRestorePyState  pystate;

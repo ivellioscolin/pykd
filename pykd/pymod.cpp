@@ -682,6 +682,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return offset of the static field" )
         .def( "fieldOffset", TypeInfoAdapter::getElementOffset,
             "Return offset of the nonstatic field" )
+        .def("fieldOffset", TypeInfoAdapter::getElementOffsetByIndex,
+            "Return offset of the nonstatic field by index")
         .def( "bitOffset", TypeInfoAdapter::getBitOffset,
             "Return bit field's offset" )
         .def( "bitWidth", TypeInfoAdapter::getBitWidth,
