@@ -666,6 +666,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Returns a flag that the module is a user-mode module" )
         .def("queryVersion", ModuleAdapter::getVersionInfo,
             "Return string from the module's version resources" )
+        .def("getVersion", ModuleAdapter::getVersion,
+            "Return tuple of the module's file version")
         .def("getFixedFileInfo", ModuleAdapter::getFixedFileInfo,
             "Return FixedFileInfo" )
         .def("__getattr__", ModuleAdapter::getSymbolVa,

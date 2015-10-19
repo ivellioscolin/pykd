@@ -147,6 +147,14 @@ struct ModuleAdapter : public kdlib::Module
         return module.getVersionInfo(value);
     }
 
+    static python::tuple getVersion(kdlib::Module& module)
+    {
+        AutoRestorePyState  pystate;
+        unsigned long a1, a2, a3, a4;
+        module.getFileVersion(a1, a2, a3, a4);
+        return python::make_tuple(a1, a2, a3, a4);
+    }   
+
     static FixedFileInfoPtr getFixedFileInfo( kdlib::Module& module );
 
     static std::wstring print( kdlib::Module& module );
