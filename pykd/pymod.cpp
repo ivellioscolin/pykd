@@ -773,6 +773,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__str__", TypedVarAdapter::print )
         .def("__len__", TypedVarAdapter::getElementCount )
         .def("__getitem__", TypedVarAdapter::getElementByIndex )
+        .def("__dir__", TypedVarAdapter::getElementsDir)
         //.def("__getitem__", &kdlib::TypedVar::getElementByIndexPtr )
         ;
 

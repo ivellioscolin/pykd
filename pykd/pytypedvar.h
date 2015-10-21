@@ -124,6 +124,7 @@ struct TypedVarAdapter {
         return typedVar.deref();
     }
 
+    static python::list getElementsDir(kdlib::TypedVar& typedVar);
 };
 
 } // end namespace pykd
