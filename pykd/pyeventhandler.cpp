@@ -511,42 +511,51 @@ void EventHandler::onStopInput()
 
 /////////////////////////////////////////////////////////////////////////////////
 
-Breakpoint::Breakpoint(kdlib::BreakpointPtr bp)
+Breakpoint::Breakpoint(kdlib::BreakpointPtr bp, bool weakbp)
 {
-    m_pystate = PyThreadState_Get();
     m_breakpoint = bp;
+    m_weakBp = weakbp;
 }
 
 Breakpoint::Breakpoint(kdlib::MEMOFFSET_64 offset)
 {
     AutoRestorePyState  pystate(&m_pystate);
-
     m_breakpoint = kdlib::softwareBreakPointSet(offset, this);
+    m_weakBp = false;
 }
 
 Breakpoint::Breakpoint(kdlib::MEMOFFSET_64 offset, python::object  &callback)
 {
     m_callback = callback;
-
     AutoRestorePyState  pystate(&m_pystate);
-
     m_breakpoint = kdlib::softwareBreakPointSet(offset, this);
+    m_weakBp = false;
 }
 
 Breakpoint::Breakpoint(kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType)
 {
     AutoRestorePyState  pystate(&m_pystate);
-
     m_breakpoint = kdlib::hardwareBreakPointSet(offset, size, accessType, this);
+    m_weakBp = false;
 }
 
 Breakpoint::Breakpoint(kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType, python::object  &callback)
 {
     m_callback = callback;
-
     AutoRestorePyState  pystate(&m_pystate);
-
     m_breakpoint = kdlib::hardwareBreakPointSet(offset, size, accessType, this);
+    m_weakBp = false;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+Breakpoint::~Breakpoint()
+{
+    AutoRestorePyState  pystate;
+    if (!m_weakBp && m_breakpoint )
+    {
+        m_breakpoint->remove();
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -615,18 +624,54 @@ kdlib::DebugCallbackResult Breakpoint::onHit()
 
 /////////////////////////////////////////////////////////////////////////////////
 
+void Breakpoint::remove()
+{
+    AutoRestorePyState  pystate;
+    if (m_breakpoint)
+    {
+        m_breakpoint->remove();
+        m_breakpoint = 0;
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
 Breakpoint* Breakpoint::setSoftwareBreakpoint( kdlib::MEMOFFSET_64 offset, python::object  &callback )
 {
-   Breakpoint  *internalBp = new Breakpoint(offset, callback);
-   return new Breakpoint(internalBp->m_breakpoint);
+    if (!callback)
+    {
+        AutoRestorePyState  pystate;
+        kdlib::BreakpointPtr  bp = kdlib::softwareBreakPointSet(offset, 0);
+        return new Breakpoint(bp, false);
+    }
+    else
+    {
+        return new Breakpoint(offset, callback);
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
 Breakpoint* Breakpoint::setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType, python::object  &callback )
 {
-    Breakpoint  *internalBp = new Breakpoint(offset, size, accessType, callback);
-    return new Breakpoint(internalBp->m_breakpoint);
+    if (!callback)
+    {
+        AutoRestorePyState  pystate;
+        kdlib::BreakpointPtr  bp = kdlib::hardwareBreakPointSet(offset, size, accessType, 0);
+        return new Breakpoint(bp, false);
+    }
+    else
+    {
+        return new Breakpoint(offset, size, accessType, callback);
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+unsigned long Breakpoint::getNumberBreakpoints()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getNumberBreakpoints();
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -645,16 +690,6 @@ Breakpoint* Breakpoint::getBreakpointByIndex(unsigned long index)
 
 /////////////////////////////////////////////////////////////////////////////////
 
-void Breakpoint::remove() 
-{
-    AutoRestorePyState  pystate;
-    if (m_breakpoint)
-    {
-        m_breakpoint->remove();
-        m_breakpoint = 0;
-    }
-}
 
-/////////////////////////////////////////////////////////////////////////////////
 
 } // end namespace pykd

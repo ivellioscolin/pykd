@@ -60,16 +60,13 @@ public:
 
     static Breakpoint* setHardwareBreakpoint( kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType, python::object  &callback= python::object() );
 
-    static unsigned long getNumberBreakpoints() {
-        AutoRestorePyState  pystate;
-        return kdlib::getNumberBreakpoints();
-    }
+    static unsigned long getNumberBreakpoints();
 
     static Breakpoint* getBreakpointByIndex(unsigned long index);
 
 public:
 
-    explicit Breakpoint(kdlib::BreakpointPtr bp);
+    explicit Breakpoint(kdlib::BreakpointPtr bp, bool weakbp = true);
 
     explicit Breakpoint(kdlib::MEMOFFSET_64 offset);
 
@@ -79,8 +76,7 @@ public:
 
     Breakpoint(kdlib::MEMOFFSET_64 offset, size_t size, kdlib::ACCESS_TYPE accessType, python::object  &callback);
 
-    ~Breakpoint()
-    {}
+    ~Breakpoint();
 
     virtual kdlib::DebugCallbackResult onHit();
 
@@ -111,6 +107,8 @@ private:
     kdlib::BreakpointPtr  m_breakpoint;
 
     python::object  m_callback;
+
+    bool m_weakBp;
 };
 
 
