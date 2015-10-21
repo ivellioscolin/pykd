@@ -329,3 +329,9 @@ class TypedVarTest( unittest.TestCase ):
     def testFields(self):
         tv = pykd.typedVar( "g_classChild")
         self.assertTrue( len(tv.fields())>0 )
+
+    def testDir(self):
+        tv = target.module.typedVar( "structTest", target.module.g_structTest )
+        self.assertEqual(5, len(dir(tv)))
+        self.assertTrue("m_field3" in dir(tv))
+        self.assertFalse("m_field33" in dir(tv))

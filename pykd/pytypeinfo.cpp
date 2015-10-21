@@ -104,4 +104,30 @@ python::list TypeInfoAdapter::getFields( kdlib::TypeInfo &typeInfo )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+python::list TypeInfoAdapter::getElementDir(kdlib::TypeInfo &typeInfo)
+{
+    std::list<std::wstring>  lst;
+
+    do {
+
+        AutoRestorePyState  pystate;
+
+        for (size_t i = 0; i < typeInfo.getElementCount(); ++i)
+        {
+            std::wstring  name = typeInfo.getElementName(i);
+            lst.push_back(name);
+        }
+
+    } while (false);
+
+    python::list pylst;
+
+    for (std::list<std::wstring>::const_iterator it = lst.begin(); it != lst.end(); ++it)
+        pylst.append(*it);
+
+    return pylst;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // pykd namespace

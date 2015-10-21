@@ -737,6 +737,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__getattr__", TypeInfoAdapter::getElementByName )
         .def("__len__", TypeInfoAdapter::getElementCount )
         .def("__getitem__", TypeInfoAdapter::getElementByIndex )
+        .def("__dir__", TypeInfoAdapter::getElementDir)
         ;
 
     python::class_<kdlib::TypedVar, kdlib::TypedVarPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typedVar", 

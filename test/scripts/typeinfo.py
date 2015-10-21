@@ -298,3 +298,9 @@ class TypeInfoTest( unittest.TestCase ):
 
         functype = target.module.typedVar( "ArrayOfMethodPtr" ).type()
         self.assertEqual(functype.name(), "Void(__thiscall FuncTestClass::*[2])()")
+
+    def testDir(self):
+        ti = target.module.type("structTest")
+        self.assertEqual(5, len(dir(ti)))
+        self.assertTrue("m_field3" in dir(ti))
+        self.assertFalse("m_field33" in dir(ti))
