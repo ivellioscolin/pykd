@@ -43,3 +43,9 @@ class MsPdbTest(unittest.TestCase):
             targetSymAddr = mod.offset("AuthzAccessCheck")
             self.assertNotEqual( 0, targetSymAddr )
             self.assertEqual( "AuthzAccessCheck", mod.findSymbol(targetSymAddr) )
+
+        with PeFileAsDumpLoader( os.path.join(os.environ["WINDIR"], r"System32\ntdll.dll") ):
+            mod = pykd.module("ntdll")
+            print "\n" + str( mod )
+
+            self.assertNotEqual( 0, len( mod.enumSymbols("Zw*") ) )
