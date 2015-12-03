@@ -389,12 +389,14 @@ BOOST_PYTHON_MODULE( pykd )
         setSoftwareBreakpoint_( python::args( "offset", "callback" ),"Set software breakpoint on executiont" )[python::return_value_policy<python::manage_new_object>()]);
     python::def( "setBp", &Breakpoint::setHardwareBreakpoint, 
         setHardwareBreakpoint_( python::args( "offset", "size", "accsessType", "callback" ),"Set hardware breakpoint")[python::return_value_policy<python::manage_new_object>()]);
-    python::def( "getNumberBreakpoints", &Breakpoint::getNumberBreakpoints,
+    python::def("getNumberBreakpoints", &Breakpoint::getNumberBreakpoints,
         "Return number of breakpoints in the current process" );
     python::def( "getBp", &Breakpoint::getBreakpointByIndex, python::return_value_policy<python::manage_new_object>(), 
         "Return breakpoint object by index");
     python::def("removeBp", &Breakpoint::removeBreakpointByIndex,
         "Remove breakpoint by index");
+    python::def("removeAllBp", &Breakpoint::removeAllBreakpoints,
+        "Remove all breakpoints");
 
     // processes and threads
     python::def ( "getNumberProcesses", pykd::getNumberProcesses,

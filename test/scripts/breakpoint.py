@@ -44,16 +44,25 @@ class BreakpointTest( unittest.TestCase ):
         bp.remove()
         self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
 
+    def testDeleteBp(self):
+        bp = pykd.setBp( self.targetModule.CdeclFunc )
+        del bp
+        self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
+
     def testRemoveByIndex(self):
         bp1 = pykd.setBp( self.targetModule.CdeclFunc )
         bp2 = pykd.getBp(0)
         bp2.remove()
         self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
 
-    def disable_testDeleteBp(self):
-        bp = pykd.setBp( self.targetModule.CdeclFunc )
-        del bp
-        self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
+    def testRemoveAllBp(self):
+          bp1 =  pykd.setBp( self.targetModule.CdeclFunc )
+          bp2 =  pykd.setBp( self.targetModule.CdeclFunc + 1)
+          bp3 =  pykd.setBp( self.targetModule.CdeclFunc + 2 )
+          self.assertEqual( 3, pykd.getNumberBreakpoints() )
+          pykd.removeAllBp()
+          self.assertEqual( 0, pykd.getNumberBreakpoints() )
+          self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
 
     def testBreakCallback(self):
         breakCount = callCounter(stopOnBreak)
