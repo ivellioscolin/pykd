@@ -393,6 +393,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Return number of breakpoints in the current process" );
     python::def( "getBp", &Breakpoint::getBreakpointByIndex, python::return_value_policy<python::manage_new_object>(), 
         "Return breakpoint object by index");
+    python::def("removeBp", &Breakpoint::removeBreakpointByIndex,
+        "Remove breakpoint by index");
 
     // processes and threads
     python::def ( "getNumberProcesses", pykd::getNumberProcesses,

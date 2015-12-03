@@ -64,6 +64,8 @@ public:
 
     static Breakpoint* getBreakpointByIndex(unsigned long index);
 
+    static void removeBreakpointByIndex(unsigned long index);
+
 public:
 
     explicit Breakpoint(kdlib::BreakpointPtr bp, bool weakbp = true);

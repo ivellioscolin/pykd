@@ -44,6 +44,12 @@ class BreakpointTest( unittest.TestCase ):
         bp.remove()
         self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
 
+    def testRemoveByIndex(self):
+        bp1 = pykd.setBp( self.targetModule.CdeclFunc )
+        bp2 = pykd.getBp(0)
+        bp2.remove()
+        self.assertEqual( pykd.executionStatus.NoDebuggee, pykd.go() )
+
     def disable_testDeleteBp(self):
         bp = pykd.setBp( self.targetModule.CdeclFunc )
         del bp

@@ -108,11 +108,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 3, tv.m_noArrayField )
         self.assertNotEqual( -1, tv.m_arrayField[0] )
         self.assertNotEqual( 0, tv.m_noArrayField )
-        try:
-            tv.m_arrayField[len(tv.m_arrayField)]
-            self.assertTrue(False)
-        except IndexError:
-            self.assertTrue(True)
+        tv.m_arrayField[len(tv.m_arrayField)]
 
     #def testArrayFieldSlice(self):
     #    tv = target.module.typedVar( "g_structWithArray" )

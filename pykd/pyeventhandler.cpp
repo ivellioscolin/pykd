@@ -690,6 +690,16 @@ Breakpoint* Breakpoint::getBreakpointByIndex(unsigned long index)
 
 /////////////////////////////////////////////////////////////////////////////////
 
+void Breakpoint::removeBreakpointByIndex(unsigned long index)
+{
+    AutoRestorePyState  pystate;
+    kdlib::BreakpointPtr  bp;
+    bp = kdlib::getBreakpointByIndex(index);
+    bp->remove();
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
 
 
 } // end namespace pykd

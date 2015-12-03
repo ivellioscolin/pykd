@@ -5,29 +5,36 @@ from optparse import OptionParser
 from fnmatch import fnmatch
 import traceback
 import sys
+import datetime
 
 nt = None
 EPROCESS = None
 ETHREAD = None
+Tick = None
 
 def setupGlobalObject():
 
-    global nt, EPROCESS, ETHREAD
+    global nt, EPROCESS, ETHREAD, Tick
 
     try:
         nt = module("nt")
         EPROCESS = nt.type("_EPROCESS")
         ETHREAD = nt.type("_ETHREAD")
+        if is64bitSystem():
+            Tick = int(typedVar("nt!_LARGE_INTEGER", 0xFFFFF78000000320).QuadPart)
+        else:
+            Tick = int(ptrDWord(nt.KeTickCount))
+        
     except DbgException:
         dprintln("check symbol paths")
 
-     
+
 
 class PrintOptions:
     def __init__(self):
         self.ignoreNotActiveThread = True
         self.ignoreNotActiveProcess = True
-        self.showWow64stack = is64bitSystem()
+        self.showWow64stack = False
         self.showIP = True
         self.showSP = True
         self.showUnique = False
@@ -80,15 +87,30 @@ def getStackSymbols(stk):
             symbols.append(sym)
     return symbols
 
+def isWow64Process(process):
+    result = False
+    if is64bitSystem() == False:
+        return result
+    try:
+        if hasattr(process, "WoW64Process"):
+            return process.WoW64Process != 0
+        elif hasattr(process, "Wow64Process"):
+            return process.Wow64Process != 0
+    except:
+        pass
+    
+    return result
 
-def printThread(thread, process):
+
+def printThread(thread, process, ticks):
     dprintln("")
-    dprintln( "Thread %x, Process: %s (%x)" % ( thread, loadCStr( process.ImageFileName ), process )  )
+    dprintln( "<link cmd=\".process %x;.thread %x\">Thread %x</link>, Process: %s (%x), Ticks: %d" % ( process, thread, thread, loadCStr( process.ImageFileName ), process, ticks ), True  )
 
 
 def printProcess(process,processFilter,threadFilter,moduleFilter,funcFilter,printopt):
 
     processName = loadCStr( process.ImageFileName )
+    processWow64 = isWow64Process(process)
 
     if processFilter and not processFilter(process, process.UniqueProcessId, processName ):
         return
@@ -110,8 +132,9 @@ def printProcess(process,processFilter,threadFilter,moduleFilter,funcFilter,prin
         stackHashes = set()
 
         for thread in threadLst:
-
-            if threadFilter and not threadFilter( thread.Tcb, thread.Cid.UniqueThread ):
+            
+            ticks = Tick - thread.Tcb.WaitTime
+            if threadFilter and not threadFilter( thread.Tcb, thread.Cid.UniqueThread, ticks ):
                 continue
 
             try:
@@ -121,7 +144,7 @@ def printProcess(process,processFilter,threadFilter,moduleFilter,funcFilter,prin
                 stkNative = getStack()
                 stkWow64 = []
 
-                if printopt.showWow64stack == True:
+                if processWow64 and printopt.showWow64stack == True:
                     try:
 
                         switchCPUMode();
@@ -178,14 +201,14 @@ def printProcess(process,processFilter,threadFilter,moduleFilter,funcFilter,prin
                     if not match:
                         continue
 
-                printThread( thread, process )
+                printThread( thread, process, ticks )
 
                 for frame in stk:
                     printFrame(frame, printopt)
 
             except DbgException:
 
-                printThread( thread, process )
+                printThread( thread, process, ticks )
                 dprintln( "Failed to get stack")
 
 
@@ -219,8 +242,8 @@ def main():
     parser.add_option("-u", "--unique", action="store_true", dest="uniquestack",
        help="show only unique stacks" )
     parser.add_option("-d", "--dump", dest="dumpname",
-       help="open crach dump" )
-    parser.add_option("-w", "--wow64", dest="wow64", 
+       help="open crash dump" )
+    parser.add_option("-w", "--wow64", action="store_true", dest="wow64", 
        help="show WOW64 stacks")
     
     (options, args) = parser.parse_args()
@@ -255,13 +278,13 @@ def main():
         funcFilter = lambda name: eval( options.funcfilter)
         
     if options.threadfilter:
-        threadFilter = lambda thread, tid: eval( options.threadfilter)
+        threadFilter = lambda thread, tid, ticks: eval( options.threadfilter)
 
     printopt = PrintOptions()
     printopt.showUnique = True if options.uniquestack else False
 
-    if options.wow64 != None:
-        printopt.showWow64stack = options.wow64.lower() == 'true'
+    if options.wow64 == True and is64bitSystem():
+        printopt.showWow64stack = True
 
            
     processLst = nt.typedVarList( nt.PsActiveProcessHead, "_EPROCESS", "ActiveProcessLinks.Flink")  
