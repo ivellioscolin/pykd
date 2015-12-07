@@ -143,6 +143,26 @@ python::list getTargetProcesses()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+python::list getLocalProcesses()
+{
+    std::vector<kdlib::LiveProcessInfo>  processInfoLst;
+
+    do {
+        AutoRestorePyState  pystate;
+        kdlib::getLiveProcessesList(processInfoLst);
+
+    } while(false);
+
+    python::list  lst;
+
+    for ( unsigned long i = 0; i < processInfoLst.size(); ++i)
+         lst.append( python::make_tuple( processInfoLst[i].pid, processInfoLst[i].name, processInfoLst[i].user ) );
+
+    return lst;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 python::tuple getBugCheckData()
 {
     kdlib::SystemCrashInfo  crashInfo = {};

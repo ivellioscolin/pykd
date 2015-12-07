@@ -165,6 +165,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Check if script works in windbg context" );
     python::def( "writeDump", pykd::writeDump,
         "Create memory dump file" );
+    python::def( "getLocalProcesses", pykd::getLocalProcesses,
+        "Return list of runnng processes on the host system" );
 
     python::def( "breakin", pykd::targetBreak,
         "Break into debugger" );

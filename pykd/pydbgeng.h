@@ -274,6 +274,7 @@ inline kdlib::MEMOFFSET_64 getImplicitProcessOffset()
 
 python::list getProcessThreads();
 python::list getTargetProcesses();
+python::list getLocalProcesses();
 
 ///////////////////////////////////////////////////////////////////////////////
 
