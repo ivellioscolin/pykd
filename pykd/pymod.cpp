@@ -38,6 +38,7 @@ static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 BOOST_PYTHON_FUNCTION_OVERLOADS( startProcess_,  pykd::startProcess, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_,  pykd::detachProcess, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( terminateProcess_,  pykd::terminateProcess, 0, 1 );
+BOOST_PYTHON_FUNCTION_OVERLOADS(closeDump_, pykd::closeDump, 0, 1);
 BOOST_PYTHON_FUNCTION_OVERLOADS( attachKernel_,  pykd::attachKernel, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( evaluate_, pykd::evaluate, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( debugCommand_, pykd::debugCommand, 1, 2 );
@@ -140,18 +141,18 @@ BOOST_PYTHON_MODULE( pykd )
         "Start process for debugging" ) ); 
     python::def( "attachProcess", pykd::attachProcess,
         "Attach debugger to a exsisting process" );
-    python::def( "detachProcess", pykd::detachProcess, detachProcess_( boost::python::args( "pid" ),
+    python::def( "detachProcess", pykd::detachProcess, detachProcess_( boost::python::args( "id" ),
         "Stop process debugging") ); 
     python::def( "detachAllProcesses", pykd::detachAllProcesses, 
         "Detach from all process and resume all their threads" );
-    python::def( "killProcess", pykd::terminateProcess, terminateProcess_( boost::python::args( "pid" ),
+    python::def( "killProcess", pykd::terminateProcess, terminateProcess_( boost::python::args( "id" ),
         "Stop debugging and terminate current process" ) );
     python::def( "killAllProcesses", pykd::terminateAllProcesses,
         "Detach from all process then terminate them");
     python::def( "loadDump", pykd::loadDump,
         "Load crash dump");
-    python::def( "closeDump", pykd::closeDump,
-        "Close crash dump");
+    python::def("closeDump", pykd::closeDump, closeDump_(boost::python::args("id"),
+        "Close crash dump"));
     python::def( "isLocalKernelDebuggerEnabled", pykd::isLocalKernelDebuggerEnabled,
         "Check whether kernel debugging is enabled for the local kernel");
     python::def( "attachKernel", pykd::attachKernel, attachKernel_( boost::python::args( "connectOptions" ),
