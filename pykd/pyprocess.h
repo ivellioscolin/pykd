@@ -92,6 +92,8 @@ struct TargetSystemAdapter {
         AutoRestorePyState  pystate;
         return system.isCurrent();
     }
+
+    static python::list getProcessesList(kdlib::TargetSystem& system);
 };
 
 
@@ -204,6 +206,12 @@ struct TargetProcessAdapter {
         AutoRestorePyState  pystate;
         return process.getModuleByIndex(index);
     }
+
+    static python::list getThreadList(kdlib::TargetProcess& process);
+
+    static python::list getBreakpointsList(kdlib::TargetProcess& process);
+
+    static python::list getModulesList(kdlib::TargetProcess& process);
 };
 
 
@@ -262,6 +270,8 @@ struct TargetThreadAdapter {
         AutoRestorePyState  pystate;
         return thread.isCurrent();
     }
+
+    static python::list getStack(kdlib::TargetThread& thread);
 };
 
 } // pykd namespace
