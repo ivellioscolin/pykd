@@ -331,3 +331,16 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual(5, len(dir(tv)))
         self.assertTrue("m_field3" in dir(tv))
         self.assertFalse("m_field33" in dir(tv))
+
+    def testMemoryException(self):
+        self.assertRaises(pykd.MemoryException, 
+                          int,
+                          pykd.typedVar(pykd.baseTypes.UInt4B, 0))
+        if pykd.getCPUType() == pykd.CPUType.I386:
+            self.assertRaises(pykd.MemoryException, 
+                              int,
+                              pykd.typedVar(pykd.baseTypes.UInt4B, 0xFFFFFFFF))
+        self.assertRaises(pykd.MemoryException, 
+                          int,
+                          pykd.typedVar(pykd.baseTypes.UInt4B, 0xFFFFFFFFFFFFFFFF))
+
