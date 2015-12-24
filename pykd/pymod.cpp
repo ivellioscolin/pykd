@@ -621,6 +621,18 @@ BOOST_PYTHON_MODULE( pykd )
             "Retrun system thread ID ( TID )" )
         .add_property("teb", TargetThreadAdapter::getTebOffset,
             "Return TEB address" )
+        .add_property( "ip", TargetThreadAdapter::getIP, 
+            "instruction pointer" )
+        .add_property( "instructionOffset", TargetThreadAdapter::getIP,
+            "Return an instruction offset" )
+        .add_property( "fp", TargetThreadAdapter::getFP,
+            "frame pointer" )
+        .add_property( "frameOffset",TargetThreadAdapter::getFP,
+            "Return a frame's offset" )
+        .add_property( "sp", TargetThreadAdapter::getSP, 
+            "stack pointer" )
+        .add_property( "stackOffset", TargetThreadAdapter::getSP,
+            "Return a stack pointer" )
         .def("setCurrent", TargetThreadAdapter::setCurrent,
             "Set this thread current")
         .def("isCurrent", TargetThreadAdapter::isCurrent,

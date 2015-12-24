@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "pytypedvar.h"
+#include "kdlib/exceptions.h"
 
 namespace pykd {
 
@@ -100,8 +101,9 @@ python::list TypedVarAdapter::getFields( kdlib::TypedVar& typedVar )
 python::list TypedVarAdapter::getElementsDir(kdlib::TypedVar& typedVar)
 {
     std::list<std::wstring>  lst;
+    python::list pylst;
 
-    do {
+    try {
 
         AutoRestorePyState  pystate;
 
@@ -111,9 +113,10 @@ python::list TypedVarAdapter::getElementsDir(kdlib::TypedVar& typedVar)
             lst.push_back(name);
         }
 
-    } while (false);
-
-    python::list pylst;
+    } catch(kdlib::DbgException&)
+    {
+        return pylst;
+    }
 
     for (std::list<std::wstring>::const_iterator it = lst.begin(); it != lst.end(); ++it)
         pylst.append(*it);

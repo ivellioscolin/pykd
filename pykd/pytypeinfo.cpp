@@ -108,7 +108,9 @@ python::list TypeInfoAdapter::getElementDir(kdlib::TypeInfo &typeInfo)
 {
     std::list<std::wstring>  lst;
 
-    do {
+    python::list pylst;
+
+    try{
 
         AutoRestorePyState  pystate;
 
@@ -118,9 +120,10 @@ python::list TypeInfoAdapter::getElementDir(kdlib::TypeInfo &typeInfo)
             lst.push_back(name);
         }
 
-    } while (false);
-
-    python::list pylst;
+    } catch(kdlib::DbgException&)
+    {
+        return pylst;
+    }
 
     for (std::list<std::wstring>::const_iterator it = lst.begin(); it != lst.end(); ++it)
         pylst.append(*it);

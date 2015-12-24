@@ -272,6 +272,25 @@ struct TargetThreadAdapter {
     }
 
     static python::list getStack(kdlib::TargetThread& thread);
+
+    static kdlib::MEMOFFSET_64  getIP(kdlib::TargetThread& thread)
+    {
+        AutoRestorePyState  pystate;
+        return thread.getInstructionOffset();
+    }
+   
+    static kdlib::MEMOFFSET_64  getSP(kdlib::TargetThread& thread)
+    {
+        AutoRestorePyState  pystate;
+        return thread.getStackOffset();
+    }
+
+    static kdlib::MEMOFFSET_64  getFP(kdlib::TargetThread& thread)
+    {
+        AutoRestorePyState  pystate;
+        return thread.getFrameOffset();
+    }
+
 };
 
 } // pykd namespace
