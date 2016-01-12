@@ -265,7 +265,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( [ arg.name() for arg in functype ], ["Int4B", "Float"] )
 
         functype = target.module.typedVar( "g_variadicFuncPtr" ).type().deref()
-        self.assertEqual( [ arg.name() for arg in functype ], ["Int4B", "..."] )
+        self.assertEqual( [ arg.name() for arg in functype ], ["Int4B", "NoType"] )
 
     def testFunctionCallConv(self):
         functype = target.module.typedVar( "CdeclFuncPtr" ).type().deref()
