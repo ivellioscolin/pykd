@@ -257,9 +257,15 @@ class TypeInfoTest( unittest.TestCase ):
         functype = target.module.typedVar( "CdeclFuncPtr" ).type().deref()
         self.assertTrue( functype.isFunction() )
 
+        functype = target.module.typedVar( "g_variadicFuncPtr" ).type().deref()
+        self.assertTrue( functype.isFunction() )
+
     def testFunctionArgs(self):
         functype = target.module.typedVar( "CdeclFuncPtr" ).type().deref()
         self.assertEqual( [ arg.name() for arg in functype ], ["Int4B", "Float"] )
+
+        functype = target.module.typedVar( "g_variadicFuncPtr" ).type().deref()
+        self.assertEqual( [ arg.name() for arg in functype ], ["Int4B", "..."] )
 
     def testFunctionCallConv(self):
         functype = target.module.typedVar( "CdeclFuncPtr" ).type().deref()
@@ -285,12 +291,18 @@ class TypeInfoTest( unittest.TestCase ):
         functype = target.module.typedVar( "ArrayOfMethodPtr" ).type()[0].deref()
         self.assertEqual(functype.name(), "Void(__thiscall FuncTestClass::)()")
 
+        functype = target.module.typedVar( "g_variadicFuncPtr" ).type().deref()
+        self.assertEqual(functype.name(), "Void(__cdecl)(Int4B, ...)")
+
     def testFunctionPtrName(self):
         funcptrtype = target.module.typedVar( "CdeclFuncPtr" ).type()
         self.assertEqual(funcptrtype.name(), "Void(__cdecl*)(Int4B, Float)")
 
         functype = target.module.typedVar( "MethodPtr" ).type()
         self.assertEqual(functype.name(), "Void(__thiscall FuncTestClass::*)()")
+
+        funcptrtype = target.module.typedVar( "g_variadicFuncPtr" ).type()
+        self.assertEqual(funcptrtype.name(), "Void(__cdecl*)(Int4B, ...)")
 
     def testFunctionArrName(self):
         funcptrtype = target.module.typedVar( "ArrayOfCdeclFuncPtr" ).type()
