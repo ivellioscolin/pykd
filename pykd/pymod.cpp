@@ -755,7 +755,9 @@ BOOST_PYTHON_MODULE( pykd )
             "Return flag: type is function" )
         .def( "isConstant", TypeInfoAdapter::isConstant,
             "Return flag: type is constant" )
-        .def("isVtbl", TypeInfoAdapter::isVtbl,
+        .def( "isVtbl", TypeInfoAdapter::isVtbl,
+            "Return true if no type is specified" )
+        .def( "isNoType", TypeInfoAdapter::isNoType,
             "Return true if type is virtual table" )
         .def( "getCallingConvention", TypeInfoAdapter::getCallingConvention,
             "Returns an indicator of a methods calling convention: callingConvention" )
@@ -764,9 +766,9 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__str__", TypeInfoAdapter::str,
             "Return type as a printable string" )
         .def( "__getattr__", TypeInfoAdapter::getElementByName )
-        .def("__len__", TypeInfoAdapter::getElementCount )
-        .def("__getitem__", TypeInfoAdapter::getElementByIndex )
-        .def("__dir__", TypeInfoAdapter::getElementDir)
+        .def( "__len__", TypeInfoAdapter::getElementCount )
+        .def( "__getitem__", TypeInfoAdapter::getElementByIndex )
+        .def( "__dir__", TypeInfoAdapter::getElementDir )
         ;
 
     python::class_<kdlib::TypedVar, kdlib::TypedVarPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typedVar", 

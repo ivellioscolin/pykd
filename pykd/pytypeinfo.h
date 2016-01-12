@@ -193,7 +193,13 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         AutoRestorePyState  pystate;
         return typeInfo.isVtbl();
     }
-    
+
+    static bool isNoType(kdlib::TypeInfo &typeInfo)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo.isNoType();
+    }
+
     static void appendField( kdlib::TypeInfo &typeInfo, const std::wstring &fieldName, kdlib::TypeInfoPtr &fieldType )
     {
         AutoRestorePyState  pystate;
