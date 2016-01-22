@@ -70,6 +70,23 @@ python::list ModuleAdapter::enumSymbols( kdlib::Module& module, const std::wstri
 
 ///////////////////////////////////////////////////////////////////////////////
 
+python::list  ModuleAdapter::enumTypes(kdlib::Module& module, const std::wstring &mask)
+{
+	kdlib::TypeNameList  typeLst;
+
+	do {
+		AutoRestorePyState  pystate;
+		typeLst = module.enumTypes(mask);
+	} while (false);
+
+	python::list  pyLst;
+	for (kdlib::TypeNameList::const_iterator it = typeLst.begin(); it != typeLst.end(); ++it)
+		pyLst.append(*it);
+	return pyLst;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 
 std::wstring ModuleAdapter::findSymbol( kdlib::Module& module, kdlib::MEMOFFSET_64 offset, bool showDisplacement ) 
 {

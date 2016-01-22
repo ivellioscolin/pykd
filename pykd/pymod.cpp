@@ -83,6 +83,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBreakpoint_, Breakpoint::setHardware
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_enumSymbols, ModuleAdapter::enumSymbols, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_findSymbol, ModuleAdapter::findSymbol, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( Module_enumTypes, ModuleAdapter::enumTypes, 1, 2 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( TypeInfo_ptrTo, TypeInfoAdapter::ptrTo, 1, 2 ); 
 
@@ -641,50 +642,52 @@ BOOST_PYTHON_MODULE( pykd )
             "Get thread's stack tarce")
         ;
 
-    python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumBehavior>, boost::noncopyable>("module", "Class representing executable module", python::no_init )
-        .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByName ) )
-        .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByOffset) )
-        .def("begin", ModuleAdapter::getBase,
-             "Return start address of the module" )
-        .def("end", ModuleAdapter::getEnd,
-             "Return end address of the module" )
-        .def("size", ModuleAdapter::getSize,
-              "Return size of the module" )
-        .def("name", ModuleAdapter::getName,
-             "Return name of the module" )
-        .def("reload", ModuleAdapter::reloadSymbols,
-            "(Re)load symbols for the module" )
-        .def("image", ModuleAdapter::getImageName,
-            "Return name of the image of the module" )
-        .def("symfile", ModuleAdapter::getSymFile,
-             "Return the full path to the module's symbol information" )
-        .def("offset", ModuleAdapter::getSymbolVa,
-            "Return offset of the symbol" )
-        .def("findSymbol", ModuleAdapter::findSymbol, Module_findSymbol( python::args("offset", "showDisplacement"),
-            "Return symbol name by virtual address" ) )
-        .def("findSymbolAndDisp", ModuleAdapter::findSymbolAndDisp,
-            "Return tuple(symbol_name, displacement) by virtual address" )
-        .def("rva", ModuleAdapter::getSymbolRva,
-            "Return rva of the symbol" )
-        .def("sizeof", ModuleAdapter::getSymbolSize,
-            "Return a size of the type or variable" )
-        .def("type", ModuleAdapter::getTypeByName,
-            "Return typeInfo class by type name" )
-        .def("typedVar", ModuleAdapter::getTypedVarByAddr,
-            "Return a typedVar class instance" )
-        .def("typedVar",ModuleAdapter::getTypedVarByName,
-            "Return a typedVar class instance" )
-        .def("typedVar", ModuleAdapter::getTypedVarByTypeName,
-            "Return a typedVar class instance" )
-        .def("typedVarList", ModuleAdapter::getTypedVarListByTypeName,
-            "Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory" )
-        .def("typedVarArray", ModuleAdapter::getTypedVarArrayByTypeName,
-            "Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory" )
-        .def("containingRecord", ModuleAdapter::containingRecord,
-            "Return instance of the typedVar class. It's value are loaded from the target memory."
-            "The start address is calculated by the same method as the standard macro CONTAINING_RECORD does" )
-        .def("enumSymbols", ModuleAdapter::enumSymbols, Module_enumSymbols( python::args("mask"),
-             "Return list of tuple ( symbolname, offset )" ) )
+	python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumBehavior>, boost::noncopyable>("module", "Class representing executable module", python::no_init)
+		.def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByName))
+		.def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByOffset))
+		.def("begin", ModuleAdapter::getBase,
+		"Return start address of the module")
+		.def("end", ModuleAdapter::getEnd,
+		"Return end address of the module")
+		.def("size", ModuleAdapter::getSize,
+		"Return size of the module")
+		.def("name", ModuleAdapter::getName,
+		"Return name of the module")
+		.def("reload", ModuleAdapter::reloadSymbols,
+		"(Re)load symbols for the module")
+		.def("image", ModuleAdapter::getImageName,
+		"Return name of the image of the module")
+		.def("symfile", ModuleAdapter::getSymFile,
+		"Return the full path to the module's symbol information")
+		.def("offset", ModuleAdapter::getSymbolVa,
+		"Return offset of the symbol")
+		.def("findSymbol", ModuleAdapter::findSymbol, Module_findSymbol(python::args("offset", "showDisplacement"),
+		"Return symbol name by virtual address"))
+		.def("findSymbolAndDisp", ModuleAdapter::findSymbolAndDisp,
+		"Return tuple(symbol_name, displacement) by virtual address")
+		.def("rva", ModuleAdapter::getSymbolRva,
+		"Return rva of the symbol")
+		.def("sizeof", ModuleAdapter::getSymbolSize,
+		"Return a size of the type or variable")
+		.def("type", ModuleAdapter::getTypeByName,
+		"Return typeInfo class by type name")
+		.def("typedVar", ModuleAdapter::getTypedVarByAddr,
+		"Return a typedVar class instance")
+		.def("typedVar", ModuleAdapter::getTypedVarByName,
+		"Return a typedVar class instance")
+		.def("typedVar", ModuleAdapter::getTypedVarByTypeName,
+		"Return a typedVar class instance")
+		.def("typedVarList", ModuleAdapter::getTypedVarListByTypeName,
+		"Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory")
+		.def("typedVarArray", ModuleAdapter::getTypedVarArrayByTypeName,
+		"Return a list of the typedVar class instances. Each item represents an item of the counted array in the target memory")
+		.def("containingRecord", ModuleAdapter::containingRecord,
+		"Return instance of the typedVar class. It's value are loaded from the target memory."
+		"The start address is calculated by the same method as the standard macro CONTAINING_RECORD does")
+		.def("enumSymbols", ModuleAdapter::enumSymbols, Module_enumSymbols(python::args("mask"),
+		"Return list of tuple ( symbolname, offset )"))
+		.def("enumTypes", ModuleAdapter::enumTypes, Module_enumTypes(python::args("mask"),
+			"Return list of types name"))
         .def("checksum", ModuleAdapter::getCheckSum,
             "Return a image file checksum: IMAGE_OPTIONAL_HEADER.CheckSum" )
         .def("timestamp", ModuleAdapter::getTimeDataStamp,

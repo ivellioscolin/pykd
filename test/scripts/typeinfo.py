@@ -1,4 +1,4 @@
-#
+﻿#
 #
 #
 
@@ -316,3 +316,12 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual(5, len(dir(ti)))
         self.assertTrue("m_field3" in dir(ti))
         self.assertFalse("m_field33" in dir(ti))
+
+    def testEnumTypes(self):
+        lst = target.module.enumTypes()
+        self.assertNotEqual([], lst)
+        lst = target.module.enumTypes("structTest")
+        self.assertEqual(["structTest"], lst)
+        lst = target.module.enumTypes("NonExsistType")
+        self.assertEqual([],lst)
+

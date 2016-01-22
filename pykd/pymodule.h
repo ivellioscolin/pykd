@@ -161,6 +161,8 @@ struct ModuleAdapter : public kdlib::Module
 
     static python::list enumSymbols( kdlib::Module& module, const std::wstring  &mask = L"*" );
 
+	static python::list enumTypes(kdlib::Module& module, const std::wstring &mask = L"*");
+
     static std::wstring findSymbol( kdlib::Module& module, kdlib::MEMOFFSET_64 offset, bool showDisplacement = true );
     
     static python::tuple findSymbolAndDisp( kdlib::Module& module, kdlib::MEMOFFSET_64 offset );
