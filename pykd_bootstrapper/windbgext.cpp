@@ -74,6 +74,10 @@ public:
         return L"ascii";
     }
 
+    bool closed() {
+        return false;
+    }
+
 private:
 
     CComQIPtr<IDebugControl4>  m_control;
@@ -102,6 +106,11 @@ public:
 
         return inputstr.empty() ? L"\n" : inputstr;
     }
+
+    bool closed() {
+        return false;
+    }
+
 
 private:
 
@@ -201,10 +210,12 @@ public:
             .def("write", &DbgOut::write)
             .def("writedml", &DbgOut::writedml)
             .def("flush", &DbgOut::flush)
-            .add_property("encoding", &DbgOut::encoding);
+            .add_property("encoding", &DbgOut::encoding)
+            .add_property("closed", &DbgOut::closed);
 
         python::class_<DbgIn>("din", "din", python::no_init)
-            .def("readline", &DbgIn::readline);
+            .def("readline", &DbgIn::readline)
+            .add_property("closed", &DbgIn::closed);
 
         m_globalInterpreter->deactivate();
     }

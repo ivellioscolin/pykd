@@ -71,6 +71,10 @@ public:
     std::wstring encoding() {
         return L"ascii";
     }
+
+    bool closed() {
+        return false;
+    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -86,6 +90,10 @@ public:
 
     std::wstring encoding() {
         return L"ascii";
+    }
+
+    bool closed() {
+        return false;
     }
 };
 

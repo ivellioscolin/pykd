@@ -205,11 +205,13 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "write", &DbgOut::write )
         .def( "writedml", &DbgOut::writedml)
         .def( "flush", &DbgOut::flush )
-        .add_property( "encoding", &DbgOut::encoding );
+        .add_property( "encoding", &DbgOut::encoding )
+        .add_property( "closed", &DbgOut::closed );
 
     python::class_<DbgIn>( "din", "din", python::no_init )
         .def( "readline", &DbgIn::readline )
-        .add_property( "encoding", &DbgIn::encoding );
+        .add_property( "encoding", &DbgIn::encoding )
+        .add_property("closed", &DbgIn::closed );
 
    // system properties
     python::def( "ptrSize", pykd::ptrSize,
