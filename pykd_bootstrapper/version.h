@@ -3,7 +3,7 @@
 #define PYKDEXT_VERSION_MAJOR      1
 #define PYKDEXT_VERSION_MINOR      0
 #define PYKDEXT_VERSION_SUBVERSION 1
-#define PYKDEXT_VERSION_BUILDNO    11
+#define PYKDEXT_VERSION_BUILDNO    12
 
 #define __VER_STR2__(x) #x
 #define __VER_STR1__(x) __VER_STR2__(x)
