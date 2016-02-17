@@ -199,25 +199,13 @@ public:
 
         m_globalInterpreter = new PythonInterpreter();
 
-        m_globalInterpreter->acivate();
+        //m_globalInterpreter->acivate();
 
-        python::object  main = boost::python::import("__main__");
+        //python::object  main = boost::python::import("__main__");
 
-        python::object  main_namespace = main.attr("__dict__");
+        //python::object  main_namespace = main.attr("__dict__");
 
-        // Python debug output console helper classes
-        python::class_<DbgOut>("dout", "dout", python::no_init)
-            .def("write", &DbgOut::write)
-            .def("writedml", &DbgOut::writedml)
-            .def("flush", &DbgOut::flush)
-            .add_property("encoding", &DbgOut::encoding)
-            .add_property("closed", &DbgOut::closed);
-
-        python::class_<DbgIn>("din", "din", python::no_init)
-            .def("readline", &DbgIn::readline)
-            .add_property("closed", &DbgIn::closed);
-
-        m_globalInterpreter->deactivate();
+        //m_globalInterpreter->deactivate();
     }
 
     void acivateGlobal() {
@@ -266,6 +254,20 @@ private:
     {
         Py_Initialize();
         PyEval_InitThreads();
+
+        // Python debug output console helper classes
+        python::class_<DbgOut>("dout", "dout", python::no_init)
+            .def("write", &DbgOut::write)
+            .def("writedml", &DbgOut::writedml)
+            .def("flush", &DbgOut::flush)
+            .add_property("encoding", &DbgOut::encoding)
+            .add_property("closed", &DbgOut::closed);
+
+        python::class_<DbgIn>("din", "din", python::no_init)
+            .def("readline", &DbgIn::readline)
+            .add_property("closed", &DbgIn::closed);
+
+
         m_globalState = PyEval_SaveThread();
     }
 
