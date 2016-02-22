@@ -50,6 +50,26 @@ inline kdlib::TypedVarPtr containingRecordByType( kdlib::MEMOFFSET_64 offset, kd
 struct TypedVarAdapter {
 
 
+    static python::tuple getLocation(kdlib::TypedVar& typedVar)
+    {
+
+        kdlib::VarStorage   storage;
+        std::wstring regName;
+        kdlib::MEMOFFSET_64  memOffset;
+        {
+            AutoRestorePyState  pystate;
+            storage = typedVar.getStorage();
+            if (storage == kdlib::RegisterVar)
+                regName = typedVar.getRegisterName();
+            else
+                memOffset = typedVar.getAddress();
+        }
+
+        if (storage == kdlib::RegisterVar)
+            return python::make_tuple(storage, regName);
+        return python::make_tuple(storage, memOffset);
+    }
+
     static kdlib::MEMOFFSET_64 getAddress( kdlib::TypedVar& typedVar )
     {
         AutoRestorePyState  pystate;

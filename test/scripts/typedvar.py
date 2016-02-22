@@ -1,4 +1,4 @@
-#
+﻿#
 #
 #
 
@@ -344,3 +344,6 @@ class TypedVarTest( unittest.TestCase ):
                           int,
                           pykd.typedVar(pykd.baseTypes.UInt4B, 0xFFFFFFFFFFFFFFFF))
 
+    def testLocation(self):
+        tv = target.module.typedVar( "structTest", target.module.g_structTest )
+        self.assertEqual( ( pykd.Location.Memory, tv.getAddress()), tv.getLocation() )
