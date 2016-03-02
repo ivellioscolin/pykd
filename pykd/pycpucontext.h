@@ -70,9 +70,29 @@ python::object getRegisterByName( const std::wstring &name );
 
 python::object getRegisterByIndex( unsigned long index );
 
+std::wstring getRegisterNameByIndex(unsigned long index);
+
 inline unsigned long getNumberRegisters() {
     AutoRestorePyState  pystate;
     return kdlib::getRegisterNumber();
+}
+
+inline kdlib::MEMOFFSET_64 getIP()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getInstructionOffset();
+}
+
+inline kdlib::MEMOFFSET_64 getSP()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getStackOffset(); 
+}
+
+inline kdlib::MEMOFFSET_64 getFP()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getFrameOffset();
 }
 
 inline unsigned long long loadMSR( unsigned long  msrIndex ) 
@@ -156,51 +176,45 @@ class CPUContextAdapter
 {
 public:
 
-    static  kdlib::CPUContextPtr getCPUContext() {
-        AutoRestorePyState  pystate;
-        return kdlib::loadCPUContext();
-    }
+    CPUContextAdapter()
+    {}
 
-    static python::object getRegisterByName( kdlib::CPUContextPtr& cpu, const std::wstring &name );
-
-    static python::tuple getRegisterByIndex( kdlib::CPUContextPtr& cpu, unsigned long index );
-
-    static unsigned long getRegisterNumber( kdlib::CPUContextPtr& cpu) 
+    python::object getRegisterByName(const std::wstring &name)
     {
-        AutoRestorePyState  pystate;
-        return cpu->getRegisterNumber();
+        return pykd::getRegisterByName(name);
     }
 
-    static kdlib::MEMOFFSET_64 getIP( kdlib::CPUContextPtr& cpu ) 
+    python::tuple getRegisterByIndex(unsigned long index);
+
+    unsigned long getRegisterNumber()
     {
-        AutoRestorePyState  pystate;
-        return cpu->getIP();
-    }
-    
-    static kdlib::MEMOFFSET_64 getSP( kdlib::CPUContextPtr& cpu )
-    {
-        AutoRestorePyState  pystate;
-        return cpu->getSP();
+        return pykd::getNumberRegisters();
     }
 
-    static kdlib::MEMOFFSET_64 getFP( kdlib::CPUContextPtr& cpu )
+    kdlib::CPUType getCPUType() 
     {
-        AutoRestorePyState  pystate;
-        return cpu->getFP();
+        return  pykd::getProcessorType();
     }
 
-    static kdlib::CPUType getCPUType( kdlib::CPUContextPtr& cpu )
+    kdlib::CPUType getCPUMode()
     {
-        AutoRestorePyState  pystate;
-        return cpu->getCPUType();
+        return pykd::getProcessorMode();
     }
 
-    static kdlib::CPUType getCPUMode( kdlib::CPUContextPtr& cpu )
+    kdlib::MEMOFFSET_64 getIP() 
     {
-        AutoRestorePyState  pystate;
-        return cpu->getCPUMode();
+        return pykd::getIP();
+    }
+        
+    kdlib::MEMOFFSET_64 getSP()
+    {
+        return pykd::getSP();
     }
 
+    kdlib::MEMOFFSET_64 getFP()
+    {
+        return pykd::getFP();
+    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////

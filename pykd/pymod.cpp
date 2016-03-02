@@ -355,6 +355,12 @@ BOOST_PYTHON_MODULE( pykd )
         "Return a CPU register value by the register's number");
     python::def( "getNumberRegisters", pykd::getNumberRegisters,
         "Return a number of CPU registers");
+    python::def("getIP", pykd::getIP,
+        "Return instruction pointer");
+    python::def("getSP", pykd::getSP,
+        "Return stack pointer");
+    python::def("getFP", pykd::getFP,
+        "Return frame pointer");
     python::def ( "rdmsr", pykd::loadMSR,
         "Return MSR value" );
     python::def( "wrmsr", pykd::setMSR,
@@ -867,17 +873,16 @@ BOOST_PYTHON_MODULE( pykd )
             "return the function's local variable  by it's name")
         .def( "__str__", StackFrameAdapter::print );
 
-    python::class_<kdlib::CPUContext, kdlib::CPUContextPtr, boost::noncopyable>( "cpu",
-         "class for CPU context representation", python::no_init  )
-         .def("__init__", python::make_constructor(CPUContextAdapter::getCPUContext) )
-         .add_property("ip", CPUContextAdapter::getIP )
-         .add_property("sp", CPUContextAdapter::getSP )
-         .add_property("fp", CPUContextAdapter::getFP )
-         .def("getCPUType", CPUContextAdapter::getCPUType )
-         .def("getCPUMode",  CPUContextAdapter::getCPUMode )
-         .def("__getattr__",  CPUContextAdapter::getRegisterByName )
-         .def("__getitem__",  CPUContextAdapter::getRegisterByIndex )
-         .def("__len__", CPUContextAdapter::getRegisterNumber );
+    python::class_<CPUContextAdapter>("cpu", "class for CPU context representation" )
+         //.def("__init__", python::make_constructor(CPUContextAdapter::getCPUContext) )
+         .add_property("ip", &CPUContextAdapter::getIP )
+         .add_property("sp", &CPUContextAdapter::getSP )
+         .add_property("fp", &CPUContextAdapter::getFP )
+         .def("getCPUType", &CPUContextAdapter::getCPUType )
+         .def("getCPUMode",  &CPUContextAdapter::getCPUMode )
+         .def("__getattr__",  &CPUContextAdapter::getRegisterByName )
+         .def("__getitem__",  &CPUContextAdapter::getRegisterByIndex )
+         .def("__len__", &CPUContextAdapter::getRegisterNumber );
 
     python::class_<kdlib::SystemInfo>(
         "systemVersion", "Operation system version", python::no_init)

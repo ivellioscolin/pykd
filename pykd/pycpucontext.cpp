@@ -43,6 +43,14 @@ python::object getRegisterByIndex(unsigned long index)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+std::wstring getRegisterNameByIndex(unsigned long index)
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getRegisterName(index);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 python::list getCurrentStack()
 {
     kdlib::StackPtr  stack;
@@ -194,45 +202,28 @@ python::dict StackFrameAdapter::getLocalsDict(kdlib::StackFramePtr& frame)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-python::object CPUContextAdapter::getRegisterByName( kdlib::CPUContextPtr& cpu, const std::wstring &name )
+python::tuple CPUContextAdapter::getRegisterByIndex(unsigned long index)
 {
 
     kdlib::NumVariant var;
-
-    do {
-
-        AutoRestorePyState  pystate;
-
-        var = cpu->getRegisterByName(name);
-    
-    } while(false);
-
-    return NumVariantAdaptor::convertToPython( var );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-python::tuple CPUContextAdapter::getRegisterByIndex( kdlib::CPUContextPtr& cpu, unsigned long index )
-{
-
-    kdlib::NumVariant var;
-
     std::wstring  name;
-
+    
     do {
 
         AutoRestorePyState  pystate;
 
-        var = cpu->getRegisterByIndex(index);
+        if (index >= kdlib::getRegisterNumber())
+            throw kdlib::IndexException(index);
 
-        name = cpu->getRegisterName(index);
-    
-    } while(false);
+        name = kdlib::getRegisterName(index);
+        
+        var = kdlib::getRegisterByIndex(index);
 
-    return python::make_tuple( name, NumVariantAdaptor::convertToPython( var ) );
+    } while (false);
+
+    return python::make_tuple(name, NumVariantAdaptor::convertToPython(var));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
 
 } // end namespace pykd
