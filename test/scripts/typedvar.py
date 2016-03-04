@@ -347,3 +347,9 @@ class TypedVarTest( unittest.TestCase ):
     def testLocation(self):
         tv = target.module.typedVar( "structTest", target.module.g_structTest )
         self.assertEqual( ( pykd.Location.Memory, tv.getAddress()), tv.getLocation() )
+
+    def testGetAddress(self):
+        tv = target.module.typedVar( "structTest", 0x80000000 )
+        self.assertEqual( 0xFFFFFFFF80000000, tv.getAddress() )
+        self.assertEqual( 0xFFFFFFFF80000000, tv )
+
