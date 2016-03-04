@@ -349,7 +349,8 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( ( pykd.Location.Memory, tv.getAddress()), tv.getLocation() )
 
     def testGetAddress(self):
-        tv = target.module.typedVar( "structTest", 0x80000000 )
-        self.assertEqual( 0xFFFFFFFF80000000, tv.getAddress() )
-        self.assertEqual( 0xFFFFFFFF80000000, tv )
+        if not pykd.is64bitSystem():
+            tv = target.module.typedVar( "structTest", 0x80000000 )
+            self.assertEqual( 0xFFFFFFFF80000000, tv.getAddress() )
+            self.assertEqual( 0xFFFFFFFF80000000, tv )
 
