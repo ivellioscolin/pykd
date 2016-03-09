@@ -145,23 +145,22 @@ def printProcess(process,processFilter,threadFilter,moduleFilter,funcFilter,prin
                 stkWow64 = []
 
                 if processWow64 and printopt.showWow64stack == True:
+
+                    cpuMode = getCPUMode()
+
                     try:
 
-                        switchCPUMode();
+                        setCPUMode(CPUType.I386)
 
-                        try:
-                            if not wow64reloaded:
-                                dbgCommand( ".reload /user" )
-                                wow64reloaded = True
-                            stkWow64 = getStack()
-
-                        except MemoryException:
-                            pass
-
-                        switchCPUMode();
+                        if not wow64reloaded:
+                            dbgCommand( ".reload /user" )
+                            wow64reloaded = True
+                        stkWow64 = getStack()
 
                     except DbgException:
                         pass
+
+                    setCPUMode(cpuMode)
 
             
                 stk = []
