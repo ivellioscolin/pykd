@@ -24,36 +24,39 @@ bool PykdExt::isInit() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#if PY_VERSION_HEX >= 0x03000000
+
+extern "C" PyObject* PyInit_pykd();
+
+#else
+
 extern "C" void initpykd();
 
+#endif
 
 void PykdExt::setUp() 
 {
     WindbgExtension::setUp();
 
-    PyImport_AppendInittab("pykd", initpykd ); 
+#if PY_VERSION_HEX >= 0x03000000
 
-    PyEval_InitThreads();
+    PyImport_AppendInittab("pykd", PyInit_pykd);
+
+#else
+
+    PyImport_AppendInittab("pykd", initpykd);
+
+#endif
 
     Py_Initialize();
 
+    PyEval_InitThreads();
+
     python::object  main = boost::python::import("__main__");
 
-    python::object  main_namespace = main.attr("__dict__");
+    python::object  global = main.attr("__dict__");
 
     python::object  pykd = python::import( "pykd" );
-
-   // делаем аналог from pykd import *
-    python::dict     pykd_namespace( pykd.attr("__dict__") ); 
-
-    python::list     iterkeys( pykd_namespace.iterkeys() );
-
-    for (int i = 0; i < boost::python::len(iterkeys); i++)
-    {
-        std::string     key = boost::python::extract<std::string>(iterkeys[i]);
-
-        main_namespace[ key ] = pykd_namespace[ key ];
-    }
 
     python::object       sys = python::import("sys");
 
@@ -61,12 +64,15 @@ void PykdExt::setUp()
     sys.attr("stderr") = python::object( pykd::DbgOut() );
     sys.attr("stdin") = python::object( pykd::DbgIn() );
 
-    python::list pathList(sys.attr("path"));
+    python::list pathList = python::extract<python::list>(sys.attr("path"));
 
     python::ssize_t  n = python::len(pathList);
 
     for (python::ssize_t i = 0; i < n ; i++) 
         m_paths.push_back(boost::python::extract<std::string>(pathList[i]));
+
+    python::exec("import pykd\n", global);
+    python::exec("from pykd import *\n", global);
 
     m_pyState = PyEval_SaveThread();
 }
@@ -159,7 +165,29 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
     }
     else
     {
-        std::string  scriptFileName = getScriptFileName( args[0] );
+
+        std::string  scriptFileName = getScriptFileName(args[0]);
+
+#if PY_VERSION_HEX >= 0x03000000
+
+        // устанавиливаем питоновские аргументы
+        wchar_t  **pythonArgs = new wchar_t* [ args.size() ];
+
+        std::wstring  scriptFileNameW = _bstr_t(scriptFileName.c_str());
+
+        pythonArgs[0] = const_cast<wchar_t*>(scriptFileNameW.c_str());
+
+        for (size_t i = 1; i < args.size(); ++i)
+        {
+            std::wstring  argw = _bstr_t(args[i].c_str());
+            pythonArgs[i] = const_cast<wchar_t*>(argw.c_str());
+        }
+
+        PySys_SetArgv( (int)args.size(), pythonArgs );
+
+        delete[]  pythonArgs;
+
+#else
 
         // устанавиливаем питоновские аргументы
         char  **pythonArgs = new char* [ args.size() ];
@@ -172,6 +200,8 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
         PySys_SetArgv( (int)args.size(), pythonArgs );
 
         delete[]  pythonArgs;
+#endif
+
 
         // получаем достпу к глобальному мапу ( нужен для вызова exec_file )
         python::object  main =  python::import("__main__");

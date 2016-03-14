@@ -9,12 +9,28 @@
       <Configuration>Debug_2.7</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_3.5|Win32">
+      <Configuration>Debug_3.5</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_3.5|x64">
+      <Configuration>Debug_3.5</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release_2.7|Win32">
       <Configuration>Release_2.7</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release_2.7|x64">
       <Configuration>Release_2.7</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_3.5|Win32">
+      <Configuration>Release_3.5</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_3.5|x64">
+      <Configuration>Release_3.5</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -32,12 +48,28 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v120_xp</PlatformToolset>
+    <PythonVersion>2.7</PythonVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <PythonVersion>3.5</PythonVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v120_xp</PlatformToolset>
+    <PythonVersion>2.7</PythonVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <PythonVersion>3.5</PythonVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -45,13 +77,37 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v120_xp</PlatformToolset>
+    <PythonVersion>2.7</PythonVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <PythonVersion>3.5</PythonVersion>
+  </PropertyGroup>   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v120_xp</PlatformToolset>
+    <PythonVersion>2.7</PythonVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <PythonVersion>3.5</PythonVersion>
+  </PropertyGroup>  
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -59,19 +115,40 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>  
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+
   <PropertyGroup Label="UserMacros">
-    <NuGetPackageImportStamp>50e91edb</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>4bf1ae88</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <TargetName>$(ProjectName)</TargetName>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)out\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <TargetExt>.pyd</TargetExt>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
@@ -87,7 +164,22 @@
     <OutDir>$(SolutionDir)out\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <TargetName>$(ProjectName)</TargetName>
+    <OutDir>$(SolutionDir)out\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
+    <TargetName>$(ProjectName)</TargetName>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)out\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetExt>.pyd</TargetExt>
     <TargetName>$(ProjectName)</TargetName>
@@ -101,6 +193,14 @@
     <OutDir>$(SolutionDir)out\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
+    <TargetName>$(ProjectName)</TargetName>
+    <OutDir>$(SolutionDir)out\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -123,7 +223,51 @@
       </Command>
     </CustomBuildStep>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\kdlibcpp\include;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+    </PostBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\kdlibcpp\include;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+    </PostBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -168,6 +312,30 @@
       <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
+
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\kdlibcpp\include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>  
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -191,6 +359,29 @@
       <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\kdlibcpp\include;</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup> 
   <ItemGroup>
     <ClInclude Include="dbgexcept.h" />
     <ClInclude Include="pycpucontext.h" />
@@ -216,20 +407,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dbgexcept.cpp" />
-    <ClCompile Include="dllmain.cpp">
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">false</CompileAsManaged>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">
-      </PrecompiledHeader>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">false</CompileAsManaged>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">
-      </PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="pycpucontext.cpp" />
     <ClCompile Include="pydbgeng.cpp" />
     <ClCompile Include="pyeventhandler.cpp" />
@@ -241,9 +419,13 @@
     <ClCompile Include="pytypeinfo.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="windbgext.cpp" />
   </ItemGroup>
@@ -265,7 +447,8 @@
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
     <Import Project="..\packages\boost.1.57.0.0\build\native\boost.targets" Condition="Exists('..\packages\boost.1.57.0.0\build\native\boost.targets')" />
-    <Import Project="..\packages\Python27.2.7.6\build\python27.targets" Condition="Exists('..\packages\Python27.2.7.6\build\python27.targets')" />
+    <Import Project="..\packages\Python27.2.7.6\build\python27.targets" Condition="'$(PythonVersion)'=='2.7' AND Exists('..\packages\Python27.2.7.6\build\python27.targets')" />
+    <Import Project="..\packages\Python35.3.5.1\build\python35.targets" Condition="'$(PythonVersion)'=='3.5' AND Exists('..\packages\Python35.3.5.1\build\python35.targets')" />
     <Import Project="..\packages\boost_python.1.57.0.0\build\native\boost_python.targets" Condition="Exists('..\packages\boost_python.1.57.0.0\build\native\boost_python.targets')" />
     <Import Project="..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets" Condition="Exists('..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets')" />
     <Import Project="..\packages\boost_system.1.57.0.0\build\native\boost_system.targets" Condition="Exists('..\packages\boost_system.1.57.0.0\build\native\boost_system.targets')" />
@@ -279,6 +462,7 @@
     <Error Condition="!Exists('..\packages\boost.1.57.0.0\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.57.0.0\build\native\boost.targets'))" />
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
     <Error Condition="!Exists('..\packages\Python27.2.7.6\build\python27.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Python27.2.7.6\build\python27.targets'))" />
+    <Error Condition="!Exists('..\packages\Python35.3.5.1\build\python35.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Python35.3.5.1\build\python35.targets'))" />
     <Error Condition="!Exists('..\packages\boost_python.1.57.0.0\build\native\boost_python.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_python.1.57.0.0\build\native\boost_python.targets'))" />
     <Error Condition="!Exists('..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets'))" />
     <Error Condition="!Exists('..\packages\boost_system.1.57.0.0\build\native\boost_system.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_system.1.57.0.0\build\native\boost_system.targets'))" />

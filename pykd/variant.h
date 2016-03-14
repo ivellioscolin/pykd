@@ -32,11 +32,14 @@ public:
             return var;
         }
 
+#if PY_VERSION_HEX < 0x03000000
+
         if ( PyInt_CheckExact( obj.ptr() ) )
         {
              var->m_variant.setLong( PyLong_AsLong( obj.ptr() ) );
              return var;
         }
+#endif
 
         if ( _PyLong_Sign( obj.ptr() ) >= 0 )
             var->m_variant.setULongLong( PyLong_AsUnsignedLongLong( obj.ptr() ) );
