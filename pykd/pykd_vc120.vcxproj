@@ -448,7 +448,7 @@
     <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
     <Import Project="..\packages\boost.1.57.0.0\build\native\boost.targets" Condition="Exists('..\packages\boost.1.57.0.0\build\native\boost.targets')" />
     <Import Project="..\packages\Python27.2.7.6\build\python27.targets" Condition="'$(PythonVersion)'=='2.7' AND Exists('..\packages\Python27.2.7.6\build\python27.targets')" />
-    <Import Project="..\packages\Python35.3.5.1\build\python35.targets" Condition="'$(PythonVersion)'=='3.5' AND Exists('..\packages\Python35.3.5.1\build\python35.targets')" />
+    <Import Project="..\packages\Python35.3.5.1.1\build\python35.targets" Condition="'$(PythonVersion)'=='3.5' AND Exists('..\packages\Python35.3.5.1.1\build\python35.targets')" />
     <Import Project="..\packages\boost_python.1.57.0.0\build\native\boost_python.targets" Condition="Exists('..\packages\boost_python.1.57.0.0\build\native\boost_python.targets')" />
     <Import Project="..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets" Condition="Exists('..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets')" />
     <Import Project="..\packages\boost_system.1.57.0.0\build\native\boost_system.targets" Condition="Exists('..\packages\boost_system.1.57.0.0\build\native\boost_system.targets')" />
@@ -462,7 +462,7 @@
     <Error Condition="!Exists('..\packages\boost.1.57.0.0\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.57.0.0\build\native\boost.targets'))" />
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
     <Error Condition="!Exists('..\packages\Python27.2.7.6\build\python27.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Python27.2.7.6\build\python27.targets'))" />
-    <Error Condition="!Exists('..\packages\Python35.3.5.1\build\python35.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Python35.3.5.1\build\python35.targets'))" />
+    <Error Condition="!Exists('..\packages\Python35.3.5.1.1\build\python35.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Python35.3.5.1\build\python35.targets'))" />
     <Error Condition="!Exists('..\packages\boost_python.1.57.0.0\build\native\boost_python.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_python.1.57.0.0\build\native\boost_python.targets'))" />
     <Error Condition="!Exists('..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets'))" />
     <Error Condition="!Exists('..\packages\boost_system.1.57.0.0\build\native\boost_system.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_system.1.57.0.0\build\native\boost_system.targets'))" />
