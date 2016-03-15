@@ -1,14 +1,18 @@
-from setuptools import setup
+﻿from setuptools import setup
 from setuptools.dist import Distribution
 import pkg_resources
 import argparse
 import os
 import shutil
 import zipfile
+import sys
 
 _name = "pykd"
 _desc = "python windbg extension"
-_version = '0.3.0.36'
+_version = '0.3.0.39'
+
+def getReleaseSrc():
+    return 'Release_%d.%d' % sys.version_info[0:2]
 
 def  makeWheel(args):
 
@@ -32,10 +36,10 @@ def  makeWheel(args):
     pykd_dir =  os.path.join( os.path.curdir, '..', 'out')
     if args.plat_name == 'win32':
         bin_dir = os.path.join( bin_dir, 'x86')
-        pykd_dir = os.path.join(pykd_dir, 'Win32', 'Release_2.7')
+        pykd_dir = os.path.join(pykd_dir, 'Win32', getReleaseSrc())
     elif args.plat_name == 'win-amd64':
         bin_dir = os.path.join( bin_dir, 'x64')
-        pykd_dir = os.path.join(pykd_dir, 'X64', 'Release_2.7')
+        pykd_dir = os.path.join(pykd_dir, 'X64', getReleaseSrc())
     else:
         assert(0)
 
@@ -63,8 +67,8 @@ def  makeWheel(args):
         )
 
 def makeZip(args):
+     #make package catalog
 
-    # make package catalog
     package_dir = os.path.join(os.path.curdir, _name )
     if os.path.exists(package_dir):
         shutil.rmtree(package_dir)
@@ -74,14 +78,16 @@ def makeZip(args):
     pykd_dir =  os.path.join( os.path.curdir, '..', 'out')
     if args.plat_name == 'win32':
         bin_dir = os.path.join( bin_dir, 'x86')
-        pykd_dir = os.path.join(pykd_dir, 'Win32', 'Release_2.7')
+        pykd_dir = os.path.join(pykd_dir, 'Win32', getReleaseSrc())
     elif args.plat_name == 'win-amd64':
         bin_dir = os.path.join( bin_dir, 'x64')
-        pykd_dir = os.path.join(pykd_dir, 'X64', 'Release_2.7')
+        pykd_dir = os.path.join(pykd_dir, 'X64', getReleaseSrc())
     else:
         assert(0)
 
-    zip_str = "pykd-%s-py27-%s" % ( _version, args.plat_name )
+    pyver="%d%d" % sys.version_info[0:2]
+
+    zip_str = "pykd-%s-py%s-%s" % ( _version, pyver, args.plat_name )
     zip_name = zip_str + ".zip"
 
     assert(os.path.isdir(bin_dir))
@@ -97,10 +103,10 @@ def makeZip(args):
 
     with zipfile.ZipFile(os.path.join(os.path.curdir, 'dist', zip_name), mode='w' ) as archive:
         for srcFile in os.listdir(package_dir):
-            print "zipped %s" % (srcFile)
+            print( "zipped %s" % (srcFile) )
             archive.write( os.path.join(package_dir, srcFile), compress_type = zipfile.ZIP_DEFLATED)
 
-    print "OK"
+    print("OK")
 
 
 
