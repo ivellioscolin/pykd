@@ -228,6 +228,10 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
 
     static python::list getElementDir(kdlib::TypeInfo &typeInfo);
 
+    static bool isZero(kdlib::TypeInfo &typeInfo) {
+        return false;
+    }
+
 };
 
 struct BaseTypesEnum {

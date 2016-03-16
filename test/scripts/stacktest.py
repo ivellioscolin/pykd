@@ -31,11 +31,10 @@ class StackTest(unittest.TestCase):
         frame0 = pykd.getFrame()
         self.assertEqual( ["this", "a", "b"], [ name for name, param in frame0.getParams() ] )
 
-
         frame1 = pykd.getStack()[1]
         self.assertEqual( ["a", "b", "c"], [ name for name, param in frame1.getParams() ] )
-        self.assertEqual( 10, frame1.getParam("a").deref() )
-        self.assertEqual( 10, frame1.params["a"].deref() )
+        self.assertEqual( 10, frame1.getParam("a") )
+        self.assertEqual( 10, frame1.params["a"] )
 
         frame2 = pykd.getStack()[2]
         self.assertEqual( 10, frame2.params["a"] )

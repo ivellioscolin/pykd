@@ -29,7 +29,7 @@ class IntBaseTest( unittest.TestCase ):
         self.assertTrue( -0x7FFFFFFF == numVariant(-0x7FFFFFFF) )
         self.assertTrue( -20000000000 == numVariant(-20000000000) )         
         self.assertTrue( -0x8000000000000000 == numVariant(-0x8000000000000000) )
-        self.assertTrue( numVariant(0x20L) == numVariant(0x20) )
+        #self.assertTrue( numVariant(0x20L) == numVariant(0x20) )
         self.assertTrue( True == numVariant(True) )
         self.assertTrue( False == numVariant(0) )
         self.assertTrue( True == numVariant(1) )

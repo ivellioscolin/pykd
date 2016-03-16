@@ -325,3 +325,6 @@ class TypeInfoTest( unittest.TestCase ):
         lst = target.module.enumTypes("NonExsistType")
         self.assertEqual([],lst)
 
+
+    def testArrayOverflow(self):
+        self.assertRaises(pykd.TypeException, pykd.baseTypes.UInt8B.arrayOf, 0xFFFFFFFFFFFFFFFF)

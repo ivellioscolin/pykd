@@ -145,7 +145,7 @@ class BreakpointTest( unittest.TestCase ):
         b3 = pykd.setBp( self.targetModule.CdeclFunc + 2)
 
         self.assertEqual(3, pykd.getNumberBreakpoints());
-        bpLst = [pykd.getBp(i) for i in xrange(3)]
+        bpLst = [pykd.getBp(i) for i in range(3)]
         self.assertEqual(3, len(bpLst))
         map( lambda bp: bp.remove(), bpLst)
         self.assertEqual(0, pykd.getNumberBreakpoints());

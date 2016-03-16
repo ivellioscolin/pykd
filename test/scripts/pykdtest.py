@@ -71,20 +71,23 @@ def getTestSuite( singleName = "" ):
     else:
        return unittest.TestSuite(
           [
-                #unittest.TestLoader().loadTestsFromTestCase( StartProcessWithoutParamsTest ),
+                unittest.TestLoader().loadTestsFromTestCase( StartProcessWithoutParamsTest ),
                 unittest.TestLoader().loadTestsFromName( singleName ),
-                #unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest )
+                unittest.TestLoader().loadTestsFromTestCase( TerminateProcessTest )
           ] )
           
 if __name__ == "__main__":
 
-    print "\nTesting PyKd ver.", pykd.__version__
-    print "Directory:", os.path.dirname(pykd.__file__)
+    print( "\nTesting PyKd ver. %s" % pykd.__version__ )
+    print( "Directory: %s" % os.path.dirname(pykd.__file__) )
 
     target.appPath = os.path.join( os.path.dirname(pykd.__file__), "targetapp.exe" )
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
+    #unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite("typeinfo.TypeInfoTest.testCompareWihNone") )
 
-    raw_input("Press <ENTER>...")
-
+    try: input = raw_input
+    except NameError: pass
+    
+    input("Press <ENTER>...")

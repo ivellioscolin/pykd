@@ -22,7 +22,7 @@ class MsPdbTest(unittest.TestCase):
         """Lookup symbol by name/address"""
         with PeFileAsDumpLoader( os.path.join(os.environ["WINDIR"], r"System32\ole32.dll") ):
             mod = pykd.module("ole32")
-            print "\n" + str( mod )
+            print( "\n" + str( mod ) )
 
             targetSymAddr = mod.offset("CPackagerMoniker::Create")
             self.assertNotEqual( 0, targetSymAddr )
@@ -34,7 +34,7 @@ class MsPdbTest(unittest.TestCase):
 
         with PeFileAsDumpLoader( os.path.join(os.environ["WINDIR"], r"System32\authz.dll") ):
             mod = pykd.module("authz")
-            print "\n" + str( mod )
+            print("\n" + str( mod ))
 
             targetSymAddr = mod.offset("AuthzpDefaultAccessCheck")
             self.assertNotEqual( 0, targetSymAddr )
@@ -46,6 +46,6 @@ class MsPdbTest(unittest.TestCase):
 
         with PeFileAsDumpLoader( os.path.join(os.environ["WINDIR"], r"System32\ntdll.dll") ):
             mod = pykd.module("ntdll")
-            print "\n" + str( mod )
+            print( "\n" + str( mod ))
 
             self.assertNotEqual( 0, len( mod.enumSymbols("Zw*") ) )

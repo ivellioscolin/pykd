@@ -123,3 +123,17 @@ class ModuleTest( unittest.TestCase ):
     #    lst2 = target.module.getEnums()
     #    self.assertNotEqual( 0, len(lst2) )
     #    self.assertTrue( "enumType" in lst2 )
+
+    def testCompare(self):
+        self.assertTrue(target.module.begin() ==  target.module)
+        self.assertTrue(target.module.begin() + 1 != target.module)
+        self.assertTrue(target.module.begin() + 1 > target.module)
+        self.assertTrue(target.module.begin() + 1 >= target.module)
+        self.assertTrue(target.module.begin() - 1 <  target.module)
+        self.assertTrue(target.module.begin() - 1 <= target.module)
+        self.assertTrue( True if target.module else False )
+        self.assertTrue( False if not target.module else True )
+        self.assertFalse(target.module==None)
+        self.assertTrue(target.module!=None)
+
+

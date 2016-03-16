@@ -354,3 +354,18 @@ class TypedVarTest( unittest.TestCase ):
             self.assertEqual( 0xFFFFFFFF80000000, tv.getAddress() )
             self.assertEqual( 0xFFFFFFFF80000000, tv )
 
+    def testCompare(self):
+        self.assertTrue( 10002000 ==  target.module.typedVar( "ulongVar" ) )
+        self.assertTrue( 10002001 !=  target.module.typedVar( "ulongVar" ) )
+        self.assertTrue( 10002001 > target.module.typedVar( "ulongVar" ) )
+        self.assertTrue( 10001999 < target.module.typedVar( "ulongVar" ) )
+        self.assertTrue( 10002001 >= target.module.typedVar( "ulongVar" ) )
+        self.assertTrue( 10001999 <= target.module.typedVar( "ulongVar" ) )
+        self.assertTrue( True if target.module.typedVar( "ulongVar" ) else False )
+        self.assertTrue( False if not target.module.typedVar( "ulongVar" ) else True )
+
+ 
+    def testCompareWihNone(self):
+        tv = target.module.typedVar( "structTest", target.module.g_structTest )
+        self.assertFalse(tv==None)
+        self.assertTrue(tv!=None)

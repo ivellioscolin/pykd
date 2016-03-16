@@ -780,6 +780,11 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__len__", TypeInfoAdapter::getElementCount )
         .def( "__getitem__", TypeInfoAdapter::getElementByIndex )
         .def( "__dir__", TypeInfoAdapter::getElementDir )
+#if PY_VERSION_HEX >= 0x03000000
+        .def("__bool__", TypeInfoAdapter::isZero )
+#else
+        .def("__iszero__", TypeInfoAdapter::isZero )
+#endif
         ;
 
     python::class_<kdlib::TypedVar, kdlib::TypedVarPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typedVar", 
