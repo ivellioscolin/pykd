@@ -4,6 +4,7 @@
 
 #include "kdlib/variant.h"
 #include "kdlib/exceptions.h"
+#include "dbgexcept.h"
 
 namespace pykd {
 
@@ -13,19 +14,19 @@ class NumVariantAdaptor : public kdlib::NumBehavior
 public:
 
 
-    static kdlib::NumBehavior* NumVariantAdaptor::getVariant( const python::object &obj )
+    static kdlib::NumBehavior* NumVariantAdaptor::getVariant(const python::object &obj)
     {
         NumVariantAdaptor*  var = new NumVariantAdaptor();
 
-        if ( PyBool_Check( obj.ptr() ) )
+        if (PyBool_Check(obj.ptr()))
         {
-            if ( obj.ptr() == Py_True )
-               var->m_variant.setBool(true);
+            if (obj.ptr() == Py_True)
+                var->m_variant.setBool(true);
             else
-               var->m_variant.setBool(false);
+                var->m_variant.setBool(false);
             return var;
         }
-        
+
         if (PyFloat_Check(obj.ptr()))
         {
             var->m_variant.setDouble(PyFloat_AsDouble(obj.ptr()));
@@ -34,17 +35,28 @@ public:
 
 #if PY_VERSION_HEX < 0x03000000
 
-        if ( PyInt_CheckExact( obj.ptr() ) )
+        if (PyInt_CheckExact(obj.ptr()))
         {
-             var->m_variant.setLong( PyLong_AsLong( obj.ptr() ) );
-             return var;
+            var->m_variant.setLong(PyLong_AsLong(obj.ptr()));
+            return var;
         }
 #endif
 
-        if ( _PyLong_Sign( obj.ptr() ) >= 0 )
-            var->m_variant.setULongLong( PyLong_AsUnsignedLongLong( obj.ptr() ) );
+        if (_PyLong_Sign(obj.ptr()) >= 0)
+        {
+            if (_PyLong_NumBits(obj.ptr()) > 64)
+                throw pykd::OverflowException("int too big to convert");
+
+            var->m_variant.setULongLong(PyLong_AsUnsignedLongLong(obj.ptr()));
+        }
         else
-           var->m_variant.setLongLong( PyLong_AsLongLong( obj.ptr() ) );
+        {
+            if (_PyLong_NumBits(obj.ptr()) > 63)
+                throw pykd::OverflowException("int too big to convert");
+
+            var->m_variant.setLongLong(PyLong_AsLongLong(obj.ptr()));
+        }
+
 
         return var;
     }

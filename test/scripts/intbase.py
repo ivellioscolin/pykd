@@ -1,6 +1,7 @@
 
 import unittest
 import target
+import sys
 from pykd import numVariant
 
 class IntBaseTest( unittest.TestCase ):
@@ -15,8 +16,11 @@ class IntBaseTest( unittest.TestCase ):
         a = numVariant(-2000)
         a = numVariant(-200000)
         a = numVariant(-20000000000) 
-        a = numVariant(-0xFFFFFFFFFFFFFFFF )
         a = numVariant( True )
+
+        self.assertRaises(OverflowError, numVariant, -0xFFFFFFFFFFFFFFFF )
+        self.assertRaises(OverflowError, numVariant, 0x10000000000000000 )
+
         
     def testEq( self ):
         self.assertTrue( 0xFF == numVariant(0xFF) and numVariant(0xFF) == 0xFF )
@@ -27,8 +31,8 @@ class IntBaseTest( unittest.TestCase ):
         self.assertTrue( -20 == numVariant(-20) )
         self.assertTrue( -2000 == numVariant(-2000) )
         self.assertTrue( -0x7FFFFFFF == numVariant(-0x7FFFFFFF) )
-        self.assertTrue( -20000000000 == numVariant(-20000000000) )         
-        self.assertTrue( -0x8000000000000000 == numVariant(-0x8000000000000000) )
+        self.assertTrue( -20000000000 == numVariant(-20000000000) )
+        self.assertTrue( -0x7fffffffffffffff == numVariant(-0x7fffffffffffffff) )
         #self.assertTrue( numVariant(0x20L) == numVariant(0x20) )
         self.assertTrue( True == numVariant(True) )
         self.assertTrue( False == numVariant(0) )
@@ -44,7 +48,7 @@ class IntBaseTest( unittest.TestCase ):
         self.assertTrue( -20 + 1 != numVariant(-20) )        
         self.assertTrue( -2000 + 1 != numVariant(-2000) )        
         self.assertTrue( -20000000000 + 1 != numVariant(-20000000000) )
-        self.assertTrue( -0x8000000000000000 - 1 != numVariant(-0x8000000000000000) )
+        self.assertTrue( -0x8000000000000000 - 1 != numVariant(-0x7fffffffffffffff) )
         self.assertTrue( numVariant(1) != numVariant(2) )
         
     def testLtGt( self ):
@@ -73,8 +77,8 @@ class IntBaseTest( unittest.TestCase ):
         self.assertEqual( -20, numVariant(-10) + (-10) )
         self.assertEqual( 10, numVariant(-10) + 20 )
         self.assertEqual( 0x7fffffffffffffff + 1, numVariant(0x7fffffffffffffff) + 1)
-        self.assertEqual( -0x8000000000000000 + 10, numVariant(-0x8000000000000000) + 10 )
-        self.assertEqual( 0, numVariant(-0x8000000000000000) + 0x8000000000000000 )
+        self.assertEqual( -0x7fffffffffffffff + 10, numVariant(-0x7fffffffffffffff) + 10 )
+        self.assertEqual( 0, numVariant(-0x7fffffffffffffff) + 0x7fffffffffffffff )
         self.assertEqual( 5, numVariant(3) + numVariant(2) )
 
     def testSub( self ):

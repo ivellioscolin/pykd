@@ -9,6 +9,13 @@
 
 namespace pykd {
 
+class OverflowException : public std::exception
+{
+public:
+
+    OverflowException(const char* desc) : std::exception(desc)
+    {}
+};
 
 template< class TExcept >
 struct exceptPyType{
@@ -48,8 +55,7 @@ public:
 };
 
 
-
-inline void exceptionTranslate(const kdlib::DbgException &e ) 
+inline void dbgExceptionTranslate(const kdlib::DbgException &e)
 {
     if ( typeid(e).hash_code() == typeid(kdlib::MemoryException).hash_code() )
     {
@@ -82,6 +88,16 @@ inline void exceptionTranslate(const kdlib::DbgException &e )
     PyErr_SetObject( exceptPyType<kdlib::DbgException>::pyExceptType.get(), exceptObj.ptr());
 }
 
+inline void pykdExceptionTranslate(const std::exception &e)
+{
+    if (typeid(e).hash_code() == typeid(OverflowException).hash_code())
+    {
+        PyErr_SetString(PyExc_OverflowError, e.what());
+        return;
+    }
+
+}
+
 inline void registerExceptions()
 {
     pykd::exception<kdlib::DbgException>( "DbgException", "Pykd base exception class" );
@@ -89,7 +105,8 @@ inline void registerExceptions()
     pykd::exception<kdlib::SymbolException,kdlib::DbgException>( "SymbolException", "Symbol exception" );
     pykd::exception<kdlib::TypeException,kdlib::SymbolException>( "TypeException", "type exception" );
 
-    python::register_exception_translator<kdlib::DbgException>( &exceptionTranslate );
+    python::register_exception_translator<kdlib::DbgException>( &dbgExceptionTranslate );
+    python::register_exception_translator<OverflowException>( &pykdExceptionTranslate );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
