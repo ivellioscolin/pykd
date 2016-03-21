@@ -222,7 +222,7 @@ class TypeInfoTest( unittest.TestCase ):
     def testEnumSubscribe(self):
         ti = pykd.typeInfo( "enumType" )
         self.assertEqual( 3, len(ti) )
-        self.assertEqual( [ 1, 2, 3], [ long(field) for field in ti ] )
+        self.assertEqual( [ 1, 2, 3], [ int(field) for field in ti ] )
         self.assertEqual( [ ( "ONE", 1), ("TWO", 2), ("THREE", 3) ], ti.fields() )
 
     def testStructNullSize(self):

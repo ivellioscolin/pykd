@@ -508,8 +508,15 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "__rsub__", &NumVariantAdaptor::rsub )
         .def( "__mul__", &NumVariantAdaptor::mul )
         .def( "__rmul__", &NumVariantAdaptor::mul )
+#if PY_VERSION_HEX < 0x03000000
         .def( "__div__", &NumVariantAdaptor::div )
         .def( "__rdiv__", &NumVariantAdaptor::rdiv )
+#else
+        .def("__truediv__", &NumVariantAdaptor::truediv)
+        .def("__rtruediv__", &NumVariantAdaptor::rtruediv)
+#endif
+        .def("__floordiv__", &NumVariantAdaptor::div)
+        .def("__rfloordiv__", &NumVariantAdaptor::rdiv)
         .def( "__mod__", &NumVariantAdaptor::mod )
         .def( "__rmod__", &NumVariantAdaptor::rmod )
         .def( "__rshift__", &NumVariantAdaptor::rshift )

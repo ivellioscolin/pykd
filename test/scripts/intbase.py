@@ -108,24 +108,14 @@ class IntBaseTest( unittest.TestCase ):
         self.assertEqual( -1, 2 / numVariant(-2) )
         self.assertEqual( 1, -2 / numVariant(-2) )
         self.assertEqual( 3, numVariant(7)/numVariant(2) )
-        
-        try: 
-            -2 / numVariant(0)
-            self.assertTrue( False )
-        except ZeroDivisionError:
-            self.assertTrue( True )
 
-        try:
-            numVariant(2)/0
-            self.assertTrue( False )
-        except ZeroDivisionError:
-            self.assertTrue( True )
-            
-        try:
-            numVariant(0)/numVariant(0)
-            self.assertTrue( False )
-        except ZeroDivisionError:
-            self.assertTrue( True )
+        self.assertRaises(ZeroDivisionError, lambda x: -2 / numVariant(0), 0 )
+        self.assertRaises(ZeroDivisionError, lambda x: numVariant(2)/0, 0 )
+        self.assertRaises(ZeroDivisionError, lambda x: numVariant(0)/numVariant(0), 0 )
+
+    def testDivFloor(self):
+        self.assertEqual(0, numVariant(1) // 2 )
+        self.assertEqual(numVariant(1) // 2, 0 )
             
     def testMod( self ):
         self.assertEqual( 1, numVariant(3) % 2 )

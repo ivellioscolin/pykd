@@ -169,6 +169,14 @@ public:
         return convertToPython(var) / obj;
     }
 
+    static python::object truediv(kdlib::NumBehavior& var, python::object&  obj) {
+        return convertToPython(var) / obj;
+    }
+
+    static python::object rtruediv(kdlib::NumBehavior& var, python::object&  obj) {
+        return obj / convertToPython(var);
+    }
+
     static python::object rdiv( kdlib::NumBehavior& var, python::object&  obj ) {
         return  obj / convertToPython(var);
     }
