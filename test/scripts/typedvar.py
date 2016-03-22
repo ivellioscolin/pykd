@@ -145,15 +145,15 @@ class TypedVarTest( unittest.TestCase ):
     def testTypedVarList(self):
         tvl = target.module.typedVarList( target.module.g_listHead, "listStruct", "next.flink" )
         self.assertEqual( 5, len( tvl ) )
-        self.assertEqual( range(5), [ tv.num for tv in tvl ] )
+        self.assertEqual( [ i for i in range(5)], [ tv.num for tv in tvl ] )
 
         tvl = pykd.typedVarList( target.module.g_listHead, target.module.type("listStruct"), "next.flink" )
         self.assertEqual( 5, len( tvl ) )
-        self.assertEqual( range(5), [ tv.num for tv in tvl ] )
+        self.assertEqual( [ i for i in range(5)], [ tv.num for tv in tvl ] )
 
         tvl = pykd.typedVarList( target.module.g_listHead, target.module.type("listStruct"), "next.flink" )
         self.assertEqual( 5, len( tvl ) )
-        self.assertEqual( range(5), [ tv.num for tv in tvl ] )
+        self.assertEqual( [ i for i in range(5)], [ tv.num for tv in tvl ] )
 
         #tvl = target.module.typedVarList( target.module.g_listHead1, "listStruct1", "next" )
         #self.assertEqual( 3, len( tvl ) )
@@ -361,7 +361,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertTrue( 10001999 < target.module.typedVar( "ulongVar" ) )
         self.assertTrue( 10002001 >= target.module.typedVar( "ulongVar" ) )
         self.assertTrue( 10001999 <= target.module.typedVar( "ulongVar" ) )
-        self.assertTrue( True if target.module.typedVar( "ulongVar" ) else False )
+        self.assertTrue( True if target.module.typedVar( "ulongVar" )  else False )
         self.assertTrue( False if not target.module.typedVar( "ulongVar" ) else True )
 
  

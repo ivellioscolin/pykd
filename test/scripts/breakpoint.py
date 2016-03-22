@@ -147,7 +147,8 @@ class BreakpointTest( unittest.TestCase ):
         self.assertEqual(3, pykd.getNumberBreakpoints());
         bpLst = [pykd.getBp(i) for i in range(3)]
         self.assertEqual(3, len(bpLst))
-        map( lambda bp: bp.remove(), bpLst)
+        for bp in bpLst: bp.remove()
+
         self.assertEqual(0, pykd.getNumberBreakpoints());
 
     def testBreakpointChangeHandler(self):
