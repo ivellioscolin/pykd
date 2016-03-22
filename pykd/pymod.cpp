@@ -832,6 +832,11 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__getitem__", TypedVarAdapter::getElementByIndex )
         .def("__dir__", TypedVarAdapter::getElementsDir)
         //.def("__getitem__", &kdlib::TypedVar::getElementByIndexPtr )
+#if PY_VERSION_HEX >= 0x03000000
+        .def("__bool__", TypedVarAdapter::isNotZero)
+#else
+        .def("__iszero__", TypedVarAdapter::isZero)
+#endif
         ;
 
     python::class_<BaseTypesEnum>("baseTypes", "base types enumeration",  boost::python::no_init)

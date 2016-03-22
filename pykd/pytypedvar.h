@@ -162,6 +162,17 @@ struct TypedVarAdapter {
     }
 
     static python::list getElementsDir(kdlib::TypedVar& typedVar);
+
+    static bool isZero(kdlib::TypedVar& typedVar)
+    {
+        AutoRestorePyState  pystate;
+        return typedVar.getValue() == 0;
+    }
+
+    static bool isNotZero(kdlib::TypedVar& typedVar)
+    {
+        return !isZero(typedVar);
+    }
 };
 
 } // end namespace pykd
