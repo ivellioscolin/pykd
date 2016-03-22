@@ -26,31 +26,31 @@ template< class TExcept, class TBaseExcept = python::detail::not_specified >
 class exception  {
 
 public:
-
-    exception( const std::string& className, const std::string& classDesc ) 
+    
+    exception(const std::string& className, const std::string& classDesc)
     {
-        python::handle<>   basedtype;      
+        std::string fullName = "pykd." + className;
 
-        if ( boost::is_same<TBaseExcept, python::detail::not_specified>::value )
+        if (boost::is_same<TBaseExcept, python::detail::not_specified>::value)
         {
-            basedtype = python::handle<>(PyExc_Exception);
+            exceptPyType<TExcept>::pyExceptType = 
+                python::handle<>(PyErr_NewExceptionWithDoc(
+                    const_cast<char*>(fullName.c_str()),
+                    const_cast<char*>(classDesc.c_str()),
+                    NULL,
+                    NULL));
         }
         else
         {
-            basedtype = exceptPyType<TBaseExcept>::pyExceptType;
+            exceptPyType<TExcept>::pyExceptType = 
+                python::handle<>(PyErr_NewExceptionWithDoc(
+                    const_cast<char*>(fullName.c_str()), 
+                    const_cast<char*>(classDesc.c_str()), 
+                    exceptPyType<TBaseExcept>::pyExceptType.get(), 
+                    NULL));
         }
 
-        python::dict       ob_dict;
-       
-        ob_dict["__doc__"] = classDesc;
-
-        python::tuple      ob_bases = python::make_tuple( basedtype );
-
-        python::object     ob = python::object( python::handle<>(Py_TYPE(basedtype.get()) ) )( className, ob_bases, ob_dict );
-
-        python::scope().attr( className.c_str() ) = ob;
-
-        exceptPyType<TExcept>::pyExceptType = python::handle<>( ob.ptr() );
+        python::scope().attr(className.c_str()) = exceptPyType<TExcept>::pyExceptType;
     }
 };
 
