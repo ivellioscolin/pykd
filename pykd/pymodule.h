@@ -2,10 +2,15 @@
 
 #include <sstream>
 
+#include <comutil.h>
+
+
 #include "kdlib/module.h"
+#include "kdlib/exceptions.h"
 
 #include "stladaptor.h"
 #include "pythreadstate.h"
+#include "dbgexcept.h"
 
 namespace pykd {
 
@@ -72,6 +77,20 @@ struct ModuleAdapter : public kdlib::Module
     {
         AutoRestorePyState  pystate;
         return module.getSymbolVa(symbolName);
+    }
+
+    static kdlib::MEMOFFSET_64 getSymbolVaAttr(kdlib::Module& module, const std::wstring &symbolName)
+    {
+        AutoRestorePyState  pystate;
+        try {
+            return module.getSymbolVa(symbolName);
+        }
+        catch (kdlib::DbgException&)
+        {
+            std::wstringstream sstr;
+            sstr << L'\'' << module.getName() << L'\'' << L" module has no symbol " << L'\'' << symbolName << L'\'';
+            throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
+        }
     }
 
     static kdlib::MEMOFFSET_32 getSymbolRva( kdlib::Module& module, const std::wstring &symbolName )

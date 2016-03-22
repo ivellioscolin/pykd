@@ -1,7 +1,11 @@
 #pragma  once
 
+#include <comutil.h>
+
 #include "kdlib/typeinfo.h"
+
 #include "pythreadstate.h"
+#include "dbgexcept.h"
 
 namespace pykd {
 
@@ -107,6 +111,20 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
     {
         AutoRestorePyState  pystate;
         return typeInfo.getElement(name);
+    }
+
+    static kdlib::TypeInfoPtr getElementAttr(kdlib::TypeInfo &typeInfo, const std::wstring &name)
+    {
+        try
+        {
+            return getElementByName(typeInfo, name);
+        }
+        catch (kdlib::DbgException&)
+        {
+            std::wstringstream sstr;
+            sstr << L'\'' << typeInfo.getName() << L'\'' << L" type has no field " << L'\'' << name << L'\'';
+            throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
+        }
     }
 
 

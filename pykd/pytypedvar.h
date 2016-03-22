@@ -1,5 +1,7 @@
 #pragma once
 
+#include <comutil.h>
+
 #include <boost/python/list.hpp>
 #include <boost/python/tuple.hpp>
 namespace python = boost::python;
@@ -8,6 +10,7 @@ namespace python = boost::python;
 
 #include "stladaptor.h"
 #include "pythreadstate.h"
+#include "dbgexcept.h"
 
 namespace pykd {
 
@@ -104,6 +107,20 @@ struct TypedVarAdapter {
     {
         AutoRestorePyState  pystate;
         return typedVar.getElement( name );
+    }
+
+    static kdlib::TypedVarPtr getFieldAttr(kdlib::TypedVar& typedVar, const std::wstring &name)
+    {
+        try
+        {
+            return getField(typedVar, name);
+        }
+        catch (kdlib::DbgException&)
+        {
+            std::wstringstream sstr;
+            sstr << L"typed var has no field " << L'\'' << name << L'\'';
+            throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
+        }
     }
 
     static size_t getElementCount( kdlib::TypedVar& typedVar ) 

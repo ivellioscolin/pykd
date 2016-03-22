@@ -717,7 +717,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return tuple of the module's file version")
         .def("getFixedFileInfo", ModuleAdapter::getFixedFileInfo,
             "Return FixedFileInfo" )
-        .def("__getattr__", ModuleAdapter::getSymbolVa,
+        .def("__getattr__", ModuleAdapter::getSymbolVaAttr,
             "Return address of the symbol" )
         .def( "__str__", &ModuleAdapter::print );
 
@@ -783,7 +783,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return class parent" )
         .def( "__str__", TypeInfoAdapter::str,
             "Return type as a printable string" )
-        .def( "__getattr__", TypeInfoAdapter::getElementByName )
+        .def( "__getattr__", TypeInfoAdapter::getElementAttr )
         .def( "__len__", TypeInfoAdapter::getElementCount )
         .def( "__getitem__", TypeInfoAdapter::getElementByIndex )
         .def( "__dir__", TypeInfoAdapter::getElementDir )
@@ -825,7 +825,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return value by pointer" )
         .def("type", TypedVarAdapter::getType,
             "Return typeInfo instance" )
-        .def("__getattr__", TypedVarAdapter::getField,
+        .def("__getattr__", TypedVarAdapter::getFieldAttr,
             "Return field of structure as an object attribute" )
         .def( "__str__", TypedVarAdapter::print )
         .def("__len__", TypedVarAdapter::getElementCount )

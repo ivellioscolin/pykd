@@ -17,6 +17,15 @@ public:
     {}
 };
 
+class AttributeException : public std::exception
+{
+public:
+
+    AttributeException(const char* desc) : std::exception(desc)
+    {}
+};
+
+
 template< class TExcept >
 struct exceptPyType{
     static python::handle<>     pyExceptType;
@@ -96,6 +105,12 @@ inline void pykdExceptionTranslate(const std::exception &e)
         return;
     }
 
+    if (typeid(e).hash_code() == typeid(AttributeException).hash_code())
+    {
+        PyErr_SetString(PyExc_AttributeError, e.what());
+        return;
+    }
+
 }
 
 inline void registerExceptions()
@@ -107,6 +122,7 @@ inline void registerExceptions()
 
     python::register_exception_translator<kdlib::DbgException>( &dbgExceptionTranslate );
     python::register_exception_translator<OverflowException>( &pykdExceptionTranslate );
+    python::register_exception_translator<AttributeException>(&pykdExceptionTranslate);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
