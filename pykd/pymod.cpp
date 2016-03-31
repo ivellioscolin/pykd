@@ -36,6 +36,7 @@ static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( startProcess_,  pykd::startProcess, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( attachProcess_, pykd::attachProcess, 1, 2);
 BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_,  pykd::detachProcess, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( terminateProcess_,  pykd::terminateProcess, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS(closeDump_, pykd::closeDump, 0, 1);
@@ -138,10 +139,10 @@ BOOST_PYTHON_MODULE( pykd )
 
    // Manage debug target 
 
-    python::def( "startProcess", pykd::startProcess, startProcess_( boost::python::args( "commandline", "debugChildren" ), 
+    python::def( "startProcess", pykd::startProcess, startProcess_( boost::python::args( "commandline", "debugOptions"), 
         "Start process for debugging" ) ); 
-    python::def( "attachProcess", pykd::attachProcess,
-        "Attach debugger to a exsisting process" );
+    python::def("attachProcess", pykd::attachProcess, attachProcess_(boost::python::args("pid", "debugOptions"),
+        "Attach debugger to a exsisting process") );
     python::def( "detachProcess", pykd::detachProcess, detachProcess_( boost::python::args( "id" ),
         "Stop process debugging") ); 
     python::def( "detachAllProcesses", pykd::detachAllProcesses, 
@@ -1092,6 +1093,14 @@ BOOST_PYTHON_MODULE( pykd )
         .value("PageExecuteRead", kdlib::PageExecuteRead)
         .value("PageExecuteReadWrite", kdlib::PageExecuteReadWrite)
         .value("PageExecuteWriteCopy", kdlib::PageExecuteWriteCopy)
+        ;
+
+    python::enum_<kdlib::ProcessDebugOptions>("ProcessDebugOptions", "Process debug option")
+        .value("BreakOnStart", kdlib::ProcessBreakOnStart)
+        .value("BreakOnStop", kdlib::ProcessBreakOnStop)
+        .value("DebugChildren", kdlib::ProcessDebugChildren)
+        .value("NoDebugHeap", kdlib::ProcessNoDebugHeap)
+        .value("Deafult", kdlib::ProcessDebugDefault)
         ;
 
     python::class_<EventHandler, boost::noncopyable>(

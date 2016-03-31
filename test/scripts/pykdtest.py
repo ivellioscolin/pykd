@@ -81,11 +81,14 @@ if __name__ == "__main__":
     print( "\nTesting PyKd ver. %s" % pykd.__version__ )
     print( "Directory: %s" % os.path.dirname(pykd.__file__) )
 
+    import time
+   # time.sleep(30)
+
     target.appPath = os.path.join( os.path.dirname(pykd.__file__), "targetapp.exe" )
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
-    #unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite("typeinfo.TypeInfoTest.testCompareWihNone") )
+    #unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite("typedvar.TypedVarTest.testCompare") )
 
     try: input = raw_input
     except NameError: pass
