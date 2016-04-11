@@ -515,7 +515,7 @@ py(
 
             std::string  scriptFileName = getScriptFileName(argsList[0]);
             if (scriptFileName.empty())
-                throw std::invalid_argument("script not found");
+                throw std::invalid_argument("script not found\n");
 
             // устанавиливаем питоновские аргументы
             char  **pythonArgs = new char*[argsList.size()];
