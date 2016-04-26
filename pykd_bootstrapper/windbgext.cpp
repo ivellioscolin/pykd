@@ -190,6 +190,15 @@ public:
         delete m_globalInterpreter;
         m_globalInterpreter = 0;
         PyThreadState_Swap(m_globalState);
+
+        if (m_pykdInit)
+        {
+            python::object  main = python::import("__main__");
+            python::object  globalScope(main.attr("__dict__"));
+            python::exec("__import__('pykd').deinitialize()", globalScope);
+            m_pykdInit = false;
+        }
+
         m_globalState = PyEval_SaveThread();
     }
 
@@ -198,14 +207,6 @@ public:
         PyEval_RestoreThread(m_globalState);
 
         m_globalInterpreter = new PythonInterpreter();
-
-        //m_globalInterpreter->acivate();
-
-        //python::object  main = boost::python::import("__main__");
-
-        //python::object  main_namespace = main.attr("__dict__");
-
-        //m_globalInterpreter->deactivate();
     }
 
     void acivateGlobal() {
