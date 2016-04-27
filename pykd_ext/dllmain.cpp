@@ -9,13 +9,13 @@ BOOL APIENTRY DllMain( HMODULE hModule,
                        LPVOID lpReserved
 					 )
 {
-	if (!pinHandle)
-	{
-		GetModuleHandleEx(
-			GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_PIN,
-			(LPCTSTR)hModule,
-			&pinHandle);
-	}
+	//if (!pinHandle)
+	//{
+	//	GetModuleHandleEx(
+	//		GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_PIN,
+	//		(LPCTSTR)hModule,
+	//		&pinHandle);
+	//}
 
 	switch (ul_reason_for_call)
 	{

@@ -100,6 +100,7 @@ VOID
 CALLBACK
 DebugExtensionUninitialize()
 {
+   // stopAllInterpreter();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -107,7 +108,18 @@ DebugExtensionUninitialize()
 std::string make_version(int major, int minor)
 {
     std::stringstream sstr;
-    sstr << std::dec << major << '.' << minor;
+    sstr << std::dec << major << '.' << minor; 
+
+#ifdef _WIN64
+
+    sstr << " x86-64";
+
+#else
+
+    sstr << " x86-32";
+
+#endif
+
     return sstr.str();
 }
 
@@ -123,13 +135,16 @@ info(
     std::stringstream   sstr;
 
     sstr << std::endl << "Installed python" << std::endl << std::endl;
-    sstr << std::setw(12) << std::left << "Version:" <<  std::left << "Image:" <<  std::endl;
+    sstr << std::setw(14) << std::left << "Version:" << std::setw(12) << std::left << "Status: " << std::left << "Image:" <<  std::endl;
     sstr << "------------------------------------------------------------------------------" << std::endl;
     if (interpreterList.size() > 0)
     {
         for (const InterpreterDesc& desc : interpreterList)
         {
-            sstr << std::setw(12) << std::left << make_version(desc.majorVersion, desc.minorVersion);
+            sstr << std::setw(14) << std::left << make_version(desc.majorVersion, desc.minorVersion);
+            
+            sstr << std::setw(12) << std::left << (isInterpreterLoaded(desc.majorVersion, desc.minorVersion) ? "Loaded" : "Unloaded");
+
             sstr << desc.imagePath << std::endl;
         }
     }
@@ -159,8 +174,31 @@ static const char  printUsageMsg[] =
     "\tOptions:\n"
     "\t-g --global  : run code in the common namespace\n"
     "\t-l --local   : run code in the isolate namespace\n"
-    "!install\n"
-    "!upgrade\n";
+    "!pip\n"
+    "!info\n";
+
+//////////////////////////////////////////////////////////////////////////////
+
+extern "C"
+HRESULT
+CALLBACK
+help(
+    PDEBUG_CLIENT client,
+    PCSTR args
+    )
+{
+    CComQIPtr<IDebugControl>  control = client;
+
+    control->ControlledOutput(
+        DEBUG_OUTCTL_THIS_CLIENT,
+        DEBUG_OUTPUT_NORMAL,
+        printUsageMsg
+        );
+
+    return S_OK;
+}
+
+//////////////////////////////////////////////////////////////////////////////
 
 extern "C"
 HRESULT
@@ -286,8 +324,56 @@ pip(
 )
 {
 
-    return S_OK;
+    try {
 
+        Options  opts(getArgsList(args));
+
+        int  majorVersion = opts.pyMajorVersion;
+        int  minorVersion = opts.pyMinorVersion;
+
+        getPythonVersion(majorVersion, minorVersion);
+
+        AutoInterpreter  autoInterpreter(opts.global, majorVersion, minorVersion);
+
+        PyObjectRef  dbgOut = make_pyobject<DbgOut>(client);
+        PySys_SetObject("stdout", dbgOut);
+
+        PyObjectRef  dbgErr = make_pyobject<DbgOut>(client);
+        PySys_SetObject("stderr", dbgErr);
+
+        PyObjectRef dbgIn = make_pyobject<DbgIn>(client);
+        PySys_SetObject("stdin", dbgIn);
+
+        PyObjectRef  mainName = IsPy3() ? PyUnicode_FromString("__main__") : PyString_FromString("__main__");
+        PyObjectRef  mainMod = PyImport_Import(mainName);
+        PyObjectRef  globals = PyObject_GetAttrString(mainMod, "__dict__");
+
+
+        std::stringstream  sstr;
+        sstr << "pip.main([";
+        for (auto arg : opts.args)
+            sstr << '\'' << arg << '\'' << ',';
+        sstr << "])\n";
+
+        PyObjectRef result;
+        result = PyRun_String("import pip\n", Py_file_input, globals, globals);
+        result = PyRun_String("pip.logger.consumers = []\n", Py_file_input, globals, globals);
+        result = PyRun_String(sstr.str().c_str(), Py_file_input, globals, globals);
+
+        handleException();
+    }
+    catch (std::exception &e)
+    {
+        CComQIPtr<IDebugControl>  control = client;
+
+        control->ControlledOutput(
+            DEBUG_OUTCTL_THIS_CLIENT,
+            DEBUG_OUTPUT_ERROR,
+            e.what()
+            );
+    }
+
+    return S_OK;
 }
 
 
@@ -303,7 +389,7 @@ void handleException()
 
     PyErr_NormalizeException(&errtype, &errvalue, &traceback);
 
-    if (errtype != PyExc_SystemExit() )
+    if (errtype && errtype != PyExc_SystemExit())
     {
         PyObjectRef  traceback_module = PyImport_ImportModule("traceback");
 
@@ -329,7 +415,7 @@ void handleException()
         throw std::exception(sstr.str().c_str());
     }
 
-    Py_DecRef(errtype);
+    if (errtype) Py_DecRef(errtype);
     if (errvalue) Py_DecRef(errvalue);
     if (traceback) Py_DecRef(traceback);
 }

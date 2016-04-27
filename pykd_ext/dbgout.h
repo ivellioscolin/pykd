@@ -57,13 +57,18 @@ public:
         return false;
     }
 
+    bool isatty() {
+        return false;
+    }
+
 public:
 
     BEGIN_PYTHON_METHOD_MAP(DbgOut, "dbgout")
        PYTHON_METHOD1("write", write, "write");
        PYTHON_METHOD0("flush", flush, "flush");
-       PYTHON_METHOD0("encoding", encoding, "encoding");
-       PYTHON_METHOD0("closed", closed, "closed");
+       PYTHON_PROPERTY("encoding", encoding, "encoding");
+       PYTHON_PROPERTY("closed", closed, "closed");
+       PYTHON_METHOD0("isatty", isatty, "isatty");
     END_PYTHON_METHOD_MAP
 
 private:
@@ -104,7 +109,7 @@ public:
 
     BEGIN_PYTHON_METHOD_MAP(DbgIn, "dbgin")
         PYTHON_METHOD0("readline", readline, "readline");
-        PYTHON_METHOD0("closed", closed, "closed");
+        PYTHON_PROPERTY("closed", closed, "closed");
     END_PYTHON_METHOD_MAP
     
 private:

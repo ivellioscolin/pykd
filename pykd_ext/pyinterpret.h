@@ -9,7 +9,21 @@ class PythonInterpreter;
 
 PythonInterpreter*  activateInterpreter(bool global = true, int majorVersion = -1, int minorVersion = -1);
 
+
 void releaseInterpretor(PythonInterpreter* interpret);
+
+struct  InterpreterDesc {
+    int  majorVersion;
+    int  minorVersion;
+    std::string  imagePath;
+};
+
+std::list<InterpreterDesc>  getInstalledInterpreter();
+
+bool isInterpreterLoaded(int majorVersion, int minorVersion);
+
+void stopAllInterpreter();
+
 
 class AutoInterpreter
 {
@@ -34,13 +48,7 @@ private:
 };
 
 
-struct  InterpreterDesc {
-    int  majorVersion;
-    int  minorVersion;
-    std::string  imagePath;
-};
 
-std::list<InterpreterDesc>  getInstalledInterpreter();
 
 
 

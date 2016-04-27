@@ -100,15 +100,12 @@ struct convert_to_python
     } \
 template<typename T = classType> \
 static PyObject* getPythonClass() { \
-        PyObject*  classNameObj = IsPy3() ? PyUnicode_FromString(className) : PyString_FromString(className); \
-        PyObject*  classBases = PyTuple_New(0); \
-        PyObject*  classDictObj = PyDict_New(); \
         PyObject*  args = PyTuple_New(3); \
-        PyTuple_SetItem(args, 0, classNameObj); \
-        PyTuple_SetItem(args, 1, classBases); \
-        PyTuple_SetItem(args, 2, classDictObj); \
+        PyTuple_SetItem(args, 0, IsPy3() ? PyUnicode_FromString(className) : PyString_FromString(className)); \
+        PyTuple_SetItem(args, 1, PyTuple_New(0)); \
+        PyTuple_SetItem(args, 2, PyDict_New()); \
         PyObject*  classTypeObj = PyObject_CallObject(PyType_Type(), args); \
-        Py_DecRef(args), Py_DecRef(classNameObj), Py_DecRef(classDictObj), Py_DecRef(classBases); \
+        Py_DecRef(args);
 
 #define END_PYTHON_METHOD_MAP  \
         return classTypeObj; \
@@ -153,6 +150,32 @@ static PyObject* getPythonClass() { \
     Py_DecRef(cFuncObj), Py_DecRef(methodObj); \
     }
 
+#define PYTHON_PROPERTY(name, fn, doc) \
+    struct Call_##fn{ \
+            static PyObject* pycall(PyObject *s, PyObject *args) \
+             { \
+                PyObject*  self = PyTuple_GetItem(args, 0); \
+                PyObject*  cppobj =  PyObject_GetAttrString(self, "cppobject"); \
+                T*  _this = reinterpret_cast<T*>(PyCapsule_GetPointer(cppobj, "cppobject")); \
+                Py_DecRef(cppobj); \
+                return _this->callMethod0(&fn); \
+            } \
+        };  \
+        {\
+        static PyMethodDef methodDef = { name, Call_##fn::pycall, METH_VARARGS }; \
+        PyObject*  cFuncObj = PyCFunction_NewEx(&methodDef, NULL, NULL); \
+        PyObject*  methodObj = IsPy3() ? PyInstanceMethod_New(cFuncObj) : PyMethod_New(cFuncObj, NULL, classTypeObj); \
+        PyObject*  args = PyTuple_New(4); \
+        Py_IncRef(PyProperty_Type()); \
+        PyTuple_SetItem(args, 0, methodObj); \
+        PyTuple_SetItem(args, 1, Py_None()); \
+        PyTuple_SetItem(args, 2, Py_None()); \
+        PyTuple_SetItem(args, 3, IsPy3() ? PyUnicode_FromString(doc) : PyString_FromString(doc));\
+        PyObject*  propertyObj = PyObject_CallObject(PyProperty_Type(), args); \
+        PyObject_SetAttrString(classTypeObj, name, propertyObj); \
+        Py_DecRef(cFuncObj), Py_DecRef(propertyObj), Py_DecRef(args); \
+        }
+
 
 
 template<typename T1>
@@ -167,21 +190,6 @@ PyObject*  make_pyobject(const T2& var)
 {
     PyObject* cls = T1::getPythonClass();
     PyObject* p1 = PyObject_CallObject(cls, NULL);
-
-    PyObject  *errtype = NULL, *errvalue = NULL, *traceback = NULL;
-    PyErr_Fetch(&errtype, &errvalue, &traceback);
-
-    char*  str;
-    if (errtype)
-        Py_DecRef(errtype);
-    if (errvalue)
-    {
-        str = PyString_AsString(errvalue);
-        Py_DecRef(errvalue);
-    }
-    if (traceback)
-        Py_DecRef(traceback);
-
     Py_DecRef(cls);
 
     T1*  t1 = new T1(var);

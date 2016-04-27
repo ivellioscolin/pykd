@@ -53,6 +53,7 @@ public:
     bool isPy3;
 
     PyObject* PyType_Type;
+    PyObject* PyProperty_Type;
     PyObject* Py_None;
     PyObject* PyExc_SystemExit;
 
@@ -115,6 +116,7 @@ public:
     int(__stdcall *Py_AddPendingCall)(int(*func)(void *), void *arg);
     PyGILState_STATE(__stdcall *PyGILState_Ensure)();
     void(__stdcall *PyGILState_Release)(PyGILState_STATE state);
+    PyObject* (__stdcall *PyDescr_NewMethod)(PyObject* type, struct PyMethodDef *meth);
 
     HMODULE  m_handlePython;
     PyThreadState*  m_globalState;
@@ -148,42 +150,26 @@ public:
 };
 
 
-
-
 class PythonSingleton
 {
 public:
 
 
-    static PythonInterpreter* getInterpreter(int majorVersion, int minorVersion, bool global)
-    {
-        return getSingleton()->_getInterpreter(majorVersion, minorVersion, global);
-    }
-
-    static void releaseInterpretor(PythonInterpreter* interpret)
-    {
-        return getSingleton()->_releaseInterpretor(interpret);
-    }
-
-    static PythonInterpreter* currentInterpreter()
-    {
-        return getSingleton()->m_currentInterpter;
-    }
-
-private:
-
-    static std::auto_ptr<PythonSingleton>  m_singleton;
-
-    static  PythonSingleton*  getSingleton()
+    static  PythonSingleton* get()
     {
         if (m_singleton.get() == 0)
             m_singleton.reset(new PythonSingleton());
         return m_singleton.get();
     }
 
-    PythonInterpreter* _getInterpreter(int majorVersion, int minorVersion, bool global)
-    {
 
+    PythonInterpreter* currentInterpreter()
+    {
+        return m_currentInterpter;
+    }
+
+    PythonInterpreter* getInterpreter(int majorVersion, int minorVersion, bool global)
+    {
         PyModule*  module = 0;
 
         if (m_modules.find(std::make_pair(majorVersion, minorVersion)) == m_modules.end())
@@ -219,7 +205,7 @@ private:
         return m_currentInterpter;
     }
 
-    void _releaseInterpretor(PythonInterpreter* interpret)
+    void releaseInterpretor(PythonInterpreter* interpret)
     {
         PyModule*  module = m_currentInterpter->m_module;
 
@@ -236,7 +222,22 @@ private:
         m_currentInterpter = 0;
     }
 
-public:
+    bool isInterpreterLoaded(int majorVersion, int minorVersion)
+    {
+        return m_modules.find(std::make_pair(majorVersion, minorVersion)) != m_modules.end();
+    }
+
+    void stopAllInterpreter()
+    {
+        for (auto m : m_modules)
+            delete m.second;
+
+        m_modules.clear();
+    }
+
+private:
+
+    static std::auto_ptr<PythonSingleton>  m_singleton;
 
     std::map<std::pair<int,int>, PyModule*>  m_modules;
    
@@ -337,6 +338,7 @@ PyModule::PyModule(int majorVesion, int minorVersion)
     isPy3 = majorVesion == 3;
 
     *reinterpret_cast<FARPROC*>(&PyType_Type) = GetProcAddress(m_handlePython, "PyType_Type");
+    *reinterpret_cast<FARPROC*>(&PyProperty_Type) = GetProcAddress(m_handlePython, "PyProperty_Type");
     *reinterpret_cast<FARPROC*>(&Py_None) = GetProcAddress(m_handlePython, "_Py_NoneStruct");
     PyExc_SystemExit = *reinterpret_cast<PyObject**>(GetProcAddress(m_handlePython, "PyExc_SystemExit"));
 
@@ -400,6 +402,8 @@ PyModule::PyModule(int majorVesion, int minorVersion)
     *reinterpret_cast<FARPROC*>(&Py_AddPendingCall) = GetProcAddress(m_handlePython, "Py_AddPendingCall");
     *reinterpret_cast<FARPROC*>(&PyGILState_Ensure) = GetProcAddress(m_handlePython, "PyGILState_Ensure");
     *reinterpret_cast<FARPROC*>(&PyGILState_Release) = GetProcAddress(m_handlePython, "PyGILState_Release");
+    *reinterpret_cast<FARPROC*>(&PyDescr_NewMethod) = GetProcAddress(m_handlePython, "PyDescr_NewMethod");
+    
     
     Py_Initialize();
     PyEval_InitThreads();
@@ -419,274 +423,295 @@ PyModule::~PyModule()
 
 PythonInterpreter* activateInterpreter(bool global, int majorVersion, int minorVersion)
 {
-    return PythonSingleton::getInterpreter(majorVersion, minorVersion, global);
+    return PythonSingleton::get()->getInterpreter(majorVersion, minorVersion, global);
 }
 
 void releaseInterpretor(PythonInterpreter* interpret)
 {
-    PythonSingleton::releaseInterpretor(interpret);
+    PythonSingleton::get()->releaseInterpretor(interpret);
 }
 
+bool isInterpreterLoaded(int majorVersion, int minorVersion)
+{
+    return PythonSingleton::get()->isInterpreterLoaded(majorVersion, minorVersion);
+}
+
+void stopAllInterpreter()
+{
+    PythonSingleton::get()->stopAllInterpreter();
+}
 
 void __stdcall Py_IncRef(PyObject* object)
 {
-    PythonSingleton::currentInterpreter()->m_module->Py_IncRef(object);
+    PythonSingleton::get()->currentInterpreter()->m_module->Py_IncRef(object);
 }
 
 void __stdcall Py_DecRef(PyObject* object)
 {
-    PythonSingleton::currentInterpreter()->m_module->Py_DecRef(object);
+    PythonSingleton::get()->currentInterpreter()->m_module->Py_DecRef(object);
 }
 
 PyObject* __stdcall PyString_FromString(const char *v)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyString_FromString(v);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyString_FromString(v);
 }
 
 PyObject* __stdcall  PyDict_New()
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyDict_New();
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyDict_New();
 }
 
 PyObject* __stdcall PyDict_GetItemString(PyObject *p, const char *key)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyDict_GetItemString(p, key);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyDict_GetItemString(p, key);
 }
 
 int __stdcall PyDict_SetItemString(PyObject *p, const char *key, PyObject *val)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyDict_SetItemString(p, key, val);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyDict_SetItemString(p, key, val);
 }
 
 PyObject* __stdcall PyCFunction_NewEx(PyMethodDef* pydef, PyObject *p1, PyObject *p2)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyCFunction_NewEx(pydef, p1, p2);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyCFunction_NewEx(pydef, p1, p2);
 }
 
 PyObject* __stdcall PyClass_New(PyObject* className, PyObject* classBases, PyObject* classDict)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyClass_New(className, classBases, classDict);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyClass_New(className, classBases, classDict);
 }
 
 PyObject* __stdcall PyMethod_New(PyObject *func, PyObject *self, PyObject *classobj)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyMethod_New(func, self, classobj);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyMethod_New(func, self, classobj);
 }
 
 int __stdcall PySys_SetObject(char *name, PyObject *v)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PySys_SetObject(name, v);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PySys_SetObject(name, v);
 }
 
 void __stdcall PySys_SetArgv(int argc, char **argv)
 {
-    PythonSingleton::currentInterpreter()->m_module->PySys_SetArgv(argc, argv);
+    PythonSingleton::get()->currentInterpreter()->m_module->PySys_SetArgv(argc, argv);
 }
 
 void __stdcall PySys_SetArgv_Py3(int argc, wchar_t **argv)
 {
-    PythonSingleton::currentInterpreter()->m_module->PySys_SetArgv_Py3(argc, argv);
+    PythonSingleton::get()->currentInterpreter()->m_module->PySys_SetArgv_Py3(argc, argv);
 }
 
 PyObject* __stdcall PySys_GetObject(char *name)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PySys_GetObject(name);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PySys_GetObject(name);
 }
 
 PyObject* __stdcall PyInstance_New(PyObject *classobj, PyObject *arg, PyObject *kw)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyInstance_New(classobj, arg, kw);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyInstance_New(classobj, arg, kw);
 }
 
 int __stdcall PyRun_SimpleString(const char* str)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyRun_SimpleString(str);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyRun_SimpleString(str);
 }
 
 PyObject* __stdcall PyRun_String(const char *str, int start, PyObject *globals, PyObject *locals)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyRun_String(str, start, globals, locals);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyRun_String(str, start, globals, locals);
 }
 
 PyObject* PyCapsule_New(void *pointer, const char *name, PyCapsule_Destructor destructor)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyCapsule_New(pointer, name, destructor);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyCapsule_New(pointer, name, destructor);
 }
 
 void* PyCapsule_GetPointer(PyObject *capsule, const char *name)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyCapsule_GetPointer(capsule, name);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyCapsule_GetPointer(capsule, name);
 }
 
 int PyObject_SetAttrString(PyObject *o, const char *attr_name, PyObject *v)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyObject_SetAttrString(o, attr_name, v);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyObject_SetAttrString(o, attr_name, v);
 }
 
 PyObject* PyObject_GetAttrString(PyObject *o, const char *attr_name)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyObject_GetAttrString(o, attr_name);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyObject_GetAttrString(o, attr_name);
 }
 
 PyObject* PyObject_CallObject(PyObject *callable_object, PyObject *args)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyObject_CallObject(callable_object, args);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyObject_CallObject(callable_object, args);
 }
 
 PyObject* PyObject_Call(PyObject *callable_object, PyObject *args, PyObject *kw)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyObject_Call(callable_object, args, kw);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyObject_Call(callable_object, args, kw);
 }
 
 PyObject* __stdcall PyTuple_New(size_t len)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyTuple_New(len);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyTuple_New(len);
 }
 
 PyObject* __stdcall PyTuple_GetItem(PyObject *p, size_t pos)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyTuple_GetItem(p, pos);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyTuple_GetItem(p, pos);
 }
 
 int __stdcall PyTuple_SetItem(PyObject *p, size_t pos, PyObject *obj)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyTuple_SetItem(p, pos, obj);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyTuple_SetItem(p, pos, obj);
 }
 
 size_t __stdcall PyTuple_Size(PyObject *p)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyTuple_Size(p);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyTuple_Size(p);
 }
 
 char* PyString_AsString(PyObject *string)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyString_AsString(string);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyString_AsString(string);
 }
 
 PyObject* PyUnicode_FromWideChar(const wchar_t *w, size_t size)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyUnicode_FromWideChar(w, size);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyUnicode_FromWideChar(w, size);
 }
 
 PyObject* PyImport_Import(PyObject *name)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyImport_Import(name);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyImport_Import(name);
 }
 
 PyObject* PyBool_FromLong(long v)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyBool_FromLong(v);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyBool_FromLong(v);
 }
 
 PyObject* Py_None()
 {
-    return PythonSingleton::currentInterpreter()->m_module->Py_None;
+    return PythonSingleton::get()->currentInterpreter()->m_module->Py_None;
 }
 
 PyObject* PyExc_SystemExit()
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyExc_SystemExit;
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyExc_SystemExit;
 }
 
 PyObject* PyType_Type()
 {
-    return  PythonSingleton::currentInterpreter()->m_module->PyType_Type;
+    return  PythonSingleton::get()->currentInterpreter()->m_module->PyType_Type;
+}
+
+PyObject* PyProperty_Type()
+{
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyProperty_Type;
 }
 
 void PyErr_Fetch(PyObject **ptype, PyObject **pvalue, PyObject **ptraceback)
 {
-    PythonSingleton::currentInterpreter()->m_module->PyErr_Fetch(ptype, pvalue, ptraceback);
+    PythonSingleton::get()->currentInterpreter()->m_module->PyErr_Fetch(ptype, pvalue, ptraceback);
 }
 
 
 void PyErr_NormalizeException(PyObject**exc, PyObject**val, PyObject**tb)
 {
-    PythonSingleton::currentInterpreter()->m_module->PyErr_NormalizeException(exc, val, tb);
+    PythonSingleton::get()->currentInterpreter()->m_module->PyErr_NormalizeException(exc, val, tb);
 }
 
 void PyErr_SetString(PyObject *type, const char *message)
 {
-    PythonSingleton::currentInterpreter()->m_module->PyErr_SetString(type, message);
+    PythonSingleton::get()->currentInterpreter()->m_module->PyErr_SetString(type, message);
 }
 
 size_t PyList_Size(PyObject* list)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyList_Size(list);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyList_Size(list);
 }
 
 PyObject* PyList_GetItem(PyObject *list, size_t index)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyList_GetItem(list, index);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyList_GetItem(list, index);
 }
 
 PyObject* PyFile_FromString(char *filename, char *mode)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyFile_FromString(filename, mode);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyFile_FromString(filename, mode);
 }
 
 FILE* PyFile_AsFile(PyObject *pyfile)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyFile_AsFile(pyfile);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyFile_AsFile(pyfile);
 }
 
 PyObject* PyRun_File(FILE *fp, const char *filename, int start, PyObject *globals, PyObject *locals)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyRun_File(fp, filename, start, globals, locals);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyRun_File(fp, filename, start, globals, locals);
 }
 
 PyObject* __stdcall PyUnicode_FromString(const char*  str)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyUnicode_FromString(str);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyUnicode_FromString(str);
 }
 
 PyObject* __stdcall PyInstanceMethod_New(PyObject *func)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyInstanceMethod_New(func);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyInstanceMethod_New(func);
 }
 
 size_t __stdcall PyUnicode_AsWideChar(PyObject *unicode, wchar_t *w, size_t size)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyUnicode_AsWideChar(unicode, w, size);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyUnicode_AsWideChar(unicode, w, size);
 }
 
 PyObject* __stdcall PyImport_ImportModule(const char *name)
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyImport_ImportModule(name);
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyImport_ImportModule(name);
 }
 
 PyThreadState* __stdcall PyEval_SaveThread()
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyEval_SaveThread();
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyEval_SaveThread();
 }
 
 void __stdcall PyEval_RestoreThread(PyThreadState *tstate)
 {
-    PythonSingleton::currentInterpreter()->m_module->PyEval_RestoreThread(tstate);
+    PythonSingleton::get()->currentInterpreter()->m_module->PyEval_RestoreThread(tstate);
 }
 
 FILE* _Py_fopen(const char* filename, const char* mode)
 {
-    return PythonSingleton::currentInterpreter()->m_module->_Py_fopen(filename, mode);
+    return PythonSingleton::get()->currentInterpreter()->m_module->_Py_fopen(filename, mode);
 }
 
 int __stdcall Py_AddPendingCall(int(*func)(void *), void *arg)
 {
-    return PythonSingleton::currentInterpreter()->m_module->Py_AddPendingCall(func, arg);
+    return PythonSingleton::get()->currentInterpreter()->m_module->Py_AddPendingCall(func, arg);
 }
 
 PyGILState_STATE __stdcall PyGILState_Ensure()
 {
-    return PythonSingleton::currentInterpreter()->m_module->PyGILState_Ensure();
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyGILState_Ensure();
 }
 
 void __stdcall PyGILState_Release(PyGILState_STATE state)
 {
-    PythonSingleton::currentInterpreter()->m_module->PyGILState_Release(state);
+    PythonSingleton::get()->currentInterpreter()->m_module->PyGILState_Release(state);
 }
+
+PyObject* __stdcall PyDescr_NewMethod(PyObject* type, struct PyMethodDef *meth)
+{
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyDescr_NewMethod(type, meth);
+}
+
+
 
 bool IsPy3()
 {
-    return PythonSingleton::currentInterpreter()->m_module->isPy3;
+    return PythonSingleton::get()->currentInterpreter()->m_module->isPy3;
 }
 
 

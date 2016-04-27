@@ -77,6 +77,7 @@ PyObject* PyBool_FromLong(long v);
 PyObject* Py_None();
 PyObject* PyExc_SystemExit();
 PyObject* PyType_Type();
+PyObject* PyProperty_Type();
 
 void PyErr_Fetch(PyObject **ptype, PyObject **pvalue, PyObject **ptraceback);
 void PyErr_NormalizeException(PyObject**exc, PyObject**val, PyObject**tb);
@@ -93,6 +94,8 @@ int __stdcall Py_AddPendingCall(int(*func)(void *), void *arg);
 
 PyGILState_STATE __stdcall PyGILState_Ensure();
 void __stdcall PyGILState_Release(PyGILState_STATE);
+
+PyObject* __stdcall PyDescr_NewMethod(PyObject* type, struct PyMethodDef *meth);
 
 bool IsPy3();
 
