@@ -27,10 +27,7 @@ def  makeWheel(args):
         shutil.rmtree(package_dir)
     os.mkdir(package_dir)
 
-    with open(os.path.join(package_dir, '__init__.py'),'w') as f:
-        f.write("from pykd import *\n")
-        f.write("__version__ = pykd.__version__\n")
-        f.write("__file__ = pykd.__file__\n")
+    shutil.copy("__init__.py", package_dir)
 
     bin_dir = os.path.join( os.path.curdir, '..', 'bin')
     pykd_dir =  os.path.join( os.path.curdir, '..', 'out')
