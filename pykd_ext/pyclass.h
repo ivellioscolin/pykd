@@ -6,6 +6,7 @@
 #include <comutil.h>
 
 #include <string>
+#include <vector>
 
 struct convert_from_python
 {
@@ -15,10 +16,10 @@ struct convert_from_python
     {
         if (IsPy3())
         {
-            wchar_t  buf[0x100];
-            size_t  len = 0x100;
-            len = PyUnicode_AsWideChar(m_obj, buf, len);
-            return std::wstring(buf, len);
+            std::vector<wchar_t>  buf(0x10000);
+            size_t  len = buf.size();
+            len = PyUnicode_AsWideChar(m_obj, &buf[0], len);
+            return std::wstring(&buf[0], len);
         }
         else
             return std::wstring(_bstr_t(PyString_AsString(m_obj)));
@@ -28,10 +29,10 @@ struct convert_from_python
     {
         if (IsPy3())
         {
-            wchar_t  buf[0x100];
-            size_t  len = 0x100;
-            len = PyUnicode_AsWideChar(m_obj, buf, len);
-            std::wstring  str(buf, len);
+            std::vector<wchar_t>  buf(0x10000);
+            size_t  len = buf.size();
+            len = PyUnicode_AsWideChar(m_obj, &buf[0], len);
+            std::wstring  str(&buf[0], len);
             return std::string(_bstr_t(str.c_str()));
         }
         else
