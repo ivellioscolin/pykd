@@ -78,6 +78,10 @@ public:
         return false;
     }
 
+    bool isatty() {
+        return false;
+    }
+
 private:
 
     CComQIPtr<IDebugControl4>  m_control;
@@ -261,6 +265,7 @@ private:
             .def("write", &DbgOut::write)
             .def("writedml", &DbgOut::writedml)
             .def("flush", &DbgOut::flush)
+            .def("isatty", &DbgOut::isatty)
             .add_property("encoding", &DbgOut::encoding)
             .add_property("closed", &DbgOut::closed);
 
