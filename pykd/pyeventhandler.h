@@ -38,6 +38,7 @@ public:
     virtual void onExecutionStatusChange(kdlib::ExecutionStatus executionStatus);
     virtual void onCurrentThreadChange(kdlib::THREAD_DEBUG_ID  threadid);
     virtual void onChangeLocalScope();
+    virtual void onChangeSymbolPaths();
     virtual void onChangeBreakpoints();
     virtual void onDebugOutput(const std::wstring& text);
     virtual void onStartInput();

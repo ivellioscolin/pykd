@@ -421,6 +421,29 @@ void EventHandler::onChangeLocalScope()
     m_pystate = PyEval_SaveThread();
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void EventHandler::onChangeSymbolPaths()
+{
+    PyEval_RestoreThread( m_pystate );
+
+    try {
+
+        python::override pythonHandler = get_override("onChangeSymbolPaths");
+        if ( pythonHandler )
+        {
+            pythonHandler();
+        }
+    }
+    catch (const python::error_already_set &) 
+    {
+        printException();
+    }
+
+    m_pystate = PyEval_SaveThread();
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 
 void EventHandler::onChangeBreakpoints()

@@ -1127,6 +1127,9 @@ BOOST_PYTHON_MODULE( pykd )
         .def( "onChangeLocalScope", &EventHandler::onChangeLocalScope,
             "The current local scope has been changed.\n"
             "There is no return value" )
+        .def("onChangeSymbolPaths", &EventHandler::onChangeSymbolPaths,
+            "Symbol paths has been changed.\n"
+            "There is no return value" )
         .def("onChangeBreakpoints", &EventHandler::onChangeBreakpoints,
             "Breakpoints is changed for current process" )
         .def( "onDebugOutput", &EventHandler::onDebugOutput,
