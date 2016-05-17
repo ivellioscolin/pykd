@@ -369,3 +369,7 @@ class TypedVarTest( unittest.TestCase ):
         tv = target.module.typedVar( "structTest", target.module.g_structTest )
         self.assertFalse(tv==None)
         self.assertTrue(tv!=None)
+
+    def testCastTo(self):
+        self.assertEqual(0xD2, target.module.typedVar( "ulonglongVar" ).castTo("UInt1B"))
+        self.assertEqual(0, target.module.typedVar( "g_structTest" ).castTo("UInt4B"))

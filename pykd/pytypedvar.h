@@ -173,6 +173,18 @@ struct TypedVarAdapter {
     {
         return !isZero(typedVar);
     }
+
+    static kdlib::TypedVarPtr castByName(kdlib::TypedVar& typedVar, const std::wstring &typeName)
+    {
+        AutoRestorePyState  pystate;
+        return typedVar.castTo(typeName);
+    }
+
+    static kdlib::TypedVarPtr castByTypeInfo(kdlib::TypedVar& typedVar, const kdlib::TypeInfoPtr& typeInfo)
+    {
+        AutoRestorePyState  pystate;
+        return typedVar.castTo(typeInfo);
+    }
 };
 
 } // end namespace pykd

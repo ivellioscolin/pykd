@@ -827,6 +827,10 @@ BOOST_PYTHON_MODULE( pykd )
             "Return value by pointer" )
         .def("type", TypedVarAdapter::getType,
             "Return typeInfo instance" )
+        .def("castTo", TypedVarAdapter::castByName,
+            "Cast variable to the type and return new typedVar instance")
+        .def("castTo", TypedVarAdapter::castByTypeInfo,
+            "Cast variable to the type and return new typedVar instance")
         .def("__getattr__", TypedVarAdapter::getFieldAttr,
             "Return field of structure as an object attribute" )
         .def( "__str__", TypedVarAdapter::print )
