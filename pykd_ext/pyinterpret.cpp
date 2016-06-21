@@ -52,6 +52,9 @@ public:
 
     bool isPy3;
 
+    void checkPykd();
+    void deactivate();
+
     PyObject* PyType_Type;
     PyObject* PyProperty_Type;
     PyObject* Py_None;
@@ -121,7 +124,10 @@ public:
     HMODULE  m_handlePython;
     PyThreadState*  m_globalState;
     PythonInterpreter*  m_globalInterpreter;
+    bool m_pykdInit;
 };
+
+
 
 class PythonInterpreter
 {
@@ -227,12 +233,19 @@ public:
         return m_modules.find(std::make_pair(majorVersion, minorVersion)) != m_modules.end();
     }
 
+    void checkPykd()
+    {
+        m_currentInterpter->m_module->checkPykd();
+    }
+
     void stopAllInterpreter()
     {
         for (auto m : m_modules)
-            delete m.second;
-
-        m_modules.clear();
+        {
+            m_currentInterpter = m.second->m_globalInterpreter;
+            m.second->deactivate();
+        }
+        m_currentInterpter = 0;
     }
 
 private:
@@ -404,21 +417,78 @@ PyModule::PyModule(int majorVesion, int minorVersion)
     *reinterpret_cast<FARPROC*>(&PyGILState_Release) = GetProcAddress(m_handlePython, "PyGILState_Release");
     *reinterpret_cast<FARPROC*>(&PyDescr_NewMethod) = GetProcAddress(m_handlePython, "PyDescr_NewMethod");
     
-    
     Py_Initialize();
     PyEval_InitThreads();
+
     m_globalState = PyEval_SaveThread();
 }
 
 
 PyModule::~PyModule()
 {
-    PyEval_RestoreThread(m_globalState);
+    assert(0);
 
-    Py_Finalize();
+    //if (m_globalInterpreter)
+    //{
+    //    delete m_globalInterpreter;
+    //    m_globalInterpreter = 0;
+    //}
 
-    FreeLibrary(m_handlePython);
+    //PyThreadState_Swap(m_globalState);
+
+    //Py_Finalize();
+
+    //FreeLibrary(m_handlePython);
 }
+
+
+void PyModule::deactivate()
+{
+    if (m_globalInterpreter)
+    {
+        delete m_globalInterpreter;
+        m_globalInterpreter = 0;
+    }
+
+    PyThreadState_Swap(m_globalState);
+
+    if (m_pykdInit)
+    {
+        PyObject* mainName = isPy3 ? PyUnicode_FromString("__main__") : PyString_FromString("__main__");
+        PyObject*  mainMod = PyImport_Import(mainName);
+        PyObject*  globals = PyObject_GetAttrString(mainMod, "__dict__");
+        PyObject*  result = PyRun_String("__import__('pykd').deinitialize()\n", Py_file_input, globals, globals);
+
+        if (mainName) Py_DecRef(mainName);
+        if (mainMod) Py_DecRef(mainMod);
+        if (globals) Py_DecRef(globals);
+        if (result) Py_DecRef(result);
+    }
+
+    m_globalState = PyEval_SaveThread();
+}
+
+void PyModule::checkPykd()
+{
+    PyObject*  pykdMod = PyImport_ImportModule("pykd");
+
+    if (!pykdMod)
+        throw std::exception("Pykd package is not installed.You can install it by command \"!pip install pykd\"");
+
+    PyObject*  mainName = isPy3 ? PyUnicode_FromString("__main__") : PyString_FromString("__main__");
+    PyObject*  mainMod = PyImport_Import(mainName);
+    PyObject*  globals = PyObject_GetAttrString(mainMod, "__dict__");
+    PyObject*  result = PyRun_String("__import__('pykd').initialize()\n", Py_file_input, globals, globals);
+
+    if (mainName) Py_DecRef(mainName);
+    if (mainMod) Py_DecRef(mainMod);
+    if (globals) Py_DecRef(globals);
+    if (result) Py_DecRef(result);
+    if (pykdMod) Py_DecRef(pykdMod);
+
+    m_pykdInit = true;
+}
+
 
 
 PythonInterpreter* activateInterpreter(bool global, int majorVersion, int minorVersion)
@@ -439,6 +509,11 @@ bool isInterpreterLoaded(int majorVersion, int minorVersion)
 void stopAllInterpreter()
 {
     PythonSingleton::get()->stopAllInterpreter();
+}
+
+void checkPykd()
+{
+    PythonSingleton::get()->checkPykd();
 }
 
 void __stdcall Py_IncRef(PyObject* object)

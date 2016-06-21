@@ -100,7 +100,7 @@ VOID
 CALLBACK
 DebugExtensionUninitialize()
 {
-   // stopAllInterpreter();
+   stopAllInterpreter();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -200,6 +200,13 @@ help(
 
 //////////////////////////////////////////////////////////////////////////////
 
+static const char consoleScript[] =
+    "import pykd\n"
+    "from pykd import *\n"
+    "import code\n"
+    "code.InteractiveConsole(globals()).interact()\n";
+
+
 extern "C"
 HRESULT
 CALLBACK
@@ -239,11 +246,13 @@ py(
         PyObjectRef  mainMod = PyImport_Import(mainName);
         PyObjectRef  globals = PyObject_GetAttrString(mainMod, "__dict__");
 
+        checkPykd();
+
         InterruptWatch  interruptWatch(client);
 
         if (opts.args.empty())
         {
-            PyObjectRef  result = PyRun_String("__import__('code').InteractiveConsole(__import__('__main__').__dict__).interact()\n", Py_file_input, globals, globals);
+            PyObjectRef  result = PyRun_String(consoleScript, Py_file_input, globals, globals);
         }
         else
         {

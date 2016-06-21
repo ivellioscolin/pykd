@@ -24,6 +24,8 @@ bool isInterpreterLoaded(int majorVersion, int minorVersion);
 
 void stopAllInterpreter();
 
+void checkPykd();
+
 
 class AutoInterpreter
 {
