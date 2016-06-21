@@ -70,9 +70,6 @@
     <None Include="export.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="packages.pykd_bootstrapper_vc120.config">
-      <Filter>Source Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="version.rc">

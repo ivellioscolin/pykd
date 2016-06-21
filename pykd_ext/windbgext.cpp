@@ -169,13 +169,49 @@ info(
 //////////////////////////////////////////////////////////////////////////////
 
 static const char  printUsageMsg[] =
+    "\n"
     "usage:\n"
-    "!py [options] [file]\n"
+    "\n"
+    "!help\n"
+    "\tprint this text\n"
+    "\n"
+    "!info\n"
+    "\tlist installed python interpreters\n"
+    "\n"
+    "!py [version] [options] [file]\n"
+    "\trun python script or REPL\n"
+    "\n"
+    "\tVersion:\n"
+    "\t-2           : use Python2\n"
+    "\t-2.x         : use Python2.x\n"
+    "\t-3           : use Python3\n"
+    "\t-3.x         : use Python3.x\n"
+    "\n"
     "\tOptions:\n"
     "\t-g --global  : run code in the common namespace\n"
-    "\t-l --local   : run code in the isolate namespace\n"
-    "!pip\n"
-    "!info\n";
+    "\t-l --local   : run code in the isolated namespace\n"
+    "\n"
+    "\tcommand samples:\n"
+    "\t\"!py\"                          : run REPL\n"
+    "\t\"!py --local\"                  : run REPL in the isolated namespace\n"
+    "\t\"!py -g script.py 10 \"string\"\" : run script file with argument in the commom namespace\n"
+    "\n"
+    "!pip [version] [args]\n"
+    "\trun pip package manager\n"
+    "\n"
+    "\tVersion:\n"
+    "\t-2           : use Python2\n"
+    "\t-2.x         : use Python2.x\n"
+    "\t-3           : use Python3\n"
+    "\t-3.x         : use Python3.x\n"
+    "\n"
+    "\tpip command samples:\n"
+    "\t\"pip list\"                   : show all installed packagies\n"
+    "\t\"pip install pykd\"           : install pykd\n"
+    "\t\"pip install --upgrade pykd\" : upgrade pykd to the latest version\n"
+    "\t\"pip show pykd\"              : show info about pykd package\n"
+    ;
+
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -199,13 +235,6 @@ help(
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-static const char consoleScript[] =
-    "import pykd\n"
-    "from pykd import *\n"
-    "import code\n"
-    "code.InteractiveConsole(globals()).interact()\n";
-
 
 extern "C"
 HRESULT
@@ -252,7 +281,9 @@ py(
 
         if (opts.args.empty())
         {
-            PyObjectRef  result = PyRun_String(consoleScript, Py_file_input, globals, globals);
+            PyObjectRef  result = PyRun_String("import pykd\nfrom pykd import *\n", Py_file_input, globals, globals);
+            PyErr_Clear();
+            result = PyRun_String("import code\ncode.InteractiveConsole(globals()).interact()\n", Py_file_input, globals, globals);
         }
         else
         {
@@ -342,7 +373,7 @@ pip(
 
         getPythonVersion(majorVersion, minorVersion);
 
-        AutoInterpreter  autoInterpreter(opts.global, majorVersion, minorVersion);
+        AutoInterpreter  autoInterpreter(true, majorVersion, minorVersion);
 
         PyObjectRef  dbgOut = make_pyobject<DbgOut>(client);
         PySys_SetObject("stdout", dbgOut);

@@ -209,7 +209,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="export.def" />
-    <None Include="packages.pykd_bootstrapper_vc120.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="version.rc" />

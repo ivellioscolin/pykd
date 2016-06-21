@@ -82,6 +82,7 @@ PyObject* PyProperty_Type();
 void PyErr_Fetch(PyObject **ptype, PyObject **pvalue, PyObject **ptraceback);
 void PyErr_NormalizeException(PyObject**exc, PyObject**val, PyObject**tb);
 void PyErr_SetString(PyObject *type, const char *message);
+void PyErr_Clear();
 
 PyObject* PyFile_FromString(char *filename, char *mode);
 FILE* PyFile_AsFile(PyObject *pyfile);

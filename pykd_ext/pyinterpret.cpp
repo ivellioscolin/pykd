@@ -98,7 +98,8 @@ public:
     char* (__stdcall *PyString_AsString)(PyObject *string);
     void(__stdcall *PyErr_Fetch)(PyObject **ptype, PyObject **pvalue, PyObject **ptraceback);
     void(__stdcall *PyErr_NormalizeException)(PyObject**exc, PyObject**val, PyObject**tb);
-    void (__stdcall *PyErr_SetString)(PyObject *type, const char *message);
+    void(__stdcall *PyErr_SetString)(PyObject *type, const char *message);
+    void(__stdcall *PyErr_Clear)();
     PyObject* (__stdcall *PyImport_AddModule)(const char *name);
     PyObject* (__stdcall *PyClass_New)(PyObject* className, PyObject* classBases, PyObject* classDict);
     PyObject* (__stdcall *PyInstance_New)(PyObject *classobj, PyObject *arg, PyObject *kw);
@@ -392,6 +393,7 @@ PyModule::PyModule(int majorVesion, int minorVersion)
     *reinterpret_cast<FARPROC*>(&PyErr_Fetch) = GetProcAddress(m_handlePython, "PyErr_Fetch");
     *reinterpret_cast<FARPROC*>(&PyErr_NormalizeException) = GetProcAddress(m_handlePython, "PyErr_NormalizeException");
     *reinterpret_cast<FARPROC*>(&PyErr_SetString) = GetProcAddress(m_handlePython, "PyErr_SetString");
+    *reinterpret_cast<FARPROC*>(&PyErr_Clear) = GetProcAddress(m_handlePython, "PyErr_Clear");
     *reinterpret_cast<FARPROC*>(&PyImport_AddModule) = GetProcAddress(m_handlePython, "PyImport_AddModule");
     *reinterpret_cast<FARPROC*>(&PyImport_ImportModule) = GetProcAddress(m_handlePython, "PyImport_ImportModule");    
     *reinterpret_cast<FARPROC*>(&PyClass_New) = GetProcAddress(m_handlePython, "PyClass_New");
@@ -470,20 +472,23 @@ void PyModule::deactivate()
 
 void PyModule::checkPykd()
 {
+    if (m_pykdInit)
+        return;
+
     PyObject*  pykdMod = PyImport_ImportModule("pykd");
 
     if (!pykdMod)
-        throw std::exception("Pykd package is not installed.You can install it by command \"!pip install pykd\"");
+    {
+        PyObject*  mainName = isPy3 ? PyUnicode_FromString("__main__") : PyString_FromString("__main__");
+        PyObject*  mainMod = PyImport_Import(mainName);
+        PyObject*  globals = PyObject_GetAttrString(mainMod, "__dict__");
+        PyObject*  result = PyRun_String("__import__('pykd').initialize()\n", Py_file_input, globals, globals);
+        if (mainName) Py_DecRef(mainName);
+        if (mainMod) Py_DecRef(mainMod);
+        if (globals) Py_DecRef(globals);
+        if (result) Py_DecRef(result);
+    }
 
-    PyObject*  mainName = isPy3 ? PyUnicode_FromString("__main__") : PyString_FromString("__main__");
-    PyObject*  mainMod = PyImport_Import(mainName);
-    PyObject*  globals = PyObject_GetAttrString(mainMod, "__dict__");
-    PyObject*  result = PyRun_String("__import__('pykd').initialize()\n", Py_file_input, globals, globals);
-
-    if (mainName) Py_DecRef(mainName);
-    if (mainMod) Py_DecRef(mainMod);
-    if (globals) Py_DecRef(globals);
-    if (result) Py_DecRef(result);
     if (pykdMod) Py_DecRef(pykdMod);
 
     m_pykdInit = true;
@@ -695,6 +700,11 @@ void PyErr_Fetch(PyObject **ptype, PyObject **pvalue, PyObject **ptraceback)
 void PyErr_NormalizeException(PyObject**exc, PyObject**val, PyObject**tb)
 {
     PythonSingleton::get()->currentInterpreter()->m_module->PyErr_NormalizeException(exc, val, tb);
+}
+
+void PyErr_Clear()
+{
+    PythonSingleton::get()->currentInterpreter()->m_module->PyErr_Clear();
 }
 
 void PyErr_SetString(PyObject *type, const char *message)
