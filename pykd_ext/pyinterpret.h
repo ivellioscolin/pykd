@@ -18,6 +18,17 @@ struct  InterpreterDesc {
     std::string  imagePath;
 };
 
+inline bool operator < (const InterpreterDesc& d1, const InterpreterDesc& d2)
+{
+    if (d1.majorVersion != d2.majorVersion)
+        return d1.majorVersion < d2.majorVersion;
+
+    if (d1.minorVersion != d2.minorVersion)
+        return d1.minorVersion < d2.minorVersion;
+
+    return d1.imagePath < d2.imagePath;
+}
+
 std::list<InterpreterDesc>  getInstalledInterpreter();
 
 bool isInterpreterLoaded(int majorVersion, int minorVersion);

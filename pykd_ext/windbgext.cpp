@@ -538,13 +538,36 @@ void  getPythonVersion(int&  majorVersion, int& minorVersion)
 
     bool  found = false;
     bool  anyMinorVersion = minorVersion == -1;
+    bool  anyMajorVersion = majorVersion == -1;
+
+    if (anyMajorVersion)
+    {
+        for (auto interpret : interpreterList)
+        {
+
+            if (2 == interpret.majorVersion &&
+                anyMinorVersion ? (minorVersion <= interpret.minorVersion) : (minorVersion == interpret.minorVersion))
+            {
+                found = true;
+                minorVersion = interpret.minorVersion;
+            }
+        }
+
+        if (found)
+        {
+            majorVersion = 2;
+            return;
+        }
+    }
+
     for (auto interpret : interpreterList)
     {
-        if (majorVersion == interpret.majorVersion && 
+        if (anyMajorVersion ? (majorVersion <= interpret.majorVersion) : (majorVersion==interpret.majorVersion) &&
             anyMinorVersion ? (minorVersion <= interpret.minorVersion) : (minorVersion == interpret.minorVersion))
         {
             found = true;
             minorVersion = interpret.minorVersion;
+            majorVersion = interpret.majorVersion;
         }
     }
 

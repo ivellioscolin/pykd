@@ -4,6 +4,8 @@
 #include <memory>
 #include <sstream>
 #include <map>
+#include <set>
+#include <algorithm>
 
 #include "pymodule.h"
 #include "pyclass.h"
@@ -60,67 +62,67 @@ public:
     PyObject* Py_None;
     PyObject* PyExc_SystemExit;
 
-    void(__stdcall *Py_Initialize)();
-    void(__stdcall *Py_Finalize)();
+    void( *Py_Initialize)();
+    void( *Py_Finalize)();
 
-    PyThreadState* (__stdcall *Py_NewInterpreter)();
-    void(__stdcall *Py_EndInterpreter)(PyThreadState *tstate);
-    PyObject* (__stdcall *PyEval_GetGlobals)();
-    PyObject* (__stdcall *PyImport_Import)(PyObject *name);
-    PyObject* (__stdcall *PyImport_ImportModule)(const char *name);
-    void(__stdcall *PyEval_InitThreads)();
-    PyThreadState* (__stdcall *PyEval_SaveThread)();
-    void(__stdcall *PyEval_RestoreThread)(PyThreadState *tstate);
-    PyThreadState* (__stdcall *PyThreadState_Swap)(PyThreadState *tstate);
-    PyObject* (__stdcall *PyRun_String)(const char *str, int start, PyObject *globals, PyObject *locals);
-    int(__stdcall *PyRun_SimpleString)(const char*  str);
-    PyObject* (__stdcall *PyRun_File)(FILE *fp, const char *filename, int start, PyObject *globals, PyObject *locals);
-    PyObject* (__stdcall *PyDict_New)();
-    int(__stdcall *PyDict_SetItemString)(PyObject *p, const char *key, PyObject *val);
-    PyObject*(__stdcall *PyDict_GetItemString)(PyObject *p, const char* key);
-    void(__stdcall *Py_IncRef)(PyObject* object);
-    void(__stdcall *Py_DecRef)(PyObject* object);
-    PyObject* (__stdcall *PyObject_Call)(PyObject *callable_object, PyObject *args, PyObject *kw);
-    PyObject* (__stdcall *PyObject_GetAttr)(PyObject *object, PyObject *attr_name);
-    PyObject* (__stdcall *PyObject_GetAttrString)(PyObject *object, const char *attr_name);
-    int(__stdcall *PyObject_SetAttr)(PyObject *object, PyObject *attr_name, PyObject *value);
-    PyObject* (__stdcall *PyObject_CallObject)(PyObject *callable_object, PyObject *args);
-    PyObject* (__stdcall *PyTuple_New)(size_t len);
-    int(__stdcall *PyTuple_SetItem)(PyObject *p, size_t pos, PyObject *o);
-    PyObject* (__stdcall *PyTuple_GetItem)(PyObject *p, size_t pos);
-    size_t(__stdcall *PyTuple_Size)(PyObject *p);
-    PyObject* (__stdcall *PyCFunction_NewEx)(PyMethodDef *, PyObject *, PyObject *);
-    PyObject* (__stdcall *PySys_GetObject)(char *name);
-    int(__stdcall *PySys_SetObject)(char *name, PyObject *v);
-    void(__stdcall *PySys_SetArgv)(int argc, char **argv);
-    void(__stdcall *PySys_SetArgv_Py3)(int argc, wchar_t **argv);
-    PyObject* (__stdcall *PyString_FromString)(const char *v);
-    char* (__stdcall *PyString_AsString)(PyObject *string);
-    void(__stdcall *PyErr_Fetch)(PyObject **ptype, PyObject **pvalue, PyObject **ptraceback);
-    void(__stdcall *PyErr_NormalizeException)(PyObject**exc, PyObject**val, PyObject**tb);
-    void(__stdcall *PyErr_SetString)(PyObject *type, const char *message);
-    void(__stdcall *PyErr_Clear)();
-    PyObject* (__stdcall *PyImport_AddModule)(const char *name);
-    PyObject* (__stdcall *PyClass_New)(PyObject* className, PyObject* classBases, PyObject* classDict);
-    PyObject* (__stdcall *PyInstance_New)(PyObject *classobj, PyObject *arg, PyObject *kw);
-    PyObject* (__stdcall *PyMethod_New)(PyObject *func, PyObject *self, PyObject *classobj);
-    PyObject* (__stdcall *PyCapsule_New)(void *pointer, const char *name, PyCapsule_Destructor destructor);
-    void* (__stdcall *PyCapsule_GetPointer)(PyObject *capsule, const char *name);
-    int(__stdcall *PyObject_SetAttrString)(PyObject *o, const char *attr_name, PyObject *v);
-    PyObject* (__stdcall *PyUnicode_FromWideChar)(const wchar_t *w, size_t size);
-    PyObject* (__stdcall *PyBool_FromLong)(long v);
-    size_t(__stdcall *PyList_Size)(PyObject* list);
-    PyObject* (__stdcall *PyList_GetItem)(PyObject *list, size_t index);
-    PyObject* (__stdcall *PyFile_FromString)(char *filename, char *mode);
-    FILE* (__stdcall *PyFile_AsFile)(PyObject *pyfile);
-    PyObject* (__stdcall *PyUnicode_FromString)(const char *u);
-    PyObject* (__stdcall *PyInstanceMethod_New)(PyObject *func);
-    size_t(__stdcall *PyUnicode_AsWideChar)(PyObject *unicode, wchar_t *w, size_t size);
-    FILE* ( __stdcall *_Py_fopen)(const char* filename, const char* mode);
-    int(__stdcall *Py_AddPendingCall)(int(*func)(void *), void *arg);
-    PyGILState_STATE(__stdcall *PyGILState_Ensure)();
-    void(__stdcall *PyGILState_Release)(PyGILState_STATE state);
-    PyObject* (__stdcall *PyDescr_NewMethod)(PyObject* type, struct PyMethodDef *meth);
+    PyThreadState* ( *Py_NewInterpreter)();
+    void( *Py_EndInterpreter)(PyThreadState *tstate);
+    PyObject* ( *PyEval_GetGlobals)();
+    PyObject* ( *PyImport_Import)(PyObject *name);
+    PyObject* ( *PyImport_ImportModule)(const char *name);
+    void( *PyEval_InitThreads)();
+    PyThreadState* ( *PyEval_SaveThread)();
+    void( *PyEval_RestoreThread)(PyThreadState *tstate);
+    PyThreadState* ( *PyThreadState_Swap)(PyThreadState *tstate);
+    PyObject* ( *PyRun_String)(const char *str, int start, PyObject *globals, PyObject *locals);
+    int( *PyRun_SimpleString)(const char*  str);
+    PyObject* ( *PyRun_File)(FILE *fp, const char *filename, int start, PyObject *globals, PyObject *locals);
+    PyObject* ( *PyDict_New)();
+    int( *PyDict_SetItemString)(PyObject *p, const char *key, PyObject *val);
+    PyObject*( *PyDict_GetItemString)(PyObject *p, const char* key);
+    void( *Py_IncRef)(PyObject* object);
+    void( *Py_DecRef)(PyObject* object);
+    PyObject* ( *PyObject_Call)(PyObject *callable_object, PyObject *args, PyObject *kw);
+    PyObject* ( *PyObject_GetAttr)(PyObject *object, PyObject *attr_name);
+    PyObject* ( *PyObject_GetAttrString)(PyObject *object, const char *attr_name);
+    int( *PyObject_SetAttr)(PyObject *object, PyObject *attr_name, PyObject *value);
+    PyObject* ( *PyObject_CallObject)(PyObject *callable_object, PyObject *args);
+    PyObject* ( *PyTuple_New)(size_t len);
+    int( *PyTuple_SetItem)(PyObject *p, size_t pos, PyObject *o);
+    PyObject* ( *PyTuple_GetItem)(PyObject *p, size_t pos);
+    size_t( *PyTuple_Size)(PyObject *p);
+    PyObject* ( *PyCFunction_NewEx)(PyMethodDef *, PyObject *, PyObject *);
+    PyObject* ( *PySys_GetObject)(char *name);
+    int( *PySys_SetObject)(char *name, PyObject *v);
+    void( *PySys_SetArgv)(int argc, char **argv);
+    void( *PySys_SetArgv_Py3)(int argc, wchar_t **argv);
+    PyObject* ( *PyString_FromString)(const char *v);
+    char* ( *PyString_AsString)(PyObject *string);
+    void( *PyErr_Fetch)(PyObject **ptype, PyObject **pvalue, PyObject **ptraceback);
+    void( *PyErr_NormalizeException)(PyObject**exc, PyObject**val, PyObject**tb);
+    void( *PyErr_SetString)(PyObject *type, const char *message);
+    void( *PyErr_Clear)();
+    PyObject* ( *PyImport_AddModule)(const char *name);
+    PyObject* ( *PyClass_New)(PyObject* className, PyObject* classBases, PyObject* classDict);
+    PyObject* ( *PyInstance_New)(PyObject *classobj, PyObject *arg, PyObject *kw);
+    PyObject* ( *PyMethod_New)(PyObject *func, PyObject *self, PyObject *classobj);
+    PyObject* ( *PyCapsule_New)(void *pointer, const char *name, PyCapsule_Destructor destructor);
+    void* ( *PyCapsule_GetPointer)(PyObject *capsule, const char *name);
+    int( *PyObject_SetAttrString)(PyObject *o, const char *attr_name, PyObject *v);
+    PyObject* ( *PyUnicode_FromWideChar)(const wchar_t *w, size_t size);
+    PyObject* ( *PyBool_FromLong)(long v);
+    size_t( *PyList_Size)(PyObject* list);
+    PyObject* ( *PyList_GetItem)(PyObject *list, size_t index);
+    PyObject* ( *PyFile_FromString)(char *filename, char *mode);
+    FILE* ( *PyFile_AsFile)(PyObject *pyfile);
+    PyObject* ( *PyUnicode_FromString)(const char *u);
+    PyObject* ( *PyInstanceMethod_New)(PyObject *func);
+    size_t( *PyUnicode_AsWideChar)(PyObject *unicode, wchar_t *w, size_t size);
+    FILE* (  *_Py_fopen)(const char* filename, const char* mode);
+    int( *Py_AddPendingCall)(int(*func)(void *), void *arg);
+    PyGILState_STATE( *PyGILState_Ensure)();
+    void( *PyGILState_Release)(PyGILState_STATE state);
+    PyObject* ( *PyDescr_NewMethod)(PyObject* type, struct PyMethodDef *meth);
 
     HMODULE  m_handlePython;
     PyThreadState*  m_globalState;
@@ -261,8 +263,37 @@ private:
 
 std::auto_ptr<PythonSingleton>  PythonSingleton::m_singleton; 
 
+HMODULE LoadPythonForKey(HKEY installPathKey, int majorVersion, int minorVersion)
+{
 
-HMODULE LoadPythonLibrary(int majorVesion, int minorVersion)
+    HMODULE  hmodule = NULL;
+
+    char  installPath[1000];
+    DWORD  installPathSize = sizeof(installPath);
+
+    if (ERROR_SUCCESS == RegQueryValueExA(installPathKey, NULL, NULL, NULL, (LPBYTE)installPath, &installPathSize))
+    {
+        std::stringstream  dllName;
+        dllName << "python" << majorVersion << minorVersion << ".dll";
+
+        std::stringstream  imagePath;
+        imagePath << installPath << dllName.str();
+
+        hmodule = LoadLibraryExA(imagePath.str().c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+        if (hmodule)
+            return hmodule;
+
+        hmodule = LoadLibraryA(dllName.str().c_str());
+        if (hmodule)
+            return hmodule;
+
+    }
+
+    return NULL;
+}
+
+
+HMODULE LoadPythonLibrary(int majorVersion, int minorVersion)
 {
 
     HKey  pythonCoreKey;
@@ -274,29 +305,26 @@ HMODULE LoadPythonLibrary(int majorVesion, int minorVersion)
             HKey  installPathKey;
 
             std::stringstream   installPathStr;
-            installPathStr << majorVesion << '.' << minorVersion << "\\InstallPath";
+
+            if (majorVersion == 2 || (majorVersion == 3 && minorVersion <= 4))
+            {
+                installPathStr << majorVersion << '.' << minorVersion << "\\InstallPath";
+            }
+            else
+            if (majorVersion == 3 && minorVersion >= 5)
+            {
+#ifdef _M_X64
+                installPathStr << majorVersion << '.' << minorVersion << "\\InstallPath";
+#else
+                installPathStr << majorVersion << '.' << minorVersion << "-32" << "\\InstallPath";
+#endif
+            }
 
             if (ERROR_SUCCESS == RegOpenKeyA(pythonCoreKey, installPathStr.str().c_str(), installPathKey))
             {
-                char  installPath[1000];
-                DWORD  installPathSize = sizeof(installPath);
-
-                if (ERROR_SUCCESS == RegQueryValueExA(installPathKey, NULL, NULL, NULL, (LPBYTE)installPath, &installPathSize))
-                {
-                    std::stringstream  dllName;
-                    dllName << "python" << majorVesion << minorVersion << ".dll";
-
-                    HMODULE  hmodule = LoadLibraryA(dllName.str().c_str());
-                    if (hmodule)
-                        return hmodule;
-
-                    std::stringstream  imagePath;
-                    imagePath << installPath << dllName.str();
-
-                    hmodule = LoadLibraryExA(imagePath.str().c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
-                    if (hmodule)
-                        return hmodule;
-                }
+                HMODULE  hmodule = LoadPythonForKey(installPathKey, majorVersion, minorVersion);
+                if (hmodule)
+                    return hmodule;
             }
         }
     }
@@ -304,14 +332,17 @@ HMODULE LoadPythonLibrary(int majorVesion, int minorVersion)
     return NULL;
 }
 
+
+
+
 std::list<InterpreterDesc>  getInstalledInterpreter()
 {
-    std::list<InterpreterDesc>  lst;
+    std::set<InterpreterDesc>  interpretSet;
 
-    for (auto rootKey : std::list<HKEY>({ HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER }))
+    for (auto rootKey : const std::list<HKEY>({ HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER }))
     {
         HKey  pythonCoreKey;
-
+        
         if (ERROR_SUCCESS != RegOpenKeyA(rootKey, "SOFTWARE\\Python\\PythonCore", pythonCoreKey))
             continue;
 
@@ -321,25 +352,39 @@ std::list<InterpreterDesc>  getInstalledInterpreter()
             if (ERROR_SUCCESS != RegEnumKeyA(pythonCoreKey, i, versionStr, sizeof(versionStr)))
                 break;
 
-            int  majorVersion, minorVersion;
-
+            int  majorVersion = -1, minorVersion = -1;
             sscanf_s(versionStr, "%d.%d", &majorVersion, &minorVersion);
 
-            HMODULE  hmodule = LoadPythonLibrary(majorVersion, minorVersion);
+            HKey  installPathKey;
+            std::string   installPathStr(versionStr);
+            installPathStr += "\\InstallPath";
 
+            if (ERROR_SUCCESS != RegOpenKeyA(pythonCoreKey, installPathStr.c_str(), installPathKey))
+                continue;
+
+            HMODULE  hmodule = LoadPythonForKey(installPathKey, majorVersion, minorVersion);
+            
             if (hmodule)
             {
                 char  fullPath[1000];
-
+            
                 if (GetModuleFileNameA(hmodule, fullPath, sizeof(fullPath)))
-                    lst.push_back({ majorVersion, minorVersion, fullPath });
-
+                {
+                    interpretSet.insert({ majorVersion, minorVersion, fullPath });
+                }
+            
                 FreeLibrary(hmodule);
             }
         }
     }
 
-    return lst;
+    std::list<InterpreterDesc>  interpretLst;
+
+    std::copy(interpretSet.begin(), interpretSet.end(), std::inserter(interpretLst, interpretLst.begin()));
+
+    interpretLst.sort();
+
+    return interpretLst;
 }
 
 PyModule::PyModule(int majorVesion, int minorVersion)

@@ -28,7 +28,7 @@ ArgsList  getArgsList(const char* args)
 static const std::regex  versionRe("^-([2,3])(?:\\.(\\d+))?$");
 
 Options::Options(const ArgsList& argList) :
-    pyMajorVersion(2),
+    pyMajorVersion(-1),
     pyMinorVersion(-1),
     global(true),
     showHelp(false)
