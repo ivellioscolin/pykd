@@ -52,6 +52,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "targetapp", "kdlibcpp\tests
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pykd_ext", "pykd_bootstrapper\pykd_bootstrapper_vc120.vcxproj", "{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pykd_ext_2.0", "pykd_ext\pykd_ext_vc120.vcxproj", "{583F9A6C-AF6D-45E0-A8F4-290D93611185}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_2.7|Win32 = Debug_2.7|Win32
@@ -153,6 +155,22 @@ Global
 		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Release_3.5|Win32.Build.0 = Release_2.7|Win32
 		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Release_3.5|x64.ActiveCfg = Release_2.7|x64
 		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Release_3.5|x64.Build.0 = Release_2.7|x64
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_2.7|Win32.ActiveCfg = Debug|Win32
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_2.7|Win32.Build.0 = Debug|Win32
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_2.7|x64.ActiveCfg = Debug|x64
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_2.7|x64.Build.0 = Debug|x64
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_3.5|Win32.ActiveCfg = Debug|Win32
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_3.5|Win32.Build.0 = Debug|Win32
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_3.5|x64.ActiveCfg = Debug|x64
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_3.5|x64.Build.0 = Debug|x64
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_2.7|Win32.ActiveCfg = Release|Win32
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_2.7|Win32.Build.0 = Release|Win32
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_2.7|x64.ActiveCfg = Release|x64
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_2.7|x64.Build.0 = Release|x64
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_3.5|Win32.ActiveCfg = Release|Win32
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_3.5|Win32.Build.0 = Release|Win32
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_3.5|x64.ActiveCfg = Release|x64
+		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_3.5|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

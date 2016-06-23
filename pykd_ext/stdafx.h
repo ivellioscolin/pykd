@@ -11,6 +11,7 @@
 // Windows Header Files:
 #include <windows.h>
 
+#include <assert.h>
 
 #define BOOST_PYTHON_STATIC_LIB
 
