@@ -65,6 +65,7 @@ public:
 
     BEGIN_PYTHON_METHOD_MAP(DbgOut, "dbgout")
        PYTHON_METHOD1("write", write, "write");
+       PYTHON_METHOD1("writedml", writedml, "writedml");
        PYTHON_METHOD0("flush", flush, "flush");
        PYTHON_PROPERTY("encoding", encoding, "encoding");
        PYTHON_PROPERTY("closed", closed, "closed");

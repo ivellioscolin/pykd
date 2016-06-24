@@ -31,6 +31,8 @@ inline bool operator < (const InterpreterDesc& d1, const InterpreterDesc& d2)
 
 std::list<InterpreterDesc>  getInstalledInterpreter();
 
+void getDefaultInterpreter(int majorVersion, int minorVersion);
+
 bool isInterpreterLoaded(int majorVersion, int minorVersion);
 
 void stopAllInterpreter();

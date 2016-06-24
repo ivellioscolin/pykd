@@ -333,8 +333,6 @@ HMODULE LoadPythonLibrary(int majorVersion, int minorVersion)
 }
 
 
-
-
 std::list<InterpreterDesc>  getInstalledInterpreter()
 {
     std::set<InterpreterDesc>  interpretSet;
