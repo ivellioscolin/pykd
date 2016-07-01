@@ -11,6 +11,7 @@
 #include "pyinterpret.h"
 #include "pyapi.h"
 #include "pyclass.h"
+#include "version.h"
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -132,15 +133,19 @@ info(
     PCSTR args
 )
 {
-    std::list<InterpreterDesc>   interpreterList = getInstalledInterpreter();
     std::stringstream   sstr;
+
+    sstr <<std::endl << "pykd bootstrapper version: " << PYKDEXT_VERSION_MAJOR << '.' << PYKDEXT_VERSION_MINOR << '.' 
+        << PYKDEXT_VERSION_SUBVERSION << '.' << PYKDEXT_VERSION_BUILDNO << std::endl;
+
+    std::list<InterpreterDesc>   interpreterList = getInstalledInterpreter();
 
     int defaultMajor;
     int defaultMinor;
 
     getDefaultPythonVersion(defaultMajor, defaultMinor);
 
-    sstr << std::endl << "Installed python" << std::endl << std::endl;
+    sstr << std::endl << "Installed python:" << std::endl << std::endl;
     sstr << std::setw(16) << std::left << "Version:" << std::setw(12) << std::left << "Status: " << std::left << "Image:" <<  std::endl;
     sstr << "------------------------------------------------------------------------------" << std::endl;
     if (interpreterList.size() > 0)

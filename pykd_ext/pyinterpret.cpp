@@ -515,29 +515,38 @@ void PyModule::deactivate()
 
 void PyModule::checkPykd()
 {
-    if (m_pykdInit)
-        return;
 
-    PyObject*  pykdMod = PyImport_ImportModule("pykd");
+    PyObject  *mainName = 0, *mainMod = 0, *globals = 0, *result = 0;
 
-    if (!pykdMod)
-    {
-        PyObject*  mainName = isPy3 ? PyUnicode_FromString("__main__") : PyString_FromString("__main__");
-        PyObject*  mainMod = PyImport_Import(mainName);
-        PyObject*  globals = PyObject_GetAttrString(mainMod, "__dict__");
-        PyObject*  result = PyRun_String("__import__('pykd').initialize()\n", Py_file_input, globals, globals);
-        if (mainName) Py_DecRef(mainName);
-        if (mainMod) Py_DecRef(mainMod);
-        if (globals) Py_DecRef(globals);
-        if (result) Py_DecRef(result);
-    }
+    do {
+        if (m_pykdInit)
+            break;
 
-    if (pykdMod) Py_DecRef(pykdMod);
+        mainName = isPy3 ? PyUnicode_FromString("__main__") : PyString_FromString("__main__");
+        if (!mainName)
+            break;
 
-    m_pykdInit = true;
+        mainMod = PyImport_Import(mainName);
+        if (!mainMod)
+            break;
+
+        globals = PyObject_GetAttrString(mainMod, "__dict__");
+        if (!globals)
+            break;
+
+        result = PyRun_String("__import__('pykd').initialize()\n", Py_file_input, globals, globals);
+        if (!result)
+            break;
+
+        m_pykdInit = true;
+
+    } while( false);
+
+    if (mainName) Py_DecRef(mainName);
+    if (mainMod) Py_DecRef(mainMod);
+    if (globals) Py_DecRef(globals);
+    if (result) Py_DecRef(result);
 }
-
-
 
 PythonInterpreter* activateInterpreter(bool global, int majorVersion, int minorVersion)
 {
