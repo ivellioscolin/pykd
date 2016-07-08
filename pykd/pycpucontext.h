@@ -60,6 +60,8 @@ public:
 
     static kdlib::TypedVarPtr getLocal( kdlib::StackFramePtr& frame, const std::wstring &paramName ) {
         AutoRestorePyState  pystate;
+        if (frame->findStaticVar(paramName))
+            return frame->getStaticVar(paramName);
         return frame->getLocalVar(paramName);
     }
 };
