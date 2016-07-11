@@ -22,6 +22,18 @@ python::list TargetSystemAdapter::getProcessesList(kdlib::TargetSystem& system)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+std::wstring TargetSystemAdapter::print(kdlib::TargetSystem& system)
+{
+    std::wstringstream   sstr;
+
+    sstr << "Target System:" << std::endl;
+    sstr << system.getDescription() << std::endl;
+
+    return sstr.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 python::list TargetProcessAdapter::getThreadList(kdlib::TargetProcess& process)
 {
     std::vector<kdlib::TargetThreadPtr>  threadLst;
@@ -67,6 +79,18 @@ python::list TargetProcessAdapter::getModulesList(kdlib::TargetProcess& process)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+std::wstring TargetProcessAdapter::print(kdlib::TargetProcess& process)
+{
+    std::wstringstream sstr;
+
+    sstr << "Target Process:" << std::endl;
+    sstr << "PID: " << std::hex << process.getSystemId() << std::endl;
+    sstr << "Name: " << process.getExecutableName() << std::endl;
+    return sstr.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 python::list TargetThreadAdapter::getStack(kdlib::TargetThread& thread)
 {
 
@@ -81,6 +105,18 @@ python::list TargetThreadAdapter::getStack(kdlib::TargetThread& thread)
     } while(false);
 
     return vectorToList(frameLst);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::wstring TargetThreadAdapter::print(kdlib::TargetThread& thread)
+{
+    std::wstringstream sstr;
+
+    sstr << "Target Thread:" << std::endl;
+    sstr << "PID: " << std::hex << thread.getProcess()->getSystemId() << std::endl;
+    sstr << "TID: " << std::hex << thread.getSystemId() << std::endl;
+    return sstr.str();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

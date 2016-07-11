@@ -579,6 +579,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return current process")
         .def("processes", TargetSystemAdapter::getProcessesList,
             "get list of processes for the target system")
+        .def("__str__", TargetSystemAdapter::print)
         ;
 
     python::class_<kdlib::TargetProcess, kdlib::TargetProcessPtr, boost::noncopyable>("targetProcess", "Class representing process in the target system", python::no_init )
@@ -622,6 +623,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return list of breakpoints for the target process")
         .def("modules", TargetProcessAdapter::getModulesList,
             "Return list of modules for the target process")
+        .def("__str__", TargetProcessAdapter::print)
          ;
 
     python::class_<kdlib::TargetThread, kdlib::TargetThreadPtr, boost::noncopyable>("targetThread", "Class representing process in the target system", python::no_init )
@@ -657,6 +659,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Check if this thread is current")
         .def("stack", TargetThreadAdapter::getStack,
             "Get thread's stack tarce")
+        .def("__str__", TargetThreadAdapter::print)
         ;
 
 	python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumBehavior>, boost::noncopyable>("module", "Class representing executable module", python::no_init)

@@ -94,6 +94,8 @@ struct TargetSystemAdapter {
     }
 
     static python::list getProcessesList(kdlib::TargetSystem& system);
+
+    static std::wstring print(kdlib::TargetSystem& system);
 };
 
 
@@ -212,6 +214,8 @@ struct TargetProcessAdapter {
     static python::list getBreakpointsList(kdlib::TargetProcess& process);
 
     static python::list getModulesList(kdlib::TargetProcess& process);
+
+    static std::wstring print(kdlib::TargetProcess& process);
 };
 
 
@@ -291,6 +295,7 @@ struct TargetThreadAdapter {
         return thread.getFrameOffset();
     }
 
+    static std::wstring print(kdlib::TargetThread& thread);
 };
 
 } // pykd namespace
