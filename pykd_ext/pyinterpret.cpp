@@ -508,6 +508,8 @@ void PyModule::deactivate()
         if (mainMod) Py_DecRef(mainMod);
         if (globals) Py_DecRef(globals);
         if (result) Py_DecRef(result);
+
+        m_pykdInit = false;
     }
 
     m_globalState = PyEval_SaveThread();
