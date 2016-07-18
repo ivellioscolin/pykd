@@ -575,6 +575,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return process by index")
         .def("getProcessById", TargetSystemAdapter::getProcessById,
             "Return process by id")
+        .def("getProcessBySystemId", TargetSystemAdapter::getProcessBySystemId,
+            "Return process by PID")
         .def("currentProcess", TargetSystemAdapter::getCurrentProcess,
             "Return current process")
         .def("processes", TargetSystemAdapter::getProcessesList,
@@ -607,6 +609,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return thread by its index" )
         .def("getThreadById", TargetProcessAdapter::getThreadById,
             "Return thread by its index")
+        .def("getThreadBySystemId", TargetProcessAdapter::getThreadBySystemId,
+            "Return thread by tid")
         .def("currentThread", TargetProcessAdapter::getCurrentThread,
             "Return current thread" )
         .def("getNumberBreakpoints", TargetProcessAdapter::getNumberBreakpoints,

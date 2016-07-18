@@ -4,9 +4,9 @@ import re
 
 from pykd import *
 
-fwpsLayer = typeInfo( "FWPS_BUILTIN_LAYERS_" ).asMap()
-fwpsDataType = typeInfo( "FWP_DATA_TYPE_" ).asMap()
-fwpDirection = typeInfo( "FWP_DIRECTION_" ).asMap()
+fwpsLayer = dict( [ (long(val), key) for key, val in typeInfo( "FWPS_BUILTIN_LAYERS_" ).fields() ] )
+fwpsDataType = dict( [ (long(val), key)  for key, val in typeInfo( "FWP_DATA_TYPE_" ).fields() ] )
+fwpDirection = dict( [ (long(val), key) for key, val in typeInfo( "FWP_DIRECTION_" ).fields() ] )
 
 def printBlob( blob ):
     bb = loadBytes( blob.data, blob.size )
@@ -47,7 +47,7 @@ def wfpFixedValues( addr ):
     dprintln( "FWPS_INCOMING_VALUES0:" )
 
     inFixedValue = typedVar( "FWPS_INCOMING_VALUES0_", addr )
-
+    
     dprintln( " Layer: " + fwpsLayer[ inFixedValue.layerId ] )
     dprintln( " Value: %d" % inFixedValue.valueCount )
 
@@ -59,10 +59,10 @@ def wfpFixedValues( addr ):
     layerName = discardRe.sub( '', layerName, 1 )
 
     layerRe = re.compile( 'LAYER' )
-    fwpsFields = typeInfo( layerRe.sub( 'FIELDS', layerName, 1 ) + '_' ).asMap()
+    fwpsFields = typeInfo( layerRe.sub( 'FIELDS', layerName, 1 ) + '_' ).fields()
 
-    for i in range( 0, len(values) ): 
-        dprintln( "    " + fwpsFields[ i ] )
+    for i in xrange( min(len(fwpsFields),len(values)) ):
+        dprintln( "    " + fwpsFields[i][0] )
         dprintln( "      Type: " + fwpsDataType[ values[i].field("type") ] )
         dprintln( "      Value: " +  printFwpsValue( values[i] )  )
 

@@ -81,6 +81,12 @@ struct TargetSystemAdapter {
         return system.getProcessById(id);
     }
 
+    static kdlib::TargetProcessPtr  getProcessBySystemId(kdlib::TargetSystem& system, kdlib::PROCESS_ID pid)
+    {
+        AutoRestorePyState  pystate;
+        return system.getProcessBySystemId(pid);
+    }
+
     static kdlib::TargetProcessPtr getCurrentProcess(kdlib::TargetSystem& system)
     {
         AutoRestorePyState  pystate;
@@ -165,6 +171,12 @@ struct TargetProcessAdapter {
     {
         AutoRestorePyState  pystate;
         return process.getThreadById(id);
+    }
+
+    static kdlib::TargetThreadPtr getThreadBySystemId(kdlib::TargetProcess& process, kdlib::THREAD_ID tid)
+    {
+        AutoRestorePyState  pystate;
+        return process.getThreadBySystemId(tid);
     }
 
     static kdlib::TargetThreadPtr getCurrentThread(kdlib::TargetProcess& process)
