@@ -65,6 +65,66 @@ class MemoryTest( unittest.TestCase ):
         self.assertEqual( len(testArray), len(loadArray) )
         self.assertEqual( 0, len( [ loadArray[i] for i in range(len(testArray)) if loadArray[i] != testArray[i] ] ) )
 
+    def testWriteBytes( self ):
+        testArray = pykd.loadBytes( target.module.ucharArray, 5 )
+        pykd.writeBytes( target.module.ucharArrayPlace, testArray )
+        ucharArray = pykd.loadBytes( target.module.ucharArrayPlace, 5 )
+        self.assertEqual( 0, len( [ ucharArray[i] for i in range(5) if ucharArray[i] != testArray[i] ] ) )
+
+    def testWriteWords( self ):
+        testArray = pykd.loadWords( target.module.ushortArray, 5 )
+        pykd.writeWords( target.module.ushortArrayPlace, testArray )
+        ushortArray = pykd.loadWords( target.module.ushortArrayPlace, 5 )
+        self.assertEqual( 0, len( [ ushortArray[i] for i in range(5) if ushortArray[i] != testArray[i] ] ) )
+
+    def testWriteDWords( self ):
+        testArray = pykd.loadDWords( target.module.ulongArray, 5 )
+        pykd.writeDWords( target.module.ulongArrayPlace, testArray )
+        ulongArray = pykd.loadDWords( target.module.ulongArrayPlace, 5 )
+        self.assertEqual( 0, len( [ ulongArray[i] for i in range(5) if ulongArray[i] != testArray[i] ] ) )
+
+    def testWriteQWords( self ):
+        testArray = pykd.loadQWords( target.module.ulonglongArray, 5 )
+        pykd.writeQWords( target.module.ulonglongArrayPlace, testArray )
+        ulonglongArray = pykd.loadQWords( target.module.ulonglongArrayPlace, 5 )
+        self.assertEqual( 0, len( [ ulonglongArray[i] for i in range(5) if ulonglongArray[i] != testArray[i] ] ) )
+
+    def testWriteSignBytes( self ):
+        testArray = pykd.loadSignBytes( target.module.charArray, 5 )
+        pykd.writeSignBytes( target.module.charArrayPlace, testArray )
+        charArray = pykd.loadSignBytes( target.module.charArrayPlace, 5 )
+        self.assertEqual( 0, len( [ charArray[i] for i in range(5) if charArray[i] != testArray[i] ] ) )
+
+    def testWriteSignWords( self ):
+        testArray = pykd.loadSignWords( target.module.shortArray, 5 )
+        pykd.writeSignWords( target.module.shortArrayPlace, testArray )
+        shortArray = pykd.loadSignWords( target.module.shortArrayPlace, 5 )
+        self.assertEqual( 0, len( [ shortArray[i] for i in range(5) if shortArray[i] != testArray[i] ] ) )
+
+    def testWriteSignDWords( self ):
+        testArray = pykd.loadSignDWords( target.module.longArray, 5 )
+        pykd.writeSignDWords( target.module.longArrayPlace, testArray )
+        longArray = pykd.loadSignDWords( target.module.longArrayPlace, 5 )
+        self.assertEqual( 0, len( [ longArray[i] for i in range(5) if longArray[i] != testArray[i] ] ) )
+
+    def testWriteSignQWords( self ):
+        testArray = pykd.loadSignQWords( target.module.longlongArray, 5 )
+        pykd.writeSignQWords( target.module.longlongArrayPlace, testArray )
+        longlongArray = pykd.loadSignQWords( target.module.longlongArrayPlace, 5 )
+        self.assertEqual( 0, len( [ longlongArray[i] for i in range(5) if longlongArray[i] != testArray[i] ] ) )
+
+    def testWriteFloats( self ):
+        testArray = pykd.loadFloats( target.module.floatArray, 5 )
+        pykd.writeFloats( target.module.floatArrayPlace, testArray )
+        floatArray = pykd.loadFloats( target.module.floatArrayPlace, 5 )
+        self.assertEqual( 0, len( [ floatArray[i] for i in range(5) if floatArray[i] != testArray[i] ] ) )
+
+    def testWriteDoubles( self ):
+        testArray = pykd.loadDoubles( target.module.doubleArray, 5 )
+        pykd.writeDoubles( target.module.doubleArrayPlace, testArray )
+        doubleArray = pykd.loadDoubles( target.module.doubleArrayPlace, 5 )
+        self.assertEqual( 0, len( [ doubleArray[i] for i in range(5) if doubleArray[i] != testArray[i] ] ) )
+
     def testPtrRead( self ):
         self.assertEqual( 0x80, pykd.ptrByte( target.module.bigValue ) )
         self.assertEqual( 0x8080, pykd.ptrWord( target.module.bigValue ) )
@@ -74,6 +134,37 @@ class MemoryTest( unittest.TestCase ):
         self.assertEqual( -32640, pykd.ptrSignWord( target.module.bigValue ) )
         self.assertEqual( -2139062144, pykd.ptrSignDWord( target.module.bigValue ) )
         self.assertEqual( -9187201950435737472, pykd.ptrSignQWord( target.module.bigValue ) )
+
+    def testSetValue( self ):
+        pykd.setByte( target.module.ullValuePlace, pykd.ptrByte( target.module.bigValue ) )
+        self.assertEqual( pykd.ptrByte( target.module.bigValue ), pykd.ptrByte( target.module.ullValuePlace ) )
+
+        pykd.setWord( target.module.ullValuePlace, pykd.ptrWord( target.module.bigValue ) )
+        self.assertEqual( pykd.ptrWord( target.module.bigValue ), pykd.ptrWord( target.module.ullValuePlace ) )
+
+        pykd.setDWord( target.module.ullValuePlace, pykd.ptrDWord( target.module.bigValue ) )
+        self.assertEqual( pykd.ptrDWord( target.module.bigValue ), pykd.ptrDWord( target.module.ullValuePlace ) )
+
+        pykd.setQWord( target.module.ullValuePlace, pykd.ptrQWord( target.module.bigValue ) )
+        self.assertEqual( pykd.ptrQWord( target.module.bigValue ), pykd.ptrQWord( target.module.ullValuePlace ) )
+
+        pykd.setSignByte( target.module.ullValuePlace, -128 )
+        self.assertEqual( -128, pykd.ptrSignByte( target.module.ullValuePlace ) )
+
+        pykd.setSignWord( target.module.ullValuePlace, pykd.ptrSignWord( target.module.bigValue ) )
+        self.assertEqual( pykd.ptrSignWord( target.module.bigValue ), pykd.ptrSignWord( target.module.ullValuePlace ) )
+
+        pykd.setSignDWord( target.module.ullValuePlace, pykd.ptrSignDWord( target.module.bigValue ) )
+        self.assertEqual( pykd.ptrSignDWord( target.module.bigValue ), pykd.ptrSignDWord( target.module.ullValuePlace ) )
+
+        pykd.setSignQWord( target.module.ullValuePlace, pykd.ptrSignQWord( target.module.bigValue ) )
+        self.assertEqual( pykd.ptrSignQWord( target.module.bigValue ), pykd.ptrSignQWord( target.module.ullValuePlace ) )
+
+        pykd.setFloat( target.module.floatValuePlace, pykd.ptrFloat( target.module.floatValue ) )
+        self.assertEqual( pykd.ptrFloat( target.module.floatValue ), pykd.ptrFloat( target.module.floatValuePlace ) )
+
+        pykd.setDouble( target.module.doubleValuePlace, pykd.ptrDouble( target.module.doubleValue ) )
+        self.assertEqual( pykd.ptrDouble( target.module.doubleValue ), pykd.ptrDouble( target.module.doubleValuePlace ) )
 
     def testCompare( self ):
         self.assertTrue( pykd.compareMemory( target.module.helloStr, pykd.ptrPtr(target.module.strArray), 5 ) )

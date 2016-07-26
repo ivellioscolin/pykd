@@ -26,7 +26,7 @@ python::list vectorToList<char>( const std::vector<char>  &v ) {
 }
 
 
-template<typename T>
+template<typename T, typename TExtract=T>
 inline
 std::vector<T> listToVector( const python::list &lst )
 {
@@ -34,7 +34,7 @@ std::vector<T> listToVector( const python::list &lst )
 
     for (  long i = 0; i < python::len(lst); ++i )
     {
-        T  v = python::extract<T>(lst[i]);
+        T  v = python::extract<TExtract>(lst[i]);
         vec[i] =v;
     }
 

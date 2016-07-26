@@ -86,7 +86,7 @@
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v120_xp</PlatformToolset>
     <PythonVersion>3.5</PythonVersion>
-  </PropertyGroup>   
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -102,7 +102,7 @@
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v120_xp</PlatformToolset>
     <PythonVersion>3.5</PythonVersion>
-  </PropertyGroup>  
+  </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
@@ -129,14 +129,13 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>  
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-
   <PropertyGroup Label="UserMacros">
     <NuGetPackageImportStamp>4bf1ae88</NuGetPackageImportStamp>
   </PropertyGroup>
@@ -200,7 +199,6 @@
     <OutDir>$(SolutionDir)out\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
-
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -312,7 +310,6 @@
       <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -335,7 +332,7 @@
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
-  </ItemDefinitionGroup>  
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -381,7 +378,7 @@
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
-  </ItemDefinitionGroup> 
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="dbgexcept.h" />
     <ClInclude Include="pycpucontext.h" />
@@ -412,7 +409,16 @@
     <ClCompile Include="pydbgeng.cpp" />
     <ClCompile Include="pyeventhandler.cpp" />
     <ClCompile Include="pymemaccess.cpp" />
-    <ClCompile Include="pymod.cpp" />
+    <ClCompile Include="pymod.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="pymodule.cpp" />
     <ClCompile Include="pyprocess.cpp" />
     <ClCompile Include="pytypedvar.cpp" />

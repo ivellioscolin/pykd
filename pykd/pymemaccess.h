@@ -101,6 +101,67 @@ inline double ptrDoubleFloat( kdlib::MEMOFFSET_64 offset )
     return kdlib::ptrDoubleFloat(offset);
 }
 
+inline void setByte( kdlib::MEMOFFSET_64 offset, unsigned char value )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::setByte(offset, value);
+}
+
+inline void setWord( kdlib::MEMOFFSET_64 offset, unsigned short value )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::setWord(offset, value);
+}
+
+inline void setDWord( kdlib::MEMOFFSET_64 offset, unsigned long value )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::setDWord(offset, value);
+}
+
+inline void setQWord( kdlib::MEMOFFSET_64 offset, unsigned long long value )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::setQWord(offset, value);
+}
+
+inline void setSignByte( kdlib::MEMOFFSET_64 offset, int value )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::setSignByte(offset, char(value));
+}
+
+inline void setSignWord( kdlib::MEMOFFSET_64 offset, short value )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::setSignWord(offset, value);
+}
+
+inline void setSignDWord( kdlib::MEMOFFSET_64 offset, long value )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::setSignDWord(offset, value);
+}
+
+inline void setSignQWord( kdlib::MEMOFFSET_64 offset, long long value )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::setSignQWord(offset, value);
+}
+
+inline void setSingleFloat( kdlib::MEMOFFSET_64 offset, float value )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::setSingleFloat(offset, value);
+}
+
+inline void setDoubleFloat( kdlib::MEMOFFSET_64 offset, double value )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::setDoubleFloat(offset, value);
+}
+
+
 python::list loadBytes( kdlib::MEMOFFSET_64 offset, unsigned long count, bool phyAddr = false );
 python::list loadWords( kdlib::MEMOFFSET_64 offset, unsigned long count, bool phyAddr = false );
 python::list loadDWords( kdlib::MEMOFFSET_64 offset, unsigned long count, bool phyAddr = false );
@@ -111,6 +172,18 @@ python::list loadSignDWords( kdlib::MEMOFFSET_64 offset, unsigned long count, bo
 python::list loadSignQWords( kdlib::MEMOFFSET_64 offset, unsigned long count, bool phyAddr = false );
 python::list loadFloats( kdlib::MEMOFFSET_64 offset, unsigned long count, bool phyAddr = false );
 python::list loadDoubles( kdlib::MEMOFFSET_64 offset, unsigned long count, bool phyAddr = false );
+
+
+void writeBytes( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr = false );
+void writeWords( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr = false );
+void writeDWords( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr = false );
+void writeQWords( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr = false );
+void writeSignBytes( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr = false );
+void writeSignWords( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr = false );
+void writeSignDWords( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr = false );
+void writeSignQWords( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr = false );
+void writeFloats( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr = false );
+void writeDoubles( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr = false );
 
 
 inline std::string loadChars( kdlib::MEMOFFSET_64 offset, unsigned long number, bool phyAddr = false )
@@ -144,6 +217,12 @@ inline kdlib::MEMOFFSET_64 ptrPtr( kdlib::MEMOFFSET_64 offset )
 {
     AutoRestorePyState  pystate;
     return kdlib::ptrPtr(offset);
+}
+
+inline void setPtr( kdlib::MEMOFFSET_64 offset, kdlib::MEMOFFSET_64 value )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::setPtr(offset, value);
 }
 
 python::list loadPtrList( kdlib::MEMOFFSET_64 offset );

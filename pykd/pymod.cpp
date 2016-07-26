@@ -63,6 +63,17 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( loadFloats_, pykd::loadFloats, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( loadDoubles_, pykd::loadDoubles, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( compareMemory_, pykd::compareMemory, 3, 4 );
 
+BOOST_PYTHON_FUNCTION_OVERLOADS( writeBytes_, pykd::writeBytes, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( writeWords_, pykd::writeWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( writeDWords_, pykd::writeDWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( writeQWords_, pykd::writeQWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( writeSignBytes_, pykd::writeSignBytes, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( writeSignWords_, pykd::writeSignWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( writeSignDWords_, pykd::writeSignDWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( writeSignQWords_, pykd::writeSignQWords, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( writeFloats_, pykd::writeFloats, 2, 3 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( writeDoubles_, pykd::writeDoubles, 2, 3 );
+
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, pykd::getSourceFile, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFileFromSrcSrv_, pykd::getSourceFileFromSrcSrv, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, pykd::getSourceLine, 0, 1 );
@@ -275,6 +286,27 @@ BOOST_PYTHON_MODULE( pykd )
    python::def( "ptrDouble", pykd::ptrDoubleFloat,
         "Read a float with single precision from the target memory" );
 
+    python::def( "setByte", pykd::setByte,
+        "Write an unsigned 1-byte integer to the target memory" );
+    python::def( "setWord", pykd::setWord,
+        "Write an unsigned 2-byte integer to the target memory" );
+    python::def( "setDWord", pykd::setDWord,
+        "Write an unsigned 4-byte integer to the target memory" );
+    python::def( "setQWord", pykd::setQWord,
+        "Write an unsigned 8-byte integer to the target memory" );
+    python::def( "setSignByte", pykd::setSignByte,
+        "Write an signed 1-byte integer to the target memory" );
+    python::def( "setSignWord", pykd::setSignWord,
+        "Write an signed 2-byte integer to the target memory" );
+    python::def( "setSignDWord", pykd::setSignDWord,
+        "Write an signed 4-byte integer to the target memory" );
+    python::def( "setSignQWord", pykd::setSignQWord,
+        "Write an signed 8-byte integer to the target memory" );
+    python::def( "setFloat", pykd::setSingleFloat,
+        "Write a float with single precision to the target memory" );
+   python::def( "setDouble", pykd::setDoubleFloat,
+        "Write a float with single precision to the target memory" );
+
     python::def( "loadBytes", pykd::loadBytes, loadBytes_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of unsigned bytes" ) );
     python::def( "loadWords", pykd::loadWords, loadWords_( python::args( "offset", "count", "phyAddr" ),
@@ -308,12 +340,36 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "loadDoubles", pykd::loadDoubles, loadDoubles_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of doubles" ) );
 
+    python::def( "writeBytes", pykd::writeBytes, writeBytes_( python::args( "offset", "values", "phyAddr" ),
+        "Writing a list of unsigned bytes to target memeory" ) );
+    python::def( "writeWords", pykd::writeWords, writeWords_( python::args( "offset", "values", "phyAddr" ),
+        "Writing a list of unsigned shorts to target memeory" ) );
+    python::def( "writeDWords", pykd::writeDWords, writeDWords_( python::args( "offset", "values", "phyAddr" ),
+        "Writing a list of unsigned long ( double word ) to target memeory" ) );
+    python::def( "writeQWords", pykd::writeQWords, writeQWords_( python::args( "offset", "values", "phyAddr" ),
+        "Writing a list of unsigned long long ( quad word ) to target memeory" ) );
+    python::def( "writeSignBytes", pykd::writeSignBytes, writeSignBytes_( python::args( "offset", "values", "phyAddr" ),
+        "Writing a list of signed bytes to target memeory" ) );
+    python::def( "writeSignWords", pykd::writeSignWords, writeSignWords_( python::args( "offset", "count", "phyAddr" ),
+        "Writing a list of signed words to target memeory" ) );
+    python::def( "writeSignDWords", pykd::writeSignDWords, writeSignDWords_( python::args( "offset", "values", "phyAddr" ),
+        "Writing a list of signed longs to target memeory" ) );
+    python::def( "writeSignQWords", pykd::writeSignQWords, writeSignQWords_( python::args( "offset", "values", "phyAddr" ),
+        "Writing a list of signed long longs to target memeory" ) );
+    python::def( "writeFloats", pykd::writeFloats, writeFloats_( python::args( "offset", "values", "phyAddr" ),
+        "Writing a list of floats to target memeory" ) );
+    python::def( "writeDoubles", pykd::writeDoubles, writeDoubles_( python::args( "offset", "values", "phyAddr" ),
+        "Writing a list of doubles to target memeory" ) );
+
     python::def( "ptrPtr", pykd::ptrPtr,
         "Read an pointer value from the target memory" );
     python::def( "loadPtrList", pykd::loadPtrList,
         "Return list of pointers, each points to next" );
     python::def( "loadPtrs", pykd::loadPtrArray,
         "Read the block of the target's memory and return it as a list of pointers" );
+
+    python::def( "setPtr", pykd::setPtr,
+        "Write an pointer value to the target memory" );
 
     // types and vaiables
     python::def( "getSourceFile", pykd::getSourceFile, getSourceFile_( python::args( "offset"),

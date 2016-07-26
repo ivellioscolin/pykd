@@ -170,6 +170,116 @@ python::list loadDoubles( kdlib::MEMOFFSET_64 offset, unsigned long count, bool 
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void writeBytes(kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr)
+{
+    auto values = listToVector<unsigned char>(list);
+    {
+        AutoRestorePyState  pystate;
+        kdlib::writeBytes(offset, values, phyAddr);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void writeWords( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr )
+{
+    auto values = listToVector<unsigned short>(list);
+    {
+        AutoRestorePyState  pystate;
+        kdlib::writeWords(offset, values, phyAddr);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void writeDWords( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr )
+{
+    auto values = listToVector<unsigned long>(list);
+    {
+        AutoRestorePyState  pystate;
+        kdlib::writeDWords(offset, values, phyAddr);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void writeQWords( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr )
+{
+    auto values = listToVector<unsigned long long>(list);
+    {
+        AutoRestorePyState  pystate;
+        kdlib::writeQWords(offset, values, phyAddr);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void writeSignBytes( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr )
+{
+    auto values = listToVector<char, signed char>(list);
+    {
+        AutoRestorePyState  pystate;
+        kdlib::writeSignBytes(offset, values, phyAddr);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void writeSignWords( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr )
+{
+    auto values = listToVector<short>(list);
+    {
+        AutoRestorePyState  pystate;
+        kdlib::writeSignWords(offset, values, phyAddr);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void writeSignDWords( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr )
+{
+    auto values = listToVector<long>(list);
+    {
+        AutoRestorePyState  pystate;
+        kdlib::writeSignDWords(offset, values, phyAddr);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void writeSignQWords( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr )
+{
+    auto values = listToVector<long long>(list);
+    {
+        AutoRestorePyState  pystate;
+        kdlib::writeSignQWords(offset, values, phyAddr);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void writeFloats( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr )
+{
+    auto values = listToVector<float>(list);
+    {
+        AutoRestorePyState  pystate;
+        kdlib::writeFloats(offset, values, phyAddr);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void writeDoubles( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr )
+{
+    auto values = listToVector<double>(list);
+    {
+        AutoRestorePyState  pystate;
+        kdlib::writeDoubles(offset, values, phyAddr);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 python::list loadPtrList( kdlib::MEMOFFSET_64 offset )
 {
     std::vector<kdlib::MEMOFFSET_64>  lst;
