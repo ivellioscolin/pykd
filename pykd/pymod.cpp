@@ -341,25 +341,25 @@ BOOST_PYTHON_MODULE( pykd )
         "Read the block of the target's memory and return it as list of doubles" ) );
 
     python::def( "writeBytes", pykd::writeBytes, writeBytes_( python::args( "offset", "values", "phyAddr" ),
-        "Writing a list of unsigned bytes to target memeory" ) );
+        "Writing a list of unsigned bytes to the target's memory" ) );
     python::def( "writeWords", pykd::writeWords, writeWords_( python::args( "offset", "values", "phyAddr" ),
-        "Writing a list of unsigned shorts to target memeory" ) );
+        "Writing a list of unsigned shorts to the target's memory" ) );
     python::def( "writeDWords", pykd::writeDWords, writeDWords_( python::args( "offset", "values", "phyAddr" ),
-        "Writing a list of unsigned long ( double word ) to target memeory" ) );
+        "Writing a list of unsigned long ( double word ) to the target's memory" ) );
     python::def( "writeQWords", pykd::writeQWords, writeQWords_( python::args( "offset", "values", "phyAddr" ),
-        "Writing a list of unsigned long long ( quad word ) to target memeory" ) );
+        "Writing a list of unsigned long long ( quad word ) to the target's memory" ) );
     python::def( "writeSignBytes", pykd::writeSignBytes, writeSignBytes_( python::args( "offset", "values", "phyAddr" ),
-        "Writing a list of signed bytes to target memeory" ) );
+        "Writing a list of signed bytes to the target's memory" ) );
     python::def( "writeSignWords", pykd::writeSignWords, writeSignWords_( python::args( "offset", "count", "phyAddr" ),
-        "Writing a list of signed words to target memeory" ) );
+        "Writing a list of signed words to the target's memory" ) );
     python::def( "writeSignDWords", pykd::writeSignDWords, writeSignDWords_( python::args( "offset", "values", "phyAddr" ),
-        "Writing a list of signed longs to target memeory" ) );
+        "Writing a list of signed longs to the target's memory" ) );
     python::def( "writeSignQWords", pykd::writeSignQWords, writeSignQWords_( python::args( "offset", "values", "phyAddr" ),
-        "Writing a list of signed long longs to target memeory" ) );
+        "Writing a list of signed long longs to the target's memory" ) );
     python::def( "writeFloats", pykd::writeFloats, writeFloats_( python::args( "offset", "values", "phyAddr" ),
-        "Writing a list of floats to target memeory" ) );
+        "Writing a list of floats to the target's memory" ) );
     python::def( "writeDoubles", pykd::writeDoubles, writeDoubles_( python::args( "offset", "values", "phyAddr" ),
-        "Writing a list of doubles to target memeory" ) );
+        "Writing a list of doubles to the target's memory" ) );
 
     python::def( "ptrPtr", pykd::ptrPtr,
         "Read an pointer value from the target memory" );
