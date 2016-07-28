@@ -83,9 +83,19 @@ std::wstring TargetProcessAdapter::print(kdlib::TargetProcess& process)
 {
     std::wstringstream sstr;
 
-    sstr << "Target Process:" << std::endl;
-    sstr << "PID: " << std::hex << process.getSystemId() << std::endl;
-    sstr << "Name: " << process.getExecutableName() << std::endl;
+    
+    if ( !process.isKernelDebugging() )
+    {
+        sstr << "Target Process:" << std::endl;
+        sstr << "PID: " << std::hex << process.getSystemId() << std::endl;
+        sstr << "Name: " << process.getExecutableName() << std::endl;
+    }
+    else
+    {
+        sstr << "Kernel virtual process:" << std::endl;
+        sstr << "Name: " << process.getExecutableName() << std::endl;
+    }
+
     return sstr.str();
 }
 
@@ -113,9 +123,17 @@ std::wstring TargetThreadAdapter::print(kdlib::TargetThread& thread)
 {
     std::wstringstream sstr;
 
-    sstr << "Target Thread:" << std::endl;
-    sstr << "PID: " << std::hex << thread.getProcess()->getSystemId() << std::endl;
-    sstr << "TID: " << std::hex << thread.getSystemId() << std::endl;
+    if ( !thread.isKernelDebugging() )
+    {
+        sstr << "Target Thread:" << std::endl;
+        sstr << "PID: " << std::hex << thread.getProcess()->getSystemId() << std::endl;
+        sstr << "TID: " << std::hex << thread.getSystemId() << std::endl;
+    }
+    else
+    {
+        sstr << "Kernel virtual thread" << std::endl;
+    }
+
     return sstr.str();
 }
 

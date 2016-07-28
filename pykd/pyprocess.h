@@ -33,6 +33,12 @@ struct TargetSystemAdapter {
         return kdlib::TargetSystem::getById(id);
     }
 
+    static void setCurrent(kdlib::TargetSystem& system)
+    {
+        AutoRestorePyState  pystate;
+        system.setCurrent();
+    }
+
     static std::wstring getDescription(kdlib::TargetSystem& system)
     {
         AutoRestorePyState  pystate;
@@ -131,6 +137,12 @@ struct TargetProcessAdapter {
         return kdlib::TargetProcess::getNumber();
     }
 
+    static void setCurrent(kdlib::TargetProcess& process)
+    {   
+        AutoRestorePyState  pystate;
+        return process.setCurrent();
+    }
+
     static kdlib::PROCESS_ID getSystemId(kdlib::TargetProcess& process)
     {
         AutoRestorePyState  pystate;
@@ -219,6 +231,18 @@ struct TargetProcessAdapter {
     {
         AutoRestorePyState  pystate;
         return process.getModuleByIndex(index);
+    }
+
+    static kdlib::ModulePtr getModuleByOffset(kdlib::TargetProcess& process, kdlib::MEMOFFSET_64 offset)
+    {
+        AutoRestorePyState  pystate;
+        return process.getModuleByOffset(offset);
+    }
+
+    static kdlib::ModulePtr getModuleByName(kdlib::TargetProcess& process, const std::wstring& name)
+    {
+        AutoRestorePyState  pystate;
+        return process.getModuleByName(name);
     }
 
     static python::list getThreadList(kdlib::TargetProcess& process);
