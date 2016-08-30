@@ -411,8 +411,14 @@ BOOST_PYTHON_MODULE( pykd )
         "Return a CPU regsiter value by the register's name" );
     python::def( "reg", pykd::getRegisterByIndex,
         "Return a CPU register value by the register's number");
+    python::def( "setReg", pykd::setRegisterByName,
+        "Set a CPU register value by its name" );
+    python::def( "setReg", pykd::setRegisterByIndex,
+        "Set a CPU register value by its index" );
     python::def( "getNumberRegisters", pykd::getNumberRegisters,
         "Return a number of CPU registers");
+    python::def( "getRegisterName", pykd::getRegisterName,
+        "Return register name by its index");
     python::def("getIP", pykd::getIP,
         "Return instruction pointer");
     python::def("getSP", pykd::getSP,

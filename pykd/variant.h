@@ -13,23 +13,22 @@ class NumVariantAdaptor : public kdlib::NumBehavior
 
 public:
 
-
-    static kdlib::NumBehavior* NumVariantAdaptor::getVariant(const python::object &obj)
-    {
-        NumVariantAdaptor*  var = new NumVariantAdaptor();
+   static kdlib::NumVariant NumVariantAdaptor::convertToVariant( const python::object &obj)
+   {
+        kdlib::NumVariant   var;
 
         if (PyBool_Check(obj.ptr()))
         {
             if (obj.ptr() == Py_True)
-                var->m_variant.setBool(true);
+                var.setBool(true);
             else
-                var->m_variant.setBool(false);
+                var.setBool(false);
             return var;
         }
 
         if (PyFloat_Check(obj.ptr()))
         {
-            var->m_variant.setDouble(PyFloat_AsDouble(obj.ptr()));
+            var.setDouble(PyFloat_AsDouble(obj.ptr()));
             return var;
         }
 
@@ -37,7 +36,7 @@ public:
 
         if (PyInt_CheckExact(obj.ptr()))
         {
-            var->m_variant.setLong(PyLong_AsLong(obj.ptr()));
+            var.setLong(PyLong_AsLong(obj.ptr()));
             return var;
         }
 #endif
@@ -47,19 +46,19 @@ public:
             if (_PyLong_NumBits(obj.ptr()) > 64)
                 throw pykd::OverflowException("int too big to convert");
 
-            var->m_variant.setULongLong(PyLong_AsUnsignedLongLong(obj.ptr()));
+            var.setULongLong(PyLong_AsUnsignedLongLong(obj.ptr()));
         }
         else
         {
             if (_PyLong_NumBits(obj.ptr()) > 63)
                 throw pykd::OverflowException("int too big to convert");
 
-            var->m_variant.setLongLong(PyLong_AsLongLong(obj.ptr()));
+            var.setLongLong(PyLong_AsLongLong(obj.ptr()));
         }
 
 
         return var;
-    }
+   }
 
    static python::object NumVariantAdaptor::convertToPython( kdlib::NumVariant& var )
    {
@@ -101,6 +100,18 @@ public:
 
         return python::object( var.asInt() );
    }
+
+
+    static kdlib::NumBehavior* NumVariantAdaptor::getVariant(const python::object &obj)
+    {
+        NumVariantAdaptor*  var = new NumVariantAdaptor();
+
+        var->m_variant = NumVariantAdaptor::convertToVariant(obj);
+
+        return var;
+    }
+
+
 
    static python::object NumVariantAdaptor::convertToPython( kdlib::NumBehavior& num )
    {

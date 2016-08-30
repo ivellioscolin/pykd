@@ -72,7 +72,11 @@ python::object getRegisterByName( const std::wstring &name );
 
 python::object getRegisterByIndex( unsigned long index );
 
-std::wstring getRegisterNameByIndex(unsigned long index);
+std::wstring getRegisterName(unsigned long index);
+
+void setRegisterByName(const std::wstring& name, const python::object& value);
+
+void setRegisterByIndex(unsigned long index, const python::object& value);
 
 inline unsigned long getNumberRegisters() {
     AutoRestorePyState  pystate;

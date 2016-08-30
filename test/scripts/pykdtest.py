@@ -54,7 +54,7 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( memtest.MemoryTest ),
                 unittest.TestLoader().loadTestsFromTestCase( typeinfo.TypeInfoTest ),
                 unittest.TestLoader().loadTestsFromTestCase( typedvar.TypedVarTest ),
-                #unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
+                unittest.TestLoader().loadTestsFromTestCase( regtest.CpuRegTest ),
                 unittest.TestLoader().loadTestsFromTestCase( customtypestest.CustomTypesTest ),
                 unittest.TestLoader().loadTestsFromTestCase( synsymtest.SynSymTest ),
                 # ^^^
@@ -88,7 +88,7 @@ if __name__ == "__main__":
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
-    #unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite("typedvar.TypedVarTest.testCompare") )
+    #unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite("regtest.CpuRegTest.testSetRegValue") )
 
     try: input = raw_input
     except NameError: pass

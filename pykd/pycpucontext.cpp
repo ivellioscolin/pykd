@@ -43,7 +43,25 @@ python::object getRegisterByIndex(unsigned long index)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::wstring getRegisterNameByIndex(unsigned long index)
+void setRegisterByName(const std::wstring& name, const python::object& value)
+{
+    AutoRestorePyState  pystate;
+
+    kdlib::setRegisterByName(name, NumVariantAdaptor::convertToVariant(value));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void setRegisterByIndex(unsigned long index, const python::object& value)
+{
+    AutoRestorePyState  pystate;
+
+    kdlib::setRegisterByIndex(index, NumVariantAdaptor::convertToVariant(value));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::wstring getRegisterName(unsigned long index)
 {
     AutoRestorePyState  pystate;
     return kdlib::getRegisterName(index);
