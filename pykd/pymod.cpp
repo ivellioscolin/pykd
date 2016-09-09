@@ -425,6 +425,12 @@ BOOST_PYTHON_MODULE( pykd )
         "Return stack pointer");
     python::def("getFP", pykd::getFP,
         "Return frame pointer");
+    python::def("setIP", pykd::setIP,
+        "Change instruction pointer");
+    python::def("setSP", pykd::setSP,
+        "Change stack pointer");
+    python::def("setFP", pykd::setFP,
+        "Change frame pointer");
     python::def ( "rdmsr", pykd::loadMSR,
         "Return MSR value" );
     python::def( "wrmsr", pykd::setMSR,

@@ -101,6 +101,23 @@ inline kdlib::MEMOFFSET_64 getFP()
     return kdlib::getFrameOffset();
 }
 
+inline void setIP(kdlib::MEMOFFSET_64 offset)
+{
+    AutoRestorePyState  pystate;
+    kdlib::setInstructionOffset(offset);
+}
+
+inline void setSP(kdlib::MEMOFFSET_64 offset)
+{
+    AutoRestorePyState  pystate;
+    return kdlib::setStackOffset(offset); 
+}
+
+inline void setFP(kdlib::MEMOFFSET_64 offset)
+{
+    AutoRestorePyState  pystate;
+    return kdlib::setFrameOffset(offset);
+}
 inline unsigned long long loadMSR( unsigned long  msrIndex ) 
 {
     AutoRestorePyState  pystate;
