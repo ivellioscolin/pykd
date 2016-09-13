@@ -919,12 +919,14 @@ BOOST_PYTHON_MODULE( pykd )
             "Cast variable to the type and return new typedVar instance")
         .def("castTo", TypedVarAdapter::castByTypeInfo,
             "Cast variable to the type and return new typedVar instance")
+        .def("call", python::raw_function(pykd::callFunctionByVar, 0) )
         .def("__getattr__", TypedVarAdapter::getFieldAttr,
             "Return field of structure as an object attribute" )
         .def( "__str__", TypedVarAdapter::print )
         .def("__len__", TypedVarAdapter::getElementCount )
         .def("__getitem__", TypedVarAdapter::getElementByIndex )
         .def("__dir__", TypedVarAdapter::getElementsDir)
+        .def("__call__", python::raw_function(pykd::callFunctionByVar, 0) )
         //.def("__getitem__", &kdlib::TypedVar::getElementByIndexPtr )
 #if PY_VERSION_HEX >= 0x03000000
         .def("__bool__", TypedVarAdapter::isNotZero)

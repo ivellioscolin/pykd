@@ -380,8 +380,12 @@ class TypedVarTest( unittest.TestCase ):
 
         funcptr = target.module.typedVar("CdeclFuncLong");
         self.assertEqual( 0xffffff000000 + 5, pykd.callFunctionByPtr( funcptr, target.module.typedVar("ulonglongConst") ) )
+        self.assertEqual( 0x7777 + 5, funcptr.call(0x7777) )
+        self.assertEqual( 0x11223344556677 + 5, funcptr(0x11223344556677) );
 
         functype = pykd.defineFunction( pykd.baseTypes.Int4B, pykd.callingConvention.NearStd)
         functype.append("arg1", pykd.baseTypes.Int1B)
         functype.append("arg2", pykd.baseTypes.Long)
         self.assertEqual( 500 / 25, pykd.callFunctionByAddr(functype, target.module.offset("StdcallFuncRet"), 25, 500 ) )
+
+
