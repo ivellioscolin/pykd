@@ -1,4 +1,4 @@
-"""Custom types tests"""
+﻿"""Custom types tests"""
 
 import unittest
 import target
@@ -137,3 +137,9 @@ class CustomTypesTest(unittest.TestCase):
         struct.append( "field2", baseTypes.UInt1B )
         self.assertEqual( struct.size(), 8 )
         self.assertEqual( struct.fieldOffset("field2"), 4 )
+
+    def testCustomFunction(self):
+        functype = pykd.defineFunction( baseTypes.UInt4B )
+        functype.append( "var1", baseTypes.WChar)
+        functype.append( "var2", baseTypes.UInt4B.ptrTo() )
+        self.assertEqual( "UInt4B(__cdecl)(WChar, UInt4B*)", functype.name() )

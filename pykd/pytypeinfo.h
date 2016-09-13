@@ -38,6 +38,12 @@ inline kdlib::TypeInfoPtr defineUnion( const std::wstring& unionName, size_t ali
 }
 
 
+inline kdlib::TypeInfoPtr defineFunction( const kdlib::TypeInfoPtr& returnType, kdlib::CallingConventionType callconv = kdlib::CallConv_NearC)
+{
+    AutoRestorePyState  pystate;
+    return kdlib::defineFunction(returnType, callconv);
+}
+
 inline kdlib::TypeInfoPtr getTypeInfoByName( const std::wstring &name )
 {
     AutoRestorePyState  pystate;

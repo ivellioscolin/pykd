@@ -89,6 +89,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( getThreadIdBySystemId_, pykd::getThreadIdBySyst
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( createStruct_, pykd::defineStruct, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( createUnion_, pykd::defineUnion, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( defineFunction_, pykd::defineFunction, 1, 2 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBreakpoint_, Breakpoint::setSoftwareBreakpoint, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBreakpoint_, Breakpoint::setHardwareBreakpoint, 3, 4 );
@@ -405,6 +406,8 @@ BOOST_PYTHON_MODULE( pykd )
         "Create custom struct" ) );
     python::def( "createUnion", &pykd::defineUnion, createUnion_( python::args( "name", "align" ),
         "Create custom union" ) );
+    python::def( "defineFunction", &pykd::defineFunction, defineFunction_( python::args("returnType", "callconv"),
+        "Define custom function prototype" ) );
 
     // CPU registers
     python::def( "reg", pykd::getRegisterByName,
