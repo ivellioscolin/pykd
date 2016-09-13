@@ -194,6 +194,16 @@ inline python::list getLocals() {
     return StackFrameAdapter::getLocalsList( getCurrentFrame() );
 }
 
+inline kdlib::MEMOFFSET_64 stackAlloc(unsigned short byteCount) {
+    AutoRestorePyState  pystate;
+    return kdlib::stackAlloc(byteCount);
+}
+
+inline kdlib::MEMOFFSET_64 stackFree(unsigned short byteCount) {
+    AutoRestorePyState  pystate;
+    return kdlib::stackFree(byteCount);
+}
+
 
 class CPUContextAdapter
 {

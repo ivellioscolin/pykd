@@ -470,6 +470,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Get list of function arguments as list of tuple (name, value ) " );
     python::def( "getParam", pykd::getParam, 
         "Get the function argument by name" );
+    python::def( "stackAlloc", pykd::stackAlloc,
+        "Allocate bytes of space in the stack in the target process" );
+    python::def( "stackFree", pykd::stackFree,
+        "Free space in the stack previously allocated by stackAlloc" );
 
     // breakpoints
     python::def( "setBp", &Breakpoint::setSoftwareBreakpoint,
