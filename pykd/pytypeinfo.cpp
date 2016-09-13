@@ -132,26 +132,25 @@ python::list TypeInfoAdapter::getElementDir(kdlib::TypeInfo &typeInfo)
     return pylst;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 
-python::object callFunctionByVar( python::tuple& args, python::dict& kwargs )
+python::object  callTypedVar(kdlib::TypedVarPtr& funcobj, python::tuple& args)
 {
     kdlib::NumVariant   retVal;
+    
+    size_t  argCount  = python::len(args);
 
-    kdlib::TypedVarPtr   funcvar = python::extract<kdlib::TypedVarPtr>(args[0]);
-
-     size_t  argCount  = python::len(args) - 1;
-
-    if ( argCount != funcvar->getType()->getElementCount() )
+    if ( argCount != funcobj->getType()->getElementCount() )
         throw kdlib::TypeException(L"wrong argument count");
 
     kdlib::CallArgList  argLst;
 
     for ( size_t  i = 0; i < argCount; ++i )
     {
-        kdlib::TypeInfoPtr  argType = funcvar->getType()->getElement(i);
+        kdlib::TypeInfoPtr  argType = funcobj->getType()->getElement(i);
 
-        python::object  arg = args[i+1];
+        python::object  arg = args[i];
 
         if ( argType->isBase() )
         {
@@ -272,10 +271,34 @@ python::object callFunctionByVar( python::tuple& args, python::dict& kwargs )
 
     {
         AutoRestorePyState  pystate;
-        retVal = funcvar->call(argLst);
+        retVal = funcobj->call(argLst);
     }
 
     return NumVariantAdaptor::convertToPython(retVal);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+python::object callFunctionByVar( python::tuple& args, python::dict& kwargs )
+{
+    kdlib::TypedVarPtr   funcobj = python::extract<kdlib::TypedVarPtr>(args[0]);
+
+    python::tuple  newArgs = python::tuple(args.slice(1, python::_));
+
+    return callTypedVar(funcobj, newArgs );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+python::object callFunctionByOffset( python::tuple& args, python::dict& kwargs)
+{
+    kdlib::TypeInfoPtr   functype = python::extract<kdlib::TypeInfoPtr>(args[0]);
+    kdlib::MEMOFFSET_64  funcaddr = python::extract<kdlib::MEMOFFSET_64>(args[1]);
+
+    kdlib::TypedVarPtr  funcobj = kdlib::loadTypedVar(functype, funcaddr);
+    python::tuple  newArgs = python::tuple(args.slice(2, python::_));
+
+     return callTypedVar( funcobj, newArgs );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
