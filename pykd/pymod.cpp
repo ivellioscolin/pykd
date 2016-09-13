@@ -408,6 +408,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Create custom union" ) );
     python::def( "defineFunction", &pykd::defineFunction, defineFunction_( python::args("returnType", "callconv"),
         "Define custom function prototype" ) );
+    python::def( "callFunction", python::raw_function(pykd::callFunctionByVar, 1) );
 
     // CPU registers
     python::def( "reg", pykd::getRegisterByName,

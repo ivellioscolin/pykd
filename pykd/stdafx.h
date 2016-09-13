@@ -20,6 +20,7 @@
 #include <boost/python.hpp>
 #include <boost/python/object.hpp>
 #include <boost/python/module.hpp>
+#include <boost/python/raw_function.hpp>
 #pragma warning(pop)
 
 namespace python = boost::python;

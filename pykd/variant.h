@@ -17,6 +17,13 @@ public:
    {
         kdlib::NumVariant   var;
 
+        python::extract<kdlib::NumBehavior>  getNumVar(obj);
+        if ( getNumVar.check() )
+        {
+            var = getNumVar();
+            return var;
+        }
+
         if (PyBool_Check(obj.ptr()))
         {
             if (obj.ptr() == Py_True)
@@ -43,8 +50,8 @@ public:
 
         if (_PyLong_Sign(obj.ptr()) >= 0)
         {
-            if (_PyLong_NumBits(obj.ptr()) > 64)
-                throw pykd::OverflowException("int too big to convert");
+           if (_PyLong_NumBits(obj.ptr()) > 64)
+               throw pykd::OverflowException("int too big to convert");
 
             var.setULongLong(PyLong_AsUnsignedLongLong(obj.ptr()));
         }

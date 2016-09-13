@@ -373,3 +373,10 @@ class TypedVarTest( unittest.TestCase ):
     def testCastTo(self):
         self.assertEqual(0xD2, target.module.typedVar( "ulonglongVar" ).castTo("UInt1B"))
         self.assertEqual(0, target.module.typedVar( "g_structTest" ).castTo("UInt4B"))
+
+    def testCallFunction(self):
+        #funcptr = target.module.typedVar("StdcallFuncRet");
+        #self.assertEqual( 200000/10, pykd.callFunction( funcptr, 10, 200000 ) )
+
+        funcptr = target.module.typedVar("CdeclFuncLong");
+        self.assertEqual( 0xffffff000000 + 5, pykd.callFunction( funcptr, target.module.typedVar("ulonglongConst") ) )

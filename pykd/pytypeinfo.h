@@ -44,6 +44,9 @@ inline kdlib::TypeInfoPtr defineFunction( const kdlib::TypeInfoPtr& returnType, 
     return kdlib::defineFunction(returnType, callconv);
 }
 
+python::object callFunctionByVar( python::tuple& args, python::dict& kwargs );
+
+
 inline kdlib::TypeInfoPtr getTypeInfoByName( const std::wstring &name )
 {
     AutoRestorePyState  pystate;

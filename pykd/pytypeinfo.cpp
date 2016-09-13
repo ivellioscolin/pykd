@@ -4,6 +4,7 @@
 #include "kdlib/exceptions.h"
 
 #include "pytypeinfo.h"
+#include "variant.h"
 
 namespace pykd {
 
@@ -129,6 +130,152 @@ python::list TypeInfoAdapter::getElementDir(kdlib::TypeInfo &typeInfo)
         pylst.append(*it);
 
     return pylst;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+python::object callFunctionByVar( python::tuple& args, python::dict& kwargs )
+{
+    kdlib::NumVariant   retVal;
+
+    kdlib::TypedVarPtr   funcvar = python::extract<kdlib::TypedVarPtr>(args[0]);
+
+     size_t  argCount  = python::len(args) - 1;
+
+    if ( argCount != funcvar->getType()->getElementCount() )
+        throw kdlib::TypeException(L"wrong argument count");
+
+    kdlib::CallArgList  argLst;
+
+    for ( size_t  i = 0; i < argCount; ++i )
+    {
+        kdlib::TypeInfoPtr  argType = funcvar->getType()->getElement(i);
+
+        python::object  arg = args[i+1];
+
+        if ( argType->isBase() )
+        {
+             kdlib::NumVariant  var= NumVariantAdaptor::convertToVariant(arg);
+
+            if ( argType->getName() == L"Char" )
+            {
+                argLst.push_back( var.asChar() );
+            }
+            else if ( argType->getName() == L"WChar" )
+            {
+                argLst.push_back( var.asShort() );
+            }
+            else if ( argType->getName() == L"Int1B" )
+            {
+                argLst.push_back( var.asChar() );
+            }
+            else if ( argType->getName() == L"UInt1B" )
+            {
+                argLst.push_back( var.asUChar() );
+            }
+            else if ( argType->getName() == L"Int2B" )
+            {
+                argLst.push_back( var.asShort() );
+            }
+            else if ( argType->getName() == L"UInt2B" )
+            {
+                argLst.push_back( var.asUShort() );
+            }
+            else if ( argType->getName() == L"Int4B" )
+            {
+                argLst.push_back( var.asLong() );
+            }
+            else if ( argType->getName() == L"UInt4B" )
+            {
+                argLst.push_back( var.asULong() );
+            }
+            else if ( argType->getName() == L"Int8B" )
+            {
+                argLst.push_back( var.asLongLong() );
+            }
+            else if ( argType->getName() == L"UInt8B" )
+            {
+                argLst.push_back(var.asULongLong());
+            }
+            else if ( argType->getName() == L"Long" )
+            {
+                argLst.push_back( var.asLong() );
+            }
+            else if ( argType->getName() == L"ULong" )
+            {
+                argLst.push_back( var.asULong() );
+            }
+            else if ( argType->getName() == L"Bool" )
+            {
+                argLst.push_back( var.asChar() );
+            }
+            else if ( argType->getName() == L"Float" )
+            {
+                argLst.push_back( var.asFloat() );
+            }
+            else if ( argType->getName() == L"Double")
+            {
+                argLst.push_back( var.asDouble() );
+            }
+            else
+            {
+                throw kdlib::TypeException( std::wstring(L"unsupported argument type ") + argType->getName() );
+            }
+        }
+        else if ( argType->isPointer() )
+        {
+            kdlib::MEMOFFSET_64  addr;
+
+            python::extract<kdlib::NumBehavior>  getNumVar(arg);
+            python::extract<unsigned long long>  getLongLong(arg);
+            python::extract<long>  getLong(arg);
+
+            if ( getNumVar.check() )
+            {
+                kdlib::NumVariant   var = getNumVar();
+                addr = var.asULongLong();
+            }
+            if ( getLongLong.check() )
+            {
+                addr = getLongLong();
+            }
+            else if ( getLong.check() )
+            {
+                addr = getLong();
+            }
+            else
+            {
+                std::wstringstream  sstr;
+                sstr << "failed to convert " << i << " argument to pointer";
+                throw kdlib::TypeException(sstr.str() );
+            }
+
+            switch ( argType->getPtrSize() )
+            {
+            case 4:
+                argLst.push_back( static_cast<unsigned long>(addr) );
+                break;
+
+            case 8:
+                argLst.push_back( static_cast<unsigned long long>(addr) );
+                break;
+
+            default:
+                throw kdlib::TypeException(L"unsupported call argument");
+            }         
+        }
+        else
+        {
+            throw kdlib::TypeException(L"unsupported argument type");
+        }
+    }
+
+    {
+        AutoRestorePyState  pystate;
+        retVal = funcvar->call(argLst);
+    }
+
+    return NumVariantAdaptor::convertToPython(retVal);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
