@@ -133,51 +133,64 @@ info(
     PCSTR args
 )
 {
-    std::stringstream   sstr;
-
-    sstr <<std::endl << "pykd bootstrapper version: " << PYKDEXT_VERSION_MAJOR << '.' << PYKDEXT_VERSION_MINOR << '.' 
-        << PYKDEXT_VERSION_SUBVERSION << '.' << PYKDEXT_VERSION_BUILDNO << std::endl;
-
-    std::list<InterpreterDesc>   interpreterList = getInstalledInterpreter();
-
-    int defaultMajor;
-    int defaultMinor;
-
-    getDefaultPythonVersion(defaultMajor, defaultMinor);
-
-    sstr << std::endl << "Installed python:" << std::endl << std::endl;
-    sstr << std::setw(16) << std::left << "Version:" << std::setw(12) << std::left << "Status: " << std::left << "Image:" <<  std::endl;
-    sstr << "------------------------------------------------------------------------------" << std::endl;
-    if (interpreterList.size() > 0)
+    try 
     {
-        for (const InterpreterDesc& desc : interpreterList)
+        std::stringstream   sstr;
+
+        sstr <<std::endl << "pykd bootstrapper version: " << PYKDEXT_VERSION_MAJOR << '.' << PYKDEXT_VERSION_MINOR << '.' 
+            << PYKDEXT_VERSION_SUBVERSION << '.' << PYKDEXT_VERSION_BUILDNO << std::endl;
+
+        std::list<InterpreterDesc>   interpreterList = getInstalledInterpreter();
+
+        int defaultMajor;
+        int defaultMinor;
+
+        getDefaultPythonVersion(defaultMajor, defaultMinor);
+
+        sstr << std::endl << "Installed python:" << std::endl << std::endl;
+        sstr << std::setw(16) << std::left << "Version:" << std::setw(12) << std::left << "Status: " << std::left << "Image:" <<  std::endl;
+        sstr << "------------------------------------------------------------------------------" << std::endl;
+        if (interpreterList.size() > 0)
         {
-            if ( defaultMajor == desc.majorVersion && defaultMinor == desc.minorVersion)
-                sstr << "* ";
-            else
-                sstr << "  ";
+            for (const InterpreterDesc& desc : interpreterList)
+            {
+                if ( defaultMajor == desc.majorVersion && defaultMinor == desc.minorVersion)
+                    sstr << "* ";
+                else
+                    sstr << "  ";
 
-            sstr << std::setw(14) << std::left << make_version(desc.majorVersion, desc.minorVersion);
+                sstr << std::setw(14) << std::left << make_version(desc.majorVersion, desc.minorVersion);
             
-            sstr << std::setw(12) << std::left << (isInterpreterLoaded(desc.majorVersion, desc.minorVersion) ? "Loaded" : "Unloaded");
+                sstr << std::setw(12) << std::left << (isInterpreterLoaded(desc.majorVersion, desc.minorVersion) ? "Loaded" : "Unloaded");
 
-            sstr << desc.imagePath << std::endl;
+                sstr << desc.imagePath << std::endl;
+            }
         }
-    }
-    else
+        else
+        {
+            sstr << "No python interpreter found" << std::endl; 
+        }
+
+        sstr << std::endl;
+
+        CComQIPtr<IDebugControl>  control = client;
+
+        control->ControlledOutput(
+            DEBUG_OUTCTL_THIS_CLIENT,
+            DEBUG_OUTPUT_NORMAL,
+            sstr.str().c_str()
+            );
+    } 
+    catch(std::exception &e)
     {
-        sstr << "No python interpreter found" << std::endl; 
+        CComQIPtr<IDebugControl>  control = client;
+
+        control->ControlledOutput(
+            DEBUG_OUTCTL_THIS_CLIENT,
+            DEBUG_OUTPUT_ERROR,
+            e.what()
+            );
     }
-
-    sstr << std::endl;
-
-    CComQIPtr<IDebugControl>  control = client;
-
-    control->ControlledOutput(
-        DEBUG_OUTCTL_THIS_CLIENT,
-        DEBUG_OUTPUT_NORMAL,
-        sstr.str().c_str()
-        );
 
     return S_OK;
 }
