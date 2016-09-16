@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "snippets", "snippets", "{AA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "um", "um", "{EEFC9510-DFA7-439E-801E-48FCE72766AD}"
 	ProjectSection(SolutionItems) = preProject
+		samples\um\createfile.py = samples\um\createfile.py
 		samples\um\critlist.py = samples\um\critlist.py
 		samples\um\ldr.py = samples\um\ldr.py
 	EndProjectSection

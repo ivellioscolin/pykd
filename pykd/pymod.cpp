@@ -361,6 +361,11 @@ BOOST_PYTHON_MODULE( pykd )
         "Writing a list of floats to the target's memory" ) );
     python::def( "writeDoubles", pykd::writeDoubles, writeDoubles_( python::args( "offset", "values", "phyAddr" ),
         "Writing a list of doubles to the target's memory" ) );
+    python::def( "writeCStr", pykd::writeCStr,
+        "Write string as a 0 terminated ansi string to the buffer");
+    python::def( "writeWStr", pykd::writeWStr,
+        "Write string as a 0 terminated unicode string to the buffer");
+
 
     python::def( "ptrPtr", pykd::ptrPtr,
         "Read an pointer value from the target memory" );

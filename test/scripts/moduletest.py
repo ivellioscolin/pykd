@@ -86,7 +86,7 @@ class ModuleTest( unittest.TestCase ):
         fileName = pykd.getSourceFile(target.module.CdeclFunc )
         self.assertTrue( re.search('testfunc\\.cpp', fileName ) )
         fileName, lineNo, displacement = pykd.getSourceLine( target.module.CdeclFunc + 2)
-        self.assertEqual( 17, lineNo )
+        self.assertEqual( 18, lineNo )
         self.assertTrue( re.search('testfunc\\.cpp', fileName ) )
         self.assertEqual( 2, displacement )
         #fileName, lineNo, displacement = pykd.getSourceLine()

@@ -185,6 +185,17 @@ void writeSignQWords( kdlib::MEMOFFSET_64 offset, const python::list &list, bool
 void writeFloats( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr = false );
 void writeDoubles( kdlib::MEMOFFSET_64 offset, const python::list &list, bool phyAddr = false );
 
+inline void writeCStr( kdlib::MEMOFFSET_64 offset, const std::string& str)
+{
+   AutoRestorePyState  pystate;
+   kdlib::writeCStr(offset, str);
+}
+
+inline void writeWStr( kdlib::MEMOFFSET_64 offset, const std::wstring& str)
+{
+   AutoRestorePyState  pystate;
+   kdlib::writeWStr(offset, str);
+}
 
 inline std::string loadChars( kdlib::MEMOFFSET_64 offset, unsigned long number, bool phyAddr = false )
 {
@@ -254,6 +265,8 @@ inline kdlib::MemoryProtect getVaProtect( kdlib::MEMOFFSET_64 offset )
     AutoRestorePyState  pystate;
     return kdlib::getVaProtect(offset);
 }
+
+
 
 
 } // end namespace pykd
