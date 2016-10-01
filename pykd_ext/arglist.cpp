@@ -2,17 +2,18 @@
 
 #include <boost/tokenizer.hpp>
 #include <regex>
+#include <list>
 
 #include "arglist.h"
+
+
+namespace {
 
 typedef  boost::escaped_list_separator<char>    char_separator_t;
 typedef  boost::tokenizer< char_separator_t >   char_tokenizer_t;
 
-
-ArgsList  getArgsList(const char* args)
+ArgsList  getArgsList(const std::string&  argsStr)
 {
-    std::string  argsStr(args);
-
     char_tokenizer_t  token(argsStr, char_separator_t("", " \t", "\""));
     ArgsList  argsList;
 
@@ -25,16 +26,19 @@ ArgsList  getArgsList(const char* args)
     return argsList;
 }
 
+} // anonymous namespace
+
+
 static const std::regex  versionRe("^-([2,3])(?:\\.(\\d+))?$");
 
-Options::Options(const ArgsList& argList) :
+Options::Options(const std::string& cmdline) :
     pyMajorVersion(-1),
     pyMinorVersion(-1),
     global(true),
     showHelp(false)
 {
 
-    args = argList;
+    args = getArgsList( cmdline );
 
     for (auto it = args.begin(); it != args.end();)
     {
@@ -72,7 +76,7 @@ Options::Options(const ArgsList& argList) :
             it = args.erase(it);
             continue;
         }
-            
+
         break;
     }
 

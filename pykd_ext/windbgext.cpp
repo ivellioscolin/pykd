@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <sstream>
+#include <fstream>
 #include <iomanip> 
+#include <regex>
 
 #include <DbgEng.h>
 
@@ -265,6 +267,9 @@ help(
 
 //////////////////////////////////////////////////////////////////////////////
 
+
+static const std::regex  shebangRe("^#!\\s*python([2,3])(?:\\.(\\d))?$");
+
 extern "C"
 HRESULT
 CALLBACK
@@ -279,13 +284,32 @@ py(
 
     try {
 
-        Options  opts(getArgsList(args));
+        Options  opts(args);
 
         if (opts.showHelp)
             throw std::exception(printUsageMsg);
 
         int  majorVersion = opts.pyMajorVersion;
         int  minorVersion = opts.pyMinorVersion;
+
+        if ( opts.args.size() > 0 && majorVersion == -1 && minorVersion == -1 )
+        {
+            std::ifstream  scriptFile(opts.args[0]);
+
+            std::string  firstline;
+            std::getline(scriptFile, firstline);
+
+            std::smatch  mres;
+            if (std::regex_match(firstline, mres, shebangRe))
+            {
+                majorVersion = atol(std::string(mres[1].first, mres[1].second).c_str());
+
+                if (mres[2].matched)
+                {
+                    minorVersion = atol(std::string(mres[2].first, mres[2].second).c_str());
+                }
+            }
+        }
 
         getPythonVersion(majorVersion, minorVersion);
 
@@ -303,8 +327,6 @@ py(
         PyObjectRef  mainName = IsPy3() ? PyUnicode_FromString("__main__") : PyString_FromString("__main__"); 
         PyObjectRef  mainMod = PyImport_Import(mainName);
         PyObjectRef  globals = PyObject_GetAttrString(mainMod, "__dict__");
-
-        checkPykd();
 
         InterruptWatch  interruptWatch(client);
 
@@ -395,7 +417,7 @@ pip(
 
     try {
 
-        Options  opts(getArgsList(args));
+        Options  opts(args);
 
         int  majorVersion = opts.pyMajorVersion;
         int  minorVersion = opts.pyMinorVersion;

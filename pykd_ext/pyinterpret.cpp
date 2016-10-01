@@ -197,7 +197,7 @@ public:
             {
                 module->PyEval_RestoreThread(module->m_globalState);
                 module->m_globalInterpreter = new PythonInterpreter(module);
-            }
+            }   
 
             m_currentInterpter = module->m_globalInterpreter;
             m_currentIsGlobal = true;
@@ -210,7 +210,8 @@ public:
         }
 
         m_currentInterpter->m_module->PyEval_RestoreThread(m_currentInterpter->m_state);
-
+        m_currentInterpter->m_module->checkPykd();
+        
         return m_currentInterpter;
     }
 
@@ -543,6 +544,8 @@ void PyModule::checkPykd()
         m_pykdInit = true;
 
     } while( false);
+
+    PyErr_Clear();
 
     if (mainName) Py_DecRef(mainName);
     if (mainMod) Py_DecRef(mainMod);

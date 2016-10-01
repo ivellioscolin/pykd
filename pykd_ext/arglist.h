@@ -5,8 +5,6 @@
 
 typedef  std::vector< std::string >  ArgsList;
 
-ArgsList  getArgsList(const char* args);
-
 struct Options
 {
     int  pyMajorVersion;
@@ -22,6 +20,5 @@ struct Options
         showHelp(false)
     {}
 
-    Options(const ArgsList& argList);
-
+    Options(const std::string&  cmdline);
 };
