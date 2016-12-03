@@ -846,6 +846,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Return name of struct field by index" )
         .def( "fields", TypeInfoAdapter::getFields,
             "Return list of tuple ( filedName, fieldType )" )
+        .def( "getNumberMethods", TypeInfoAdapter::getMethodsCount,
+            "Return number of methods" )
+        .def( "method", TypeInfoAdapter::getMethodByName,
+            "Return method's type by name")
+        .def( "method", TypeInfoAdapter::getMethodByIndex,
+            "Return method's by index")
         .def( "deref", TypeInfoAdapter::deref,
             "Return type of pointer" )
         .def( "append", TypeInfoAdapter::appendField,

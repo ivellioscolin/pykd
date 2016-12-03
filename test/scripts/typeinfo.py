@@ -325,6 +325,12 @@ class TypeInfoTest( unittest.TestCase ):
         lst = target.module.enumTypes("NonExsistType")
         self.assertEqual([],lst)
 
-
     def testArrayOverflow(self):
         self.assertRaises(pykd.TypeException, pykd.baseTypes.UInt8B.arrayOf, 0xFFFFFFFFFFFFFFFF)
+
+    def testMethodCount(self):
+        self.assertEqual( 8, target.module.type("classChild").getNumberMethods() )
+
+    def testGetMethod(self):
+        self.assertEqual( "Int4B(__thiscall classChild::)(Int4B)", target.module.type("classChild").method("childMethod").name() )
+        self.assertEqual( "Int4B(__thiscall classChild::)(Int4B)", target.module.type("classChild").method(1).name() )

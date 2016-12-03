@@ -145,6 +145,24 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo.getElement(index);
     }
 
+    static size_t getMethodsCount( kdlib::TypeInfo &typeInfo )
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo.getMethodsCount();
+    }
+
+    static kdlib::TypeInfoPtr getMethodByName( kdlib::TypeInfo &typeInfo, const std::wstring& methodName)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo.getMethod(methodName);
+    }
+
+    static kdlib::TypeInfoPtr getMethodByIndex( kdlib::TypeInfo &typeInfo, size_t index )
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo.getMethod(index);
+    }
+
     static kdlib::TypeInfoPtr ptrTo( kdlib::TypeInfo &typeInfo, size_t ptrSize = 0 ) 
     {
         AutoRestorePyState  pystate;
