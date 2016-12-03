@@ -852,6 +852,12 @@ BOOST_PYTHON_MODULE( pykd )
             "Return method's type by name")
         .def( "method", TypeInfoAdapter::getMethodByIndex,
             "Return method's by index")
+        .def( "getNumberBaseClasses", TypeInfoAdapter::getBaseClassesCount,
+            "Return number of base classes" )
+        .def( "baseClass", TypeInfoAdapter::getBaseClassByName,
+            "Return a base class's type by name" )
+        .def( "baseClass", TypeInfoAdapter::getBaseClassByIndex,
+            "Return a base class's type by index" )
         .def( "deref", TypeInfoAdapter::deref,
             "Return type of pointer" )
         .def( "append", TypeInfoAdapter::appendField,

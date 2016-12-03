@@ -124,20 +124,7 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo.getElement(name);
     }
 
-    static kdlib::TypeInfoPtr getElementAttr(kdlib::TypeInfo &typeInfo, const std::wstring &name)
-    {
-        try
-        {
-            return getElementByName(typeInfo, name);
-        }
-        catch (kdlib::DbgException&)
-        {
-            std::wstringstream sstr;
-            sstr << L'\'' << typeInfo.getName() << L'\'' << L" type has no field " << L'\'' << name << L'\'';
-            throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
-        }
-    }
-
+    static kdlib::TypeInfoPtr getElementAttr(kdlib::TypeInfo &typeInfo, const std::wstring &name);
 
     static kdlib::TypeInfoPtr getElementByIndex( kdlib::TypeInfo &typeInfo, size_t index )
     {
@@ -161,6 +148,24 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
     {
         AutoRestorePyState  pystate;
         return typeInfo.getMethod(index);
+    }
+
+    static size_t getBaseClassesCount(kdlib::TypeInfo &typeInfo )
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo.getBaseClassesCount();
+    }
+
+    static kdlib::TypeInfoPtr getBaseClassByName(kdlib::TypeInfo &typeInfo, const std::wstring&  className)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo.getBaseClass(className);
+    }
+       
+    static kdlib::TypeInfoPtr getBaseClassByIndex(kdlib::TypeInfo &typeInfo, size_t index)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo.getBaseClass(index);
     }
 
     static kdlib::TypeInfoPtr ptrTo( kdlib::TypeInfo &typeInfo, size_t ptrSize = 0 ) 

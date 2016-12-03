@@ -333,4 +333,10 @@ class TypeInfoTest( unittest.TestCase ):
 
     def testGetMethod(self):
         self.assertEqual( "Int4B(__thiscall classChild::)(Int4B)", target.module.type("classChild").method("childMethod").name() )
+        self.assertEqual( "Int4B(__thiscall classChild::)(Int4B)", target.module.type("classChild").childMethod.name() )
         self.assertEqual( "Int4B(__thiscall classChild::)(Int4B)", target.module.type("classChild").method(1).name() )
+
+    def testGteBaseClass(self):
+        classChild = target.module.type("classChild")
+        self.assertEqual( ["classBase1", "classBase2"], [ classChild.baseClass(i).name() for i in xrange(classChild.getNumberBaseClasses()) ] )
+
