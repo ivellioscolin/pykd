@@ -144,7 +144,7 @@ python::object  callTypedVar(kdlib::TypedVarPtr& funcobj, python::tuple& args)
     if ( argCount != funcobj->getType()->getElementCount() )
         throw kdlib::TypeException(L"wrong argument count");
 
-    kdlib::CallArgList  argLst;
+    kdlib::TypedValueList  argLst;
 
     for ( size_t  i = 0; i < argCount; ++i )
     {
@@ -167,7 +167,7 @@ python::object  callTypedVar(kdlib::TypedVarPtr& funcobj, python::tuple& args)
             else if ( argType->getName() == L"Int1B" )
             {
                 argLst.push_back( var.asChar() );
-            }
+            } 
             else if ( argType->getName() == L"UInt1B" )
             {
                 argLst.push_back( var.asUChar() );
