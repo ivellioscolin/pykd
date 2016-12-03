@@ -109,19 +109,7 @@ struct TypedVarAdapter {
         return typedVar.getElement( name );
     }
 
-    static kdlib::TypedVarPtr getFieldAttr(kdlib::TypedVar& typedVar, const std::wstring &name)
-    {
-        try
-        {
-            return getField(typedVar, name);
-        }
-        catch (kdlib::DbgException&)
-        {
-            std::wstringstream sstr;
-            sstr << L"typed var has no field " << L'\'' << name << L'\'';
-            throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
-        }
-    }
+    static kdlib::TypedVarPtr getFieldAttr(kdlib::TypedVar& typedVar, const std::wstring &name);
 
     static size_t getElementCount( kdlib::TypedVar& typedVar ) 
     {
@@ -139,6 +127,12 @@ struct TypedVarAdapter {
     {
         AutoRestorePyState  pystate;
         return typedVar.getElement( index );
+    }
+
+    static kdlib::TypedVarPtr getMethodByName(kdlib::TypedVar& typedVar, const std::wstring &name)
+    {
+        AutoRestorePyState  pystate;
+        return typedVar.getMethod(name);
     }
 
     static std::wstring print( kdlib::TypedVar& typedVar ) 

@@ -388,4 +388,19 @@ class TypedVarTest( unittest.TestCase ):
         functype.append("arg2", pykd.baseTypes.Long)
         self.assertEqual( 500 / 25, pykd.callFunctionByAddr(functype, target.module.offset("StdcallFuncRet"), 25, 500 ) )
 
+    def testCallFunctionWithTypedVar(self):
+        funcptr = target.module.typedVar("StdcallFuncRet");
+        ucharVar = target.module.typedVar( "ucharVar" );
+        self.assertEqual( 10, ucharVar )
+        self.assertEqual( 200000/10, funcptr( ucharVar, pykd.numVariant(200000) ) )
+
+    def testCallWithWrongArgs(self):
+        self.assertRaises( pykd.TypeException, target.module.typedVar("StdcallFuncRet"), *(1,) )
+        self.assertRaises( pykd.TypeException, target.module.typedVar("StdcallFuncRet"), *(1,2,3) )
+        self.assertRaises( pykd.TypeException, target.module.typedVar("StdcallFuncRet"), *(10, target.module.typedVar("g_classChild") ))
+
+    def testCallMethod(self):
+        g_classChild = target.module.typedVar("g_classChild")
+        self.assertEqual( 1000*5, g_classChild.childMethod(10) )
+
 
