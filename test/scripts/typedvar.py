@@ -403,4 +403,8 @@ class TypedVarTest( unittest.TestCase ):
         g_classChild = target.module.typedVar("g_classChild")
         self.assertEqual( 1000*5, g_classChild.childMethod(10) )
 
+    def testCallStdStr(self):
+        g_stdString = target.module.typedVar("g_stdString")
+        self.assertEqual( "testString".find('S'), g_stdString.find_first_of(ord('S'), 0) )
 
+       
