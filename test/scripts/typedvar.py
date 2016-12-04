@@ -407,4 +407,8 @@ class TypedVarTest( unittest.TestCase ):
         g_stdString = target.module.typedVar("g_stdString")
         self.assertEqual( "testString".find('S'), g_stdString.find_first_of(ord('S'), 0) )
 
+    def testGetTypedVar(self):
+        addr = pykd.getOffset("g_structTest")
+        self.assertTrue( None != target.module.type( "structTest" ).getTypedVar(addr) )
+
        

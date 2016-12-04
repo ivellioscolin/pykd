@@ -892,6 +892,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Returns an indicator of a methods calling convention: callingConvention" )
         .def( "getClassParent", TypeInfoAdapter::getClassParent,
             "Return class parent" )
+        .def( "getTypedVar", getTypedVarByTypeInfo,
+            "return typedVar instance" )
         .def( "__str__", TypeInfoAdapter::str,
             "Return type as a printable string" )
         .def( "__getattr__", TypeInfoAdapter::getElementAttr )
