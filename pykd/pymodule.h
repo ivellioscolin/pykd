@@ -16,6 +16,8 @@ namespace pykd {
 
 typedef boost::shared_ptr< kdlib::FixedFileInfo > FixedFileInfoPtr;
 
+python::list getModuleList();
+
 struct ModuleAdapter : public kdlib::Module 
 {
 

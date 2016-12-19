@@ -1,4 +1,4 @@
-#
+﻿#
 #
 #
 
@@ -135,5 +135,8 @@ class ModuleTest( unittest.TestCase ):
         self.assertTrue( False if not target.module else True )
         self.assertFalse(target.module==None)
         self.assertTrue(target.module!=None)
+
+    def testModuleList(self):
+        self.assertTrue( [] != pykd.getModulesList() )
 
 

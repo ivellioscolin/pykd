@@ -549,6 +549,10 @@ BOOST_PYTHON_MODULE( pykd )
     python::def( "setImplicitThread", pykd::setImplicitThread,
         "Set implicit thread" );
 
+    // modules
+    python::def( "getModulesList", pykd::getModuleList,
+        "Return list of modules for the current target" );
+
     // events
     python::def("getLastEvent", pykd::getLastEvent,
         "Get last debug event information");

@@ -6,6 +6,22 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+python::list getModuleList()
+{
+    std::vector<kdlib::ModulePtr >  moduleLst;
+
+    do {
+        AutoRestorePyState  pystate;
+        for ( unsigned long i = 0; i < kdlib::getNumberModules(); ++i)
+            moduleLst.push_back( kdlib::loadModule(kdlib::getModuleOffsetByIndex(i) ) );
+
+    } while(false);
+
+    return vectorToList(moduleLst);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 FixedFileInfoPtr ModuleAdapter::getFixedFileInfo( kdlib::Module& module )
 {
     AutoRestorePyState  pystate;
@@ -154,5 +170,6 @@ python::list ModuleAdapter::getTypedVarArrayByTypeName( kdlib::Module& module, k
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
 
 } // namespace pykd
