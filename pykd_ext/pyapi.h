@@ -32,6 +32,7 @@ char* PyString_AsString(PyObject *string);
 
 PyObject* PyImport_Import(PyObject *name);
 PyObject* __stdcall PyImport_ImportModule(const char *name);
+PyObject* __stdcall PyImport_AddModule(const char *name);
 
 PyObject* __stdcall  PyDict_New();
 int __stdcall PyDict_SetItemString(PyObject *p, const char *key, PyObject *val);
@@ -40,6 +41,7 @@ PyObject* __stdcall PyTuple_New(size_t len);
 PyObject* __stdcall PyTuple_GetItem(PyObject *p, size_t pos);
 int __stdcall PyTuple_SetItem(PyObject *p, size_t pos, PyObject *obj);
 PyObject* __stdcall PyDict_GetItemString(PyObject *p, const char *key);
+void __stdcall PyDict_Clear(PyObject *p);
 size_t __stdcall PyTuple_Size(PyObject *p);
 
 size_t PyList_Size(PyObject* list);
@@ -97,6 +99,8 @@ PyGILState_STATE __stdcall PyGILState_Ensure();
 void __stdcall PyGILState_Release(PyGILState_STATE);
 
 PyObject* __stdcall PyDescr_NewMethod(PyObject* type, struct PyMethodDef *meth);
+
+size_t __stdcall PyGC_Collect(void);
 
 bool IsPy3();
 

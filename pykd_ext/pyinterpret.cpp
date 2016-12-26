@@ -80,6 +80,7 @@ public:
     PyObject* ( *PyDict_New)();
     int( *PyDict_SetItemString)(PyObject *p, const char *key, PyObject *val);
     PyObject*( *PyDict_GetItemString)(PyObject *p, const char* key);
+    void ( *PyDict_Clear)(PyObject *p);
     void( *Py_IncRef)(PyObject* object);
     void( *Py_DecRef)(PyObject* object);
     PyObject* ( *PyObject_Call)(PyObject *callable_object, PyObject *args, PyObject *kw);
@@ -123,6 +124,8 @@ public:
     PyGILState_STATE( *PyGILState_Ensure)();
     void( *PyGILState_Release)(PyGILState_STATE state);
     PyObject* ( *PyDescr_NewMethod)(PyObject* type, struct PyMethodDef *meth);
+    size_t (*PyGC_Collect)(void);
+    void(*PyImport_Cleanup)(void);
 
     HMODULE  m_handlePython;
     PyThreadState*  m_globalState;
@@ -150,7 +153,12 @@ public:
     {
         m_module->PyEval_RestoreThread(m_state);
 
+        m_module->PyImport_Cleanup();
+
+        while (PyGC_Collect() > 0);
+
         m_module->Py_EndInterpreter(m_state);
+
     }
 
     PyModule*  m_module;
@@ -417,6 +425,7 @@ PyModule::PyModule(int majorVesion, int minorVersion)
     *reinterpret_cast<FARPROC*>(&PyDict_New) = GetProcAddress(m_handlePython, "PyDict_New");
     *reinterpret_cast<FARPROC*>(&PyDict_SetItemString) = GetProcAddress(m_handlePython, "PyDict_SetItemString");
     *reinterpret_cast<FARPROC*>(&PyDict_GetItemString) = GetProcAddress(m_handlePython, "PyDict_GetItemString");
+    *reinterpret_cast<FARPROC*>(&PyDict_Clear) = GetProcAddress(m_handlePython, "PyDict_Clear");
     *reinterpret_cast<FARPROC*>(&PyObject_Call) = GetProcAddress(m_handlePython, "PyObject_Call");
     *reinterpret_cast<FARPROC*>(&PyObject_GetAttr) = GetProcAddress(m_handlePython, "PyObject_GetAttr");
     *reinterpret_cast<FARPROC*>(&PyObject_GetAttrString) = GetProcAddress(m_handlePython, "PyObject_GetAttrString");
@@ -439,7 +448,8 @@ PyModule::PyModule(int majorVesion, int minorVersion)
     *reinterpret_cast<FARPROC*>(&PyErr_SetString) = GetProcAddress(m_handlePython, "PyErr_SetString");
     *reinterpret_cast<FARPROC*>(&PyErr_Clear) = GetProcAddress(m_handlePython, "PyErr_Clear");
     *reinterpret_cast<FARPROC*>(&PyImport_AddModule) = GetProcAddress(m_handlePython, "PyImport_AddModule");
-    *reinterpret_cast<FARPROC*>(&PyImport_ImportModule) = GetProcAddress(m_handlePython, "PyImport_ImportModule");    
+    *reinterpret_cast<FARPROC*>(&PyImport_ImportModule) = GetProcAddress(m_handlePython, "PyImport_ImportModule");
+    *reinterpret_cast<FARPROC*>(&PyImport_Cleanup) = GetProcAddress(m_handlePython, "PyImport_Cleanup");
     *reinterpret_cast<FARPROC*>(&PyClass_New) = GetProcAddress(m_handlePython, "PyClass_New");
     *reinterpret_cast<FARPROC*>(&PyInstance_New) = GetProcAddress(m_handlePython, "PyInstance_New");
     *reinterpret_cast<FARPROC*>(&PyMethod_New) = GetProcAddress(m_handlePython, "PyMethod_New");
@@ -449,6 +459,7 @@ PyModule::PyModule(int majorVesion, int minorVersion)
     *reinterpret_cast<FARPROC*>(&PyUnicode_FromWideChar) = isPy3 ? GetProcAddress(m_handlePython, "PyUnicode_FromWideChar") :
          GetProcAddress(m_handlePython, "PyUnicodeUCS2_FromWideChar");
     *reinterpret_cast<FARPROC*>(&PyImport_Import) = GetProcAddress(m_handlePython, "PyImport_Import");
+    *reinterpret_cast<FARPROC*>(&PyImport_AddModule) = GetProcAddress(m_handlePython, "PyImport_AddModule");
     *reinterpret_cast<FARPROC*>(&PyBool_FromLong) = GetProcAddress(m_handlePython, "PyBool_FromLong");
     *reinterpret_cast<FARPROC*>(&PyList_Size) = GetProcAddress(m_handlePython, "PyList_Size");
     *reinterpret_cast<FARPROC*>(&PyList_GetItem) = GetProcAddress(m_handlePython, "PyList_GetItem");
@@ -462,7 +473,9 @@ PyModule::PyModule(int majorVesion, int minorVersion)
     *reinterpret_cast<FARPROC*>(&PyGILState_Ensure) = GetProcAddress(m_handlePython, "PyGILState_Ensure");
     *reinterpret_cast<FARPROC*>(&PyGILState_Release) = GetProcAddress(m_handlePython, "PyGILState_Release");
     *reinterpret_cast<FARPROC*>(&PyDescr_NewMethod) = GetProcAddress(m_handlePython, "PyDescr_NewMethod");
-    
+    *reinterpret_cast<FARPROC*>(&PyGC_Collect) = GetProcAddress(m_handlePython, "PyGC_Collect");
+
+   
     Py_Initialize();
     PyEval_InitThreads();
 
@@ -606,6 +619,11 @@ PyObject* __stdcall PyDict_GetItemString(PyObject *p, const char *key)
 int __stdcall PyDict_SetItemString(PyObject *p, const char *key, PyObject *val)
 {
     return PythonSingleton::get()->currentInterpreter()->m_module->PyDict_SetItemString(p, key, val);
+}
+
+void __stdcall PyDict_Clear(PyObject *p)
+{
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyDict_Clear(p);
 }
 
 PyObject* __stdcall PyCFunction_NewEx(PyMethodDef* pydef, PyObject *p1, PyObject *p2)
@@ -814,6 +832,11 @@ PyObject* __stdcall PyImport_ImportModule(const char *name)
     return PythonSingleton::get()->currentInterpreter()->m_module->PyImport_ImportModule(name);
 }
 
+PyObject* __stdcall PyImport_AddModule(const char *name)
+{
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyImport_AddModule(name);
+}
+
 PyThreadState* __stdcall PyEval_SaveThread()
 {
     return PythonSingleton::get()->currentInterpreter()->m_module->PyEval_SaveThread();
@@ -849,7 +872,10 @@ PyObject* __stdcall PyDescr_NewMethod(PyObject* type, struct PyMethodDef *meth)
     return PythonSingleton::get()->currentInterpreter()->m_module->PyDescr_NewMethod(type, meth);
 }
 
-
+size_t __stdcall PyGC_Collect(void)
+{
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyGC_Collect();
+}
 
 bool IsPy3()
 {

@@ -34,11 +34,16 @@ static const std::regex  versionRe("^-([2,3])(?:\\.(\\d+))?$");
 Options::Options(const std::string& cmdline) :
     pyMajorVersion(-1),
     pyMinorVersion(-1),
-    global(true),
+    global(false),
     showHelp(false)
 {
 
     args = getArgsList( cmdline );
+
+    if ( args.empty() )
+    {
+        global = true;
+    }
 
     for (auto it = args.begin(); it != args.end();)
     {

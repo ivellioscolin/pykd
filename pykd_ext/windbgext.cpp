@@ -315,6 +315,10 @@ py(
 
         AutoInterpreter  autoInterpreter(opts.global, majorVersion, minorVersion);
 
+        //PyObjectRef  mainName = IsPy3() ? PyUnicode_FromString("__main__") : PyString_FromString("__main__"); 
+        PyObjectRef  mainMod = PyImport_ImportModule("__main__");
+        PyObjectRef  globals = PyObject_GetAttrString(mainMod, "__dict__");
+
         PyObjectRef  dbgOut = make_pyobject<DbgOut>(client);
         PySys_SetObject("stdout", dbgOut);
 
@@ -323,10 +327,6 @@ py(
 
         PyObjectRef dbgIn = make_pyobject<DbgIn>(client);
         PySys_SetObject("stdin", dbgIn);
-
-        PyObjectRef  mainName = IsPy3() ? PyUnicode_FromString("__main__") : PyString_FromString("__main__"); 
-        PyObjectRef  mainMod = PyImport_Import(mainName);
-        PyObjectRef  globals = PyObject_GetAttrString(mainMod, "__dict__");
 
         InterruptWatch  interruptWatch(client);
 
@@ -387,6 +387,9 @@ py(
         }
 
         handleException();
+
+        if ( !opts.global )
+            PyDict_Clear(globals);
     }
     catch (std::exception &e)
     {
