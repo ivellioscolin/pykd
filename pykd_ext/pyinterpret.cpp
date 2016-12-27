@@ -62,6 +62,8 @@ public:
     PyObject* Py_None;
     PyObject* PyExc_SystemExit;
 
+    PyThreadState*  PyThreadState_Current;
+
     void( *Py_Initialize)();
     void( *Py_Finalize)();
 
@@ -182,7 +184,18 @@ public:
 
     PythonInterpreter* currentInterpreter()
     {
-        return m_currentInterpter;
+        if ( m_currentInterpreter )
+            return m_currentInterpreter;
+
+        for ( auto mod : m_modules)
+        {
+            if ( mod.second->PyThreadState_Current != 0 )
+            {
+                return mod.second->m_globalInterpreter;
+            }
+        }
+        
+        return NULL;
     }
 
     PythonInterpreter* getInterpreter(int majorVersion, int minorVersion, bool global)
@@ -207,37 +220,37 @@ public:
                 module->m_globalInterpreter = new PythonInterpreter(module);
             }   
 
-            m_currentInterpter = module->m_globalInterpreter;
+            m_currentInterpreter = module->m_globalInterpreter;
             m_currentIsGlobal = true;
         }
         else
         {
             module->PyEval_RestoreThread(module->m_globalState);
-            m_currentInterpter = new PythonInterpreter(module);
+            m_currentInterpreter = new PythonInterpreter(module);
             m_currentIsGlobal = false;
         }
 
-        m_currentInterpter->m_module->PyEval_RestoreThread(m_currentInterpter->m_state);
-        m_currentInterpter->m_module->checkPykd();
+        m_currentInterpreter->m_module->PyEval_RestoreThread(m_currentInterpreter->m_state);
+        m_currentInterpreter->m_module->checkPykd();
         
-        return m_currentInterpter;
+        return m_currentInterpreter;
     }
 
     void releaseInterpretor(PythonInterpreter* interpret)
     {
-        PyModule*  module = m_currentInterpter->m_module;
+        PyModule*  module = m_currentInterpreter->m_module;
 
-        m_currentInterpter->m_state = module->PyEval_SaveThread();
+        m_currentInterpreter->m_state = module->PyEval_SaveThread();
 
         if (!m_currentIsGlobal)
         {
-            delete m_currentInterpter;
+            delete m_currentInterpreter;
 
             module->PyThreadState_Swap(module->m_globalState);
             module->m_globalState = module->PyEval_SaveThread();
         }
 
-        m_currentInterpter = 0;
+        m_currentInterpreter = 0;
     }
 
     bool isInterpreterLoaded(int majorVersion, int minorVersion)
@@ -247,17 +260,17 @@ public:
 
     void checkPykd()
     {
-        m_currentInterpter->m_module->checkPykd();
+        m_currentInterpreter->m_module->checkPykd();
     }
 
     void stopAllInterpreter()
     {
         for (auto m : m_modules)
         {
-            m_currentInterpter = m.second->m_globalInterpreter;
+            m_currentInterpreter = m.second->m_globalInterpreter;
             m.second->deactivate();
         }
-        m_currentInterpter = 0;
+        m_currentInterpreter = 0;
     }
 
 private:
@@ -266,7 +279,7 @@ private:
 
     std::map<std::pair<int,int>, PyModule*>  m_modules;
    
-    PythonInterpreter*  m_currentInterpter;
+    PythonInterpreter*  m_currentInterpreter;
     bool  m_currentIsGlobal;
 };
 
@@ -407,6 +420,7 @@ PyModule::PyModule(int majorVesion, int minorVersion)
     *reinterpret_cast<FARPROC*>(&PyProperty_Type) = GetProcAddress(m_handlePython, "PyProperty_Type");
     *reinterpret_cast<FARPROC*>(&Py_None) = GetProcAddress(m_handlePython, "_Py_NoneStruct");
     PyExc_SystemExit = *reinterpret_cast<PyObject**>(GetProcAddress(m_handlePython, "PyExc_SystemExit"));
+    PyThreadState_Current = reinterpret_cast<PyThreadState*>(GetProcAddress(m_handlePython, "_PyThreadState_Current"));
 
     *reinterpret_cast<FARPROC*>(&Py_Initialize) = GetProcAddress(m_handlePython, "Py_Initialize");
     *reinterpret_cast<FARPROC*>(&Py_Finalize) = GetProcAddress(m_handlePython, "Py_Finalize");
