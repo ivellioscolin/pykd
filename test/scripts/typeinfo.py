@@ -329,7 +329,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertRaises(pykd.TypeException, pykd.baseTypes.UInt8B.arrayOf, 0xFFFFFFFFFFFFFFFF)
 
     def testMethodCount(self):
-        self.assertEqual( 8, target.module.type("classChild").getNumberMethods() )
+        self.assertEqual( 12, target.module.type("classChild").getNumberMethods() )
 
     def testGetMethod(self):
         self.assertEqual( "Int4B(__thiscall classChild::)(Int4B)", target.module.type("classChild").method("childMethod").name() )

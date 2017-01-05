@@ -938,7 +938,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return list of tuple ( filedName, fieldOffset, fieldValue )" )
         .def( "fieldName", TypedVarAdapter::getElementName,
             "Return name of struct field by index" )
-        .def("method", TypedVarAdapter::getMethodByName,
+        .def("method", TypedVarAdapter::getMethodByName, ( python::arg("name"), python::arg("prototype") = "" ),
             "Return method of class as an object attribute" )
          .def("deref",TypedVarAdapter::deref,
             "Return value by pointer" )

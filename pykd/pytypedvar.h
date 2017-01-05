@@ -129,10 +129,10 @@ struct TypedVarAdapter {
         return typedVar.getElement( index );
     }
 
-    static kdlib::TypedVarPtr getMethodByName(kdlib::TypedVar& typedVar, const std::wstring &name)
+    static kdlib::TypedVarPtr getMethodByName(kdlib::TypedVar& typedVar, const std::wstring &name, const std::wstring &prototype = L"")
     {
         AutoRestorePyState  pystate;
-        return typedVar.getMethod(name);
+        return typedVar.getMethod(name, prototype);
     }
 
     static std::wstring print( kdlib::TypedVar& typedVar ) 

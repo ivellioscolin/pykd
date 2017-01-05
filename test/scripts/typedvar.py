@@ -401,11 +401,17 @@ class TypedVarTest( unittest.TestCase ):
 
     def testCallMethod(self):
         g_classChild = target.module.typedVar("g_classChild")
+        self.assertEqual( 1000*5, g_classChild.method("childMethod").call(10) )
         self.assertEqual( 1000*5, g_classChild.childMethod(10) )
 
     def testCallStdStr(self):
         g_stdString = target.module.typedVar("g_stdString")
         self.assertEqual( "testString".find('S'), g_stdString.find_first_of(ord('S'), 0) )
+
+    def testCallOverloadMethod(self):
+        g_classChild = target.module.typedVar("g_classChild")
+        self.assertEqual( 10*10, g_classChild.method("overloadMethod", "Int4B(__thiscall)(Int4B)").call(10))
+        self.assertEqual( 5*8, g_classChild.method("overloadMethod", "Int4B(__thiscall)(Int4B,Int4B)").call(5,8))
 
     def testGetTypedVar(self):
         addr = pykd.getOffset("g_structTest")
