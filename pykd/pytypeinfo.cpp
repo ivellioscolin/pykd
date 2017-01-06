@@ -161,7 +161,7 @@ python::list TypeInfoAdapter::getElementDir(kdlib::TypeInfo &typeInfo)
 
 python::object  callTypedVar(kdlib::TypedVarPtr& funcobj, python::tuple& args)
 {
-    kdlib::NumVariant   retVal;
+    kdlib::TypedValue   retVal;
 
     size_t  argCount  = python::len(args);
 
@@ -186,7 +186,6 @@ python::object  callTypedVar(kdlib::TypedVarPtr& funcobj, python::tuple& args)
 
         kdlib::NumVariant  var= NumVariantAdaptor::convertToVariant(args[i]);
         argLst.push_back( var );
-
     }
 
     {
@@ -194,7 +193,12 @@ python::object  callTypedVar(kdlib::TypedVarPtr& funcobj, python::tuple& args)
         retVal = funcobj->call(argLst);
     }
 
-    return NumVariantAdaptor::convertToPython(retVal);
+    if ( retVal.getType()->isVoid() )
+    {
+        return python::object();
+    }
+
+   return NumVariantAdaptor::convertToPython(retVal);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
