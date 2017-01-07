@@ -916,6 +916,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__init__", python::make_constructor(pykd::getTypedVarByName) )
         .def("__init__", python::make_constructor(pykd::getTypedVarByTypeName) )
         .def("__init__", python::make_constructor(pykd::getTypedVarByTypeInfo) )
+        .def("__init__", python::make_constructor(pykd::getTypedVarWithPrototype) )
         .def("getLocation", TypedVarAdapter::getLocation,
             "Return location of the varibale")
         .def("getAddress", TypedVarAdapter::getAddress, 

@@ -32,6 +32,12 @@ inline  kdlib::TypedVarPtr getTypedVarByTypeInfo( const kdlib::TypeInfoPtr &type
     return kdlib::loadTypedVar( typeInfo, addr );
 }
 
+inline kdlib::TypedVarPtr getTypedVarWithPrototype( const std::wstring &name, const std::wstring &prototype)
+{
+    AutoRestorePyState  pystate;
+    return kdlib::loadTypedVar(name, prototype);
+}
+
 python::list getTypedVarListByTypeName( kdlib::MEMOFFSET_64 offset, const std::wstring &typeName, const std::wstring &fieldName );
 python::list getTypedVarListByType( kdlib::MEMOFFSET_64 offset, kdlib::TypeInfoPtr &typeInfo, const std::wstring &fieldName );
 python::list getTypedVarArrayByTypeName( kdlib::MEMOFFSET_64 offset, const std::wstring &typeName, size_t number );
