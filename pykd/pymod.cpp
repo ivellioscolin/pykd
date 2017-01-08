@@ -795,6 +795,8 @@ BOOST_PYTHON_MODULE( pykd )
 			"Return a typedVar class instance")
 		.def("typedVar", ModuleAdapter::getTypedVarByTypeName,
 			"Return a typedVar class instance")
+		.def("typedVar", ModuleAdapter::getTypedVarWithPrototype,
+			"Return a typedVar class instance")
 		.def("typedVarList", ModuleAdapter::getTypedVarListByTypeName,
 			"Return a list of the typedVar class instances. Each item represents an item of the linked list in the target memory")
 		.def("typedVarArray", ModuleAdapter::getTypedVarArrayByTypeName,

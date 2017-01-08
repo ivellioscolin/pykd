@@ -387,6 +387,8 @@ class TypedVarTest( unittest.TestCase ):
         functype.append("arg1", pykd.baseTypes.Int1B)
         functype.append("arg2", pykd.baseTypes.Long)
         self.assertEqual( 500 / 25, pykd.callFunctionByAddr(functype, target.module.offset("StdcallFuncRet"), 25, 500 ) )
+        
+        self.assertTrue( target.module.typedVar("OverloadedFunc", "Bool(__cdecl)(Int4B,Int4B)").call(100,299) )
 
     def testCallFunctionWithTypedVar(self):
         funcptr = target.module.typedVar("StdcallFuncRet");

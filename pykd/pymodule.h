@@ -131,6 +131,12 @@ struct ModuleAdapter : public kdlib::Module
         return module.getTypedVarByTypeName(typeName, offset);
     }
 
+    static kdlib::TypedVarPtr getTypedVarWithPrototype(kdlib::Module& module, const std::wstring &symbolName, const std::wstring &prototype)
+    {
+        AutoRestorePyState  pystate;
+        return module.getTypedVarWithPrototype(symbolName, prototype);
+    }
+
     static kdlib::TypedVarPtr containingRecord(kdlib::Module& module,  kdlib::MEMOFFSET_64 offset, const std::wstring &typeName,  const std::wstring &fieldName )
     {
         AutoRestorePyState  pystate;
