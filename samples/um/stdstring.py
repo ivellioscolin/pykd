@@ -7,7 +7,7 @@ fullStringClassName = "std::" + stringClassName
 
 # get a malloc function. May be we have not its prototype in pdb file, so we need to define prototype manually
 PVoid = pykd.typeInfo("Void*")
-size_t = pykd.typeInfo("Int8B") if pykd.getCPUMode ==  pykd.CPUType.AMD64 else pykd.typeInfo("Int4B")
+size_t = pykd.typeInfo("Int8B") if pykd.getCPUMode() == pykd.CPUType.AMD64 else pykd.typeInfo("Int4B")
 mallocProto = pykd.defineFunction( PVoid, pykd.callingConvention.NearC )
 mallocProto.append("size", size_t)
 
