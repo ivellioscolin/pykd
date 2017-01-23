@@ -119,6 +119,8 @@ inline void registerExceptions()
     pykd::exception<kdlib::MemoryException,kdlib::DbgException>( "MemoryException", "Target memory access exception class" );
     pykd::exception<kdlib::SymbolException,kdlib::DbgException>( "SymbolException", "Symbol exception" );
     pykd::exception<kdlib::TypeException,kdlib::SymbolException>( "TypeException", "type exception" );
+    pykd::exception<kdlib::CallException,kdlib::DbgException>( "CallException", "Function call exception");
+    pykd::exception<kdlib::CPUException,kdlib::DbgException>( "CPUException", "CPU exception");
 
     python::register_exception_translator<kdlib::DbgException>( &dbgExceptionTranslate );
     python::register_exception_translator<OverflowException>( &pykdExceptionTranslate );

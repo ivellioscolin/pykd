@@ -27,11 +27,11 @@ param = pykd.stackAlloc(100)
 
 pykd.writeCStr(param, "hello")
 
-# call ctor for initalizing. std::string has some form of constructor so we need note prototype
+# call ctor for initalizing. std::string has several forms of constructor so we need to note prototype
 ctor = stringVar.method( stringClassName, "Void(__thiscall)(Char*)" )
 ctor(param)
 
 #check result:
-print( pykd.loadCStr( stringVar.c_str() ) )
+print( pykd.loadCStr( stringVar.c_str() ) ) 
 
 pykd.stackFree(100)
