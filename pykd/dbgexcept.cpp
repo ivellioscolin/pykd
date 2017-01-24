@@ -14,6 +14,8 @@ python::handle<> exceptPyType<kdlib::DbgException>::pyExceptType;
 python::handle<> exceptPyType<kdlib::MemoryException>::pyExceptType;
 python::handle<> exceptPyType<kdlib::SymbolException>::pyExceptType;
 python::handle<> exceptPyType<kdlib::TypeException>::pyExceptType;
+python::handle<> exceptPyType<kdlib::CallException>::pyExceptType;
+python::handle<> exceptPyType<kdlib::CPUException>::pyExceptType;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
