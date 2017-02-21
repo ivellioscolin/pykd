@@ -15,6 +15,10 @@
 #include "pyclass.h"
 #include "version.h"
 
+//////////////////////////////////////////////////////////////////////////////
+
+static int  defaultMajorVersion = 2;
+static int  defaultMinorVersion = 7;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -199,6 +203,32 @@ info(
 
 //////////////////////////////////////////////////////////////////////////////
 
+extern "C"
+HRESULT
+CALLBACK
+selectVersion(
+    PDEBUG_CLIENT client,
+    PCSTR args
+)
+{
+    Options  opts(args);
+
+    int  majorVersion = opts.pyMajorVersion;
+    int  minorVersion = opts.pyMinorVersion;
+
+    getPythonVersion(majorVersion, minorVersion);
+
+    if ( opts.pyMajorVersion == majorVersion && opts.pyMinorVersion == minorVersion )
+    {
+        defaultMajorVersion = majorVersion;
+        defaultMinorVersion = minorVersion;
+    }
+
+    return S_OK;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 static const char  printUsageMsg[] =
     "\n"
     "usage:\n"
@@ -208,6 +238,9 @@ static const char  printUsageMsg[] =
     "\n"
     "!info\n"
     "\tlist installed python interpreters\n"
+    "\n"
+    "!select version\n"
+    "\tchange default version of a python interpreter\n"
     "\n"
     "!py [version] [options] [file]\n"
     "\trun python script or REPL\n"
@@ -270,6 +303,8 @@ help(
 
 static const std::regex  shebangRe("^#!\\s*python([2,3])(?:\\.(\\d))?$");
 
+static volatile long recursiveGuard = 0L;
+
 extern "C"
 HRESULT
 CALLBACK
@@ -278,11 +313,15 @@ py(
     PCSTR args
 )
 {
+
     ULONG   oldMask;
     client->GetOutputMask(&oldMask);
-    client->SetOutputMask(DEBUG_OUTPUT_NORMAL | DEBUG_OUTPUT_ERROR);
+    client->SetOutputMask(DEBUG_OUTPUT_NORMAL|DEBUG_OUTPUT_ERROR|DEBUG_OUTPUT_WARNING|DEBUG_OUTPUT_DEBUGGEE );
 
     try {
+
+        if ( 1 < ++recursiveGuard  )
+            throw std::exception( "can not run !py command recursive\n");
 
         Options  opts(args);
 
@@ -296,17 +335,21 @@ py(
         {
             std::ifstream  scriptFile(opts.args[0]);
 
-            std::string  firstline;
-            std::getline(scriptFile, firstline);
-
-            std::smatch  mres;
-            if (std::regex_match(firstline, mres, shebangRe))
+            if ( scriptFile.is_open() )
             {
-                majorVersion = atol(std::string(mres[1].first, mres[1].second).c_str());
 
-                if (mres[2].matched)
+                std::string  firstline;
+                std::getline(scriptFile, firstline);
+
+                std::smatch  mres;
+                if (std::regex_match(firstline, mres, shebangRe))
                 {
-                    minorVersion = atol(std::string(mres[2].first, mres[2].second).c_str());
+                    majorVersion = atol(std::string(mres[1].first, mres[1].second).c_str());
+
+                    if (mres[2].matched)
+                    {
+                        minorVersion = atol(std::string(mres[2].first, mres[2].second).c_str());
+                    }
                 }
             }
         }
@@ -376,7 +419,7 @@ py(
 
                 PySys_SetArgv((int)opts.args.size(), &pythonArgs[0]);
 
-                PyObjectRef  pyfile = PyFile_FromString(pythonArgs[0], "r");
+                PyObjectRef  pyfile = PyFile_FromString(const_cast<char*>(scriptFileName.c_str()), "r");
                 if (!pyfile)
                     throw std::invalid_argument("script not found\n");
 
@@ -396,13 +439,15 @@ py(
         CComQIPtr<IDebugControl>  control = client;
 
         control->ControlledOutput(
-            DEBUG_OUTCTL_THIS_CLIENT,
+            DEBUG_OUTCTL_ALL_CLIENTS,
             DEBUG_OUTPUT_ERROR,
             e.what()
             );
     }
 
     client->SetOutputMask(oldMask);
+
+    --recursiveGuard;
 
     return S_OK;
 }
@@ -419,6 +464,9 @@ pip(
 {
 
     try {
+
+        if ( 1 < ++recursiveGuard  )
+            throw std::exception( "can not run !pip command recursive\n");
 
         Options  opts(args);
 
@@ -461,11 +509,13 @@ pip(
         CComQIPtr<IDebugControl>  control = client;
 
         control->ControlledOutput(
-            DEBUG_OUTCTL_THIS_CLIENT,
+            DEBUG_OUTCTL_ALL_CLIENTS,
             DEBUG_OUTPUT_ERROR,
             e.what()
             );
     }
+
+    --recursiveGuard;
 
     return S_OK;
 }
@@ -634,6 +684,8 @@ void getPythonVersion(int&  majorVersion, int& minorVersion)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+
+
 void getDefaultPythonVersion(int& majorVersion, int& minorVersion)
 {
     std::list<InterpreterDesc>   interpreterList = getInstalledInterpreter();
@@ -644,31 +696,20 @@ void getDefaultPythonVersion(int& majorVersion, int& minorVersion)
     
     for (auto interpret : interpreterList)
     {
-        if (2 == interpret.majorVersion && 7 == interpret.minorVersion)
+        if (defaultMajorVersion == interpret.majorVersion && defaultMinorVersion == interpret.minorVersion)
         {
-            majorVersion = 2;
-            minorVersion = 7;
+            majorVersion = defaultMajorVersion;
+            minorVersion = defaultMinorVersion;
             return;
         }
     }
 
     for (auto interpret : interpreterList)
     {
-        if (3 == interpret.majorVersion && 5 == interpret.minorVersion)
-        {
-            majorVersion = 3;
-            minorVersion = 5;
-            return;
-        }
-    }
-
-    for (auto interpret : interpreterList)
-    {
-        if (2 == interpret.majorVersion &&
-            minorVersion <= interpret.minorVersion )
+        if (2 == interpret.majorVersion &&  minorVersion <= interpret.minorVersion )
         {
             found = true;
-            majorVersion = 2;
+            majorVersion = interpret.majorVersion;
             minorVersion = interpret.minorVersion;
         }
     }
@@ -678,11 +719,10 @@ void getDefaultPythonVersion(int& majorVersion, int& minorVersion)
 
     for (auto interpret : interpreterList)
     {
-        if (3 == interpret.majorVersion &&
-            minorVersion <= interpret.minorVersion )
+        if (3 == interpret.majorVersion && minorVersion <= interpret.minorVersion )
         {
             found = true;
-            majorVersion = 3;
+            majorVersion = interpret.majorVersion;
             minorVersion = interpret.minorVersion;
         }
     }

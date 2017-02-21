@@ -26,7 +26,7 @@ public:
         AutoRestorePyState  pystate;
 
         m_control->ControlledOutputWide(
-            DEBUG_OUTCTL_THIS_CLIENT,
+            DEBUG_OUTCTL_ALL_CLIENTS,
             DEBUG_OUTPUT_NORMAL,
             L"%ws",
             str.c_str()
@@ -39,7 +39,7 @@ public:
         AutoRestorePyState  pystate;
 
         m_control->ControlledOutputWide(
-            DEBUG_OUTCTL_THIS_CLIENT | DEBUG_OUTCTL_DML,
+            DEBUG_OUTCTL_ALL_CLIENTS | DEBUG_OUTCTL_DML,
             DEBUG_OUTPUT_NORMAL,
             L"%ws",
             str.c_str()

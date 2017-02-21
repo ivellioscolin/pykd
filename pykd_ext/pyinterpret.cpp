@@ -157,10 +157,7 @@ public:
 
         m_module->PyImport_Cleanup();
 
-        while (PyGC_Collect() > 0);
-
         m_module->Py_EndInterpreter(m_state);
-
     }
 
     PyModule*  m_module;
