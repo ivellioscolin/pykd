@@ -144,11 +144,7 @@ public:
     PythonInterpreter(PyModule* mod) :
         m_module(mod)
     {
-        PyThreadState*  state = mod->Py_NewInterpreter();
-
-        m_module->PyThreadState_Swap(state);
-
-        m_state = m_module->PyEval_SaveThread();
+        m_state = mod->Py_NewInterpreter();
     }
 
     ~PythonInterpreter()
@@ -214,6 +210,7 @@ public:
             if (module->m_globalInterpreter == 0)
             {
                 module->PyEval_RestoreThread(module->m_globalState);
+                module->checkPykd();
                 module->m_globalInterpreter = new PythonInterpreter(module);
             }   
 
@@ -223,12 +220,12 @@ public:
         else
         {
             module->PyEval_RestoreThread(module->m_globalState);
+            module->checkPykd();
             m_currentInterpreter = new PythonInterpreter(module);
             m_currentIsGlobal = false;
         }
 
-        m_currentInterpreter->m_module->PyEval_RestoreThread(m_currentInterpreter->m_state);
-        m_currentInterpreter->m_module->checkPykd();
+        module->PyThreadState_Swap(m_currentInterpreter->m_state);
         
         return m_currentInterpreter;
     }
@@ -242,7 +239,6 @@ public:
         if (!m_currentIsGlobal)
         {
             delete m_currentInterpreter;
-
             module->PyThreadState_Swap(module->m_globalState);
             module->m_globalState = module->PyEval_SaveThread();
         }
@@ -253,11 +249,6 @@ public:
     bool isInterpreterLoaded(int majorVersion, int minorVersion)
     {
         return m_modules.find(std::make_pair(majorVersion, minorVersion)) != m_modules.end();
-    }
-
-    void checkPykd()
-    {
-        m_currentInterpreter->m_module->checkPykd();
     }
 
     void stopAllInterpreter()
@@ -490,6 +481,8 @@ PyModule::PyModule(int majorVesion, int minorVersion)
     Py_Initialize();
     PyEval_InitThreads();
 
+    checkPykd();
+
     m_globalState = PyEval_SaveThread();
 }
 
@@ -518,9 +511,13 @@ void PyModule::deactivate()
     {
         delete m_globalInterpreter;
         m_globalInterpreter = 0;
-    }
 
-    PyThreadState_Swap(m_globalState);
+        PyThreadState_Swap(m_globalState);
+    }
+    else
+    {
+        PyEval_RestoreThread(m_globalState);
+    }
 
     if (m_pykdInit)
     {
@@ -595,11 +592,6 @@ bool isInterpreterLoaded(int majorVersion, int minorVersion)
 void stopAllInterpreter()
 {
     PythonSingleton::get()->stopAllInterpreter();
-}
-
-void checkPykd()
-{
-    PythonSingleton::get()->checkPykd();
 }
 
 void __stdcall Py_IncRef(PyObject* object)
