@@ -100,6 +100,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( Module_enumTypes, ModuleAdapter::enumTypes, 1, 
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( TypeInfo_ptrTo, TypeInfoAdapter::ptrTo, 1, 2 ); 
 
+BOOST_PYTHON_FUNCTION_OVERLOADS( getTypeFromSource_, pykd::getTypeFromSource, 2, 3 );
+
 
 namespace pykd {
 
@@ -415,6 +417,11 @@ BOOST_PYTHON_MODULE( pykd )
         "Define custom function prototype" ) );
     python::def( "callFunctionByPtr", python::raw_function(pykd::callFunctionByVar, 1) );
     python::def( "callFunctionByAddr", python::raw_function(pykd::callFunctionByOffset, 2) );
+
+    python::def( "getTypeFromSource", &pykd::getTypeFromSource, getTypeFromSource_( python::args("sourceCode", "typeName", "compileOptions"),
+        "Create typeInfo class from C/C++ source code") );
+    python::def( "getTypeInfoProviderFromSource", &pykd::getTypeInfoProviderFromSource,
+        "Create typeInfo provider from  C/C++ source code");
 
     // CPU registers
     python::def( "reg", pykd::getRegisterByName,
@@ -1160,6 +1167,11 @@ BOOST_PYTHON_MODULE( pykd )
             "Change the current instruction" )
         .def( "__str__", DisasmAdapter::instruction );
 
+    python::class_<kdlib::TypeInfoProvider, kdlib::TypeInfoProviderPtr, boost::noncopyable>("typeInfoProvider",
+        "Get abstaract access to different type info sources", python::no_init)
+        .def( "getTypeByName", TypeInfoProviderAdapter::getTypeByName,
+            "Get type info by it's name" )
+         ;
 
     python::enum_<kdlib::DebugCallbackResult>("eventResult", "Return value of event handler")
         .value("Proceed", kdlib::DebugCallbackProceed)

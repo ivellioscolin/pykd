@@ -55,6 +55,18 @@ inline kdlib::TypeInfoPtr getTypeInfoByName( const std::wstring &name )
     return kdlib::loadType( name );
 }
 
+inline kdlib::TypeInfoPtr getTypeFromSource( const std::wstring& sourceCode, const std::wstring& typeName, const std::wstring& compileOptions=L"")
+{
+    AutoRestorePyState  pystate;
+    return kdlib::compileType( sourceCode, typeName, compileOptions);
+}
+
+inline kdlib::TypeInfoProviderPtr getTypeInfoProviderFromSource(const std::wstring& sourceCode, const std::wstring& compileOptions=L"")
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getTypeInfoProviderFromSource(sourceCode, compileOptions);
+}
+
 struct TypeInfoAdapter : public kdlib::TypeInfo {
 
     static std::wstring getName( kdlib::TypeInfo &typeInfo )
@@ -284,6 +296,17 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return false;
     }
 
+};
+
+
+struct TypeInfoProviderAdapter : public kdlib::TypeInfoProvider
+{
+
+    static kdlib::TypeInfoPtr getTypeByName( kdlib::TypeInfoProvider &typeInfoProvider, const std::wstring& name)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfoProvider.getTypeByName(name);
+    }
 };
 
 struct BaseTypesEnum {
