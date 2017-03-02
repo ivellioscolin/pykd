@@ -205,22 +205,21 @@ public:
             module = m_modules[std::make_pair(majorVersion, minorVersion)];
         }
 
+        module->PyEval_RestoreThread(module->m_globalState);
+        module->checkPykd();
+
         if (global)
         {
             if (module->m_globalInterpreter == 0)
             {
-                module->PyEval_RestoreThread(module->m_globalState);
-                module->checkPykd();
                 module->m_globalInterpreter = new PythonInterpreter(module);
-            }   
+            }
 
             m_currentInterpreter = module->m_globalInterpreter;
             m_currentIsGlobal = true;
         }
         else
         {
-            module->PyEval_RestoreThread(module->m_globalState);
-            module->checkPykd();
             m_currentInterpreter = new PythonInterpreter(module);
             m_currentIsGlobal = false;
         }
