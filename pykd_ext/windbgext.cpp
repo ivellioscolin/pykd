@@ -387,18 +387,19 @@ py(
 
             if (IsPy3())
             {
-                // устанавиливаем питоновские аргументы
-                std::vector<wchar_t*>  pythonArgs(opts.args.size());
-
                 std::wstring  scriptFileNameW = _bstr_t(scriptFileName.c_str());
 
-                pythonArgs[0] = const_cast<wchar_t*>(scriptFileNameW.c_str());
+                // устанавиливаем питоновские аргументы
+                std::vector<std::wstring>   argws(opts.args.size());
+
+                argws[0] = scriptFileNameW;
 
                 for (size_t i = 1; i < opts.args.size(); ++i)
-                {
-                    std::wstring  argw = _bstr_t(opts.args[i].c_str());
-                    pythonArgs[i] = const_cast<wchar_t*>(argw.c_str());
-                }
+                    argws[i] = _bstr_t(opts.args[i].c_str());
+
+                std::vector<wchar_t*>  pythonArgs(opts.args.size());
+                for (size_t i = 0; i < opts.args.size(); ++i)
+                    pythonArgs[i] = const_cast<wchar_t*>(argws[i].c_str());
 
                 PySys_SetArgv_Py3((int)opts.args.size(), &pythonArgs[0]);
 
