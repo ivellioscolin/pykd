@@ -21,7 +21,6 @@
 #include "pytypeinfo.h"
 #include "pycpucontext.h"
 #include "pyprocess.h"
-#include "pydataaccess.h"
 
 using namespace pykd;
 
