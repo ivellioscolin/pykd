@@ -419,4 +419,10 @@ class TypedVarTest( unittest.TestCase ):
         addr = pykd.getOffset("g_structTest")
         self.assertTrue( None != target.module.type( "structTest" ).getTypedVar(addr) )
 
+    def testByteSequence(self):
+        self.assertEqual( 0x44332211, pykd.typedVar("UInt4B", [0x11, 0x22, 0x33, 0x44]) )
+        self.assertEqual( -1, pykd.typedVar( pykd.baseTypes.Int4B, [0xFF, 0xFF, 0xFF, 0xFF] ) )
        
+    def testRawBytes(self):
+        self.assertEqual( [ 0x55, 0x55, 0, 0], target.module.typedVar( "ulongConst" ).rawBytes() )
+ 

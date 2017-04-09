@@ -21,6 +21,7 @@
 #include "pytypeinfo.h"
 #include "pycpucontext.h"
 #include "pyprocess.h"
+#include "pydataaccess.h"
 
 using namespace pykd;
 
@@ -920,6 +921,7 @@ BOOST_PYTHON_MODULE( pykd )
 #endif
         ;
 
+
     python::class_<kdlib::TypedVar, kdlib::TypedVarPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typedVar", 
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", python::no_init  )
         .def("__init__", python::make_constructor(pykd::getTypedVarByName) )
@@ -952,6 +954,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return method of class as an object attribute" )
          .def("deref",TypedVarAdapter::deref,
             "Return value by pointer" )
+        .def("rawBytes", TypedVarAdapter::getRawBytes,
+            "Return list of bytes" )
         .def("type", TypedVarAdapter::getType,
             "Return typeInfo instance" )
         .def("castTo", TypedVarAdapter::castByName,
@@ -1310,6 +1314,17 @@ BOOST_PYTHON_MODULE( pykd )
             "The symbol ID of the symbol within the module")
         .def("__str__", pykd::printSyntheticSymbol,
             "Return object as a string");
+
+    //python::class_<pykd::DataAccessor, boost::noncopyable>("dataAccessor",
+    //   "class for abstract representation of data storage",python::no_init)
+    //    .def("readByte", &pykd::DataAccessor::readByte)
+    //    ;
+
+    //python::class_<pykd::ListDataAccessor, kdlib::DataAccessorPtr>("objectAccessor",
+    //    "class for data access to python objects", python::no_init)
+    //    .def( python::init<python::object&>() )
+    //    //.def("readByte", &pykd::ListDataAccessor::readByte, "")
+    //    ;
 
     // C++ exception translation to python
     pykd::registerExceptions();

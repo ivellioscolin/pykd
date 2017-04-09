@@ -7,6 +7,52 @@ namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+kdlib::TypedVarPtr getTypedVarByTypeName(const std::wstring &name, python::object& dataStorage)
+{
+    python::extract<kdlib::MEMOFFSET_64>  get_addr(dataStorage);
+    if ( get_addr.check() )
+    {
+        kdlib::MEMOFFSET_64   offset = get_addr();
+        AutoRestorePyState  pystate;
+        return kdlib::loadTypedVar( name, offset );
+    }
+
+    std::vector<char>   byteArray;
+
+    for (int i = 0; i < python::len(dataStorage); ++i)
+    {
+        byteArray.push_back( python::extract<unsigned char>(dataStorage[i]) );
+    }
+    
+    AutoRestorePyState  pystate;
+    return kdlib::loadTypedVar( name, kdlib::getCacheAccessor(byteArray) );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+kdlib::TypedVarPtr getTypedVarByTypeInfo( const kdlib::TypeInfoPtr &typeInfo, python::object& dataStorage)
+{
+    python::extract<kdlib::MEMOFFSET_64>  get_addr(dataStorage);
+    if ( get_addr.check() )
+    {
+        kdlib::MEMOFFSET_64   offset = get_addr();
+        AutoRestorePyState  pystate;
+        return kdlib::loadTypedVar(typeInfo, offset );
+    }
+
+    std::vector<char>   byteArray;
+
+    for (int i = 0; i < python::len(dataStorage); ++i)
+    {
+        byteArray.push_back( python::extract<unsigned char>(dataStorage[i]) );
+    }
+    
+    AutoRestorePyState  pystate;
+    return kdlib::loadTypedVar(typeInfo, kdlib::getCacheAccessor(byteArray) );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 python::list getTypedVarListByTypeName( kdlib::MEMOFFSET_64 offset, const std::wstring &typeName, const std::wstring &fieldName )
 {
     kdlib::TypedVarList  lst;
@@ -154,6 +200,23 @@ kdlib::TypedVarPtr TypedVarAdapter::getFieldAttr(kdlib::TypedVar& typedVar, cons
 
 ///////////////////////////////////////////////////////////////////////////////
 
+python::list TypedVarAdapter::getRawBytes(kdlib::TypedVar& typedVar)
+{
+
+   std::vector<unsigned char>   rawBytes;
+
+   {
+        AutoRestorePyState  pystate;
+        kdlib::DataAccessorPtr   dataStream = kdlib::getCacheAccessor(typedVar.getSize());
+        typedVar.writeBytes(dataStream);
+        dataStream->readBytes(rawBytes, typedVar.getSize());
+
+   }
+
+   return vectorToList( rawBytes );
+ }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namesapce pykd
 
