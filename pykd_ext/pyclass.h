@@ -8,26 +8,41 @@
 #include <string>
 #include <vector>
 
+
+class convert_python_exception : public std::exception
+{
+public:
+    convert_python_exception(const char* message) : std::exception(message)
+    {}
+};
+
+
 struct convert_from_python
 {
     convert_from_python(PyObject* obj) : m_obj(obj){}
 
     operator std::wstring()
     {
-        if (IsPy3())
+        if ( PyUnicode_Check(m_obj) )
         {
             std::vector<wchar_t>  buf(0x10000);
             size_t  len = buf.size();
             len = PyUnicode_AsWideChar(m_obj, &buf[0], len);
             return std::wstring(&buf[0], len);
         }
-        else
+
+        if ( !IsPy3() && PyString_Check(m_obj) )
+        {
             return std::wstring(_bstr_t(PyString_AsString(m_obj)));
+        }
+
+        throw convert_python_exception("failed convert argument");
     }
+
 
     operator std::string()
     {
-        if (IsPy3())
+        if (PyUnicode_Check(m_obj))
         {
             std::vector<wchar_t>  buf(0x10000);
             size_t  len = buf.size();
@@ -35,8 +50,13 @@ struct convert_from_python
             std::wstring  str(&buf[0], len);
             return std::string(_bstr_t(str.c_str()));
         }
-        else
+
+        if ( !IsPy3() && PyString_Check(m_obj) )
+        {
             return std::string(PyString_AsString(m_obj));
+        }
+
+        throw convert_python_exception("failed convert argument");
     }
 
     PyObject* m_obj;
@@ -116,11 +136,16 @@ static PyObject* getPythonClass() { \
     struct Call_##fn { \
         static PyObject* pycall(PyObject *s, PyObject *args) \
          { \
-            PyObject*  self = PyTuple_GetItem(args, 0); \
-            PyObject*  cppobj =  PyObject_GetAttrString(self, "cppobject"); \
-            T*  _this = reinterpret_cast<T*>(PyCapsule_GetPointer(cppobj, "cppobject")); \
-            Py_DecRef(cppobj); \
-            return _this->callMethod0(&fn); \
+            try { \
+                PyObject*  self = PyTuple_GetItem(args, 0); \
+                PyObject*  cppobj =  PyObject_GetAttrString(self, "cppobject"); \
+                T*  _this = reinterpret_cast<T*>(PyCapsule_GetPointer(cppobj, "cppobject")); \
+                Py_DecRef(cppobj); \
+                return _this->callMethod0(&fn); \
+            } \
+            catch(convert_python_exception& exc) \
+            { PyErr_SetString(PyExc_TypeError(), exc.what()); } \
+            return Py_None(); \
         } \
     };  \
     {\

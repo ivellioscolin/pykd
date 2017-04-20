@@ -61,6 +61,9 @@ public:
     PyObject* PyProperty_Type;
     PyObject* Py_None;
     PyObject* PyExc_SystemExit;
+    PyObject* PyExc_TypeError;
+    PyObject* PyUnicode_Type;
+    PyObject* PyString_Type;
 
     PyThreadState*  PyThreadState_Current;
 
@@ -111,7 +114,8 @@ public:
     PyObject* ( *PyMethod_New)(PyObject *func, PyObject *self, PyObject *classobj);
     PyObject* ( *PyCapsule_New)(void *pointer, const char *name, PyCapsule_Destructor destructor);
     void* ( *PyCapsule_GetPointer)(PyObject *capsule, const char *name);
-    int( *PyObject_SetAttrString)(PyObject *o, const char *attr_name, PyObject *v);
+    int ( *PyObject_SetAttrString)(PyObject *o, const char *attr_name, PyObject *v);
+    int ( *PyObject_IsInstance)(PyObject *inst, PyObject *cls);
     PyObject* ( *PyUnicode_FromWideChar)(const wchar_t *w, size_t size);
     PyObject* ( *PyBool_FromLong)(long v);
     size_t( *PyList_Size)(PyObject* list);
@@ -405,10 +409,12 @@ PyModule::PyModule(int majorVesion, int minorVersion)
 
     *reinterpret_cast<FARPROC*>(&PyType_Type) = GetProcAddress(m_handlePython, "PyType_Type");
     *reinterpret_cast<FARPROC*>(&PyProperty_Type) = GetProcAddress(m_handlePython, "PyProperty_Type");
+    *reinterpret_cast<FARPROC*>(&PyUnicode_Type) = GetProcAddress(m_handlePython, "PyUnicode_Type");
+    *reinterpret_cast<FARPROC*>(&PyString_Type) = GetProcAddress(m_handlePython, "PyString_Type");
     *reinterpret_cast<FARPROC*>(&Py_None) = GetProcAddress(m_handlePython, "_Py_NoneStruct");
     PyExc_SystemExit = *reinterpret_cast<PyObject**>(GetProcAddress(m_handlePython, "PyExc_SystemExit"));
+    PyExc_TypeError= *reinterpret_cast<PyObject**>(GetProcAddress(m_handlePython, "PyExc_TypeError"));
     PyThreadState_Current = reinterpret_cast<PyThreadState*>(GetProcAddress(m_handlePython, "_PyThreadState_Current"));
-
     *reinterpret_cast<FARPROC*>(&Py_Initialize) = GetProcAddress(m_handlePython, "Py_Initialize");
     *reinterpret_cast<FARPROC*>(&Py_Finalize) = GetProcAddress(m_handlePython, "Py_Finalize");
     *reinterpret_cast<FARPROC*>(&Py_NewInterpreter) = GetProcAddress(m_handlePython, "Py_NewInterpreter");
@@ -432,6 +438,7 @@ PyModule::PyModule(int majorVesion, int minorVersion)
     *reinterpret_cast<FARPROC*>(&PyObject_GetAttrString) = GetProcAddress(m_handlePython, "PyObject_GetAttrString");
     *reinterpret_cast<FARPROC*>(&PyObject_SetAttr) = GetProcAddress(m_handlePython, "PyObject_SetAttr");
     *reinterpret_cast<FARPROC*>(&PyObject_CallObject) = GetProcAddress(m_handlePython, "PyObject_CallObject");
+    *reinterpret_cast<FARPROC*>(&PyObject_IsInstance) = GetProcAddress(m_handlePython, "PyObject_IsInstance");
     *reinterpret_cast<FARPROC*>(&PyTuple_New) = GetProcAddress(m_handlePython, "PyTuple_New");
     *reinterpret_cast<FARPROC*>(&PyTuple_SetItem) = GetProcAddress(m_handlePython, "PyTuple_SetItem");
     *reinterpret_cast<FARPROC*>(&PyTuple_GetItem) = GetProcAddress(m_handlePython, "PyTuple_GetItem");
@@ -459,6 +466,8 @@ PyModule::PyModule(int majorVesion, int minorVersion)
     *reinterpret_cast<FARPROC*>(&PyObject_SetAttrString) = GetProcAddress(m_handlePython, "PyObject_SetAttrString");
     *reinterpret_cast<FARPROC*>(&PyUnicode_FromWideChar) = isPy3 ? GetProcAddress(m_handlePython, "PyUnicode_FromWideChar") :
          GetProcAddress(m_handlePython, "PyUnicodeUCS2_FromWideChar");
+    *reinterpret_cast<FARPROC*>(&PyUnicode_AsWideChar) = isPy3 ?  GetProcAddress(m_handlePython, "PyUnicode_AsWideChar") :
+         GetProcAddress(m_handlePython, "PyUnicodeUCS2_AsWideChar");
     *reinterpret_cast<FARPROC*>(&PyImport_Import) = GetProcAddress(m_handlePython, "PyImport_Import");
     *reinterpret_cast<FARPROC*>(&PyImport_AddModule) = GetProcAddress(m_handlePython, "PyImport_AddModule");
     *reinterpret_cast<FARPROC*>(&PyBool_FromLong) = GetProcAddress(m_handlePython, "PyBool_FromLong");
@@ -468,7 +477,7 @@ PyModule::PyModule(int majorVesion, int minorVersion)
     *reinterpret_cast<FARPROC*>(&PyFile_AsFile) = GetProcAddress(m_handlePython, "PyFile_AsFile");
     *reinterpret_cast<FARPROC*>(&PyUnicode_FromString) = GetProcAddress(m_handlePython, "PyUnicode_FromString");
     *reinterpret_cast<FARPROC*>(&PyInstanceMethod_New) = GetProcAddress(m_handlePython, "PyInstanceMethod_New");
-    *reinterpret_cast<FARPROC*>(&PyUnicode_AsWideChar) = GetProcAddress(m_handlePython, "PyUnicode_AsWideChar");
+
     *reinterpret_cast<FARPROC*>(&_Py_fopen) = GetProcAddress(m_handlePython, "_Py_fopen");
     *reinterpret_cast<FARPROC*>(&Py_AddPendingCall) = GetProcAddress(m_handlePython, "Py_AddPendingCall");
     *reinterpret_cast<FARPROC*>(&PyGILState_Ensure) = GetProcAddress(m_handlePython, "PyGILState_Ensure");
@@ -708,6 +717,11 @@ PyObject* PyObject_Call(PyObject *callable_object, PyObject *args, PyObject *kw)
     return PythonSingleton::get()->currentInterpreter()->m_module->PyObject_Call(callable_object, args, kw);
 }
 
+int PyObject_IsInstance(PyObject *inst, PyObject *cls)
+{
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyObject_IsInstance(inst,cls);
+}
+
 PyObject* __stdcall PyTuple_New(size_t len)
 {
     return PythonSingleton::get()->currentInterpreter()->m_module->PyTuple_New(len);
@@ -756,6 +770,11 @@ PyObject* Py_None()
 PyObject* PyExc_SystemExit()
 {
     return PythonSingleton::get()->currentInterpreter()->m_module->PyExc_SystemExit;
+}
+
+PyObject* PyExc_TypeError()
+{
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyExc_TypeError;
 }
 
 PyObject* PyType_Type()
@@ -884,4 +903,15 @@ bool IsPy3()
     return PythonSingleton::get()->currentInterpreter()->m_module->isPy3;
 }
 
+int PyString_Check(PyObject *o)
+{
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyObject_IsInstance(o,
+        PythonSingleton::get()->currentInterpreter()->m_module->PyString_Type );
+}
+
+int PyUnicode_Check(PyObject *o)
+{
+    return PythonSingleton::get()->currentInterpreter()->m_module->PyObject_IsInstance(o,
+        PythonSingleton::get()->currentInterpreter()->m_module->PyUnicode_Type );
+}
 

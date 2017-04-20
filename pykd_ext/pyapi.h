@@ -29,6 +29,7 @@ void __stdcall Py_DecRef(PyObject* object);
 
 PyObject* __stdcall PyString_FromString(const char *v);
 char* PyString_AsString(PyObject *string);
+int PyString_Check(PyObject *o);
 
 PyObject* PyImport_Import(PyObject *name);
 PyObject* __stdcall PyImport_ImportModule(const char *name);
@@ -72,12 +73,15 @@ int PyObject_SetAttrString(PyObject *o, const char *attr_name, PyObject *v);
 PyObject* PyObject_GetAttrString(PyObject *o, const char *attr_name);
 PyObject* PyObject_CallObject(PyObject *callable_object, PyObject *args);
 PyObject* PyObject_Call(PyObject *callable_object, PyObject *args, PyObject *kw);
+
 PyObject* PyUnicode_FromWideChar(const wchar_t *w, size_t size);
+int PyUnicode_Check(PyObject *o);
 
 PyObject* PyBool_FromLong(long v);
 
 PyObject* Py_None();
 PyObject* PyExc_SystemExit();
+PyObject* PyExc_TypeError();
 PyObject* PyType_Type();
 PyObject* PyProperty_Type();
 
