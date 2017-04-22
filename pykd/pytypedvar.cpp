@@ -200,6 +200,24 @@ kdlib::TypedVarPtr TypedVarAdapter::getFieldAttr(kdlib::TypedVar& typedVar, cons
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void TypedVarAdapter::setFieldAttr(kdlib::TypedVar& typedVar, const std::wstring &name, NumVariantAdaptor& var)
+{
+    try
+    {
+         AutoRestorePyState  pystate;
+         typedVar.setElement(name, var);
+         return;
+    }
+    catch (kdlib::TypeException&)
+    {}
+
+    std::wstringstream sstr;
+    sstr << L"typed var has no field " << L'\'' << name << L'\'';
+    throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 python::list TypedVarAdapter::getRawBytes(kdlib::TypedVar& typedVar)
 {
 

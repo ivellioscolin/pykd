@@ -78,6 +78,9 @@
     <ClInclude Include="pyprocess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="pydataaccess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

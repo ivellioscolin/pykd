@@ -11,6 +11,7 @@ namespace python = boost::python;
 #include "stladaptor.h"
 #include "pythreadstate.h"
 #include "dbgexcept.h"
+#include "variant.h"
 
 namespace pykd {
 
@@ -108,8 +109,16 @@ struct TypedVarAdapter {
         AutoRestorePyState  pystate;
         return typedVar.getElement( name );
     }
+    
+    static void setField(kdlib::TypedVar& typedVar, const std::wstring &name, NumVariantAdaptor& var)
+    {
+        AutoRestorePyState  pystate;
+        typedVar.setElement(name, var);
+    }
 
     static kdlib::TypedVarPtr getFieldAttr(kdlib::TypedVar& typedVar, const std::wstring &name);
+    
+    static void setFieldAttr(kdlib::TypedVar& typedVar, const std::wstring &name, NumVariantAdaptor& var);
 
     static size_t getElementCount( kdlib::TypedVar& typedVar ) 
     {
@@ -127,6 +136,12 @@ struct TypedVarAdapter {
     {
         AutoRestorePyState  pystate;
         return typedVar.getElement( index );
+    }
+
+    static void setElementByIndex(kdlib::TypedVar& typedVar, long index, NumVariantAdaptor& var)
+    {
+        AutoRestorePyState  pystate;
+        typedVar.setElement(index, var);
     }
 
     static kdlib::TypedVarPtr getMethodByName(kdlib::TypedVar& typedVar, const std::wstring &name, const std::wstring &prototype = L"")

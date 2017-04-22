@@ -942,9 +942,13 @@ BOOST_PYTHON_MODULE( pykd )
         .def("getNumberFields", TypedVarAdapter::getElementCount,
             "Return number of fields")
         .def("field", TypedVarAdapter::getField,
-            "Return field of structure as an object attribute" )
+            "Return field of structure")
         .def("field", TypedVarAdapter::getElementByIndex,
-            "Return field of structure as an object attribute" )
+            "Return field of structure or array" )
+        .def("setField", TypedVarAdapter::setField,
+            "Set field of structure")
+        .def("setField", TypedVarAdapter::setElementByIndex,
+            "Set field of a structire or an element od array")
         .def( "fields", TypedVarAdapter::getFields,
             "Return list of tuple ( filedName, fieldOffset, fieldValue )" )
         .def( "fieldName", TypedVarAdapter::getElementName,
@@ -964,9 +968,11 @@ BOOST_PYTHON_MODULE( pykd )
         .def("call", python::raw_function(pykd::callFunctionByVar, 0) )
         .def("__getattr__", TypedVarAdapter::getFieldAttr,
             "Return field of structure as an object attribute" )
+        .def("__setattr__", TypedVarAdapter::setFieldAttr )
         .def( "__str__", TypedVarAdapter::print )
         .def("__len__", TypedVarAdapter::getElementCount )
         .def("__getitem__", TypedVarAdapter::getElementByIndex )
+        .def("__setitem__", TypedVarAdapter::setElementByIndex )
         .def("__dir__", TypedVarAdapter::getElementsDir)
         .def("__call__", python::raw_function(pykd::callFunctionByVar, 0) )
         //.def("__getitem__", &kdlib::TypedVar::getElementByIndexPtr )

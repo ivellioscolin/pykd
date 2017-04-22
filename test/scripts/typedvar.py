@@ -425,4 +425,11 @@ class TypedVarTest( unittest.TestCase ):
        
     def testRawBytes(self):
         self.assertEqual( [ 0x55, 0x55, 0, 0], target.module.typedVar( "ulongConst" ).rawBytes() )
+
+    def testSetField(self):
+        var = target.module.typedVar("structTest", [0x55] * 20 )
+        var.setField("m_field2", 0xAA)
+        var.m_field3 == 0xAAAA
+        self.assertEqual( 0xAAAA, var.m_filed3)
+
  
