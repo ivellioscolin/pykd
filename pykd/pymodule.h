@@ -11,6 +11,7 @@
 #include "stladaptor.h"
 #include "pythreadstate.h"
 #include "dbgexcept.h"
+#include "pytypedvar.h"
 
 namespace pykd {
 
@@ -125,10 +126,9 @@ struct ModuleAdapter : public kdlib::Module
         return module.getTypedVarByName(symbolName);
     }
 
-    static kdlib::TypedVarPtr getTypedVarByTypeName( kdlib::Module& module, const std::wstring &typeName, kdlib::MEMOFFSET_64 offset )
+    static kdlib::TypedVarPtr getTypedVarByTypeName( kdlib::Module& module, const std::wstring &typeName, python::object& dataStorage )
     {
-        AutoRestorePyState  pystate;
-        return module.getTypedVarByTypeName(typeName, offset);
+        return  getTypedVarByTypeInfo( getTypeByName(module, typeName), dataStorage);
     }
 
     static kdlib::TypedVarPtr getTypedVarWithPrototype(kdlib::Module& module, const std::wstring &symbolName, const std::wstring &prototype)
