@@ -3,6 +3,10 @@
 #include "pytypedvar.h"
 #include "kdlib/exceptions.h"
 
+#include "pytypeinfo.h"
+#include "pydataaccess.h"
+
+
 namespace pykd {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -17,15 +21,10 @@ kdlib::TypedVarPtr getTypedVarByTypeName(const std::wstring &name, python::objec
         return kdlib::loadTypedVar( name, offset );
     }
 
-    std::vector<char>   byteArray;
+    kdlib::DataAccessorPtr   dataAceesor( new PythonObjectAccessor(dataStorage) );
 
-    for (int i = 0; i < python::len(dataStorage); ++i)
-    {
-        byteArray.push_back( python::extract<unsigned char>(dataStorage[i]) );
-    }
-    
     AutoRestorePyState  pystate;
-    return kdlib::loadTypedVar( name, kdlib::getCacheAccessor(byteArray) );
+    return kdlib::loadTypedVar(name, dataAceesor );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,15 +39,10 @@ kdlib::TypedVarPtr getTypedVarByTypeInfo( const kdlib::TypeInfoPtr &typeInfo, py
         return kdlib::loadTypedVar(typeInfo, offset );
     }
 
-    std::vector<char>   byteArray;
+    kdlib::DataAccessorPtr   dataAceesor( new PythonObjectAccessor(dataStorage) );
 
-    for (int i = 0; i < python::len(dataStorage); ++i)
-    {
-        byteArray.push_back( python::extract<unsigned char>(dataStorage[i]) );
-    }
-    
     AutoRestorePyState  pystate;
-    return kdlib::loadTypedVar(typeInfo, kdlib::getCacheAccessor(byteArray) );
+    return kdlib::loadTypedVar(typeInfo, dataAceesor );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -198,23 +192,6 @@ kdlib::TypedVarPtr TypedVarAdapter::getFieldAttr(kdlib::TypedVar& typedVar, cons
     throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
 }
 
-///////////////////////////////////////////////////////////////////////////////
-
-void TypedVarAdapter::setFieldAttr(kdlib::TypedVar& typedVar, const std::wstring &name, NumVariantAdaptor& var)
-{
-    try
-    {
-         AutoRestorePyState  pystate;
-         typedVar.setElement(name, var);
-         return;
-    }
-    catch (kdlib::TypeException&)
-    {}
-
-    std::wstringstream sstr;
-    sstr << L"typed var has no field " << L'\'' << name << L'\'';
-    throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -233,6 +210,51 @@ python::list TypedVarAdapter::getRawBytes(kdlib::TypedVar& typedVar)
 
    return vectorToList( rawBytes );
  }
+
+///////////////////////////////////////////////////////////////////////////////
+
+void TypedVarAdapter::setField(kdlib::TypedVar& typedVar, const std::wstring &name, python::object&  object)
+{
+
+    kdlib::TypedValue  value = NumVariantAdaptor::convertToVariant(object);
+
+    {
+        AutoRestorePyState  pystate;
+        typedVar.setElement(name, value);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void TypedVarAdapter::setElementByIndex(kdlib::TypedVar& typedVar, long index, python::object& object)
+{
+    kdlib::TypedValue  value = NumVariantAdaptor::convertToVariant(object);
+
+    {
+        AutoRestorePyState  pystate;
+        typedVar.setElement(index, value);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void TypedVarAdapter::setFieldAttr(kdlib::TypedVar& typedVar, const std::wstring &name, python::object&  object)
+{
+    kdlib::TypedValue  value = NumVariantAdaptor::convertToVariant(object);
+
+    try
+    {
+         AutoRestorePyState  pystate;
+         typedVar.setElement(name, value);
+         return;
+    }
+    catch (kdlib::TypeException&)
+    {}
+
+    std::wstringstream sstr;
+    sstr << L"typed var has no field " << L'\'' << name << L'\'';
+    throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

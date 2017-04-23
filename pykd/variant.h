@@ -5,6 +5,7 @@
 #include "kdlib/variant.h"
 #include "kdlib/exceptions.h"
 #include "dbgexcept.h"
+#include "pythreadstate.h"
 
 namespace pykd {
 
@@ -122,7 +123,12 @@ public:
 
    static python::object NumVariantAdaptor::convertToPython( kdlib::NumBehavior& num )
    {
-        kdlib::NumVariant var = kdlib::NumVariant( num );
+        kdlib::NumVariant var;
+        
+        {
+            AutoRestorePyState  pystate;
+            var = kdlib::NumVariant( num );
+        }
 
         return convertToPython( var );
    }

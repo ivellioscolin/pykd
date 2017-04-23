@@ -305,12 +305,12 @@ class TypedVarTest( unittest.TestCase ):
         for field in tv.fields():
             str( field )
 
-    def testDeadlockList(self):
-        lst = []
-        entry = pykd.typedVar("deadlockEntry").flink
-        for i in range( 0, 100000 ):
-            lst.append(entry)
-            entry = entry.deref().flink
+    #def testDeadlockList(self):
+    #    lst = []
+    #    entry = pykd.typedVar("deadlockEntry").flink
+    #    for i in xrange( 0, 100000 ):
+    #        lst.append(entry)
+    #        entry = entry.deref().flink
 
     def testHresult(self):
         tv = pykd.typedVar( "g_atlException" )
@@ -427,9 +427,21 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( [ 0x55, 0x55, 0, 0], target.module.typedVar( "ulongConst" ).rawBytes() )
 
     def testSetField(self):
-        var = target.module.typedVar("structTest", [0x55] * 20 )
-        var.setField("m_field2", 0xAA)
-        var.m_field3 == 0xAAAA
-        self.assertEqual( 0xAAAA, var.m_filed3)
+        byteseq = [0x55] * 20
+        var = target.module.typedVar("structTest", byteseq)
+        var.setField("m_field1", 0xFF000000000000AA)
+        self.assertEqual( [0xAA, 0, 0, 0, 0, 0, 0, 0xFF], byteseq[4:12] )
+        var.m_field3 = 0xAAAA
+        self.assertEqual( 0xAAAA, var.m_field3)
+        self.assertEqual( 0xAAAA, var.field("m_field3") )
 
- 
+      
+    def testAttr(self):
+        var = target.module.typedVar("structTest", [0x55] * 20 )
+        self.assertTrue(hasattr(var, "m_field3"))
+        setattr(var, "m_field1", 11)
+        self.assertEqual(11, getattr(var, "m_field1"))
+        
+        self.assertFalse(hasattr(var, "noexisit"))
+        self.assertRaises(AttributeError, getattr, *(var, "noexists"))
+        self.assertRaises(AttributeError, setattr, *(var, "noexists", 0))
