@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "um", "um", "{EEFC9510-DFA7-
 		samples\um\createfile.py = samples\um\createfile.py
 		samples\um\critlist.py = samples\um\critlist.py
 		samples\um\ldr.py = samples\um\ldr.py
+		samples\um\virtalloc.py = samples\um\virtalloc.py
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D1F1222A-A12B-4FD7-91A0-0AB6393A3169}"

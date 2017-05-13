@@ -101,7 +101,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( Module_enumTypes, ModuleAdapter::enumTypes, 1, 
 BOOST_PYTHON_FUNCTION_OVERLOADS( TypeInfo_ptrTo, TypeInfoAdapter::ptrTo, 1, 2 ); 
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( getTypeFromSource_, pykd::getTypeFromSource, 2, 3 );
-
+BOOST_PYTHON_FUNCTION_OVERLOADS( getTypeInfoProviderFromPdb_, pykd::getTypeInfoProviderFromPdb, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( getTypeInfoProviderFromSource_, pykd::getTypeInfoProviderFromSource, 1, 2);
 
 namespace pykd {
 
@@ -420,8 +421,10 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::def( "getTypeFromSource", &pykd::getTypeFromSource, getTypeFromSource_( python::args("sourceCode", "typeName", "compileOptions"),
         "Create typeInfo class from C/C++ source code") );
-    python::def( "getTypeInfoProviderFromSource", &pykd::getTypeInfoProviderFromSource,
-        "Create typeInfo provider from  C/C++ source code");
+    python::def( "getTypeInfoProviderFromSource", &pykd::getTypeInfoProviderFromSource, getTypeInfoProviderFromSource_( python::args("sourceCode", "compileOptions"),
+        "Create typeInfo provider from  C/C++ source code") );
+    python::def( "getTypeInfoProviderFromPdb", &pykd::getTypeInfoProviderFromPdb, getTypeInfoProviderFromPdb_( python::args("filePath", "baseOffset"),
+        "Create typeInfo provider from  pdb file") );
 
     // CPU registers
     python::def( "reg", pykd::getRegisterByName,
@@ -486,6 +489,10 @@ BOOST_PYTHON_MODULE( pykd )
         "Allocate bytes of space in the stack in the target process" );
     python::def( "stackFree", pykd::stackFree,
         "Free space in the stack previously allocated by stackAlloc" );
+    python::def( "pushStack", pykd::pushStack,
+        "Push a value into a stack" );
+    python::def( "popStack", pykd::popStack,
+        "Pop a value from a stack" );
 
     // breakpoints
     python::def( "setBp", &Breakpoint::setSoftwareBreakpoint,

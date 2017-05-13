@@ -67,6 +67,12 @@ inline kdlib::TypeInfoProviderPtr getTypeInfoProviderFromSource(const std::wstri
     return kdlib::getTypeInfoProviderFromSource(sourceCode, compileOptions);
 }
 
+inline kdlib::TypeInfoProviderPtr getTypeInfoProviderFromPdb(const std::wstring&  fileName, kdlib::MEMOFFSET_64 offset = 0UL)
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getTypeInfoProviderFromPdb(fileName, offset);
+}
+
 struct TypeInfoAdapter : public kdlib::TypeInfo {
 
     static std::wstring getName( kdlib::TypeInfo &typeInfo )

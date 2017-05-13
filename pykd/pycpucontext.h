@@ -204,6 +204,19 @@ inline kdlib::MEMOFFSET_64 stackFree(unsigned short byteCount) {
     return kdlib::stackFree(byteCount);
 }
 
+inline void pushStack( const kdlib::NumVariant& value )
+{
+    AutoRestorePyState  pystate;
+    return kdlib::pushInStack(value);
+}
+
+inline kdlib::NumVariant popStack() {
+    AutoRestorePyState  pystate;
+    kdlib::NumVariant  value;
+    kdlib::popFromStack(value);
+    return value;
+}
+
 
 class CPUContextAdapter
 {
