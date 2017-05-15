@@ -382,8 +382,6 @@ py(
         else
         {
             std::string  scriptFileName = getScriptFileName(opts.args[0]);
-            if (scriptFileName.empty())
-                throw std::invalid_argument("script not found\n");
 
             if (IsPy3())
             {
@@ -567,21 +565,52 @@ void handleException()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::string findScript(const std::string &fullFileName)
+void getPathList( std::list<std::string>  &pathStringLst)
 {
-    if (GetFileAttributesA(fullFileName.c_str()) != INVALID_FILE_ATTRIBUTES)
-        return fullFileName;
-
     PyObjectBorrowedRef  pathLst = PySys_GetObject("path");
 
     size_t  pathLstSize = PyList_Size(pathLst);
 
     for (size_t i = 0; i < pathLstSize; i++)
     {
-        char  *path = PyString_AsString(PyList_GetItem(pathLst, i));
+        PyObjectBorrowedRef  pathLstItem = PyList_GetItem(pathLst, i);
 
+        if ( IsPy3() )
+        {
+            std::vector<wchar_t>  buf(0x10000);
+            size_t  len = buf.size();
+            PyUnicode_AsWideChar(pathLstItem, &buf[0], len);
+
+            DWORD  attr =  GetFileAttributesW(&buf[0]);
+            if ( attr == INVALID_FILE_ATTRIBUTES || (attr & FILE_ATTRIBUTE_DIRECTORY ) == 0 )
+                continue;
+
+            pathStringLst.push_back( std::string(_bstr_t(&buf[0])));
+        }
+        else
+        {
+            char*  path = PyString_AsString(pathLstItem);
+
+            DWORD  attr =  GetFileAttributesA(path);
+            if ( attr == INVALID_FILE_ATTRIBUTES || (attr & FILE_ATTRIBUTE_DIRECTORY ) == 0 )
+                continue;
+
+            pathStringLst.push_back(path);
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::string findScriptPath(const std::string &fullFileName)
+{
+    std::list<std::string>  pathList;
+    getPathList(pathList);
+
+    for ( auto path : pathList )
+    {
         DWORD bufSize = SearchPathA(
-            path,
+            path.c_str(),
             fullFileName.c_str(),
             NULL,
             0,
@@ -595,7 +624,7 @@ std::string findScript(const std::string &fullFileName)
             char *partFileNameCStr = NULL;
 
             bufSize = SearchPathA(
-                path,
+                path.c_str(),
                 fullFileName.c_str(),
                 NULL,
                 bufSize,
@@ -607,32 +636,53 @@ std::string findScript(const std::string &fullFileName)
             if ((fileAttr & FILE_ATTRIBUTE_DIRECTORY) == 0)
                 return std::string(&fullFileNameCStr[0]);
         }
-
     }
 
-    return "";
+    std::stringstream sstr;
+
+    sstr << "script not found" << std::endl << std::endl;
+
+    if ( pathList.empty() )
+    {
+        sstr << "Path list: empty" << std::endl;
+    }
+    else
+    {
+        sstr << "Path list:" << std::endl;
+
+        for ( auto path : pathList )
+        {
+            sstr << '\t' << path << std::endl;
+        }
+    }
+
+    throw std::invalid_argument(sstr.str().c_str());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 std::string getScriptFileName(const std::string &scriptName)
 {
-    std::string scriptFileName = findScript(scriptName);
 
-    if (scriptFileName.empty())
+    if ( scriptName.find('\\') != std::string::npos || scriptName.find('/') != std::string::npos )
     {
-        std::string scriptNameLow;
-        scriptNameLow.resize(scriptName.size());
-        std::transform(
-            scriptName.begin(),
-            scriptName.end(),
-            scriptNameLow.begin(),
-            ::tolower);
-        if (scriptNameLow.rfind(".py") != (scriptNameLow.length() - 3))
-            scriptFileName = findScript(scriptName + ".py");
+        if (GetFileAttributesA(scriptName.c_str()) != INVALID_FILE_ATTRIBUTES)
+            return scriptName;
+
+        std::stringstream sstr;
+
+        sstr << "File \'" << scriptName << "\' not found" << std::endl;
+
+        throw std::invalid_argument(sstr.str().c_str());
     }
 
-    return scriptFileName;
+    try {
+        return findScriptPath(scriptName);
+    }
+    catch( std::invalid_argument& )
+    {}
+
+    return findScriptPath(scriptName + ".py");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
