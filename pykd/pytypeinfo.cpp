@@ -159,6 +159,7 @@ python::list TypeInfoAdapter::getElementDir(kdlib::TypeInfo &typeInfo)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+
 python::object  callTypedVar(kdlib::TypedVarPtr& funcobj, python::tuple& args)
 {
     kdlib::TypedValue   retVal;
@@ -176,6 +177,30 @@ python::object  callTypedVar(kdlib::TypedVarPtr& funcobj, python::tuple& args)
             continue;
         }
 
+        python::extract<std::wstring>   getStrVar(args[i]);
+        if ( getStrVar.check() )
+        {
+            std::wstringstream  sstr;
+
+            if ( funcobj->getType()->getElement(i)->getName() == L"Char*" )
+            {
+                std::string  strArg = _bstr_t( getStrVar().c_str() );
+                sstr << "Char[" << std::dec << strArg.size() + 1 << ']';
+                argLst.push_back( kdlib::loadTypedVar(sstr.str(), kdlib::getCacheAccessor( strArg.c_str(), strArg.size() + 1 ) ) );
+                continue;
+            }
+
+            if ( funcobj->getType()->getElement(i)->getName() == L"WChar*" )
+            {
+                std::wstring  strArg = getStrVar();
+                sstr << "WChar[" << std::dec << strArg.size() + 1 << ']';
+                argLst.push_back( kdlib::loadTypedVar(sstr.str(), kdlib::getCacheAccessor( strArg.c_str(), 2*(strArg.size() + 1) ) ) );
+                continue;
+            }
+
+            throw kdlib::TypeException(L"failed convert string argument");
+        }
+
         python::extract<kdlib::NumBehavior>  getNumVar(args[i]);
         if ( getNumVar.check() )
         {
@@ -184,8 +209,15 @@ python::object  callTypedVar(kdlib::TypedVarPtr& funcobj, python::tuple& args)
             continue;
         }
 
-        kdlib::NumVariant  var= NumVariantAdaptor::convertToVariant(args[i]);
-        argLst.push_back( var );
+
+        if ( python::extract<int>(args[i]).check() )
+        {
+            kdlib::NumVariant  var= NumVariantAdaptor::convertToVariant(args[i]);
+            argLst.push_back( var );
+            continue;
+        }
+
+        throw kdlib::TypeException(L"failed convert argument");
     }
 
     {
@@ -226,5 +258,78 @@ python::object callFunctionByOffset( python::tuple& args, python::dict& kwargs)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+python::object callFunctionRaw( python::tuple& args, python::dict& kwargs)
+{
+    kdlib::MEMOFFSET_64  funcaddr = python::extract<kdlib::MEMOFFSET_64>(args[0]);
+
+    kdlib::CallingConventionType   callingConvention = kdlib::CallingConventionType::CallConv_NearC;
+        
+    if ( kwargs.has_key("callingConvention") )
+        callingConvention = python::extract<kdlib::CallingConventionType>(kwargs["callingConvention"]);
+
+    size_t  argCount  = python::len(args);
+
+    kdlib::TypedValueList  argLst;
+
+    for ( size_t  i = 0; i < argCount; ++i )
+    {
+        python::extract<kdlib::TypedVarPtr>   getTypedVar(args[i]);
+        if ( getTypedVar.check() )
+        {
+            argLst.push_back( getTypedVar() );
+            continue;
+        }
+
+        python::extract<std::string>  getStrVar(args[i]);
+        if ( getStrVar.check() )
+        {
+            std::string  strArg  = getStrVar();
+            std::wstringstream  sstr;
+            sstr << L"Char[" << std::dec << strArg.size() + 1 << L']';
+            argLst.push_back( kdlib::loadTypedVar(sstr.str(), kdlib::getCacheAccessor( strArg.c_str(), strArg.size() + 1 ) ) );
+            continue;
+        }
+
+        python::extract<std::wstring>  getWStrVar(args[i]);
+        if ( getWStrVar.check() )
+        {
+            std::wstring  strArg  = getWStrVar();
+            std::wstringstream  sstr;
+            sstr << L"WChar[" << std::dec << strArg.size() + 1 << L']';
+            argLst.push_back( kdlib::loadTypedVar(sstr.str(), kdlib::getCacheAccessor( strArg.c_str(), 2*(strArg.size() + 1) ) ) );
+            continue;
+        }
+
+        python::extract<kdlib::NumBehavior>  getNumVar(args[i]);
+        if ( getNumVar.check() )
+        {
+            kdlib::NumVariant   var = getNumVar();
+            argLst.push_back( var );
+            continue;
+        }
+
+        if ( python::extract<int>(args[i]).check() )
+        {
+            kdlib::NumVariant  var= NumVariantAdaptor::convertToVariant(args[i]);
+            argLst.push_back( var );
+            continue;
+        }
+
+        throw kdlib::TypeException(L"failed convert argument");
+    }
+
+    kdlib::NumVariant  retVal;
+
+    {
+        AutoRestorePyState  pystate;
+        retVal = kdlib::callRaw(funcaddr, callingConvention, argLst);
+    }
+
+   return NumVariantAdaptor::convertToPython(retVal);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 
 } // pykd namespace

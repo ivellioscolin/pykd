@@ -418,6 +418,7 @@ BOOST_PYTHON_MODULE( pykd )
         "Define custom function prototype" ) );
     python::def( "callFunctionByPtr", python::raw_function(pykd::callFunctionByVar, 1) );
     python::def( "callFunctionByAddr", python::raw_function(pykd::callFunctionByOffset, 2) );
+    python::def( "callFunctionRaw", python::raw_function(pykd::callFunctionRaw, 1) );
 
     python::def( "getTypeFromSource", &pykd::getTypeFromSource, getTypeFromSource_( python::args("sourceCode", "typeName", "compileOptions"),
         "Create typeInfo class from C/C++ source code") );

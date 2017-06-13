@@ -48,6 +48,8 @@ python::object callFunctionByVar( python::tuple& args, python::dict& kwargs );
 
 python::object callFunctionByOffset( python::tuple& args, python::dict& kwargs);
 
+python::object callFunctionRaw( python::tuple& args, python::dict& kwargs);
+
 
 inline kdlib::TypeInfoPtr getTypeInfoByName( const std::wstring &name )
 {

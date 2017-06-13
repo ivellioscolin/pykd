@@ -1,4 +1,4 @@
-
+﻿
 import pykd
 
 GENERIC_READ = 0x80000000
@@ -27,13 +27,10 @@ def main():
     CreateFileW_Type.append("dwFlagsAndAttributes", DWORD )
     CreateFileW_Type.append("hTemplateFile", HANDLE )
 
-    fileNameBuf = pykd.stackAlloc(100)
-    pykd.writeWStr(fileNameBuf, "C:\\temp\\testfile.txt")
-
     CreateFileW = pykd.typedVar( CreateFileW_Type, kernel32.CreateFileW )
 
     fileHandle = CreateFileW( 
-        fileNameBuf,
+        "C:\\temp\\testfile.txt",
         GENERIC_READ | GENERIC_WRITE,
         0,
         NULL,
@@ -42,8 +39,6 @@ def main():
         NULL )
 
     print "File Handle", hex(fileHandle)
-
-    pykd.stackFree(100)
 
 if __name__ == "__main__":
     main()
