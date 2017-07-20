@@ -51,6 +51,36 @@ inline kdlib::TypedVarPtr containingRecordByType( kdlib::MEMOFFSET_64 offset, kd
 }
 
 
+class TypedVarIterator {
+
+public:
+
+    TypedVarIterator(kdlib::TypedVarPtr&  var) : m_var(var), m_pos(0)
+    {}
+
+    static python::object self(const python::object& obj)
+    {
+        return obj;
+    }
+
+    kdlib::TypedVarPtr next()
+    {
+        AutoRestorePyState  pystate;
+        if (m_pos==m_var->getElementCount())
+            throw StopIteration("No more data.");
+
+        return m_var->getElement(m_pos++);
+    }
+
+    
+private:
+
+    size_t  m_pos;
+
+    kdlib::TypedVarPtr  m_var;
+};
+
+
 struct TypedVarAdapter {
 
 
@@ -188,6 +218,11 @@ struct TypedVarAdapter {
     }
 
     static python::list  getRawBytes(kdlib::TypedVar& typedVar);
+
+    static TypedVarIterator* getArrayIter(kdlib::TypedVarPtr& typedVar)
+    {
+        return new TypedVarIterator(typedVar);
+    }
 };
 
 } // end namespace pykd

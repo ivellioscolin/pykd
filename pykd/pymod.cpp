@@ -928,6 +928,11 @@ BOOST_PYTHON_MODULE( pykd )
 #endif
         ;
 
+    python::class_<TypedVarIterator>("typedVarIterator", "iterator for typedVar array", python::no_init)
+        .def("__iter__", &TypedVarIterator::self)
+        .def("next", &TypedVarIterator::next)
+        ;
+
     python::class_<kdlib::TypedVar, kdlib::TypedVarPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typedVar", 
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", python::no_init  )
         .def("__init__", python::make_constructor(pykd::getTypedVarByName) )
@@ -982,6 +987,7 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__setitem__", TypedVarAdapter::setElementByIndex )
         .def("__dir__", TypedVarAdapter::getElementsDir)
         .def("__call__", python::raw_function(pykd::callFunctionByVar, 0) )
+        .def("__iter__", TypedVarAdapter::getArrayIter, python::return_value_policy<python::manage_new_object>())
         //.def("__getitem__", &kdlib::TypedVar::getElementByIndexPtr )
 #if PY_VERSION_HEX >= 0x03000000
         .def("__bool__", TypedVarAdapter::isNotZero)

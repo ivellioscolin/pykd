@@ -25,6 +25,13 @@ public:
     {}
 };
 
+class StopIteration : public std::exception
+{
+public:
+
+    StopIteration(const char* desc) : std::exception(desc)
+    {}
+};
 
 template< class TExcept >
 struct exceptPyType{
@@ -111,6 +118,12 @@ inline void pykdExceptionTranslate(const std::exception &e)
         return;
     }
 
+    if (typeid(e).hash_code() == typeid(StopIteration).hash_code())
+    {
+        PyErr_SetString(PyExc_StopIteration, e.what());
+        return;
+    }
+
 }
 
 inline void registerExceptions()
@@ -125,6 +138,7 @@ inline void registerExceptions()
     python::register_exception_translator<kdlib::DbgException>( &dbgExceptionTranslate );
     python::register_exception_translator<OverflowException>( &pykdExceptionTranslate );
     python::register_exception_translator<AttributeException>(&pykdExceptionTranslate);
+    python::register_exception_translator<StopIteration>(&pykdExceptionTranslate);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

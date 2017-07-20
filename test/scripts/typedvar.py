@@ -110,6 +110,11 @@ class TypedVarTest( unittest.TestCase ):
         self.assertNotEqual( 0, tv.m_noArrayField )
         tv.m_arrayField[len(tv.m_arrayField)]
 
+    def testArrayIteration(self):
+        tv = target.module.typedVar( "g_structWithArray" )
+        self.assertEqual([0, 2], [x for x in tv.m_arrayField])
+
+
     #def testArrayFieldSlice(self):
     #    tv = target.module.typedVar( "g_structWithArray" )
     #    self.assertEqual( [ 0, 2 ], tv.m_arrayField[0:2] )
