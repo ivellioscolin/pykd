@@ -114,15 +114,6 @@ class TypedVarTest( unittest.TestCase ):
         tv = target.module.typedVar( "g_structWithArray" )
         self.assertEqual([0, 2], [x for x in tv.m_arrayField])
 
-
-    #def testArrayFieldSlice(self):
-    #    tv = target.module.typedVar( "g_structWithArray" )
-    #    self.assertEqual( [ 0, 2 ], tv.m_arrayField[0:2] )
-
-    #def testArrayFieldSliceNegative(self):
-    #    tv = target.module.typedVar( "g_structWithArray" )
-    #    self.assertEqual( 2, tv.m_arrayField[-1] )
-
     def testGlobalVar(self):
         self.assertEqual( 10002000, target.module.typedVar( "ulongVar" ) )
         self.assertEqual( 0x80000000, target.module.typedVar( "ulongArray" )[3] )
