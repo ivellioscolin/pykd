@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 
 #include <boost/bind.hpp>
@@ -36,7 +35,6 @@ static const std::string pykdVersion = PYKD_VERSION_BUILD_STR
 
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( startProcess_,  pykd::startProcess, 1, 2 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( attachProcess_, pykd::attachProcess, 1, 2);
 BOOST_PYTHON_FUNCTION_OVERLOADS( detachProcess_,  pykd::detachProcess, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( terminateProcess_,  pykd::terminateProcess, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS(closeDump_, pykd::closeDump, 0, 1);
@@ -93,6 +91,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( defineFunction_, pykd::defineFunction, 1, 2 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( setSoftwareBreakpoint_, Breakpoint::setSoftwareBreakpoint, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( setHardwareBreakpoint_, Breakpoint::setHardwareBreakpoint, 3, 4 );
+
+BOOST_PYTHON_FUNCTION_OVERLOADS( TargetHeap_getEntries, TargetHeapAdapter::getEntries, 1, 4);
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_enumSymbols, ModuleAdapter::enumSymbols, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( Module_findSymbol, ModuleAdapter::findSymbol, 2, 3 );
@@ -156,8 +156,8 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::def( "startProcess", pykd::startProcess, startProcess_( boost::python::args( "commandline", "debugOptions"), 
         "Start process for debugging" ) ); 
-    python::def("attachProcess", pykd::attachProcess, attachProcess_(boost::python::args("pid", "debugOptions"),
-        "Attach debugger to a exsisting process") );
+    python::def("attachProcess", pykd::attachProcess, 
+        "Attach debugger to a exsisting process");
     python::def( "detachProcess", pykd::detachProcess, detachProcess_( boost::python::args( "id" ),
         "Stop process debugging") ); 
     python::def( "detachAllProcesses", pykd::detachAllProcesses, 
@@ -706,6 +706,8 @@ BOOST_PYTHON_MODULE( pykd )
             "Return the process executable file name")
         .def("isCurrent", TargetProcessAdapter::isCurrent,
             "Check if the target is current")
+        .def("isManaged", TargetProcessAdapter::isManaged,
+            "Check if the taget process is managed")
         .def("getNumberThreads", TargetProcessAdapter::getNumberThreads,
             "Return number of threads for this process" )
         .def("getThread", TargetProcessAdapter::getThreadByIndex,
@@ -736,10 +738,14 @@ BOOST_PYTHON_MODULE( pykd )
             "Return list of breakpoints for the target process")
         .def("modules", TargetProcessAdapter::getModulesList,
             "Return list of modules for the target process")
+        .def("getManagedHeap", TargetProcessAdapter::getManagedHeap,
+            "Return object representing a managed heap")
+        .def("getManagedVar", TargetProcessAdapter::getManagedVar,
+            "Return object representing a managed object in the target managed process")
         .def("__str__", TargetProcessAdapter::print)
          ;
 
-    python::class_<kdlib::TargetThread, kdlib::TargetThreadPtr, boost::noncopyable>("targetThread", "Class representing process in the target system", python::no_init )
+    python::class_<kdlib::TargetThread, kdlib::TargetThreadPtr, boost::noncopyable>("targetThread", "Class representing thread in the target process", python::no_init )
         .def("__init__", python::make_constructor(&TargetThreadAdapter::getThread))
         .def("__init__", python::make_constructor(&TargetThreadAdapter::getCurrent))
         .def("getNumber", TargetThreadAdapter::getNumberThreads,
@@ -774,6 +780,17 @@ BOOST_PYTHON_MODULE( pykd )
             "Get thread's stack tarce")
         .def("__str__", TargetThreadAdapter::print)
         ;
+
+    python::class_<TargetHeapIterator>("targetHeapIterator", "iterator for typedVar array", python::no_init)
+        .def("__iter__", &TargetHeapIterator::self)
+        .def("__len__", &TargetHeapIterator::length)
+        .def("next", &TargetHeapIterator::next)
+        ;
+
+    python::class_<kdlib::TargetHeap, kdlib::TargetHeapPtr, boost::noncopyable>("targetHeap", "Class representing heap in the target process", python::no_init )
+        .def("entries", &TargetHeapAdapter::getEntries, TargetHeap_getEntries(python::args("typeName", "minSize", "maxSize"),
+            "Return heap's entries iterator object")[python::return_value_policy<python::manage_new_object>()] )
+         ;
 
     python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumBehavior>, boost::noncopyable>("module", "Class representing executable module", python::no_init)
         .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByName))

@@ -19,10 +19,10 @@ kdlib::PROCESS_DEBUG_ID startProcess(const std::wstring  &processName, const kdl
 }
 
 inline
-kdlib::PROCESS_DEBUG_ID attachProcess(kdlib::PROCESS_ID pid, const kdlib::ProcessDebugFlags& flags = kdlib::ProcessDebugDefault)
+kdlib::PROCESS_DEBUG_ID attachProcess(kdlib::PROCESS_ID pid)
 {
     AutoRestorePyState  pystate;
-    return kdlib::attachProcess(pid, flags);
+    return kdlib::attachProcess(pid);
 }
 
 inline

@@ -258,5 +258,5 @@ void TypedVarAdapter::setFieldAttr(kdlib::TypedVar& typedVar, const std::wstring
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namesapce pykd
+} // namespace pykd
 

@@ -4,6 +4,7 @@
 
 #include "pythreadstate.h"
 #include "pyeventhandler.h"
+#include "dbgexcept.h"
 
 namespace pykd {
 
@@ -245,6 +246,24 @@ struct TargetProcessAdapter {
         return process.getModuleByName(name);
     }
 
+    static bool isManaged(kdlib::TargetProcess& process) 
+    {
+        AutoRestorePyState  pystate;
+        return process.isManaged();
+    }
+
+    static kdlib::TargetHeapPtr getManagedHeap(kdlib::TargetProcess& process) 
+    {
+        AutoRestorePyState  pystate;
+        return process.getManagedHeap();
+    }
+
+    static kdlib::TypedVarPtr getManagedVar(kdlib::TargetProcess& process, kdlib::MEMOFFSET_64 address)
+    {
+        AutoRestorePyState  pystate;
+        return process.getManagedVar(address);
+    }
+
     static python::list getThreadList(kdlib::TargetProcess& process);
 
     static python::list getBreakpointsList(kdlib::TargetProcess& process);
@@ -332,6 +351,54 @@ struct TargetThreadAdapter {
     }
 
     static std::wstring print(kdlib::TargetThread& thread);
+};
+
+
+class TargetHeapIterator
+{
+public:
+
+    explicit TargetHeapIterator(kdlib::TargetHeapEnumPtr&  heapEnum) :
+        m_heapEnum(heapEnum)
+    {}
+
+    static python::object self(const python::object& obj)
+    {
+        return obj;
+    }
+
+    python::tuple next()
+    {
+        AutoRestorePyState  pystate;
+
+        kdlib::MEMOFFSET_64  addr;
+        std::wstring  name;
+        size_t  size;
+
+        if (!m_heapEnum->next(addr, name, size))
+            throw StopIteration("No more data.");
+
+        return python::make_tuple(addr, name, size);
+    }
+
+    size_t length()
+    {
+        AutoRestorePyState  pystate;
+        return m_heapEnum->getCount();
+    }
+
+private:
+
+    kdlib::TargetHeapEnumPtr  m_heapEnum;
+};
+
+struct TargetHeapAdapter {
+
+    static TargetHeapIterator* getEntries(kdlib::TargetHeap& heap, const std::wstring& typeName=L"", size_t minSize=0, size_t maxSize=-1)
+    {
+        return new TargetHeapIterator(heap.getEnum(typeName, minSize, maxSize));
+    }
+
 };
 
 } // pykd namespace
