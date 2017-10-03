@@ -146,6 +146,10 @@ struct TypedVarAdapter {
     
     static void setFieldAttr(kdlib::TypedVar& typedVar, const std::wstring &name, python::object&  object);
 
+    static kdlib::TypedVarPtr getFieldByKey(kdlib::TypedVar& typedVar, const std::wstring &name);
+
+    static void setFieldByKey(kdlib::TypedVar& typedVar, const std::wstring &name, python::object&  object);
+
     static size_t getElementCount( kdlib::TypedVar& typedVar ) 
     {
         AutoRestorePyState  pystate;

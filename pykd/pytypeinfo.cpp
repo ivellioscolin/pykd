@@ -130,8 +130,33 @@ kdlib::TypeInfoPtr TypeInfoAdapter::getElementAttr(kdlib::TypeInfo &typeInfo, co
 
 ///////////////////////////////////////////////////////////////////////////////
 
-python::list TypeInfoAdapter::getElementDir(kdlib::TypeInfo &typeInfo)
+kdlib::TypeInfoPtr TypeInfoAdapter::getElementByKey(kdlib::TypeInfo &typeInfo, const std::wstring &name)
 {
+    {
+        AutoRestorePyState  pystate;
+
+        try {
+            return typeInfo.getElement(name);
+        }
+        catch (kdlib::TypeException&)
+        {}
+
+        try {
+            return typeInfo.getMethod(name);
+        }
+        catch (kdlib::TypeException&)
+        {}
+    }
+
+    std::wstringstream sstr;
+    sstr << L'\'' << typeInfo.getName() << L'\'' << L" type has no field " << L'\'' << name << L'\'';
+    throw KeyException(std::string(_bstr_t(sstr.str().c_str())).c_str());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+python::list TypeInfoAdapter::getElementDir(kdlib::TypeInfo &typeInfo)
+{ 
     std::list<std::wstring>  lst;
 
     python::list pylst;

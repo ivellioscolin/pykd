@@ -258,5 +258,53 @@ void TypedVarAdapter::setFieldAttr(kdlib::TypedVar& typedVar, const std::wstring
 
 ///////////////////////////////////////////////////////////////////////////////
 
+kdlib::TypedVarPtr TypedVarAdapter::getFieldByKey(kdlib::TypedVar& typedVar, const std::wstring &name)
+{
+    {
+
+        AutoRestorePyState  pystate;
+
+        try
+        {
+            return typedVar.getElement( name );
+        }
+        catch (kdlib::TypeException&)
+        {}
+
+        try
+        {
+            return typedVar.getMethod( name );
+        }
+        catch (kdlib::TypeException&)
+        {}
+    }
+
+    std::wstringstream sstr;
+    sstr << L"typed var has no field " << L'\'' << name << L'\'';
+    throw KeyException(std::string(_bstr_t(sstr.str().c_str())).c_str());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void TypedVarAdapter::setFieldByKey(kdlib::TypedVar& typedVar, const std::wstring &name, python::object&  object)
+{
+    kdlib::TypedValue  value = NumVariantAdaptor::convertToVariant(object);
+
+    try
+    {
+         AutoRestorePyState  pystate;
+         typedVar.setElement(name, value);
+         return;
+    }
+    catch (kdlib::TypeException&)
+    {}
+
+    std::wstringstream sstr;
+    sstr << L"typed var has no field " << L'\'' << name << L'\'';
+    throw KeyException(std::string(_bstr_t(sstr.str().c_str())).c_str());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace pykd
 

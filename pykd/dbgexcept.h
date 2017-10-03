@@ -25,6 +25,14 @@ public:
     {}
 };
 
+class KeyException : public std::exception
+{
+public:
+
+    KeyException(const char* desc) : std::exception(desc)
+    {}
+};
+
 class StopIteration : public std::exception
 {
 public:
@@ -124,6 +132,11 @@ inline void pykdExceptionTranslate(const std::exception &e)
         return;
     }
 
+    if (typeid(e).hash_code() == typeid(KeyException).hash_code())
+    {
+        PyErr_SetString(PyExc_KeyError, e.what());
+        return;
+    }
 }
 
 inline void registerExceptions()
@@ -139,6 +152,7 @@ inline void registerExceptions()
     python::register_exception_translator<OverflowException>( &pykdExceptionTranslate );
     python::register_exception_translator<AttributeException>(&pykdExceptionTranslate);
     python::register_exception_translator<StopIteration>(&pykdExceptionTranslate);
+    python::register_exception_translator<KeyException>(&pykdExceptionTranslate);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

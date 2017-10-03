@@ -36,16 +36,18 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "Int4B(*[4])[2][3]", target.module.type("arrIntMatrixPtrs").name() )
         self.assertEqual( "Int4B(*)[2][3]", target.module.type("ptrIntMatrix").name() )
 
-
     def testGetField( self ):
         """ get field of the complex type """
         ti1 = target.module.type( "structTest" )
+        self.assertTrue( "UInt4B", ti1.m_field0.name() )
+        self.assertTrue( "UInt4B", ti1["m_field0"].name() )
         self.assertTrue( hasattr( ti1, "m_field0" ) )
-        try: hasattr(ti1, "m_field4" )                        # non-exsisting field
-        except pykd.BaseException: pass   
+        self.assertFalse( hasattr( ti1, "not_exists" ) )
+        self.assertRaises( AttributeError, lambda t: t.not_exists, ti1) # non-exsisting field
+        self.assertRaises( KeyError, lambda t: t["not_exists"], ti1) # non-exsisting field
+
 
     def testBaseTypes( self ):
-
         self.assertEqual("Int1B", pykd.typeInfo( "Int1B" ).name() )
         self.assertEqual("Int2B", pykd.typeInfo( "Int2B" ).name() )
         self.assertEqual("Int4B", pykd.typeInfo( "Int4B" ).name() )

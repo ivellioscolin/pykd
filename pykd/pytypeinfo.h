@@ -146,6 +146,8 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
 
     static kdlib::TypeInfoPtr getElementAttr(kdlib::TypeInfo &typeInfo, const std::wstring &name);
 
+    static kdlib::TypeInfoPtr getElementByKey(kdlib::TypeInfo &typeInfo, const std::wstring &name);
+
     static kdlib::TypeInfoPtr getElementByIndex( kdlib::TypeInfo &typeInfo, size_t index )
     {
         AutoRestorePyState  pystate;

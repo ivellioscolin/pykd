@@ -86,6 +86,9 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( 500, tv1.m_field1 )
         self.assertEqual( True, tv1.m_field2 )
         self.assertEqual( 1, tv1.m_field3 )
+        self.assertEqual( 1, tv1["m_field3"] )
+        self.assertRaises( AttributeError, lambda t: t.not_exists, tv1) # non-exsisting field
+        self.assertRaises( KeyError, lambda t: t["not_exists"], tv1) # non-exsisting field
 
     def testPtrField(self):
         tv = target.module.typedVar( "g_structTest" )
