@@ -8,7 +8,7 @@ import sys
 
 _name = "pykd"
 _desc = "python windbg extension"
-_version = '0.3.2.2'
+_version = '0.3.3.1'
 
 def getReleaseSrc():
     return 'Release_%d.%d' % sys.version_info[0:2]
@@ -28,7 +28,7 @@ if "bdist_wheel" in sys.argv:
 
     shutil.copy("__init__.py", package_dir)
 
-    bin_dir = os.path.join( os.path.curdir, '..', 'bin')
+    bin_dir = os.path.join( os.path.curdir, '..', 'kdlibcpp/bin')
     pykd_dir =  os.path.join( os.path.curdir, '..', 'out')
     if "--plat-name=win32" in sys.argv:
         bin_dir = os.path.join( bin_dir, 'x86')
@@ -72,7 +72,7 @@ elif "bdist_zip" in sys.argv:
         shutil.rmtree(package_dir)
     os.mkdir(package_dir)
 
-    bin_dir = os.path.join( os.path.curdir, '..', 'bin')
+    bin_dir = os.path.join( os.path.curdir, '..', 'kdlibcpp/bin')
     pykd_dir =  os.path.join( os.path.curdir, '..', 'out')
     if plat_name=="win32":
         bin_dir = os.path.join( bin_dir, 'x86')

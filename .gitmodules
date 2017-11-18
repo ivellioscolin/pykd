@@ -1,0 +1,3 @@
+[submodule "kdlibcpp"]
+	path = kdlibcpp
+	url = https://githomelab.ru/kdlibcpp/kdlibcpp.git

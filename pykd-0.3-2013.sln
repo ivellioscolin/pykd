@@ -25,13 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D1F122
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget (2)", ".nuget (2)", "{A13C500A-7AAF-4BDA-80F1-C59882D0AE58}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
+		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "pykdtest", "test\scripts\pykdtest.pyproj", "{3F0BE77E-19B0-4192-B432-44A25805BCB8}"
@@ -43,14 +37,14 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "snippets", "snippets\snippe
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "setup", "setup\setup.pyproj", "{D78837DC-BF31-4FC4-88A5-7F2FADAFA795}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kdlib", "kdlibcpp\source\kdlib_vc120.vcxproj", "{3E9C538F-F060-4E86-AB7D-D44439615B63}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kdlib", "kdlibcpp\kdlib\source\kdlib_vc120.vcxproj", "{3E9C538F-F060-4E86-AB7D-D44439615B63}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pykd", "pykd\pykd_vc120.vcxproj", "{C4C45791-0201-4406-BC5C-A384B01E3BF5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF} = {0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "targetapp", "kdlibcpp\tests\targetapp\targetapp_vc120.vcxproj", "{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "targetapp", "kdlibcpp\kdlib\tests\targetapp\targetapp_vc120.vcxproj", "{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pykd_ext", "pykd_bootstrapper\pykd_bootstrapper_vc120.vcxproj", "{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}"
 EndProject
