@@ -332,7 +332,7 @@ std::string loadAnsiStr(kdlib::MEMOFFSET_64 offset)
     kdlib::MEMOFFSET_64  buffer = kdlib::ptrPtr( offset + kdlib::ptrSize() );
 
     if ( maximumLength < length )
-        throw kdlib::DbgException("Corrupted UNICODE_STRING structure");
+        throw kdlib::DbgException("Corrupted ANSI_STRING structure");
 
     if ( length == 0 )
         return std::string();
