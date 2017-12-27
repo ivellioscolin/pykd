@@ -438,7 +438,7 @@ py(
         CComQIPtr<IDebugControl>  control = client;
 
         control->ControlledOutput(
-            DEBUG_OUTCTL_ALL_CLIENTS,
+            DEBUG_OUTCTL_AMBIENT_TEXT, //DEBUG_OUTCTL_ALL_CLIENTS,
             DEBUG_OUTPUT_ERROR,
             e.what()
             );
@@ -508,7 +508,7 @@ pip(
         CComQIPtr<IDebugControl>  control = client;
 
         control->ControlledOutput(
-            DEBUG_OUTCTL_ALL_CLIENTS,
+            DEBUG_OUTCTL_AMBIENT_TEXT, //DEBUG_OUTCTL_ALL_CLIENTS,
             DEBUG_OUTPUT_ERROR,
             e.what()
             );
