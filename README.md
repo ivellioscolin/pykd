@@ -13,4 +13,5 @@ If you want to automate the debugger but dislike the WinDbg built-in script mach
 [Last Release](/../wikis/Last Release)
 
 ## Documentation
-[User Manual](/../wikis/User Manual rus)
+[User Manual](/../wikis/User Manual rus)    
+[API Reference](/../wikis/API Reference)     
