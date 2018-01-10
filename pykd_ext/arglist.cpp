@@ -35,7 +35,8 @@ Options::Options(const std::string& cmdline) :
     pyMajorVersion(-1),
     pyMinorVersion(-1),
     global(false),
-    showHelp(false)
+    showHelp(false),
+    runModule(false)
 {
 
     args = getArgsList( cmdline );
@@ -64,6 +65,13 @@ Options::Options(const std::string& cmdline) :
         if (*it == "--help" || *it == "-h")
         {
             showHelp = true;
+            it = args.erase(it);
+            continue;
+        }
+
+        if (*it == "--module" || *it == "-m")
+        {
+            runModule = true;
             it = args.erase(it);
             continue;
         }

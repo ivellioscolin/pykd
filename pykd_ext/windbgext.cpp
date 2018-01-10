@@ -182,8 +182,9 @@ info(
         CComQIPtr<IDebugControl>  control = client;
 
         control->ControlledOutput(
-            DEBUG_OUTCTL_THIS_CLIENT,
+            DEBUG_OUTCTL_AMBIENT_TEXT,
             DEBUG_OUTPUT_NORMAL,
+            "%s",
             sstr.str().c_str()
             );
     } 
@@ -192,8 +193,9 @@ info(
         CComQIPtr<IDebugControl>  control = client;
 
         control->ControlledOutput(
-            DEBUG_OUTCTL_THIS_CLIENT,
+            DEBUG_OUTCTL_AMBIENT_TEXT,
             DEBUG_OUTPUT_ERROR,
+            "%s",
             e.what()
             );
     }
@@ -254,11 +256,13 @@ static const char  printUsageMsg[] =
     "\tOptions:\n"
     "\t-g --global  : run code in the common namespace\n"
     "\t-l --local   : run code in the isolated namespace\n"
+    "\t-m --module  : run module as the __main__ module ( see the python command line option -m )\n"
     "\n"
     "\tcommand samples:\n"
     "\t\"!py\"                          : run REPL\n"
     "\t\"!py --local\"                  : run REPL in the isolated namespace\n"
-    "\t\"!py -g script.py 10 \"string\"\" : run script file with argument in the commom namespace\n"
+    "\t\"!py -g script.py 10 \"string\"\" : run a script file with an argument in the commom namespace\n"
+    "\t\"!py -m module_name\" : run a named module as the __main__\n"
     "\n"
     "!pip [version] [args]\n"
     "\trun pip package manager\n"
@@ -290,8 +294,9 @@ help(
     CComQIPtr<IDebugControl>  control = client;
 
     control->ControlledOutput(
-        DEBUG_OUTCTL_THIS_CLIENT,
+        DEBUG_OUTCTL_AMBIENT_TEXT,
         DEBUG_OUTPUT_NORMAL,
+        "%s",
         printUsageMsg
         );
 
@@ -331,13 +336,21 @@ py(
         int  majorVersion = opts.pyMajorVersion;
         int  minorVersion = opts.pyMinorVersion;
 
-        if ( opts.args.size() > 0 && majorVersion == -1 && minorVersion == -1 )
+        std::string  scriptFileName;
+
+        if ( opts.args.size() > 0 && !opts.runModule )
         {
-            std::ifstream  scriptFile(opts.args[0]);
+            scriptFileName = getScriptFileName(opts.args[0]);
+            if ( scriptFileName.empty() )
+                throw std::invalid_argument("script not found\n");
+        }
+
+        if ( !opts.runModule && majorVersion == -1 && minorVersion == -1 )
+        {
+            std::ifstream  scriptFile(scriptFileName);
 
             if ( scriptFile.is_open() )
             {
-
                 std::string  firstline;
                 std::getline(scriptFile, firstline);
 
@@ -358,7 +371,6 @@ py(
 
         AutoInterpreter  autoInterpreter(opts.global, majorVersion, minorVersion);
 
-        //PyObjectRef  mainName = IsPy3() ? PyUnicode_FromString("__main__") : PyString_FromString("__main__"); 
         PyObjectRef  mainMod = PyImport_ImportModule("__main__");
         PyObjectRef  globals = PyObject_GetAttrString(mainMod, "__dict__");
 
@@ -379,10 +391,8 @@ py(
             PyErr_Clear();
             result = PyRun_String("import code\ncode.InteractiveConsole(globals()).interact()\n", Py_file_input, globals, globals);
         }
-        else
+        else 
         {
-            std::string  scriptFileName = getScriptFileName(opts.args[0]);
-
             if (IsPy3())
             {
                 std::wstring  scriptFileNameW = _bstr_t(scriptFileName.c_str());
@@ -390,7 +400,10 @@ py(
                 // устанавиливаем питоновские аргументы
                 std::vector<std::wstring>   argws(opts.args.size());
 
-                argws[0] = scriptFileNameW;
+                if ( !scriptFileNameW.empty() )
+                    argws[0] = scriptFileNameW;
+                else
+                    argws[0] = L"";
 
                 for (size_t i = 1; i < opts.args.size(); ++i)
                     argws[i] = _bstr_t(opts.args[i].c_str());
@@ -401,30 +414,57 @@ py(
 
                 PySys_SetArgv_Py3((int)opts.args.size(), &pythonArgs[0]);
 
-                FILE*  fs = _Py_fopen(scriptFileName.c_str(), "r");
-                if ( !fs )
-                    throw std::invalid_argument("script not found\n");
+                if ( opts.runModule )
+                {
+                   std::stringstream sstr;
+                   sstr << "runpy.run_module(\"" << opts.args[0] << "\", run_name='__main__', alter_sys=True)" << std::endl;
 
-                PyObjectRef result = PyRun_File(fs, scriptFileName.c_str(), Py_file_input, globals, globals);
+                    PyObjectRef result;
+                    result = PyRun_String("import runpy\n", Py_file_input, globals, globals);
+                    result = PyRun_String(sstr.str().c_str(), Py_file_input, globals, globals);
+                }
+                else
+                {
+                    FILE*  fs = _Py_fopen(scriptFileName.c_str(), "r");
+                    if ( !fs )
+                        throw std::invalid_argument("script not found\n");
+
+                    PyObjectRef result = PyRun_File(fs, scriptFileName.c_str(), Py_file_input, globals, globals);
+                }
             }
             else
             {
                 std::vector<char*>  pythonArgs(opts.args.size());
 
-                pythonArgs[0] = const_cast<char*>(scriptFileName.c_str());
+                if ( !scriptFileName.empty() )
+                    pythonArgs[0] = const_cast<char*>(scriptFileName.c_str());
+                else
+                    pythonArgs[0] = "";
 
                 for (size_t i = 1; i < opts.args.size(); ++i)
                     pythonArgs[i] = const_cast<char*>(opts.args[i].c_str());
 
                 PySys_SetArgv((int)opts.args.size(), &pythonArgs[0]);
 
-                PyObjectRef  pyfile = PyFile_FromString(const_cast<char*>(scriptFileName.c_str()), "r");
-                if (!pyfile)
-                    throw std::invalid_argument("script not found\n");
+                if ( opts.runModule )
+                {
+                   std::stringstream sstr;
+                   sstr << "runpy.run_module('" << opts.args[0] << "', run_name='__main__', alter_sys=True)" << std::endl;
 
-                FILE *fs = PyFile_AsFile(pyfile);
+                    PyObjectRef result;
+                    result = PyRun_String("import runpy\n", Py_file_input, globals, globals);
+                    result = PyRun_String(sstr.str().c_str(), Py_file_input, globals, globals);
+                }
+                else
+                {
+                    PyObjectRef  pyfile = PyFile_FromString(const_cast<char*>(scriptFileName.c_str()), "r");
+                    if (!pyfile)
+                        throw std::invalid_argument("script not found\n");
 
-                PyObjectRef result = PyRun_File(fs, scriptFileName.c_str(), Py_file_input, globals, globals);
+                    FILE *fs = PyFile_AsFile(pyfile);
+
+                    PyObjectRef result = PyRun_File(fs, scriptFileName.c_str(), Py_file_input, globals, globals);
+                }
             }
         }
 
@@ -438,8 +478,9 @@ py(
         CComQIPtr<IDebugControl>  control = client;
 
         control->ControlledOutput(
-            DEBUG_OUTCTL_AMBIENT_TEXT, //DEBUG_OUTCTL_ALL_CLIENTS,
+            DEBUG_OUTCTL_AMBIENT_TEXT,
             DEBUG_OUTPUT_ERROR,
+            "%s",
             e.what()
             );
     }
@@ -508,8 +549,9 @@ pip(
         CComQIPtr<IDebugControl>  control = client;
 
         control->ControlledOutput(
-            DEBUG_OUTCTL_AMBIENT_TEXT, //DEBUG_OUTCTL_ALL_CLIENTS,
+            DEBUG_OUTCTL_AMBIENT_TEXT, 
             DEBUG_OUTPUT_ERROR,
+            "%s",
             e.what()
             );
     }
@@ -519,9 +561,7 @@ pip(
     return S_OK;
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
-
 
 void handleException()
 {
@@ -602,87 +642,50 @@ void getPathList( std::list<std::string>  &pathStringLst)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::string findScriptPath(const std::string &fullFileName)
+std::string getScriptFileName(const std::string &scriptName)
 {
-    std::list<std::string>  pathList;
-    getPathList(pathList);
+    char*  ext = NULL;
 
-    for ( auto path : pathList )
-    {
-        DWORD bufSize = SearchPathA(
-            path.c_str(),
-            fullFileName.c_str(),
+    DWORD searchResult = 
+        SearchPathA(
+            NULL,
+            scriptName.c_str(),
             NULL,
             0,
             NULL,
-            NULL);
+            NULL );
 
-        if (bufSize > 0)
-        {
-            bufSize += 1;
-            std::vector<char> fullFileNameCStr(bufSize);
-            char *partFileNameCStr = NULL;
+    if ( searchResult == 0 )
+    {
+        ext = ".py";
 
-            bufSize = SearchPathA(
-                path.c_str(),
-                fullFileName.c_str(),
+        searchResult = 
+            SearchPathA(
                 NULL,
-                bufSize,
-                &fullFileNameCStr[0],
-                &partFileNameCStr);
+                scriptName.c_str(),
+                ext,
+                0,
+                NULL,
+                NULL );
 
-            DWORD   fileAttr = GetFileAttributesA(&fullFileNameCStr[0]);
-
-            if ((fileAttr & FILE_ATTRIBUTE_DIRECTORY) == 0)
-                return std::string(&fullFileNameCStr[0]);
-        }
-    }
-
-    std::stringstream sstr;
-
-    sstr << "script not found" << std::endl << std::endl;
-
-    if ( pathList.empty() )
-    {
-        sstr << "Path list: empty" << std::endl;
-    }
-    else
-    {
-        sstr << "Path list:" << std::endl;
-
-        for ( auto path : pathList )
+        if ( searchResult == 0 )
         {
-            sstr << '\t' << path << std::endl;
+            return "";
         }
     }
 
-    throw std::invalid_argument(sstr.str().c_str());
-}
+    std::vector<char>  pathBuffer(searchResult);
 
-///////////////////////////////////////////////////////////////////////////////
+    searchResult = 
+        SearchPathA(
+            NULL,
+            scriptName.c_str(),
+            ext,
+            pathBuffer.size(),
+            &pathBuffer.front(),
+            NULL );
 
-std::string getScriptFileName(const std::string &scriptName)
-{
-
-    if ( scriptName.find('\\') != std::string::npos || scriptName.find('/') != std::string::npos )
-    {
-        if (GetFileAttributesA(scriptName.c_str()) != INVALID_FILE_ATTRIBUTES)
-            return scriptName;
-
-        std::stringstream sstr;
-
-        sstr << "File \'" << scriptName << "\' not found" << std::endl;
-
-        throw std::invalid_argument(sstr.str().c_str());
-    }
-
-    try {
-        return findScriptPath(scriptName);
-    }
-    catch( std::invalid_argument& )
-    {}
-
-    return findScriptPath(scriptName + ".py");
+    return std::string(&pathBuffer.front(), searchResult);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -734,8 +737,6 @@ void getPythonVersion(int&  majorVersion, int& minorVersion)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-
 
 void getDefaultPythonVersion(int& majorVersion, int& minorVersion)
 {
