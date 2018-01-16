@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <string>
 #include <fstream>
 #include <iomanip> 
 #include <regex>
@@ -26,6 +27,7 @@ void handleException();
 std::string getScriptFileName(const std::string &scriptName);
 void getPythonVersion(int&  majorVersion, int& minorVersion);
 void getDefaultPythonVersion(int& majorVersion, int& minorVersion);
+void printString(PDEBUG_CLIENT client, ULONG mask, const char* str);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -179,25 +181,29 @@ info(
 
         sstr << std::endl;
 
-        CComQIPtr<IDebugControl>  control = client;
+        printString(client, DEBUG_OUTPUT_NORMAL, sstr.str().c_str() );
 
-        control->ControlledOutput(
-            DEBUG_OUTCTL_AMBIENT_TEXT,
-            DEBUG_OUTPUT_NORMAL,
-            "%s",
-            sstr.str().c_str()
-            );
+        //CComQIPtr<IDebugControl>  control = client;
+
+        //control->ControlledOutput(
+        //    DEBUG_OUTCTL_AMBIENT_TEXT,
+        //    DEBUG_OUTPUT_NORMAL,
+        //    "%s",
+        //    sstr.str().c_str()
+        //    );
     } 
     catch(std::exception &e)
     {
-        CComQIPtr<IDebugControl>  control = client;
+        printString(client, DEBUG_OUTPUT_ERROR, e.what() );
 
-        control->ControlledOutput(
-            DEBUG_OUTCTL_AMBIENT_TEXT,
-            DEBUG_OUTPUT_ERROR,
-            "%s",
-            e.what()
-            );
+        //CComQIPtr<IDebugControl>  control = client;
+
+        //control->ControlledOutput(
+        //    DEBUG_OUTCTL_AMBIENT_TEXT,
+        //    DEBUG_OUTPUT_ERROR,
+        //    "%s",
+        //    e.what()
+        //    );
     }
 
     return S_OK;
@@ -385,6 +391,8 @@ py(
 
         InterruptWatch  interruptWatch(client);
 
+        PyRun_String("import sys\nsys.setrecursionlimit(500)\n", Py_file_input, globals, globals);
+
         if (opts.args.empty())
         {
             PyObjectRef  result = PyRun_String("import pykd\nfrom pykd import *\n", Py_file_input, globals, globals);
@@ -475,14 +483,16 @@ py(
     }
     catch (std::exception &e)
     {
-        CComQIPtr<IDebugControl>  control = client;
+        printString(client, DEBUG_OUTPUT_ERROR, e.what() );
 
-        control->ControlledOutput(
-            DEBUG_OUTCTL_AMBIENT_TEXT,
-            DEBUG_OUTPUT_ERROR,
-            "%s",
-            e.what()
-            );
+        //CComQIPtr<IDebugControl>  control = client;
+
+        //control->ControlledOutput(
+        //    DEBUG_OUTCTL_AMBIENT_TEXT,
+        //    DEBUG_OUTPUT_ERROR,
+        //    "%s",
+        //    e.what()
+        //    );
     }
 
     client->SetOutputMask(oldMask);
@@ -546,14 +556,16 @@ pip(
     }
     catch (std::exception &e)
     {
-        CComQIPtr<IDebugControl>  control = client;
+         printString(client, DEBUG_OUTPUT_ERROR, e.what() );
 
-        control->ControlledOutput(
-            DEBUG_OUTCTL_AMBIENT_TEXT, 
-            DEBUG_OUTPUT_ERROR,
-            "%s",
-            e.what()
-            );
+        //CComQIPtr<IDebugControl>  control = client;
+
+        //control->ControlledOutput(
+        //    DEBUG_OUTCTL_AMBIENT_TEXT, 
+        //    DEBUG_OUTPUT_ERROR,
+        //    "%s",
+        //    e.what()
+        //    );
     }
 
     --recursiveGuard;
@@ -784,6 +796,28 @@ void getDefaultPythonVersion(int& majorVersion, int& minorVersion)
 
     if (!found)
         throw std::exception("failed to find python interpreter\n");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void printString(PDEBUG_CLIENT client, ULONG mask, const char* str)
+{
+    std::stringstream  sstr(str);
+    while( sstr.good() )
+    {
+        std::string  line;
+        std::getline(sstr, line);
+
+        CComQIPtr<IDebugControl>  control = client;
+
+        control->ControlledOutput(
+            DEBUG_OUTCTL_AMBIENT_TEXT,
+            mask,
+            "%s\n",
+            line.c_str()
+            );
+    }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
