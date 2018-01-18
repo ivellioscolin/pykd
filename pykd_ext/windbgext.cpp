@@ -182,28 +182,10 @@ info(
         sstr << std::endl;
 
         printString(client, DEBUG_OUTPUT_NORMAL, sstr.str().c_str() );
-
-        //CComQIPtr<IDebugControl>  control = client;
-
-        //control->ControlledOutput(
-        //    DEBUG_OUTCTL_AMBIENT_TEXT,
-        //    DEBUG_OUTPUT_NORMAL,
-        //    "%s",
-        //    sstr.str().c_str()
-        //    );
     } 
     catch(std::exception &e)
     {
         printString(client, DEBUG_OUTPUT_ERROR, e.what() );
-
-        //CComQIPtr<IDebugControl>  control = client;
-
-        //control->ControlledOutput(
-        //    DEBUG_OUTCTL_AMBIENT_TEXT,
-        //    DEBUG_OUTPUT_ERROR,
-        //    "%s",
-        //    e.what()
-        //    );
     }
 
     return S_OK;
@@ -425,7 +407,7 @@ py(
                 if ( opts.runModule )
                 {
                    std::stringstream sstr;
-                   sstr << "runpy.run_module(\"" << opts.args[0] << "\", run_name='__main__', alter_sys=True)" << std::endl;
+                   sstr << "runpy.run_module(\"" << opts.args[0] << "\", run_name='__main__',  alter_sys=True)" << std::endl;
 
                     PyObjectRef result;
                     result = PyRun_String("import runpy\n", Py_file_input, globals, globals);
@@ -484,15 +466,6 @@ py(
     catch (std::exception &e)
     {
         printString(client, DEBUG_OUTPUT_ERROR, e.what() );
-
-        //CComQIPtr<IDebugControl>  control = client;
-
-        //control->ControlledOutput(
-        //    DEBUG_OUTCTL_AMBIENT_TEXT,
-        //    DEBUG_OUTPUT_ERROR,
-        //    "%s",
-        //    e.what()
-        //    );
     }
 
     client->SetOutputMask(oldMask);
@@ -557,15 +530,6 @@ pip(
     catch (std::exception &e)
     {
          printString(client, DEBUG_OUTPUT_ERROR, e.what() );
-
-        //CComQIPtr<IDebugControl>  control = client;
-
-        //control->ControlledOutput(
-        //    DEBUG_OUTCTL_AMBIENT_TEXT, 
-        //    DEBUG_OUTPUT_ERROR,
-        //    "%s",
-        //    e.what()
-        //    );
     }
 
     --recursiveGuard;
@@ -802,20 +766,35 @@ void getDefaultPythonVersion(int& majorVersion, int& minorVersion)
 
 void printString(PDEBUG_CLIENT client, ULONG mask, const char* str)
 {
+    CComQIPtr<IDebugControl>  control = client;
+
+    ULONG  engOpts;
+    bool prefer_dml = SUCCEEDED(control->GetEngineOptions(&engOpts)) && ( (engOpts & DEBUG_ENGOPT_PREFER_DML ) != 0 );
+
     std::stringstream  sstr(str);
     while( sstr.good() )
     {
         std::string  line;
         std::getline(sstr, line);
 
-        CComQIPtr<IDebugControl>  control = client;
-
-        control->ControlledOutput(
-            DEBUG_OUTCTL_AMBIENT_TEXT,
-            mask,
-            "%s\n",
-            line.c_str()
-            );
+        if ( prefer_dml && mask == DEBUG_OUTPUT_ERROR )
+        {
+            control->ControlledOutput(
+                DEBUG_OUTCTL_AMBIENT_DML,
+                mask,
+                "<col fg=\"errfg\" bg=\"errbg\">%s</col>\n",
+                line.c_str()
+                );
+        }
+        else
+        {
+            control->ControlledOutput(
+                DEBUG_OUTCTL_AMBIENT_TEXT,
+                mask,
+                "%s\n",
+                line.c_str()
+                );
+        }
     }
 
 }
