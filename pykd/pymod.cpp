@@ -20,6 +20,7 @@
 #include "pytypeinfo.h"
 #include "pycpucontext.h"
 #include "pyprocess.h"
+#include "pytagged.h"
 
 using namespace pykd;
 
@@ -596,6 +597,12 @@ BOOST_PYTHON_MODULE( pykd )
         "Note: reloading the symbols for the module deletes all synthetic symbols associated with that module.");
     python::def( "removeSyntheticSymbol", pykd::removeSyntheticSymbol,
         "The removeSyntheticSymbol function removes a synthetic symbol from a module in the current proces" );
+
+    // secondary callback data
+    python::def("enumTagged", pykd::enumTagged,
+        "Return the list of secondary callback data IDs (as a strings)" );
+    python::def("loadTaggedBuffer", pykd::loadTaggedBuffer,
+        "Read the buffer of secondary callback data by ID" );
 
     python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVariant", python::no_init )
         .def("__init__", python::make_constructor(&NumVariantAdaptor::getVariant) )

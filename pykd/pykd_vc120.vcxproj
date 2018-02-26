@@ -590,6 +590,7 @@
     <ClInclude Include="pymodule.h" />
     <ClInclude Include="pyprocess.h" />
     <ClInclude Include="pysymengine.h" />
+    <ClInclude Include="pytagged.h" />
     <ClInclude Include="pythreadstate.h" />
     <ClInclude Include="pytypedvar.h" />
     <ClInclude Include="pytypeinfo.h" />
@@ -623,6 +624,7 @@
     </ClCompile>
     <ClCompile Include="pymodule.cpp" />
     <ClCompile Include="pyprocess.cpp" />
+    <ClCompile Include="pytagged.cpp" />
     <ClCompile Include="pytypedvar.cpp" />
     <ClCompile Include="pytypeinfo.cpp" />
     <ClCompile Include="stdafx.cpp">

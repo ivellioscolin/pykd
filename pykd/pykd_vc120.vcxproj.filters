@@ -81,6 +81,9 @@
     <ClInclude Include="pydataaccess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="pytagged.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -246,6 +249,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pyprocess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pytagged.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

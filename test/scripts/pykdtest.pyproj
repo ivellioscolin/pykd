@@ -50,6 +50,7 @@
     <Compile Include="regtest.py" />
     <Compile Include="stacktest.py" />
     <Compile Include="synsymtest.py" />
+    <Compile Include="taggedtest.py" />
     <Compile Include="target.py" />
     <Compile Include="targetprocess.py" />
     <Compile Include="testutils.py" />
