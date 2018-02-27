@@ -27,6 +27,7 @@ import excepttest
 import targetprocess
 import ehloadtest
 import synsymtest
+import taggedtest
 
 pykd.initialize()
 
@@ -65,6 +66,7 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( mspdbtest.MsPdbTest ),
                 unittest.TestLoader().loadTestsFromTestCase( targetprocess.ProcessTest ),
                 unittest.TestLoader().loadTestsFromTestCase( ehloadtest.EhLoadTest ),
+                unittest.TestLoader().loadTestsFromTestCase( taggedtest.TaggedTest ),
 
                 #unittest.TestLoader().loadTestsFromTestCase( excepttest.ExceptionTest ),
             ] ) 
