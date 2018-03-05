@@ -119,6 +119,20 @@ python::object debugCommand( const std::wstring &command,  bool suppressOutput =
     return python::object();
 }
 
+inline
+kdlib::DebugOptionsSet getDebugOptions()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getDebugOptions();
+}
+
+inline
+void changeDebugOptions(kdlib::DebugOptionsSet &addOptions, kdlib::DebugOptionsSet &removeOptions)
+{
+    AutoRestorePyState  pystate;
+    kdlib::changeDebugOptions(addOptions, removeOptions);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 // processes end threads

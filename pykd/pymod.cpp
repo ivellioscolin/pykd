@@ -186,6 +186,11 @@ BOOST_PYTHON_MODULE( pykd )
         "Create memory dump file" );
     python::def( "getLocalProcesses", pykd::getLocalProcesses,
         "Return list of runnng processes on the host system" );
+    python::def( "getDebugOptions", pykd::getDebugOptions,
+        "Return debug options" );
+    python::def( "changeDebugOptions", pykd::changeDebugOptions,
+        "Change debug options" );
+
 
     python::def( "breakin", pykd::targetBreak,
         "Break into debugger" );
@@ -1360,16 +1365,17 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__str__", pykd::printSyntheticSymbol,
             "Return object as a string");
 
-    //python::class_<pykd::DataAccessor, boost::noncopyable>("dataAccessor",
-    //   "class for abstract representation of data storage",python::no_init)
-    //    .def("readByte", &pykd::DataAccessor::readByte)
-    //    ;
+    python::enum_<kdlib::DebugOptions>("debugOptions", "Debug options")
+        .value("InitialBreak", kdlib::InitialBreak)
+        .value("FinalBreak", kdlib::FinalBreak)
+        .value("PreferDml", kdlib::PreferDml)
+        ;
 
-    //python::class_<pykd::ListDataAccessor, kdlib::DataAccessorPtr>("objectAccessor",
-    //    "class for data access to python objects", python::no_init)
-    //    .def( python::init<python::object&>() )
-    //    //.def("readByte", &pykd::ListDataAccessor::readByte, "")
-    //    ;
+    python::enum_<kdlib::BreakpointAccess>("breakpointAccess", "Breakpoint access types")
+        .value("Read", kdlib::Read)
+        .value("Write", kdlib::Write)
+        .value("Execute", kdlib::Execute)
+        ;
 
     // C++ exception translation to python
     pykd::registerExceptions();
