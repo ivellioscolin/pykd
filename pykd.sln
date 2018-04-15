@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5A3C2DA6-AE91-4025-AC03-A58BD03CEBCD}"
 EndProject
@@ -20,14 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "um", "um", "{EEFC9510-DFA7-
 		samples\um\virtalloc.py = samples\um\virtalloc.py
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D1F1222A-A12B-4FD7-91A0-0AB6393A3169}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
-EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "pykdtest", "test\scripts\pykdtest.pyproj", "{3F0BE77E-19B0-4192-B432-44A25805BCB8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C4C45791-0201-4406-BC5C-A384B01E3BF5} = {C4C45791-0201-4406-BC5C-A384B01E3BF5}
@@ -37,18 +29,14 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "snippets", "snippets\snippe
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "setup", "setup\setup.pyproj", "{D78837DC-BF31-4FC4-88A5-7F2FADAFA795}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kdlib", "kdlibcpp\kdlib\source\kdlib_vc120.vcxproj", "{3E9C538F-F060-4E86-AB7D-D44439615B63}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kdlib", "kdlibcpp\kdlib\source\kdlib.vcxproj", "{3E9C538F-F060-4E86-AB7D-D44439615B63}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pykd", "pykd\pykd_vc120.vcxproj", "{C4C45791-0201-4406-BC5C-A384B01E3BF5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pykd", "pykd\pykd.vcxproj", "{C4C45791-0201-4406-BC5C-A384B01E3BF5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF} = {0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "targetapp", "kdlibcpp\kdlib\tests\targetapp\targetapp_vc120.vcxproj", "{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pykd_ext", "pykd_bootstrapper\pykd_bootstrapper_vc120.vcxproj", "{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pykd_ext_2.0", "pykd_ext\pykd_ext_vc120.vcxproj", "{583F9A6C-AF6D-45E0-A8F4-290D93611185}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "targetapp", "kdlibcpp\kdlib\tests\targetapp\targetapp.vcxproj", "{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -175,50 +163,6 @@ Global
 		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}.Release_3.6|Win32.Build.0 = Release|Win32
 		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}.Release_3.6|x64.ActiveCfg = Release|x64
 		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF}.Release_3.6|x64.Build.0 = Release|x64
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Debug_2.7|Win32.ActiveCfg = Debug_2.7|Win32
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Debug_2.7|Win32.Build.0 = Debug_2.7|Win32
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Debug_2.7|x64.ActiveCfg = Debug_2.7|x64
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Debug_2.7|x64.Build.0 = Debug_2.7|x64
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Debug_3.5|Win32.ActiveCfg = Debug_2.7|Win32
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Debug_3.5|Win32.Build.0 = Debug_2.7|Win32
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Debug_3.5|x64.ActiveCfg = Debug_2.7|x64
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Debug_3.5|x64.Build.0 = Debug_2.7|x64
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Debug_3.6|Win32.ActiveCfg = Debug_2.7|Win32
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Debug_3.6|x64.ActiveCfg = Debug_2.7|x64
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Release_2.7|Win32.ActiveCfg = Release_2.7|Win32
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Release_2.7|Win32.Build.0 = Release_2.7|Win32
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Release_2.7|x64.ActiveCfg = Release_2.7|x64
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Release_2.7|x64.Build.0 = Release_2.7|x64
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Release_3.5|Win32.ActiveCfg = Release_2.7|Win32
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Release_3.5|Win32.Build.0 = Release_2.7|Win32
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Release_3.5|x64.ActiveCfg = Release_2.7|x64
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Release_3.5|x64.Build.0 = Release_2.7|x64
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Release_3.6|Win32.ActiveCfg = Release_2.7|Win32
-		{CA0252CE-EF81-4DD8-A96F-A0E0E3644B7B}.Release_3.6|x64.ActiveCfg = Release_2.7|x64
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_2.7|Win32.ActiveCfg = Debug|Win32
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_2.7|Win32.Build.0 = Debug|Win32
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_2.7|x64.ActiveCfg = Debug|x64
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_2.7|x64.Build.0 = Debug|x64
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_3.5|Win32.ActiveCfg = Debug|Win32
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_3.5|Win32.Build.0 = Debug|Win32
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_3.5|x64.ActiveCfg = Debug|x64
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_3.5|x64.Build.0 = Debug|x64
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_3.6|Win32.ActiveCfg = Debug|Win32
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_3.6|Win32.Build.0 = Debug|Win32
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_3.6|x64.ActiveCfg = Debug|x64
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Debug_3.6|x64.Build.0 = Debug|x64
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_2.7|Win32.ActiveCfg = Release|Win32
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_2.7|Win32.Build.0 = Release|Win32
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_2.7|x64.ActiveCfg = Release|x64
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_2.7|x64.Build.0 = Release|x64
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_3.5|Win32.ActiveCfg = Release|Win32
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_3.5|Win32.Build.0 = Release|Win32
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_3.5|x64.ActiveCfg = Release|x64
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_3.5|x64.Build.0 = Release|x64
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_3.6|Win32.ActiveCfg = Release|Win32
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_3.6|Win32.Build.0 = Release|Win32
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_3.6|x64.ActiveCfg = Release|x64
-		{583F9A6C-AF6D-45E0-A8F4-290D93611185}.Release_3.6|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -228,5 +172,8 @@ Global
 		{3F0BE77E-19B0-4192-B432-44A25805BCB8} = {5A3C2DA6-AE91-4025-AC03-A58BD03CEBCD}
 		{6471FEDC-3129-410F-BFFC-4BC89707E5EC} = {AAB21DD2-B0EE-493E-8415-5195F18879EB}
 		{0E4CC688-F2F5-499F-9C07-0F2CAEE0D3EF} = {5A3C2DA6-AE91-4025-AC03-A58BD03CEBCD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {23D3DF9E-C3F8-476E-8B59-440641E1B2D6}
 	EndGlobalSection
 EndGlobal
