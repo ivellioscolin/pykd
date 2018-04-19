@@ -796,7 +796,11 @@ BOOST_PYTHON_MODULE( pykd )
     python::class_<TargetHeapIterator>("targetHeapIterator", "iterator for typedVar array", python::no_init)
         .def("__iter__", &TargetHeapIterator::self)
         .def("__len__", &TargetHeapIterator::length)
+#if PY_VERSION_HEX < 0x03000000
         .def("next", &TargetHeapIterator::next)
+#else
+        .def("__next__", &TargetHeapIterator::next)
+#endif
         ;
 
     python::class_<kdlib::TargetHeap, kdlib::TargetHeapPtr, boost::noncopyable>("targetHeap", "Class representing heap in the target process", python::no_init )
@@ -960,7 +964,11 @@ BOOST_PYTHON_MODULE( pykd )
 
     python::class_<TypedVarIterator>("typedVarIterator", "iterator for typedVar array", python::no_init)
         .def("__iter__", &TypedVarIterator::self)
+#if PY_VERSION_HEX < 0x03000000
         .def("next", &TypedVarIterator::next)
+#else
+        .def("__next__", &TypedVarIterator::next)
+#endif
         ;
 
     python::class_<kdlib::TypedVar, kdlib::TypedVarPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typedVar", 
