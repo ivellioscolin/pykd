@@ -340,5 +340,5 @@ class TypeInfoTest( unittest.TestCase ):
 
     def testGteBaseClass(self):
         classChild = target.module.type("classChild")
-        self.assertEqual( ["classBase1", "classBase2"], [ classChild.baseClass(i).name() for i in xrange(classChild.getNumberBaseClasses()) ] )
+        self.assertEqual( ["classBase1", "classBase2"], [ classChild.baseClass(i).name() for i in range(classChild.getNumberBaseClasses()) ] )
 
