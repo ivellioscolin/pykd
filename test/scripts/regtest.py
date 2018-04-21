@@ -9,7 +9,7 @@ class CpuRegTest( unittest.TestCase ):
         self.assertNotEqual(None, pykd.getRegisterName(10))
 
     def testGetRegValue(self):
-        for regIndex in xrange(pykd.getNumberRegisters()):
+        for regIndex in range(pykd.getNumberRegisters()):
             regName = pykd.getRegisterName(regIndex)
             try:
                 self.assertEqual( pykd.reg(regIndex), pykd.reg(regName) )
