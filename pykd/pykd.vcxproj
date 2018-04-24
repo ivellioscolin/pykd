@@ -311,8 +311,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -334,8 +334,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -356,8 +356,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -378,8 +378,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -400,8 +400,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -422,8 +422,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -446,8 +446,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -469,8 +469,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -492,8 +492,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -515,8 +515,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -538,8 +538,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -561,8 +561,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -603,6 +603,384 @@
     <ClInclude Include="windbgext.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="boost.python\boost_python-src.dict.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.errors.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.exec.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.import.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.list.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.long.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.module.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.object_operators.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.object_protocol.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.slice.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.str.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.tuple.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.wrapper.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\converter\boost_python-src.converter.arg_to_python_base.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\converter\boost_python-src.converter.builtin_converters.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\converter\boost_python-src.converter.from_python.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\converter\boost_python-src.converter.registry.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\converter\boost_python-src.converter.type_id.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.class.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.enum.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.function.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.function_doc_signature.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.inheritance.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.iterator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.life_support.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.pickle_support.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.stl_iterator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="dbgexcept.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="pycpucontext.cpp" />
@@ -658,32 +1036,34 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\boost.1.57.0.0\build\native\boost.targets" Condition="Exists('..\packages\boost.1.57.0.0\build\native\boost.targets')" />
-    <Import Project="..\packages\Python27.2.7.6\build\python27.targets" Condition="'$(PythonVersion)'=='2.7' AND Exists('..\packages\Python27.2.7.6\build\python27.targets')" />
-    <Import Project="..\packages\Python35.3.5.1.1\build\python35.targets" Condition="'$(PythonVersion)'=='3.5' AND Exists('..\packages\Python35.3.5.1.1\build\python35.targets')" />
-    <Import Project="..\packages\Python36.3.6.0\build\python36.targets" Condition="'$(PythonVersion)'=='3.6' AND Exists('..\packages\Python36.3.6.0\build\python36.targets')" />
-    <Import Project="..\packages\boost_python.1.57.0.0\build\native\boost_python.targets" Condition="Exists('..\packages\boost_python.1.57.0.0\build\native\boost_python.targets')" />
-    <Import Project="..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets" Condition="Exists('..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets')" />
-    <Import Project="..\packages\boost_system.1.57.0.0\build\native\boost_system.targets" Condition="Exists('..\packages\boost_system.1.57.0.0\build\native\boost_system.targets')" />
-    <Import Project="..\packages\boost_date_time.1.57.0.0\build\native\boost_date_time.targets" Condition="Exists('..\packages\boost_date_time.1.57.0.0\build\native\boost_date_time.targets')" />
-    <Import Project="..\packages\boost_chrono.1.57.0.0\build\native\boost_chrono.targets" Condition="Exists('..\packages\boost_chrono.1.57.0.0\build\native\boost_chrono.targets')" />
-    <Import Project="..\packages\llvm-cmake.6.0.0.1\build\native\llvm-cmake.targets" Condition="Exists('..\packages\llvm-cmake.6.0.0.1\build\native\llvm-cmake.targets')" />
-    <Import Project="..\packages\clang-cmake.6.0.0.1\build\native\clang-cmake.targets" Condition="Exists('..\packages\clang-cmake.6.0.0.1\build\native\clang-cmake.targets')" />
+    <Import Project="$(SolutionDir)\packages\llvm-cmake.6.0.0.1\build\native\llvm-cmake.targets" Condition="Exists('$(SolutionDir)\packages\llvm-cmake.6.0.0.1\build\native\llvm-cmake.targets')" />
+    <Import Project="$(SolutionDir)\packages\clang-cmake.6.0.0.1\build\native\clang-cmake.targets" Condition="Exists('$(SolutionDir)\packages\clang-cmake.6.0.0.1\build\native\clang-cmake.targets')" />
+    <Import Project="$(SolutionDir)\packages\boost.1.67.0.0\build\boost.targets" Condition="Exists('$(SolutionDir)\packages\boost.1.67.0.0\build\boost.targets')" />
+    <Import Project="$(SolutionDir)\packages\boost_atomic-src.1.67.0.0\build\boost_atomic-src.targets" Condition="Exists('$(SolutionDir)\packages\boost_atomic-src.1.67.0.0\build\boost_atomic-src.targets')" />
+    <Import Project="$(SolutionDir)\packages\boost_chrono-src.1.67.0.0\build\boost_chrono-src.targets" Condition="Exists('$(SolutionDir)\packages\boost_chrono-src.1.67.0.0\build\boost_chrono-src.targets')" />
+    <Import Project="$(SolutionDir)\packages\boost_date_time-src.1.67.0.0\build\boost_date_time-src.targets" Condition="Exists('$(SolutionDir)\packages\boost_date_time-src.1.67.0.0\build\boost_date_time-src.targets')" />
+    <Import Project="$(SolutionDir)\packages\boost_regex-src.1.67.0.0\build\boost_regex-src.targets" Condition="Exists('$(SolutionDir)\packages\boost_regex-src.1.67.0.0\build\boost_regex-src.targets')" />
+    <Import Project="$(SolutionDir)\packages\boost_system-src.1.67.0.0\build\boost_system-src.targets" Condition="Exists('$(SolutionDir)\packages\boost_system-src.1.67.0.0\build\boost_system-src.targets')" />
+    <Import Project="$(SolutionDir)\packages\boost_thread-src.1.67.0.0\build\boost_thread-src.targets" Condition="Exists('$(SolutionDir)\packages\boost_thread-src.1.67.0.0\build\boost_thread-src.targets')" />
+    <Import Project="$(SolutionDir)\packages\Python27.2.7.6\build\python27.targets" Condition="'$(PythonVersion)'=='2.7' AND Exists('$(SolutionDir)\packages\Python27.2.7.6\build\python27.targets')" />
+    <Import Project="$(SolutionDir)\packages\Python35.3.5.1.1\build\python35.targets" Condition="'$(PythonVersion)'=='3.5' AND Exists('$(SolutionDir)\packages\Python35.3.5.1.1\build\python35.targets')" />
+    <Import Project="$(SolutionDir)\packages\Python36.3.6.0\build\python36.targets" Condition="'$(PythonVersion)'=='3.6' AND Exists('$(SolutionDir)\packages\Python36.3.6.0\build\python36.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\boost.1.57.0.0\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.57.0.0\build\native\boost.targets'))" />
-    <Error Condition="!Exists('..\packages\Python27.2.7.6\build\python27.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Python27.2.7.6\build\python27.targets'))" />
-    <Error Condition="!Exists('..\packages\Python35.3.5.1.1\build\python35.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Python35.3.5.1\build\python35.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_python.1.57.0.0\build\native\boost_python.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_python.1.57.0.0\build\native\boost_python.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_thread.1.57.0.0\build\native\boost_thread.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_system.1.57.0.0\build\native\boost_system.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_system.1.57.0.0\build\native\boost_system.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_date_time.1.57.0.0\build\native\boost_date_time.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_date_time.1.57.0.0\build\native\boost_date_time.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_chrono.1.57.0.0\build\native\boost_chrono.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_chrono.1.57.0.0\build\native\boost_chrono.targets'))" />
-    <Error Condition="!Exists('..\packages\Python36.3.6.0\build\python36.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Python36.3.6.0\build\python36.targets'))" />
-    <Error Condition="!Exists('..\packages\llvm-cmake.6.0.0.1\build\native\llvm-cmake.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\llvm-cmake.6.0.0.1\build\native\llvm-cmake.targets'))" />
-    <Error Condition="!Exists('..\packages\clang-cmake.6.0.0.1\build\native\clang-cmake.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\clang-cmake.6.0.0.1\build\native\clang-cmake.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\llvm-cmake.6.0.0.1\build\native\llvm-cmake.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\llvm-cmake.6.0.0.1\build\native\llvm-cmake.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\clang-cmake.6.0.0.1\build\native\clang-cmake.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\clang-cmake.6.0.0.1\build\native\clang-cmake.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\boost.1.67.0.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\boost.1.67.0.0\build\boost.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\boost_atomic-src.1.67.0.0\build\boost_atomic-src.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\boost_atomic-src.1.67.0.0\build\boost_atomic-src.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\boost_chrono-src.1.67.0.0\build\boost_chrono-src.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\boost_chrono-src.1.67.0.0\build\boost_chrono-src.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\boost_date_time-src.1.67.0.0\build\boost_date_time-src.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\boost_date_time-src.1.67.0.0\build\boost_date_time-src.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\boost_regex-src.1.67.0.0\build\boost_regex-src.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\boost_regex-src.1.67.0.0\build\boost_regex-src.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\boost_system-src.1.67.0.0\build\boost_system-src.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\boost_system-src.1.67.0.0\build\boost_system-src.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\boost_thread-src.1.67.0.0\build\boost_thread-src.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\boost_thread-src.1.67.0.0\build\boost_thread-src.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\Python27.2.7.6\build\python27.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\Python27.2.7.6\build\python27.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\Python35.3.5.1.1\build\python35.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\Python35.3.5.1\build\python35.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\Python36.3.6.0\build\python36.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\Python36.3.6.0\build\python36.targets')" />
   </Target>
 </Project>

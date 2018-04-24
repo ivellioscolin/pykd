@@ -8,7 +8,7 @@
     <StartupFile>pykdtest.py</StartupFile>
     <SearchPath>
     </SearchPath>
-    <WorkingDirectory>..\..\out\x64\Debug_2.7</WorkingDirectory>
+    <WorkingDirectory>..\..\out\x64\Debug_3.6</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>pykdtest</Name>
     <RootNamespace>pykdtest</RootNamespace>
@@ -19,7 +19,7 @@
     </InterpreterArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <IsWindowsApplication>False</IsWindowsApplication>
-    <InterpreterId>Global|PythonCore|2.7</InterpreterId>
+    <InterpreterId>Global|PythonCore|3.6</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,6 +60,7 @@
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|2.7-32" />
     <InterpreterReference Include="Global|PythonCore|2.7" />
+    <InterpreterReference Include="Global|PythonCore|3.6" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

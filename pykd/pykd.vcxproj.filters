@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="boost.python">
+      <UniqueIdentifier>{ac5baff8-a82c-4a5d-8086-380454aee92a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -127,6 +130,186 @@
     </ClCompile>
     <ClCompile Include="pytagged.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_atomic-src.lockpool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_chrono-src.chrono.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_chrono-src.process_cpu_clocks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_chrono-src.thread_clock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\gregorian\boost_date_time-src.gregorian.date_generators.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\gregorian\boost_date_time-src.gregorian.gregorian_types.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\gregorian\boost_date_time-src.gregorian.greg_month.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\gregorian\boost_date_time-src.gregorian.greg_weekday.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\posix_time\boost_date_time-src.posix_time.posix_time_types.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.cpp_regex_traits.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.cregex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.c_regex_traits.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.fileiter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.icu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.instances.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.posix_api.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.regex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.regex_debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.regex_raw_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.regex_traits_defaults.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.static_mutex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.usinstances.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.w32_regex_traits.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.wc_regex_traits.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.wide_posix_api.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.winstances.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_system-src.error_code.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\win32\boost_thread-src.win32.thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\win32\boost_thread-src.win32.thread_primitives.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\win32\boost_thread-src.win32.tss_dll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\win32\boost_thread-src.win32.tss_pe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_thread-src.future.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_thread-src.tss_null.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.dict.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.errors.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.exec.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.import.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.list.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.long.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.module.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.object_operators.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.object_protocol.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.slice.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.str.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.tuple.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\boost_python-src.wrapper.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\converter\boost_python-src.converter.arg_to_python_base.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\converter\boost_python-src.converter.builtin_converters.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\converter\boost_python-src.converter.from_python.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\converter\boost_python-src.converter.registry.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\converter\boost_python-src.converter.type_id.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.class.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.enum.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.function.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.function_doc_signature.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.inheritance.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.iterator.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.life_support.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.pickle_support.cpp">
+      <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.python\object\boost_python-src.object.stl_iterator.cpp">
+      <Filter>boost.python</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
