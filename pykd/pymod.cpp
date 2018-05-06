@@ -127,7 +127,6 @@ void uninitialize()
 
 }
 
-//BOOST_PYTHON_MODULE( pykd )
 void pykd_init()
 {
     python::scope().attr("__version__") = pykdVersion;
@@ -1386,7 +1385,8 @@ void pykd_init()
 
 void pykd_deinit(void*)
 {
-    kdlib::uninitialize();
+    if ( kdlib::isInintilized() )
+        kdlib::uninitialize();
 }
 
 //////////////////////////////////////////////////////////////////////////////////
