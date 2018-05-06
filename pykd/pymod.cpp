@@ -127,7 +127,8 @@ void uninitialize()
 
 }
 
-BOOST_PYTHON_MODULE( pykd )
+//BOOST_PYTHON_MODULE( pykd )
+void pykd_init()
 {
     python::scope().attr("__version__") = pykdVersion;
     python::scope().attr("version") = pykdVersion;
@@ -1382,3 +1383,40 @@ BOOST_PYTHON_MODULE( pykd )
 }
 
 //////////////////////////////////////////////////////////////////////////////////
+
+void pykd_deinit(void*)
+{
+    kdlib::uninitialize();
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+PyMODINIT_FUNC
+PyInit_pykd(void)
+{
+    static PyModuleDef_Base initial_base = {
+        PyObject_HEAD_INIT(NULL)
+        0, /* m_init */
+        0, /* m_index */ 
+        0 /* m_copy */
+    };  
+        
+    static PyMethodDef initial_methods[] = { { 0, 0, 0, 0 } }; 
+
+    static struct PyModuleDef moduledef = { \
+        initial_base,
+        "pykd",
+        0, /* m_doc */
+        -1, /* m_size */
+        initial_methods,
+        0,  /* m_reload */
+        0, /* m_traverse */
+        0, /* m_clear */
+        pykd_deinit
+    };
+
+    return boost::python::detail::init_module(moduledef, pykd_init);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
