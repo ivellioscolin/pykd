@@ -1383,13 +1383,13 @@ void pykd_init()
 
 //////////////////////////////////////////////////////////////////////////////////
 
+#if PY_VERSION_HEX >= 0x03000000
+
 void pykd_deinit(void*)
 {
     if ( kdlib::isInintilized() )
         kdlib::uninitialize();
 }
-
-//////////////////////////////////////////////////////////////////////////////////
 
 PyMODINIT_FUNC
 PyInit_pykd(void)
@@ -1397,11 +1397,11 @@ PyInit_pykd(void)
     static PyModuleDef_Base initial_base = {
         PyObject_HEAD_INIT(NULL)
         0, /* m_init */
-        0, /* m_index */ 
+        0, /* m_index */
         0 /* m_copy */
-    };  
-        
-    static PyMethodDef initial_methods[] = { { 0, 0, 0, 0 } }; 
+    };
+
+    static PyMethodDef initial_methods[] = { { 0, 0, 0, 0 } };
 
     static struct PyModuleDef moduledef = { \
         initial_base,
@@ -1417,6 +1417,24 @@ PyInit_pykd(void)
 
     return boost::python::detail::init_module(moduledef, pykd_init);
 }
+#else
 
+void pykd_deinit(PyObject*)
+{
+    if (kdlib::isInintilized())
+        kdlib::uninitialize();
+}
+
+PyMODINIT_FUNC
+initpykd()
+{
+    PyObject* moduleObj = boost::python::detail::init_module("pykd", pykd_init);
+
+    PyObject* moduleDeiniter = PyCapsule_New( (void*)1, "pykd.__deinit__", pykd_deinit);
+
+    PyModule_AddObject(moduleObj, "pykd.__deinit__", moduleDeiniter);
+}
+
+#endif
 //////////////////////////////////////////////////////////////////////////////////
 
