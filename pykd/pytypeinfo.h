@@ -83,6 +83,12 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo.getName();
     }
 
+    static std::wstring getScopeName( kdlib::TypeInfo &typeInfo )
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo.getScopeName();
+    }
+
     static size_t getSize( kdlib::TypeInfo &typeInfo )
     {
         AutoRestorePyState  pystate;
@@ -309,6 +315,38 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
 };
 
 
+class TypeInfoProviderIterator {
+
+public:
+
+    TypeInfoProviderIterator(kdlib::TypeInfoEnumeratorPtr typeInfoEnum) :
+        m_typeInfoEnum(typeInfoEnum)
+    {}
+
+    static python::object self(const python::object& obj)
+    {
+        return obj;
+    }
+
+    kdlib::TypeInfoPtr next()
+    {
+        AutoRestorePyState  pystate;
+
+        kdlib::TypeInfoPtr  typeInfo = m_typeInfoEnum->Next();
+
+        if (!typeInfo)
+            throw StopIteration("No more data.");
+
+        return typeInfo;
+    }
+
+    
+private:
+
+    kdlib::TypeInfoEnumeratorPtr   m_typeInfoEnum;
+
+};
+
 struct TypeInfoProviderAdapter : public kdlib::TypeInfoProvider
 {
 
@@ -317,6 +355,19 @@ struct TypeInfoProviderAdapter : public kdlib::TypeInfoProvider
         AutoRestorePyState  pystate;
         return typeInfoProvider.getTypeByName(name);
     }
+
+    static TypeInfoProviderIterator* getTypeIter( kdlib::TypeInfoProvider &typeInfoProvider )
+    {
+        return new TypeInfoProviderIterator( typeInfoProvider.getTypeEnumerator() );
+    };
+
+    static TypeInfoProviderIterator* getTypeIterWithMask( kdlib::TypeInfoProvider &typeInfoProvider, const std::wstring& mask)
+    {
+        return new TypeInfoProviderIterator( typeInfoProvider.getTypeEnumerator(mask) );
+    }
+
+    static kdlib::TypeInfoPtr getTypeAsAttr(kdlib::TypeInfoProvider &typeInfoProvider, const std::wstring& name);
+
 };
 
 struct BaseTypesEnum {
@@ -337,5 +388,10 @@ struct BaseTypesEnum {
     static kdlib::TypeInfoPtr getFloat() { return pykd::getTypeInfoByName(L"Float"); }
     static kdlib::TypeInfoPtr getDouble() { return pykd::getTypeInfoByName(L"Double"); }
 };
+
+
+
+
+
 
 } // end namespace pykd

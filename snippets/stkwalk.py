@@ -150,11 +150,13 @@ def printProcess(process,processFilter,threadFilter,moduleFilter,funcFilter,prin
 
                     try:
 
-                        setCPUMode(CPUType.I386)
+                        dbgCommand(".thread /w %x" % thread)
+                        #setCPUMode(CPUType.I386)
 
-                        if not wow64reloaded:
-                            dbgCommand( ".reload /user" )
-                            wow64reloaded = True
+                        #if not wow64reloaded:
+                        dbgCommand( ".reload /user" )
+                        #    wow64reloaded = True
+                        
                         stkWow64 = getStack()
 
                     except DbgException:

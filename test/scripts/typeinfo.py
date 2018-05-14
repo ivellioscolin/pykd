@@ -342,3 +342,16 @@ class TypeInfoTest( unittest.TestCase ):
         classChild = target.module.type("classChild")
         self.assertEqual( ["classBase1", "classBase2"], [ classChild.baseClass(i).name() for i in range(classChild.getNumberBaseClasses()) ] )
 
+    def  testPdbTypeProvider(self):
+        pdb = target.module.symfile()
+        typeProvider = pykd.getTypeInfoProviderFromPdb(pdb)
+        self.assertEqual("structTest", typeProvider.getTypeByName("structTest").name())
+        self.assertEqual("structTest", typeProvider.structTest.name())
+        self.assertEqual(22, len(list(typeProvider.typeIterator("*struct*"))))
+
+    def testScopeName(self):
+        self.assertEqual( target.module.name(), pykd.typeInfo( "structTest" ).scopeName() )
+        self.assertEqual( target.module.name(), pykd.typeInfo( "structWithNested::Nested" ).scopeName() )
+        
+
+

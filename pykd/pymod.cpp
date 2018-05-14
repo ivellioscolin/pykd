@@ -878,6 +878,8 @@ BOOST_PYTHON_MODULE( pykd )
         .def("__init__", python::make_constructor( pykd::getTypeInfoByName ) )
         .def( "name", TypeInfoAdapter::getName,
             "Return type name" )
+        .def("scopeName", TypeInfoAdapter::getScopeName,
+            "Return name of type scope ( module name )" )
         .def( "size", TypeInfoAdapter::getSize,
             "Return type size" )
         .def( "staticOffset", TypeInfoAdapter::getStaticOffset,
@@ -1229,10 +1231,25 @@ BOOST_PYTHON_MODULE( pykd )
             "Change the current instruction" )
         .def( "__str__", DisasmAdapter::instruction );
 
+
+    python::class_<TypeInfoProviderIterator>("typeInfoProviderIterator", "iterator for type provider", python::no_init)
+        .def("__iter__", &TypeInfoProviderIterator::self)
+#if PY_VERSION_HEX < 0x03000000
+        .def("next", &TypeInfoProviderIterator::next)
+#else
+        .def("__next__", &TypeInfoProviderIterator::next)
+#endif
+        ;
+
+
     python::class_<kdlib::TypeInfoProvider, kdlib::TypeInfoProviderPtr, boost::noncopyable>("typeInfoProvider",
         "Get abstaract access to different type info sources", python::no_init)
         .def( "getTypeByName", TypeInfoProviderAdapter::getTypeByName,
             "Get type info by it's name" )
+        .def( "typeIterator", TypeInfoProviderAdapter::getTypeIterWithMask, python::return_value_policy<python::manage_new_object>(),
+            "Return type iterator with specified mask")
+        .def("__iter__", TypeInfoProviderAdapter::getTypeIter, python::return_value_policy<python::manage_new_object>())
+        .def( "__getattr__", TypeInfoProviderAdapter::getTypeAsAttr )
          ;
 
     python::enum_<kdlib::DebugCallbackResult>("eventResult", "Return value of event handler")

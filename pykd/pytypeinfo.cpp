@@ -356,5 +356,21 @@ python::object callFunctionRaw( python::tuple& args, python::dict& kwargs)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+kdlib::TypeInfoPtr TypeInfoProviderAdapter::getTypeAsAttr(kdlib::TypeInfoProvider &typeInfoProvider, const std::wstring& name)
+{
+
+    try {
+        AutoRestorePyState  pystate;
+        return typeInfoProvider.getTypeByName(name);
+        }
+    catch (kdlib::TypeException&)
+    {}
+
+    std::wstringstream sstr;
+    sstr << L'\'' << name << L'\'' << L" not found";
+    throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // pykd namespace
