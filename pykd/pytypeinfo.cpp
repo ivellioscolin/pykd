@@ -226,11 +226,11 @@ python::object  callTypedVar(kdlib::TypedVarPtr& funcobj, python::tuple& args)
             throw kdlib::TypeException(L"failed convert string argument");
         }
 
-        python::extract<kdlib::NumBehavior>  getNumVar(args[i]);
+        python::extract<kdlib::NumConvertable>  getNumVar(args[i]);
         if ( getNumVar.check() )
         {
             kdlib::NumVariant   var = getNumVar();
-            argLst.push_back( var );
+            argLst.push_back( kdlib::TypedValue(var) );
             continue;
         }
 
@@ -238,7 +238,7 @@ python::object  callTypedVar(kdlib::TypedVarPtr& funcobj, python::tuple& args)
         if ( python::extract<int>(args[i]).check() )
         {
             kdlib::NumVariant  var= NumVariantAdaptor::convertToVariant(args[i]);
-            argLst.push_back( var );
+            argLst.push_back(kdlib::TypedValue(var));
             continue;
         }
 
@@ -326,18 +326,18 @@ python::object callFunctionRaw( python::tuple& args, python::dict& kwargs)
             continue;
         }
 
-        python::extract<kdlib::NumBehavior>  getNumVar(args[i]);
+        python::extract<kdlib::NumConvertable>  getNumVar(args[i]);
         if ( getNumVar.check() )
         {
             kdlib::NumVariant   var = getNumVar();
-            argLst.push_back( var );
+            argLst.push_back(kdlib::TypedValue(var));
             continue;
         }
 
         if ( python::extract<int>(args[i]).check() )
         {
             kdlib::NumVariant  var= NumVariantAdaptor::convertToVariant(args[i]);
-            argLst.push_back( var );
+            argLst.push_back(kdlib::TypedValue(var));
             continue;
         }
 

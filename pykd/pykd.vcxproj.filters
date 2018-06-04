@@ -194,9 +194,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.static_mutex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.usinstances.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.w32_regex_traits.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -310,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="boost.python\object\boost_python-src.object.stl_iterator.cpp">
       <Filter>boost.python</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\lib\native\src\boost_regex-src.usinstances.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

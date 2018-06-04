@@ -609,8 +609,8 @@ void pykd_init()
     python::def("loadTaggedBuffer", pykd::loadTaggedBuffer,
         "Read the buffer of secondary callback data by ID" );
 
-    python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVariant", python::no_init )
-        .def("__init__", python::make_constructor(&NumVariantAdaptor::getVariant) )
+    python::class_<kdlib::NumConvertable, boost::noncopyable>( "numVariant", "numVariant", python::no_init )
+        //.def("__init__", python::make_constructor(&NumVariantAdaptor::getVariant) )
         .def( "__eq__", &NumVariantAdaptor::eq )
         .def( "__ne__", &NumVariantAdaptor::ne)
         .def( "__lt__", &NumVariantAdaptor::lt)
@@ -804,7 +804,7 @@ void pykd_init()
             "Return heap's entries iterator object")[python::return_value_policy<python::manage_new_object>()] )
          ;
 
-    python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumBehavior>, boost::noncopyable>("module", "Class representing executable module", python::no_init)
+    python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumConvertable>, boost::noncopyable>("module", "Class representing executable module", python::no_init)
         .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByName))
         .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByOffset))
         .def("begin", ModuleAdapter::getBase,
@@ -870,7 +870,7 @@ void pykd_init()
             "Return address of the symbol" )
         .def( "__str__", &ModuleAdapter::print );
 
-    python::class_<kdlib::TypeInfo, kdlib::TypeInfoPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
+    python::class_<kdlib::TypeInfo, kdlib::TypeInfoPtr, python::bases<kdlib::NumConvertable>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
         .def("__init__", python::make_constructor( pykd::getTypeInfoByName ) )
         .def( "name", TypeInfoAdapter::getName,
             "Return type name" )
@@ -963,7 +963,7 @@ void pykd_init()
         .def("next", &TypedVarIterator::next)
         ;
 
-    python::class_<kdlib::TypedVar, kdlib::TypedVarPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typedVar", 
+    python::class_<kdlib::TypedVar, kdlib::TypedVarPtr, python::bases<kdlib::NumConvertable>, boost::noncopyable >("typedVar",
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", python::no_init  )
         .def("__init__", python::make_constructor(pykd::getTypedVarByName) )
         .def("__init__", python::make_constructor(pykd::getTypedVarByTypeName) )
