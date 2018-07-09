@@ -393,7 +393,7 @@ class TypedVarTest( unittest.TestCase ):
         funcptr = target.module.typedVar("StdcallFuncRet");
         ucharVar = target.module.typedVar( "ucharVar" );
         self.assertEqual( 10, ucharVar )
-        self.assertEqual( 200000/10, funcptr( ucharVar, pykd.numVariant(200000) ) )
+        self.assertEqual( 200000/10, funcptr( ucharVar, 200000 ) )
 
     def testCallWithWrongArgs(self):
         self.assertRaises( pykd.TypeException, target.module.typedVar("StdcallFuncRet"), *(1,) )

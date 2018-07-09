@@ -1,8 +1,0 @@
-EXPORTS
-	DebugExtensionInitialize
-	DebugExtensionUninitialize
-	py
-	info
-	pip
-	help
-	select = selectVersion
