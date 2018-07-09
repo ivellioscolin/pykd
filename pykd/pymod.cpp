@@ -127,7 +127,7 @@ void uninitialize()
 
 }
 
-BOOST_PYTHON_MODULE( pykd )
+void pykd_init()
 {
     python::scope().attr("__version__") = pykdVersion;
     python::scope().attr("version") = pykdVersion;
@@ -609,8 +609,8 @@ BOOST_PYTHON_MODULE( pykd )
     python::def("loadTaggedBuffer", pykd::loadTaggedBuffer,
         "Read the buffer of secondary callback data by ID" );
 
-    python::class_<kdlib::NumBehavior, boost::noncopyable>( "numVariant", "numVariant", python::no_init )
-        .def("__init__", python::make_constructor(&NumVariantAdaptor::getVariant) )
+    python::class_<kdlib::NumConvertable, boost::noncopyable>( "numVariant", "numVariant", python::no_init )
+        //.def("__init__", python::make_constructor(&NumVariantAdaptor::getVariant) )
         .def( "__eq__", &NumVariantAdaptor::eq )
         .def( "__ne__", &NumVariantAdaptor::ne)
         .def( "__lt__", &NumVariantAdaptor::lt)
@@ -808,7 +808,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return heap's entries iterator object")[python::return_value_policy<python::manage_new_object>()] )
          ;
 
-    python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumBehavior>, boost::noncopyable>("module", "Class representing executable module", python::no_init)
+    python::class_<kdlib::Module, kdlib::ModulePtr, python::bases<kdlib::NumConvertable>, boost::noncopyable>("module", "Class representing executable module", python::no_init)
         .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByName))
         .def("__init__", python::make_constructor(&ModuleAdapter::loadModuleByOffset))
         .def("begin", ModuleAdapter::getBase,
@@ -874,7 +874,7 @@ BOOST_PYTHON_MODULE( pykd )
             "Return address of the symbol" )
         .def( "__str__", &ModuleAdapter::print );
 
-    python::class_<kdlib::TypeInfo, kdlib::TypeInfoPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
+    python::class_<kdlib::TypeInfo, kdlib::TypeInfoPtr, python::bases<kdlib::NumConvertable>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
         .def("__init__", python::make_constructor( pykd::getTypeInfoByName ) )
         .def( "name", TypeInfoAdapter::getName,
             "Return type name" )
@@ -973,7 +973,7 @@ BOOST_PYTHON_MODULE( pykd )
 #endif
         ;
 
-    python::class_<kdlib::TypedVar, kdlib::TypedVarPtr, python::bases<kdlib::NumBehavior>, boost::noncopyable >("typedVar", 
+    python::class_<kdlib::TypedVar, kdlib::TypedVarPtr, python::bases<kdlib::NumConvertable>, boost::noncopyable >("typedVar",
         "Class of non-primitive type object, child class of typeClass. Data from target is copied into object instance", python::no_init  )
         .def("__init__", python::make_constructor(pykd::getTypedVarByName) )
         .def("__init__", python::make_constructor(pykd::getTypedVarByTypeName) )
@@ -1407,3 +1407,59 @@ BOOST_PYTHON_MODULE( pykd )
 }
 
 //////////////////////////////////////////////////////////////////////////////////
+
+#if PY_VERSION_HEX >= 0x03000000
+
+void pykd_deinit(void*)
+{
+    if ( kdlib::isInintilized() )
+        kdlib::uninitialize();
+}
+
+PyMODINIT_FUNC
+PyInit_pykd(void)
+{
+    static PyModuleDef_Base initial_base = {
+        PyObject_HEAD_INIT(NULL)
+        0, /* m_init */
+        0, /* m_index */
+        0 /* m_copy */
+    };
+
+    static PyMethodDef initial_methods[] = { { 0, 0, 0, 0 } };
+
+    static struct PyModuleDef moduledef = { \
+        initial_base,
+        "pykd",
+        0, /* m_doc */
+        -1, /* m_size */
+        initial_methods,
+        0,  /* m_reload */
+        0, /* m_traverse */
+        0, /* m_clear */
+        pykd_deinit
+    };
+
+    return boost::python::detail::init_module(moduledef, pykd_init);
+}
+#else
+
+void pykd_deinit(PyObject*)
+{
+    if (kdlib::isInintilized())
+        kdlib::uninitialize();
+}
+
+PyMODINIT_FUNC
+initpykd()
+{
+    PyObject* moduleObj = boost::python::detail::init_module("pykd", pykd_init);
+
+    PyObject* moduleDeiniter = PyCapsule_New( (void*)1, "pykd.__deinit__", pykd_deinit);
+
+    PyModule_AddObject(moduleObj, "pykd.__deinit__", moduleDeiniter);
+}
+
+#endif
+//////////////////////////////////////////////////////////////////////////////////
+

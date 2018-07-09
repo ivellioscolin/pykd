@@ -13,7 +13,7 @@ import pykd
 
 import target
 
-import intbase
+#import intbase
 import memtest
 import moduletest
 import typeinfo
@@ -47,7 +47,7 @@ def getTestSuite( singleName = "" ):
     if singleName == "":
         return unittest.TestSuite(
            [
-                unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
+                #unittest.TestLoader().loadTestsFromTestCase( intbase.IntBaseTest ),
 
                 unittest.TestLoader().loadTestsFromTestCase( StartProcessWithoutParamsTest ),
                 # *** Test without start/kill new processes
@@ -83,14 +83,11 @@ if __name__ == "__main__":
     print( "\nTesting PyKd ver. %s" % pykd.__version__ )
     print( "Directory: %s" % os.path.dirname(pykd.__file__) )
 
-    import time
-   # time.sleep(30)
-
     target.appPath = os.path.join( os.path.dirname(pykd.__file__), "targetapp.exe" )
     target.moduleName = os.path.splitext(os.path.basename(target.appPath))[0]
 
     unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite() )
-    #unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite("regtest.CpuRegTest.testSetRegValue") )
+    #unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run( getTestSuite("typedvar.TypedVarTest.testAttr") )
 
     try: input = raw_input
     except NameError: pass
