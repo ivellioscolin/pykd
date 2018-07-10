@@ -17,8 +17,11 @@ If you want to automate the debugger but dislike the WinDbg built-in script mach
 [API Reference](/../wikis/API Reference)     
 
 ## How to build ?
-* Install VS 2017
+* install VS 2017
 * get sources:
-* 
-* 
-* 
+
+```
+git clone --recurse-submodules https://githomelab.ru/pykd/pykd.git local_dir
+```
+* open pykd.sln 
+* choose a python version and a target platfome then build pykd projects
