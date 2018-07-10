@@ -15,3 +15,10 @@ If you want to automate the debugger but dislike the WinDbg built-in script mach
 ## Documentation
 [User Manual](/../wikis/User Manual rus)    
 [API Reference](/../wikis/API Reference)     
+
+## How to build ?
+* Install VS 2017
+* get sources:
+* 
+* 
+* 
