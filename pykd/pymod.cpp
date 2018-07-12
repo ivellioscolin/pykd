@@ -1392,8 +1392,13 @@ void pykd_init()
             "Return object as a string");
 
     python::enum_<kdlib::DebugOptions>("debugOptions", "Debug options")
+        .value("AllowNetworkPaths", kdlib::AllowNetworkPaths)
+        .value("DisallowNetworkPaths", kdlib::DisallowNetworkPaths)
         .value("InitialBreak", kdlib::InitialBreak)
         .value("FinalBreak", kdlib::FinalBreak)
+        .value("FailIncompleteInformation", kdlib::FailIncompleteInformation)
+        .value("DisableModuleSymbolLoad", kdlib::DisableModuleSymbolLoad)
+        .value("DisallowImageFileMapping", kdlib::DisallowImageFileMapping)
         .value("PreferDml", kdlib::PreferDml)
         ;
 
