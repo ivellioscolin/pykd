@@ -28,6 +28,7 @@ import targetprocess
 import ehloadtest
 import synsymtest
 import taggedtest
+import arm64dumptest
 
 pykd.initialize()
 
@@ -67,6 +68,7 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( targetprocess.ProcessTest ),
                 unittest.TestLoader().loadTestsFromTestCase( ehloadtest.EhLoadTest ),
                 unittest.TestLoader().loadTestsFromTestCase( taggedtest.TaggedTest ),
+                unittest.TestLoader().loadTestsFromTestCase( arm64dumptest.ARM64DumpTest ),
 
                 #unittest.TestLoader().loadTestsFromTestCase( excepttest.ExceptionTest ),
             ] ) 
