@@ -8,7 +8,7 @@ import sys
 
 _name = "pykd"
 _desc = "python windbg extension"
-_version = '0.3.3.4'
+_version = '0.3.4.0'
 
 def getReleaseSrc():
     return 'Release_%d.%d' % sys.version_info[0:2]
