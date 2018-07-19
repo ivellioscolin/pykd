@@ -7,7 +7,7 @@ This project can help to automate debugging and crash dump analysis using Python
 If you want to automate the debugger but dislike the WinDbg built-in script machine syntax it's time to try again using the handy and powerful Python language. Even if you don't want to create your own script, maybe some existing scripts will be of interest to you?
 
 ## Pykd bootstrapper
-[Download](/../wikis/Pykd bootstrapper) 
+Use it to run pykd within windbg. [link](https://githomelab.ru/pykd/pykd-ext)
 
 ## Releases:
 [Last Release](/../wikis/Last Release)
