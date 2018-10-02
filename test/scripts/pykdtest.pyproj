@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="arm64dumptest.py" />
+    <Compile Include="armdumptest.py" />
     <Compile Include="basetest.py" />
     <Compile Include="breakpoint.py" />
     <Compile Include="clienttest.py" />

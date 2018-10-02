@@ -1296,6 +1296,7 @@ void pykd_init()
         .value("I386", kdlib::CPU_I386 )
         .value("AMD64", kdlib::CPU_AMD64 )
         .value("ARM64", kdlib::CPU_ARM64 )
+        .value("ARM", kdlib::CPU_ARM )
         ;
 
     python::enum_<kdlib::VarStorage>("Location", "Location of a varibale")
