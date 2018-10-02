@@ -178,6 +178,12 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo.getMethod(index);
     }
 
+    static std::wstring getMethodName(kdlib::TypeInfo &typeInfo, size_t index)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo.getMethodName(index);
+    }
+
     static size_t getBaseClassesCount(kdlib::TypeInfo &typeInfo )
     {
         AutoRestorePyState  pystate;
@@ -305,6 +311,8 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
     }
 
     static python::list getFields( kdlib::TypeInfo &typeInfo );
+
+    static python::list getMethods(kdlib::TypeInfo &typeInfo);
 
     static python::list getElementDir(kdlib::TypeInfo &typeInfo);
 

@@ -103,6 +103,34 @@ python::list TypeInfoAdapter::getFields( kdlib::TypeInfo &typeInfo )
     return pylst;
 }
 
+python::list TypeInfoAdapter::getMethods(kdlib::TypeInfo &typeInfo)
+{
+    typedef boost::tuple<std::wstring, kdlib::TypeInfoPtr> FieldTuple;
+
+    std::list<FieldTuple>  lst;
+
+    do {
+
+        AutoRestorePyState  pystate;
+
+        for (size_t i = 0; i < typeInfo.getMethodsCount(); ++i)
+        {
+            std::wstring  name = typeInfo.getMethodName(i);
+            kdlib::TypeInfoPtr  val = typeInfo.getMethod(i);
+
+            lst.push_back(FieldTuple(name, val));
+        }
+
+    } while (false);
+
+    python::list pylst;
+
+    for (std::list<FieldTuple>::const_iterator it = lst.begin(); it != lst.end(); ++it)
+        pylst.append(python::make_tuple(it->get<0>(), it->get<1>()));
+
+    return pylst;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 kdlib::TypeInfoPtr TypeInfoAdapter::getElementAttr(kdlib::TypeInfo &typeInfo, const std::wstring &name)

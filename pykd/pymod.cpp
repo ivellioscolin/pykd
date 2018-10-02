@@ -908,6 +908,10 @@ void pykd_init()
             "Return method's type by name")
         .def( "method", TypeInfoAdapter::getMethodByIndex,
             "Return method's by index")
+        .def( "methodName", TypeInfoAdapter::getMethodName,
+            "Return method's name")
+        .def( "methods", TypeInfoAdapter::getMethods,
+            "Return list of tuples ( methodName, methodPrototype )" )
         .def( "getNumberBaseClasses", TypeInfoAdapter::getBaseClassesCount,
             "Return number of base classes" )
         .def( "baseClass", TypeInfoAdapter::getBaseClassByName,
