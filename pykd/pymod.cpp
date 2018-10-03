@@ -918,6 +918,12 @@ void pykd_init()
             "Return a base class's type by name" )
         .def( "baseClass", TypeInfoAdapter::getBaseClassByIndex,
             "Return a base class's type by index" )
+        .def("baseClassOffset", TypeInfoAdapter::getBaseClassOffsetByName,
+            "Return a base class offset by name")
+        .def("baseClassOffset", TypeInfoAdapter::getBaseClassOffsetByIndex,
+            "Return a base class offset by index")
+        .def("baseClasses", TypeInfoAdapter::getBaseClasses,
+            "Return list of tuples ( baseClassName, baseClassOffset, baseClassType)")
         .def( "deref", TypeInfoAdapter::deref,
             "Return type of pointer" )
         .def( "append", TypeInfoAdapter::appendField,

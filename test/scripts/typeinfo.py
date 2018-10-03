@@ -344,6 +344,13 @@ class TypeInfoTest( unittest.TestCase ):
     def testGetBaseClass(self):
         classChild = target.module.type("classChild")
         self.assertEqual( ["classBase1", "classBase2"], [ classChild.baseClass(i).name() for i in range(classChild.getNumberBaseClasses()) ] )
+        self.assertEqual( ["classBase1", "classBase2"], [ name for name, _, _ in classChild.baseClasses()] )
+
+    def testGetBaseClassOffset(self):
+        classChild = target.module.type("classChild")
+        self.assertEqual( classChild.baseClassOffset(0), classChild.baseClassOffset('classBase1'))
+        self.assertEqual(classChild.baseClassOffset(1), classChild.baseClassOffset('classBase2'))
+
 
     def  testPdbTypeProvider(self):
         pdb = target.module.symfile()

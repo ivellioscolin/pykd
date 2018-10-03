@@ -202,6 +202,18 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo.getBaseClass(index);
     }
 
+    static kdlib::MEMOFFSET_32 getBaseClassOffsetByName(kdlib::TypeInfo &typeInfo, const std::wstring&  className)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo.getBaseClassOffset(className);
+    }
+
+    static kdlib::MEMOFFSET_32 getBaseClassOffsetByIndex(kdlib::TypeInfo &typeInfo, size_t index)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo.getBaseClassOffset(index);
+    }
+
     static kdlib::TypeInfoPtr ptrTo( kdlib::TypeInfo &typeInfo, size_t ptrSize = 0 ) 
     {
         AutoRestorePyState  pystate;
@@ -315,6 +327,8 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
     static python::list getMethods(kdlib::TypeInfo &typeInfo);
 
     static python::list getElementDir(kdlib::TypeInfo &typeInfo);
+
+    static python::list getBaseClasses(kdlib::TypeInfo &typeInfo);
 
     static bool isZero(kdlib::TypeInfo &typeInfo) {
         return false;

@@ -131,6 +131,35 @@ python::list TypeInfoAdapter::getMethods(kdlib::TypeInfo &typeInfo)
     return pylst;
 }
 
+python::list TypeInfoAdapter::getBaseClasses(kdlib::TypeInfo &typeInfo)
+{
+    typedef boost::tuple<std::wstring, kdlib::MEMOFFSET_32, kdlib::TypeInfoPtr> BaseClassTuple;
+
+    std::list<BaseClassTuple>  lst;
+
+    do {
+
+        AutoRestorePyState  pystate;
+
+        for (size_t i = 0; i < typeInfo.getBaseClassesCount(); ++i)
+        {
+            kdlib::TypeInfoPtr  classType = typeInfo.getBaseClass(i);
+            std::wstring  name = classType->getName();
+            kdlib::MEMOFFSET_32  offset = typeInfo.getBaseClassOffset(i);
+
+            lst.push_back(BaseClassTuple(name, offset, classType));
+        }
+
+    } while (false);
+
+    python::list pylst;
+
+    for (auto it = lst.begin(); it != lst.end(); ++it)
+        pylst.append(python::make_tuple(it->get<0>(), it->get<1>(), it->get<2>()));
+
+    return pylst;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 kdlib::TypeInfoPtr TypeInfoAdapter::getElementAttr(kdlib::TypeInfo &typeInfo, const std::wstring &name)
