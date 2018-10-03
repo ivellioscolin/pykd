@@ -654,7 +654,36 @@ void Breakpoint::remove()
     {
         m_breakpoint->remove();
         m_breakpoint = 0;
+        return;
     }
+
+    throw kdlib::DbgException("Cannot remove breakpoint, it is detached");
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+Breakpoint* Breakpoint::detach()
+{
+    AutoRestorePyState  pystate;
+
+    if (m_weakBp)
+    {
+        throw kdlib::DbgException("Cannot detach 'weak' breakpoint");
+    }
+
+    if (m_breakpoint)
+    {
+        if (m_callback)
+        {
+            throw kdlib::DbgException("Cannot detach breakpoint with callback");
+        }
+
+        auto  bp = m_breakpoint;
+        m_breakpoint = 0;
+        return new Breakpoint(bp);
+    }
+
+    throw kdlib::DbgException("Cannot remove breakpoint, it is detached");
 }
 
 /////////////////////////////////////////////////////////////////////////////////

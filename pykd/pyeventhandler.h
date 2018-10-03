@@ -105,6 +105,8 @@ public:
 
     void remove();
 
+    Breakpoint* detach();
+
 private:
 
     PyThreadState*  m_pystate;

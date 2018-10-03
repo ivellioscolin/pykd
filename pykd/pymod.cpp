@@ -1391,6 +1391,8 @@ void pykd_init()
             "Remove breakpoint" )
         .def("onHit", &Breakpoint::onHit,
             "Breakpoint hit callback")
+        .def("detach", &Breakpoint::detach, python::return_value_policy<python::manage_new_object>(),
+            "detach breakpoint")
         ;
 
     python::class_<kdlib::SyntheticSymbol>(

@@ -184,3 +184,14 @@ class BreakpointTest( unittest.TestCase ):
         bp = pykd.getBp(0)
         self.assertEqual(0x100, bp.getOffset())
 
+    def testDoubleRemove(self):      
+        bp = pykd.setBp( self.targetModule.CdeclFunc )
+        bp.remove()
+        self.assertRaises( pykd.DbgException, bp.remove )
+
+    def testDetach(self):      
+        bp = pykd.setBp( self.targetModule.CdeclFunc ).detach()
+        self.assertEqual(1, pykd.getNumberBreakpoints())
+        self.assertRaises(pykd.DbgException, bp.detach )
+        del bp
+        self.assertEqual(1, pykd.getNumberBreakpoints()) 
