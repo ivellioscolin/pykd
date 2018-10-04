@@ -64,6 +64,12 @@ public:
             return frame->getStaticVar(paramName);
         return frame->getLocalVar(paramName);
     }
+
+    static void switchTo(kdlib::StackFramePtr& frame)
+    {
+        AutoRestorePyState  pystate;
+        frame->switchTo();
+    }
 };
 
 /////////////////////////////////////////////////////////////////////////////////

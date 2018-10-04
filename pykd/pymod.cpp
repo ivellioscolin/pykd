@@ -1097,6 +1097,8 @@ void pykd_init()
             "return a set of  function's local variables as a dict ( name : value)")
         .def( "getLocal", StackFrameAdapter::getLocal,
             "return the function's local variable  by it's name")
+        .def( "switchTo", StackFrameAdapter::switchTo,
+            "Make this frame a current")
         .def( "__str__", StackFrameAdapter::print );
 
     python::class_<CPUContextAdapter>("cpu", "class for CPU context representation" )
