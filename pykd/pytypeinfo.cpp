@@ -291,7 +291,6 @@ python::object  callTypedVar(kdlib::TypedVarPtr& funcobj, python::tuple& args)
             continue;
         }
 
-
         if ( python::extract<int>(args[i]).check() )
         {
             kdlib::NumVariant  var= NumVariantAdaptor::convertToVariant(args[i]);

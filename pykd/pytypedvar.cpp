@@ -306,5 +306,45 @@ void TypedVarAdapter::setFieldByKey(kdlib::TypedVar& typedVar, const std::wstrin
 
 ///////////////////////////////////////////////////////////////////////////////
 
+kdlib::TypedVarPtr evalExpr(const std::string  expression, python::dict&  scope, kdlib::TypeInfoProviderPtr& typeInfoProvider )
+{
+    std::list < std::pair<std::wstring, kdlib::TypedValue> >   scopeList;
+
+    for (auto i = 0; i < python::len(scope); ++i)
+    {
+        auto key = scope.keys()[i];
+
+        std::wstring  varName = python::extract<std::wstring>(key);
+
+        try 
+        {
+            scopeList.push_back(std::make_pair(varName, getTypdedValueFromPyObj(scope[key])));
+        }
+        catch (kdlib::DbgException&)
+        { }
+    }
+
+    AutoRestorePyState  pystate;
+
+    if (!scopeList.empty() )
+        return kdlib::evalExpr(expression, makeScope(scopeList), typeInfoProvider).get();
+
+    return kdlib::evalExpr(expression).get();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+kdlib::TypedValue  getTypdedValueFromPyObj(const python::object& value)
+{
+    python::extract<kdlib::TypedVarPtr>  getTypedVar(value);
+    if (getTypedVar.check())
+        return getTypedVar();
+
+    return NumVariantAdaptor::convertToVariant(value);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+
 } // namespace pykd
 

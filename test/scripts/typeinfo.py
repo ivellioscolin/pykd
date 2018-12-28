@@ -164,10 +164,10 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( "structTest", ti.deref().name() )
 
         ti =  pykd.typeInfo("structTest[2]")
-        self.assertRaises( pykd.TypeException, ti.deref );
+        self.assertEqual( "structTest", ti.deref().name() )
 
         ti = target.module.type("classChild")
-        self.assertRaises( pykd.TypeException, ti.deref );
+        self.assertRaises( pykd.TypeException, ti.deref )
 
     def testNestedStruct( self ):
         ti = target.module.type("structWithNested")

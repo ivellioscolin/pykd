@@ -7,6 +7,7 @@
 namespace python = boost::python;
 
 #include "kdlib/typedvar.h"
+#include "kdlib/typeinfo.h"
 
 #include "stladaptor.h"
 #include "pythreadstate.h"
@@ -228,5 +229,10 @@ struct TypedVarAdapter {
         return new TypedVarIterator(typedVar);
     }
 };
+
+kdlib::TypedValue  getTypdedValueFromPyObj(const python::object& value);
+
+kdlib::TypedVarPtr evalExpr(const std::string  expression, python::dict&  scope = python::dict(), kdlib::TypeInfoProviderPtr& typeInfoProvider = kdlib::getDefaultTypeInfoProvider());
+    
 
 } // end namespace pykd

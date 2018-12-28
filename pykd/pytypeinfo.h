@@ -411,9 +411,4 @@ struct BaseTypesEnum {
     static kdlib::TypeInfoPtr getDouble() { return pykd::getTypeInfoByName(L"Double"); }
 };
 
-
-
-
-
-
 } // end namespace pykd

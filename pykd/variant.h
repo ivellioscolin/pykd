@@ -14,12 +14,12 @@ class NumVariantAdaptor : public kdlib::NumConvertable
 
 public:
 
-   static kdlib::NumVariant NumVariantAdaptor::convertToVariant( const python::object &obj)
-   {
+    static kdlib::NumVariant convertToVariant(const python::object &obj)
+    {
         kdlib::NumVariant   var;
 
         python::extract<kdlib::NumConvertable>  getNumVar(obj);
-        if ( getNumVar.check() )
+        if (getNumVar.check())
         {
             var = getNumVar();
             return var;
@@ -49,23 +49,27 @@ public:
         }
 #endif
 
-        if (_PyLong_Sign(obj.ptr()) >= 0)
+        if (PyLong_Check(obj.ptr()))
         {
-           if (_PyLong_NumBits(obj.ptr()) > 64)
-               throw pykd::OverflowException("int too big to convert");
+            if (_PyLong_Sign(obj.ptr()) >= 0)
+            {
+                if (_PyLong_NumBits(obj.ptr()) > 64)
+                    throw pykd::OverflowException("int too big to convert");
 
-            var.setULongLong(PyLong_AsUnsignedLongLong(obj.ptr()));
+                var.setULongLong(PyLong_AsUnsignedLongLong(obj.ptr()));
+            }
+            else
+            {
+                if (_PyLong_NumBits(obj.ptr()) > 63)
+                    throw pykd::OverflowException("int too big to convert");
+
+                var.setLongLong(PyLong_AsLongLong(obj.ptr()));
+            }
+
+            return var;
         }
-        else
-        {
-            if (_PyLong_NumBits(obj.ptr()) > 63)
-                throw pykd::OverflowException("int too big to convert");
 
-            var.setLongLong(PyLong_AsLongLong(obj.ptr()));
-        }
-
-
-        return var;
+        throw kdlib::TypeException(L"failed convert argument");
    }
 
    static python::object NumVariantAdaptor::convertToPython( const kdlib::NumVariant& var )

@@ -444,3 +444,26 @@ class TypedVarTest( unittest.TestCase ):
         self.assertFalse(hasattr(var, "noexisit"))
         self.assertRaises(AttributeError, getattr, *(var, "noexists"))
         self.assertRaises(AttributeError, setattr, *(var, "noexists", 0))
+
+    def testEvalExpr(self):
+        self.assertEqual( 2+2, pykd.evalExpr("2+2") )
+        self.assertEqual( target.module.typedVar("g_structTest").m_field1, pykd.evalExpr("g_structTest.m_field1") )
+        self.assertEqual( target.module.typedVar("g_testArray")[1].m_field3, pykd.evalExpr("(g_testArray + 1)->m_field3") )
+
+    def testEvalExprScope(self):
+
+        v1 = target.module.typedVar( "ulongVar" )
+        v2 = target.module.typedVar( "g_structTest" )
+
+        scope = { "v1" : v1, "v2" : v2 }
+        self.assertEqual( v1 + v2.m_field1, pykd.evalExpr("v1 + v2.m_field1", scope) )
+
+    def testEvalExprScopeLong(self):
+
+        v1 = 100
+        v2 = -500
+        scope = { "v1" : v1, "v2" : v2 }
+        self.assertEqual( v1 + v2, pykd.evalExpr("v1 + v2", scope) )
+        self.assertEqual( v1 * v2, pykd.evalExpr("v1 * v2", locals()) )
+
+
