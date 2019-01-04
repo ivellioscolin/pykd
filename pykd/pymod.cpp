@@ -876,6 +876,7 @@ void pykd_init()
             "Return FixedFileInfo" )
         .def("__getattr__", ModuleAdapter::getSymbolVaAttr,
             "Return address of the symbol" )
+        .def("__contains__", ModuleAdapter::isContainedSymbol)
         .def( "__str__", &ModuleAdapter::print );
 
     python::class_<kdlib::TypeInfo, kdlib::TypeInfoPtr, python::bases<kdlib::NumConvertable>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
@@ -971,6 +972,7 @@ void pykd_init()
         .def( "__getitem__", TypeInfoAdapter::getElementByIndex )
         .def( "__getitem__", TypeInfoAdapter::getElementByKey )
         .def( "__dir__", TypeInfoAdapter::getElementDir )
+        .def("__contains__", TypeInfoAdapter::isContainedField)
 #if PY_VERSION_HEX >= 0x03000000
         .def("__bool__", TypeInfoAdapter::isZero )
 #else
@@ -1044,7 +1046,7 @@ void pykd_init()
         .def("__dir__", TypedVarAdapter::getElementsDir)
         .def("__call__", python::raw_function(pykd::callFunctionByVar, 0) )
         .def("__iter__", TypedVarAdapter::getArrayIter, python::return_value_policy<python::manage_new_object>())
-        //.def("__getitem__", &kdlib::TypedVar::getElementByIndexPtr )
+        .def("__contains__", TypedVarAdapter::isContainedField)
 #if PY_VERSION_HEX >= 0x03000000
         .def("__bool__", TypedVarAdapter::isNotZero)
 #else

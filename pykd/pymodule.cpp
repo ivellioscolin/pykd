@@ -103,6 +103,15 @@ python::list  ModuleAdapter::enumTypes(kdlib::Module& module, const std::wstring
 
 ///////////////////////////////////////////////////////////////////////////////
 
+bool ModuleAdapter::isContainedSymbol(kdlib::ModulePtr& module, const std::wstring& symbolName)
+{
+    if (!module->enumSymbols(symbolName).empty())
+        return true;
+
+    return !module->enumTypes(symbolName).empty();
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 std::wstring ModuleAdapter::findSymbol( kdlib::Module& module, kdlib::MEMOFFSET_64 offset, bool showDisplacement ) 
 {

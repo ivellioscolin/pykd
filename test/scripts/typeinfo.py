@@ -351,7 +351,6 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertEqual( classChild.baseClassOffset(0), classChild.baseClassOffset('classBase1'))
         self.assertEqual(classChild.baseClassOffset(1), classChild.baseClassOffset('classBase2'))
 
-
     def  testPdbTypeProvider(self):
         pdb = target.module.symfile()
         typeProvider = pykd.getTypeInfoProviderFromPdb(pdb)
@@ -362,6 +361,9 @@ class TypeInfoTest( unittest.TestCase ):
     def testScopeName(self):
         self.assertEqual( target.module.name(), pykd.typeInfo( "structTest" ).scopeName() )
         self.assertEqual( target.module.name(), pykd.typeInfo( "structWithNested::Nested" ).scopeName() )
-        
-
-
+ 
+    def testContain(self):
+        ti = target.module.type( "structTest" )
+        self.assertTrue("m_field1" in ti)
+        self.assertFalse("NotExist" in ti)
+        self.assertRaises(Exception, lambda t : 2 in t, ti)

@@ -139,4 +139,9 @@ class ModuleTest( unittest.TestCase ):
     def testModuleList(self):
         self.assertTrue( [] != pykd.getModulesList() )
 
+    def testContain(self):
+        self.assertTrue("voidPtr" in target.module)
+        self.assertTrue("structTest" in target.module)
+        self.assertFalse("NotExist" in target.module)
+        self.assertRaises(Exception, lambda md : 2 in md, target.module)
 

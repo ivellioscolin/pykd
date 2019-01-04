@@ -228,11 +228,13 @@ struct TypedVarAdapter {
     {
         return new TypedVarIterator(typedVar);
     }
+
+    static bool isContainedField(kdlib::TypedVarPtr& typedVar, const std::wstring& fieldName);
 };
 
 kdlib::TypedValue  getTypdedValueFromPyObj(const python::object& value);
 
-kdlib::TypedVarPtr evalExpr(const std::string  expression, python::dict&  scope = python::dict(), kdlib::TypeInfoProviderPtr& typeInfoProvider = kdlib::getDefaultTypeInfoProvider());
+kdlib::TypedVarPtr evalExpr(const std::string  expression, python::object&  scope = python::object(), kdlib::TypeInfoProviderPtr& typeInfoProvider = kdlib::getDefaultTypeInfoProvider());
     
 
 } // end namespace pykd

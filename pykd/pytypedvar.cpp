@@ -138,6 +138,22 @@ python::list TypedVarAdapter::getFields( kdlib::TypedVar& typedVar )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+bool TypedVarAdapter::isContainedField(kdlib::TypedVarPtr& typedVar, const std::wstring& fieldName)
+{
+    AutoRestorePyState  pystate;
+
+    for (size_t i = 0; i < typedVar->getElementCount(); ++i)
+    {
+        std::wstring  name = typedVar->getElementName(i);
+        if (name == fieldName)
+            return true;
+    }
+
+    return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 python::list TypedVarAdapter::getElementsDir(kdlib::TypedVar& typedVar)
 {
     std::list<std::wstring>  lst;
@@ -306,28 +322,40 @@ void TypedVarAdapter::setFieldByKey(kdlib::TypedVar& typedVar, const std::wstrin
 
 ///////////////////////////////////////////////////////////////////////////////
 
-kdlib::TypedVarPtr evalExpr(const std::string  expression, python::dict&  scope, kdlib::TypeInfoProviderPtr& typeInfoProvider )
+class PyScope : public kdlib::Scope
 {
-    std::list < std::pair<std::wstring, kdlib::TypedValue> >   scopeList;
+public:
 
-    for (auto i = 0; i < python::len(scope); ++i)
+    kdlib::TypedValue get(const std::wstring& varName) const override
     {
-        auto key = scope.keys()[i];
-
-        std::wstring  varName = python::extract<std::wstring>(key);
-
-        try 
-        {
-            scopeList.push_back(std::make_pair(varName, getTypdedValueFromPyObj(scope[key])));
-        }
-        catch (kdlib::DbgException&)
-        { }
+        return getTypdedValueFromPyObj(m_scope[varName]);
     }
 
-    AutoRestorePyState  pystate;
+    virtual bool find(const std::wstring& varName, kdlib::TypedValue& value) const override
+    {
+        if (!m_scope.contains(varName))
+            return false;
 
-    if (!scopeList.empty() )
-        return kdlib::evalExpr(expression, makeScope(scopeList), typeInfoProvider).get();
+        value = getTypdedValueFromPyObj(m_scope[varName]);
+
+        return true;
+    }
+
+    PyScope(const python::object& scope) :
+        m_scope(scope)
+    {}
+
+private:
+
+    python::object  m_scope;
+};
+
+kdlib::TypedVarPtr evalExpr(const std::string  expression, python::object&  scope, kdlib::TypeInfoProviderPtr& typeInfoProvider )
+{
+    if (scope)
+    {
+        return kdlib::evalExpr(expression, kdlib::ScopePtr(new PyScope(scope)), typeInfoProvider).get();
+    }
 
     return kdlib::evalExpr(expression).get();
 }

@@ -198,6 +198,7 @@ struct ModuleAdapter : public kdlib::Module
 
     static python::list getTypedVarArrayByTypeName( kdlib::Module& module, kdlib::MEMOFFSET_64 offset, const std::wstring &typeName, size_t number );
 
+    static bool isContainedSymbol(kdlib::ModulePtr& module, const std::wstring& symbolName);
 };
 
 } // end namespace pykd

@@ -103,6 +103,21 @@ python::list TypeInfoAdapter::getFields( kdlib::TypeInfo &typeInfo )
     return pylst;
 }
 
+bool TypeInfoAdapter::isContainedField(kdlib::TypeInfoPtr& typeInfo, const std::wstring& fieldName)
+{
+
+    AutoRestorePyState  pystate;
+
+    for (size_t i = 0; i < typeInfo->getElementCount(); ++i)
+    {
+        std::wstring  name = typeInfo->getElementName(i);
+        if (name == fieldName)
+            return true;
+    }
+
+    return false;
+}
+
 python::list TypeInfoAdapter::getMethods(kdlib::TypeInfo &typeInfo)
 {
     typedef boost::tuple<std::wstring, kdlib::TypeInfoPtr> FieldTuple;

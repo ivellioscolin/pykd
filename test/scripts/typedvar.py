@@ -443,7 +443,6 @@ class TypedVarTest( unittest.TestCase ):
         
         self.assertFalse(hasattr(var, "noexisit"))
         self.assertRaises(AttributeError, getattr, *(var, "noexists"))
-        self.assertRaises(AttributeError, setattr, *(var, "noexists", 0))
 
     def testEvalExpr(self):
         self.assertEqual( 2+2, pykd.evalExpr("2+2") )
@@ -459,11 +458,21 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( v1 + v2.m_field1, pykd.evalExpr("v1 + v2.m_field1", scope) )
 
     def testEvalExprScopeLong(self):
-
         v1 = 100
         v2 = -500
         scope = { "v1" : v1, "v2" : v2 }
         self.assertEqual( v1 + v2, pykd.evalExpr("v1 + v2", scope) )
         self.assertEqual( v1 * v2, pykd.evalExpr("v1 * v2", locals()) )
+
+    def testEvalExprScopeStruct(self):
+        var = pykd.typedVar("g_structTest1")
+        self.assertEqual(var.m_field1, pykd.evalExpr("m_field1", var))
+        self.assertEqual(var.m_field4.deref().m_field1, pykd.evalExpr("m_field4->m_field1", var))
+
+    def testContain(self):
+        var = pykd.typedVar("g_structTest")
+        self.assertTrue("m_field1" in var)
+        self.assertFalse("NotExist" in var)
+        self.assertRaises(Exception, lambda var : 2 in var, var)
 
 

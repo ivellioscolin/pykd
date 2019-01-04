@@ -334,6 +334,8 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return false;
     }
 
+    static bool isContainedField(kdlib::TypeInfoPtr& typedVar, const std::wstring& fieldName);
+
 };
 
 
