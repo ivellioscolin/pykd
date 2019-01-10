@@ -106,6 +106,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( getTypeInfoProviderFromPdb_, pykd::getTypeInfoP
 BOOST_PYTHON_FUNCTION_OVERLOADS( getTypeInfoProviderFromSource_, pykd::getTypeInfoProviderFromSource, 1, 2);
 BOOST_PYTHON_FUNCTION_OVERLOADS(evalExpr_, pykd::evalExpr, 1, 3);
 
+BOOST_PYTHON_FUNCTION_OVERLOADS( addSyntheticModule_, pykd::addSyntheticModule, 3, 4 );
+
 namespace pykd {
 
 void initialize()
@@ -599,13 +601,18 @@ void pykd_init()
     python::def("appendSrcPath", pykd::appendSrcPath,
         "Append current source path");
 
-
     // synthetic symbol
     python::def("addSyntheticSymbol", pykd::addSyntheticSymbol,
         "The addSyntheticSymbol function adds a synthetic symbol to a module in the current process\n"
         "Note: reloading the symbols for the module deletes all synthetic symbols associated with that module.");
     python::def( "removeSyntheticSymbol", pykd::removeSyntheticSymbol,
         "The removeSyntheticSymbol function removes a synthetic symbol from a module in the current proces" );
+
+    // synthetic module
+    python::def("addSyntheticModule", pykd::addSyntheticModule, addSyntheticModule_(python::args("base", "size", "name", "path"),
+        "The addSyntheticModule function adds a synthetic module to the module list the debugger maintains for the current process"));
+    python::def("removeSyntheticModule", pykd::removeSyntheticModule,
+        "The removeSyntheticModule function removes a synthetic module from the module list the debugger maintains for the current process");
 
     // secondary callback data
     python::def("enumTagged", pykd::enumTagged,

@@ -456,6 +456,9 @@ kdlib::SyntheticSymbol addSyntheticSymbol( kdlib::MEMOFFSET_64 offset, unsigned 
 void removeSyntheticSymbol(const kdlib::SyntheticSymbol& syntheticSymbol);
 std::wstring printSyntheticSymbol(const kdlib::SyntheticSymbol& syntheticSymbol);
 
+void addSyntheticModule(kdlib::MEMOFFSET_64 base, unsigned long size, const std::wstring &name, const std::wstring &path = std::wstring{});
+void removeSyntheticModule(kdlib::MEMOFFSET_64 base);
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } //end namespace pykd

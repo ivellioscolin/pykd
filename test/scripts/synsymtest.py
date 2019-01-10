@@ -28,3 +28,15 @@ class SynSymTest(unittest.TestCase):
         self.assertRaises( pykd.DbgException, target.module.offset, "synSym2" )
 
         self.assertRaises( pykd.DbgException, pykd.removeSyntheticSymbol, _synsym )
+
+    def testModule(self):
+        """Add and remove synthetic module"""
+        base = 64 * 1024
+
+        pykd.addSyntheticModule(base, 1024, "artificial_module1")
+        pykd.addSyntheticModule(base + 1024, 1024, "artificial_module2", "artificial_module2_path")
+
+        pykd.removeSyntheticSymbol( pykd.addSyntheticSymbol(base, 1, "artificial_symbol") )
+
+        pykd.removeSyntheticModule(base + 1024)
+        pykd.removeSyntheticModule(base)

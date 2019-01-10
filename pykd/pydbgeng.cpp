@@ -213,4 +213,20 @@ std::wstring printSyntheticSymbol(const kdlib::SyntheticSymbol& syntheticSymbol)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void addSyntheticModule(kdlib::MEMOFFSET_64 base, unsigned long size, const std::wstring &name, const std::wstring &path /*= std::wstring{}*/)
+{
+    AutoRestorePyState pystate;
+    return kdlib::addSyntheticModule(base, size, name, path);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void removeSyntheticModule(kdlib::MEMOFFSET_64 base)
+{
+    AutoRestorePyState pystate;
+    return kdlib::removeSyntheticModule(base);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } //end namespace pykd
