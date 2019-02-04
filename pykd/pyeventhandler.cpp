@@ -468,7 +468,7 @@ void EventHandler::onChangeBreakpoints()
 
 /////////////////////////////////////////////////////////////////////////////////
 
-void EventHandler::onDebugOutput(const std::wstring& text)
+void EventHandler::onDebugOutput(const std::wstring& text, kdlib::OutputFlag flag)
 {
     PyEval_RestoreThread( m_pystate );
 
@@ -477,7 +477,7 @@ void EventHandler::onDebugOutput(const std::wstring& text)
         python::override pythonHandler = get_override("onDebugOutput");
         if ( pythonHandler )
         {
-            pythonHandler(text);
+            pythonHandler(text, flag);
         }
     }
     catch (const python::error_already_set &) 

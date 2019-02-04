@@ -28,21 +28,21 @@ public:
 
     EventHandler();
 
-    virtual kdlib::DebugCallbackResult onBreakpoint( kdlib::BREAKPOINT_ID bpId );
-    virtual kdlib::DebugCallbackResult onException( const kdlib::ExceptionInfo &exceptionInfo );
-    virtual kdlib::DebugCallbackResult onModuleLoad( kdlib::MEMOFFSET_64 offset, const std::wstring &name );
-    virtual kdlib::DebugCallbackResult onModuleUnload( kdlib::MEMOFFSET_64 offset, const std::wstring &name );
-    virtual kdlib::DebugCallbackResult onThreadStart();
-    virtual kdlib::DebugCallbackResult onThreadStop();
+    kdlib::DebugCallbackResult onBreakpoint( kdlib::BREAKPOINT_ID bpId ) override;
+    kdlib::DebugCallbackResult onException( const kdlib::ExceptionInfo &exceptionInfo ) override;
+    kdlib::DebugCallbackResult onModuleLoad( kdlib::MEMOFFSET_64 offset, const std::wstring &name ) override;
+    kdlib::DebugCallbackResult onModuleUnload( kdlib::MEMOFFSET_64 offset, const std::wstring &name ) override;
+    kdlib::DebugCallbackResult onThreadStart() override;
+    kdlib::DebugCallbackResult onThreadStop() override;
 
-    virtual void onExecutionStatusChange(kdlib::ExecutionStatus executionStatus);
-    virtual void onCurrentThreadChange(kdlib::THREAD_DEBUG_ID  threadid);
-    virtual void onChangeLocalScope();
-    virtual void onChangeSymbolPaths();
-    virtual void onChangeBreakpoints();
-    virtual void onDebugOutput(const std::wstring& text);
-    virtual void onStartInput();
-    virtual void onStopInput();
+    void onExecutionStatusChange(kdlib::ExecutionStatus executionStatus) override;
+    void onCurrentThreadChange(kdlib::THREAD_DEBUG_ID  threadid) override;
+    void onChangeLocalScope() override;
+    void onChangeSymbolPaths() override;
+    void onChangeBreakpoints() override;
+    void onDebugOutput(const std::wstring& text, kdlib::OutputFlag) override;
+    void onStartInput() override;
+    void onStopInput() override;
 
 private:
 
