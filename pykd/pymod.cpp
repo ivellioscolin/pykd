@@ -194,7 +194,10 @@ void pykd_init()
         "Return debug options" );
     python::def( "changeDebugOptions", pykd::changeDebugOptions,
         "Change debug options" );
-
+    python::def("getOutputMask", pykd::getOutputMask,
+        "Get output mask");
+    python::def("setOutputMask", pykd::setOutputMask,
+        "Set output mask");
 
     python::def( "breakin", pykd::targetBreak,
         "Break into debugger" );
@@ -1435,6 +1438,21 @@ void pykd_init()
         .value("Read", kdlib::Read)
         .value("Write", kdlib::Write)
         .value("Execute", kdlib::Execute)
+        ;
+
+    python::enum_<kdlib::OutputFlag>("outputFlag", "Set of output mask")
+        .value("Normal", kdlib::Normal)
+        .value("Error", kdlib::Error)
+        .value("Warning", kdlib::Warning)
+        .value("Verbose", kdlib::Verbose)
+        .value("Prompt", kdlib::Prompt)
+        .value("PromptRegister", kdlib::PromptRegister)
+        .value("ExtensionWarning", kdlib::ExtensionWarning)
+        .value("Debuggee", kdlib::Debuggee)
+        .value("DebuggeePrompt", kdlib::DebuggeePrompt)
+        .value("Symbols", kdlib::Symbols)
+        .value("Status", kdlib::Status)
+        .value("All", kdlib::All)
         ;
 
     // C++ exception translation to python

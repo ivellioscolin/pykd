@@ -133,6 +133,20 @@ void changeDebugOptions(kdlib::DebugOptionsSet &addOptions, kdlib::DebugOptionsS
     kdlib::changeDebugOptions(addOptions, removeOptions);
 }
 
+inline
+kdlib::OutputFlagsSet getOutputMask()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getOutputFlags();
+}
+
+inline
+void setOutputMask(const kdlib::OutputFlagsSet& outputMask)
+{
+    AutoRestorePyState  pystate;
+    kdlib::setOutputFlags(outputMask);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 // processes end threads

@@ -40,7 +40,7 @@ public:
     void onChangeLocalScope() override;
     void onChangeSymbolPaths() override;
     void onChangeBreakpoints() override;
-    void onDebugOutput(const std::wstring& text, kdlib::OutputFlag) override;
+    void onDebugOutput(const std::wstring& text, kdlib::OutputFlag  flag) override;
     void onStartInput() override;
     void onStopInput() override;
 

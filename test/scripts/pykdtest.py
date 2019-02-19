@@ -30,6 +30,7 @@ import synsymtest
 import taggedtest
 import arm64dumptest
 import armdumptest
+import eventtest
 
 pykd.initialize()
 
@@ -71,7 +72,8 @@ def getTestSuite( singleName = "" ):
                 unittest.TestLoader().loadTestsFromTestCase( taggedtest.TaggedTest ),
                 unittest.TestLoader().loadTestsFromTestCase( arm64dumptest.ARM64DumpTest ),
                 unittest.TestLoader().loadTestsFromTestCase( armdumptest.ARMDumpTest ),
-
+                unittest.TestLoader().loadTestsFromTestCase( eventtest.OutputHandlerTest ),
+               
                 #unittest.TestLoader().loadTestsFromTestCase( excepttest.ExceptionTest ),
             ] ) 
     else:
