@@ -469,6 +469,12 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual(var.m_field1, pykd.evalExpr("m_field1", var))
         self.assertEqual(var.m_field4.deref().m_field1, pykd.evalExpr("m_field4->m_field1", var))
 
+    def testEvalExprSizeof(self):
+        self.assertEqual(4, pykd.evalExpr("sizeof(int)"))
+        self.assertEqual(4, pykd.evalExpr("sizeof(int&)"))
+        self.assertEqual(pykd.ptrSize() * 10, pykd.evalExpr("sizeof(int*[10])"))
+        self.assertEqual(pykd.ptrSize(), pykd.evalExpr("sizeof(int(*)[10])"))
+
     def testContain(self):
         var = pykd.typedVar("g_structTest")
         self.assertTrue("m_field1" in var)

@@ -285,7 +285,7 @@ public:
 
     static std::string hex(kdlib::NumConvertable& var) {
             kdlib::NumVariant  v = var;
-            return std::string("0x") + std::string(_bstr_t(v.asHex().c_str()));
+            return  _bstr_t(v.asHex().c_str());
     }
 
     static bool isInteger(kdlib::NumConvertable& var) {
