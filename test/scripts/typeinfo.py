@@ -356,7 +356,7 @@ class TypeInfoTest( unittest.TestCase ):
         typeProvider = pykd.getTypeInfoProviderFromPdb(pdb)
         self.assertEqual("structTest", typeProvider.getTypeByName("structTest").name())
         self.assertEqual("structTest", typeProvider.structTest.name())
-        self.assertEqual(22, len(list(typeProvider.typeIterator("*struct*"))))
+        self.assertEqual(13, len(list(typeProvider.typeIterator("*struct*"))))
 
     def testScopeName(self):
         self.assertEqual( target.module.name(), pykd.typeInfo( "structTest" ).scopeName() )

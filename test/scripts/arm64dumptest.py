@@ -6,7 +6,7 @@ import os
 class ARM64DumpTest(unittest.TestCase):
     def setUp(self):
         dump_file = os.path.join( os.path.dirname(sys.argv[0]),
-                                  r"..\..\kdlibcpp\kdlib\tests\dumps\win10_arm64_mem.cab" )
+                                  r"..\..\kdlibcpp\kdlib\tests\dumps\win10_arm64_mem\win10_arm64_mem.cab" )
         self.dump_id = pykd.loadDump( dump_file )
 
     def tearDown(self):
