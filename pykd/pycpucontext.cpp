@@ -259,6 +259,20 @@ python::tuple StackFrameAdapter::findSymbol(kdlib::StackFramePtr& frame)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+python::tuple  StackFrameAdapter::getSourceLine(kdlib::StackFramePtr& frame)
+{
+    std::wstring  fileName;
+    unsigned long  lineno;
+
+    do {
+        AutoRestorePyState  pystate;
+        frame->getSourceLine(fileName, lineno);
+    } while (false);
+
+    return python::make_tuple(fileName, lineno);
+}
+///////////////////////////////////////////////////////////////////////////////
+
 python::tuple CPUContextAdapter::getRegisterByIndex(unsigned long index)
 {
 

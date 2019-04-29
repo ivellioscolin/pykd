@@ -147,5 +147,4 @@ class ModuleTest( unittest.TestCase ):
 
     def testPrint(self):
         modAsStr = str(target.module)
-        pass
 

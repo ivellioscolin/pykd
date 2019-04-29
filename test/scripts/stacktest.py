@@ -87,5 +87,20 @@ class InlineStackTest(unittest.TestCase):
 
         self.assertEqual( expectedStack, realStack[0:4])
 
+    def testFrameIsInline(self):
+        self.assertEqual([True, True, False, True], 
+                         [fr.isInline() for fr in pykd.getStack(inlineFrames = True)][:4]
+                         )
+
+    def testGetSourceLine(self):
+
+        expectedStack = ['targetapp.cpp+129', 'targetapp.cpp+144', 'targetapp.cpp+172', 'targetapp.cpp+185']
+
+        realStack = []
+        for frame in pykd.getStack(inlineFrames = True)[:4]:
+            fileName, lineNo = frame.getSourceLine()
+            realStack.append("%s+%s" % ( os.path.basename(fileName), lineNo ) )
+ 
+        self.assertEqual( expectedStack, realStack)
 
 

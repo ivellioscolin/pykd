@@ -78,6 +78,8 @@ public:
         AutoRestorePyState  pystate;
         return frame->isInline();
     }
+
+    static python::tuple getSourceLine(kdlib::StackFramePtr& frame);
 };
 
 /////////////////////////////////////////////////////////////////////////////////

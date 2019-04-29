@@ -1121,9 +1121,9 @@ void pykd_init()
             "this virtual frame of inlined function" )
         .def( "findSymbol", StackFrameAdapter::findSymbol,
             "return symbol for frame's instruction pointer")
-        //.def( "getSourceLine", StackFrameAdapter::getSourceLine,
-         //   "return source line for stack frame's function" )
-         .def( "__str__", StackFrameAdapter::print );
+        .def( "getSourceLine", StackFrameAdapter::getSourceLine,
+            "return source line for stack frame's function" )
+        .def( "__str__", StackFrameAdapter::print );
 
     python::class_<CPUContextAdapter>("cpu", "class for CPU context representation" )
          //.def("__init__", python::make_constructor(CPUContextAdapter::getCPUContext) )
