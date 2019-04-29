@@ -1117,10 +1117,8 @@ void pykd_init()
             "return the function's local variable  by it's name")
         .def( "switchTo", StackFrameAdapter::switchTo,
             "Make this frame a current")
-        //.def( "isInline", StackFrameAdapter::isInline,
-        //    "this virtual frame of inlined function" )
-        //.def( "getFunciton", StackFrameAdapter::getFunction,
-        //    "return instance of the typedVar class representing function")
+        .def( "isInline", StackFrameAdapter::isInline,
+            "this virtual frame of inlined function" )
         .def( "findSymbol", StackFrameAdapter::findSymbol,
             "return symbol for frame's instruction pointer")
         //.def( "getSourceLine", StackFrameAdapter::getSourceLine,

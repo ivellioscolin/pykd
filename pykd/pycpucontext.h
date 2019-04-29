@@ -72,6 +72,12 @@ public:
     }
 
     static python::tuple findSymbol(kdlib::StackFramePtr& frame);
+
+    static bool isInline(kdlib::StackFramePtr& frame)
+    {
+        AutoRestorePyState  pystate;
+        return frame->isInline();
+    }
 };
 
 /////////////////////////////////////////////////////////////////////////////////
