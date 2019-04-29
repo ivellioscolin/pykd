@@ -145,3 +145,7 @@ class ModuleTest( unittest.TestCase ):
         self.assertFalse("NotExist" in target.module)
         self.assertRaises(Exception, lambda md : 2 in md, target.module)
 
+    def testPrint(self):
+        modAsStr = str(target.module)
+        pass
+

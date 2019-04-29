@@ -1,6 +1,8 @@
 #include "stdafx.h"
 
 #include "pymodule.h"
+#include <iomanip>
+#include <ctime>
 
 namespace pykd {
 
@@ -48,20 +50,8 @@ std::wstring ModuleAdapter::print( kdlib::Module& module )
     sstr << L"Image: " <<  module.getImageName() << std::endl;
     sstr << L"Symbols: " << module.getSymFile() << std::endl;
 
-
-    //if ( m_symSession )
-    //{
-    //     sstr << "Symbols: " << m_symSession->getSymbolFileName() << std::endl;
-    //    std::string buildDesc = m_symSession->getBuildDescription();
-    //    if (!buildDesc.empty())
-    //        sstr << "\t" << buildDesc << std::endl;
-    //}
-    //else
-    //{
-    //     sstr << "Symbols: not found" << std::endl;
-    //}
- 
-    sstr << L"Timestamp: " << module.getTimeDataStamp() << std::endl;
+    time_t  timeStamp = module.getTimeDataStamp();
+    sstr << L"Timestamp: " << timeStamp << " (" << std::put_time(std::gmtime(&timeStamp), L"%c") << L')' << std::endl;
     sstr << L"Check Sum: " << module.getCheckSum() << std::endl;
 
     return sstr.str();
