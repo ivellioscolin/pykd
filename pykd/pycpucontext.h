@@ -70,6 +70,8 @@ public:
         AutoRestorePyState  pystate;
         frame->switchTo();
     }
+
+    static python::tuple findSymbol(kdlib::StackFramePtr& frame);
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -157,7 +159,7 @@ inline void switchProcessorMode() {
     kdlib::switchCPUMode();
 }
 
-python::list getCurrentStack();
+python::list getStack(bool inlineFrames = false);
 
 inline kdlib::StackFramePtr getCurrentFrame() {
     AutoRestorePyState  pystate;

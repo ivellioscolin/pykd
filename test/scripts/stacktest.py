@@ -1,4 +1,7 @@
 import unittest
+import os
+import sys
+
 import pykd
 import target
 
@@ -53,5 +56,36 @@ class StackTest(unittest.TestCase):
     def testGetLocalsNoSymbol(self):
         topFrame = pykd.getStack()[-1]
         self.assertEqual(0, len(topFrame.getLocals()))
+
+
+class InlineStackTest(unittest.TestCase):
+
+    def setUp(self):
+        dumpDir = os.path.join( os.path.dirname(sys.argv[0]), r"..\..\kdlibcpp\kdlib\tests\dumps\targetapp_stacktest_x64_release")
+        dump_file = os.path.join( dumpDir, "targetapp_stacktest_x64_release.cab" )
+        self.symbolPath = pykd.getSymbolPath()
+        symbolPath = self.symbolPath + ";" + dumpDir
+        pykd.setSymbolPath(symbolPath)
+        self.dump_id = pykd.loadDump( dump_file )
+
+    def tearDown(self):
+        pykd.closeDump( self.dump_id )
+        pykd.setSymbolPath(self.symbolPath)
+
+    def testGetStack(self):
+
+        expectedStack = [
+                  'targetapp!stackTestClass::stackMethod',
+                  'targetapp!stackTestRun2',
+                  'targetapp!stackTestRun1',
+                  'targetapp!stackTestRun']
+
+        realStack = []
+        for frame in pykd.getStack(inlineFrames = True):
+            moduleName, symbolName, disp = frame.findSymbol()
+            realStack.append( "%s!%s" % ( moduleName, symbolName ) )
+
+        self.assertEqual( expectedStack, realStack[0:4])
+
 
 

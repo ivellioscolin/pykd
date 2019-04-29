@@ -69,14 +69,14 @@ std::wstring getRegisterName(unsigned long index)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-python::list getCurrentStack()
+python::list getStack(bool inlineFrames)
 {
     kdlib::StackPtr  stack;
     unsigned long  numberFrames;
 
     do {
         AutoRestorePyState  pystate;
-        stack = kdlib::getStack();
+        stack = kdlib::getStack(inlineFrames);
         numberFrames = stack->getFrameCount();
     } while(false);
 
@@ -238,6 +238,23 @@ python::dict StackFrameAdapter::getLocalsDict(kdlib::StackFramePtr& frame)
         pyLst[localLst[i].first] = localLst[i].second;
 
     return pyLst;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+python::tuple StackFrameAdapter::findSymbol(kdlib::StackFramePtr& frame)
+{
+    kdlib::MEMDISPLACEMENT  displacement;
+    std::wstring  symbolName;
+    std::wstring  moduleName;
+
+    {
+        AutoRestorePyState  pystate;
+        symbolName = frame->findSymbol(displacement);
+        moduleName = kdlib::getModuleName(kdlib::findModuleBase(frame->getIP()));
+    }
+
+    return python::make_tuple(moduleName, symbolName, displacement);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

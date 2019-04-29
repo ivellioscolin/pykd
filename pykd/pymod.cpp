@@ -78,6 +78,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFile_, pykd::getSourceFile, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceFileFromSrcSrv_, pykd::getSourceFileFromSrcSrv, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getSourceLine_, pykd::getSourceLine, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( findSymbol_, pykd::findSymbol, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( getStack_, pykd::getStack, 0, 1);
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( getProcessOffset_, pykd::getProcessOffset, 0, 1);
 BOOST_PYTHON_FUNCTION_OVERLOADS( getProcessSystemId_, pykd::getProcessSystemId, 0, 1);
@@ -482,8 +483,8 @@ void pykd_init()
         "Switch processor mode ( X86 <-> X64 )" );
 
    // stack and local variables
-    python::def( "getStack", pykd::getCurrentStack,
-        "Return a current stack as a list of stackFrame objects" );
+    python::def( "getStack", pykd::getStack, getStack_(python::args("inlineFrames"),
+        "Return a current stack as a list of stackFrame objects" ) );
     python::def( "getFrame", pykd::getCurrentFrame,
         "Return a current stack frame" );
     python::def("getFrameNumber", pykd::getCurrentFrameNumber,
@@ -1116,7 +1117,15 @@ void pykd_init()
             "return the function's local variable  by it's name")
         .def( "switchTo", StackFrameAdapter::switchTo,
             "Make this frame a current")
-        .def( "__str__", StackFrameAdapter::print );
+        //.def( "isInline", StackFrameAdapter::isInline,
+        //    "this virtual frame of inlined function" )
+        //.def( "getFunciton", StackFrameAdapter::getFunction,
+        //    "return instance of the typedVar class representing function")
+        .def( "findSymbol", StackFrameAdapter::findSymbol,
+            "return symbol for frame's instruction pointer")
+        //.def( "getSourceLine", StackFrameAdapter::getSourceLine,
+         //   "return source line for stack frame's function" )
+         .def( "__str__", StackFrameAdapter::print );
 
     python::class_<CPUContextAdapter>("cpu", "class for CPU context representation" )
          //.def("__init__", python::make_constructor(CPUContextAdapter::getCPUContext) )
