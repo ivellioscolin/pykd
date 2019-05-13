@@ -11,6 +11,7 @@ Use it to run pykd within windbg. [link](https://githomelab.ru/pykd/pykd-ext)
 
 ## Releases:
 [Last Release](/../wikis/0.3.4.6)    
+[PyPi](https://pypi.org/project/pykd)
 
 ## Documentation
 [User Manual](/../wikis/User Manual rus)    
