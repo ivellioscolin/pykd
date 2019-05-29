@@ -145,6 +145,20 @@ class ModuleTest( unittest.TestCase ):
         self.assertFalse("NotExist" in target.module)
         self.assertRaises(Exception, lambda md : 2 in md, target.module)
 
+    def testHasAttr(self):
+        self.assertTrue(hasattr(target.module, "voidPtr"))
+        self.assertTrue(hasattr(target.module, "structTest"))
+        self.assertFalse(hasattr(target.module, "NotExist"))
+        self.assertRaises(Exception, lambda md : hasattr(2, target.module), target.module)
+
+    def testGetByKey(self):
+        self.assertFalse(None == target.module["voidPtr"])
+        self.assertFalse(None == target.module["structTest"] )
+        self.assertRaises(KeyError, lambda md : target.module["Not Exist"], target.module)
+
+    def testEvalInModuleScope(self):
+        self.assertEqual( target.module.rva('voidPtr'), eval("voidPtr - %#x" % target.module.begin(), globals(), target.module) )
+
     def testPrint(self):
         modAsStr = str(target.module)
 

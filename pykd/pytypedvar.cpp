@@ -184,28 +184,39 @@ python::list TypedVarAdapter::getElementsDir(kdlib::TypedVar& typedVar)
 
 kdlib::TypedVarPtr TypedVarAdapter::getFieldAttr(kdlib::TypedVar& typedVar, const std::wstring &name)
 {
+    AutoRestorePyState  pystate;
+
+    try
     {
-
-        AutoRestorePyState  pystate;
-
-        try
-        {
-            return typedVar.getElement( name );
-        }
-        catch (kdlib::TypeException&)
-        {}
-
-        try
-        {
-            return typedVar.getMethod( name );
-        }
-        catch (kdlib::TypeException&)
-        {}
+        return typedVar.getElement( name );
     }
+    catch (kdlib::TypeException&)
+    {}
 
-    std::wstringstream sstr;
-    sstr << L"typed var has no field " << L'\'' << name << L'\'';
-    throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
+    return typedVar.getMethod(name);
+
+    //{
+
+    //    AutoRestorePyState  pystate;
+
+    //    try
+    //    {
+    //        return typedVar.getElement( name );
+    //    }
+    //    catch (kdlib::TypeException&)
+    //    {}
+
+    //    try
+    //    {
+    //        return typedVar.getMethod( name );
+    //    }
+    //    catch (kdlib::TypeException&)
+    //    {}
+    //}
+
+    //std::wstringstream sstr;
+    //sstr << L"typed var has no field " << L'\'' << name << L'\'';
+    //throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
 }
 
 

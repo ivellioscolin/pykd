@@ -82,19 +82,41 @@ struct ModuleAdapter : public kdlib::Module
         return module.getSymbolVa(symbolName);
     }
 
-    static kdlib::MEMOFFSET_64 getSymbolVaAttr(kdlib::Module& module, const std::wstring &symbolName)
+    static python::object getAttrByName(kdlib::Module& module, const std::wstring &symbolName)
     {
         AutoRestorePyState  pystate;
         try {
-            return module.getSymbolVa(symbolName);
+            return python::object(module.getSymbolVa(symbolName));
+        }
+        catch (kdlib::DbgException&)
+        { }
+
+        return python::object(module.getTypeByName(symbolName));
+    }
+
+    static python::object getItemByKey(kdlib::Module& module, const std::wstring &symbolName)
+    {
+        AutoRestorePyState  pystate;
+
+        try {
+            return python::object(module.getSymbolVa(symbolName));
         }
         catch (kdlib::DbgException&)
         {
-            std::wstringstream sstr;
-            sstr << L'\'' << module.getName() << L'\'' << L" module has no symbol " << L'\'' << symbolName << L'\'';
-            throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
         }
+
+        try {
+            return python::object(module.getTypeByName(symbolName));
+        }
+        catch (kdlib::DbgException&)
+        {
+        }
+
+        std::wstringstream sstr;
+        sstr << L"module hase symbol " << L'\'' << symbolName << L'\'';
+        throw KeyException(std::string(_bstr_t(sstr.str().c_str())).c_str());
     }
+    
 
     static kdlib::MEMOFFSET_32 getSymbolRva( kdlib::Module& module, const std::wstring &symbolName )
     {

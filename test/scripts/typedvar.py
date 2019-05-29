@@ -87,7 +87,7 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual( True, tv1.m_field2 )
         self.assertEqual( 1, tv1.m_field3 )
         self.assertEqual( 1, tv1["m_field3"] )
-        self.assertRaises( AttributeError, lambda t: t.not_exists, tv1) # non-exsisting field
+        self.assertRaises( pykd.SymbolException, lambda t: t.not_exists, tv1) # non-exsisting field
         self.assertRaises( KeyError, lambda t: t["not_exists"], tv1) # non-exsisting field
 
     def testPtrField(self):
@@ -442,7 +442,11 @@ class TypedVarTest( unittest.TestCase ):
         self.assertEqual(11, getattr(var, "m_field1"))
         
         self.assertFalse(hasattr(var, "noexisit"))
-        self.assertRaises(AttributeError, getattr, *(var, "noexists"))
+        self.assertRaises(pykd.SymbolException, lambda x: getattr(x, "noexists"), var)
+
+    def testEvalPyScope(self):
+        var = target.module.typedVar("structTest", [0x55] * 20 )
+        self.assertEqual( var.m_field1 * 17, eval("m_field1 * 17", globals(), var) )
 
     def testEvalExpr(self):
         self.assertEqual( 2+2, pykd.evalExpr("2+2") )
