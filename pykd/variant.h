@@ -51,7 +51,7 @@ public:
 
         if (PyLong_Check(obj.ptr()))
         {
-            if (_PyLong_Sign(obj.ptr()) >= 0)
+            if (_PyLong_NumBits(obj.ptr()) > 63)
             {
                 if (_PyLong_NumBits(obj.ptr()) > 64)
                     throw pykd::OverflowException("int too big to convert");
@@ -60,9 +60,6 @@ public:
             }
             else
             {
-                if (_PyLong_NumBits(obj.ptr()) > 63)
-                    throw pykd::OverflowException("int too big to convert");
-
                 var.setLongLong(PyLong_AsLongLong(obj.ptr()));
             }
 
