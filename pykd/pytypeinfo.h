@@ -150,6 +150,10 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo.getElement(name);
     }
 
+    static bool hasField(kdlib::TypeInfoPtr &typeInfo, const std::wstring &name);
+
+    static bool hasMethod(kdlib::TypeInfoPtr &typeInfo, const std::wstring &fieldName);
+
     static kdlib::TypeInfoPtr getElementAttr(kdlib::TypeInfo &typeInfo, const std::wstring &name);
 
     static kdlib::TypeInfoPtr getElementByKey(kdlib::TypeInfo &typeInfo, const std::wstring &name);
@@ -334,7 +338,7 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return false;
     }
 
-    static bool isContainedField(kdlib::TypeInfoPtr& typedVar, const std::wstring& fieldName);
+    static bool hasFieldOrMethod(kdlib::TypeInfoPtr& typedVar, const std::wstring& name);
 
 };
 

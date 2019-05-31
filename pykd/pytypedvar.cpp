@@ -184,6 +184,9 @@ python::list TypedVarAdapter::getElementsDir(kdlib::TypedVar& typedVar)
 
 kdlib::TypedVarPtr TypedVarAdapter::getFieldAttr(kdlib::TypedVar& typedVar, const std::wstring &name)
 {
+    if (name == L"__name__")
+        throw AttributeException("no __name__ attribute");
+
     AutoRestorePyState  pystate;
 
     try

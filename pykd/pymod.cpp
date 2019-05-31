@@ -893,30 +893,32 @@ void pykd_init()
         .def("__contains__", ModuleAdapter::isContainedSymbol)
         .def( "__str__", &ModuleAdapter::print );
 
-    python::class_<kdlib::TypeInfo, kdlib::TypeInfoPtr, python::bases<kdlib::NumConvertable>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init )
-        .def("__init__", python::make_constructor( pykd::getTypeInfoByName ) )
-        .def( "name", TypeInfoAdapter::getName,
-            "Return type name" )
+    python::class_<kdlib::TypeInfo, kdlib::TypeInfoPtr, python::bases<kdlib::NumConvertable>, boost::noncopyable >("typeInfo", "Class representing typeInfo", python::no_init)
+        .def("__init__", python::make_constructor(pykd::getTypeInfoByName))
+        .def("name", TypeInfoAdapter::getName,
+            "Return type name")
         .def("scopeName", TypeInfoAdapter::getScopeName,
-            "Return name of type scope ( module name )" )
-        .def( "size", TypeInfoAdapter::getSize,
-            "Return type size" )
-        .def( "staticOffset", TypeInfoAdapter::getStaticOffset,
-            "Return offset of the static field" )
-        .def( "fieldOffset", TypeInfoAdapter::getElementOffset,
-            "Return offset of the nonstatic field" )
+            "Return name of type scope ( module name )")
+        .def("size", TypeInfoAdapter::getSize,
+            "Return type size")
+        .def("staticOffset", TypeInfoAdapter::getStaticOffset,
+            "Return offset of the static field")
+        .def("fieldOffset", TypeInfoAdapter::getElementOffset,
+            "Return offset of the nonstatic field")
         .def("fieldOffset", TypeInfoAdapter::getElementOffsetByIndex,
             "Return offset of the nonstatic field by index")
-        .def( "bitOffset", TypeInfoAdapter::getBitOffset,
-            "Return bit field's offset" )
-        .def( "bitWidth", TypeInfoAdapter::getBitWidth,
-            "Return bit field's length" )
-        .def( "getNumberFields", TypeInfoAdapter::getElementCount,
-            "Return number of fields" )
-        .def( "field", TypeInfoAdapter::getElementByIndex,
-            "Return field's type by index" )
-        .def( "field", TypeInfoAdapter::getElementByName,
-            "Return field's type" )
+        .def("bitOffset", TypeInfoAdapter::getBitOffset,
+            "Return bit field's offset")
+        .def("bitWidth", TypeInfoAdapter::getBitWidth,
+            "Return bit field's length")
+        .def("getNumberFields", TypeInfoAdapter::getElementCount,
+            "Return number of fields")
+        .def("field", TypeInfoAdapter::getElementByIndex,
+            "Return field's type by index")
+        .def("field", TypeInfoAdapter::getElementByName,
+            "Return field's type")
+        .def("hasField", TypeInfoAdapter::hasField,
+            "Return True if type has a field with the specified name")
         .def( "fieldName", TypeInfoAdapter::getElementName,
             "Return name of struct field by index" )
         .def( "fields", TypeInfoAdapter::getFields,
@@ -927,6 +929,8 @@ void pykd_init()
             "Return method's type by name")
         .def( "method", TypeInfoAdapter::getMethodByIndex,
             "Return method's by index")
+        .def("hasMethod", TypeInfoAdapter::hasMethod,
+            "Return True if type has a method with the specified name")
         .def( "methodName", TypeInfoAdapter::getMethodName,
             "Return method's name")
         .def( "methods", TypeInfoAdapter::getMethods,
@@ -986,7 +990,7 @@ void pykd_init()
         .def( "__getitem__", TypeInfoAdapter::getElementByIndex )
         .def( "__getitem__", TypeInfoAdapter::getElementByKey )
         .def( "__dir__", TypeInfoAdapter::getElementDir )
-        .def("__contains__", TypeInfoAdapter::isContainedField)
+        .def("__contains__", TypeInfoAdapter::hasFieldOrMethod)
 #if PY_VERSION_HEX >= 0x03000000
         .def("__bool__", TypeInfoAdapter::isZero )
 #else

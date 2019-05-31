@@ -103,14 +103,48 @@ python::list TypeInfoAdapter::getFields( kdlib::TypeInfo &typeInfo )
     return pylst;
 }
 
-bool TypeInfoAdapter::isContainedField(kdlib::TypeInfoPtr& typeInfo, const std::wstring& fieldName)
+bool TypeInfoAdapter::hasFieldOrMethod(kdlib::TypeInfoPtr& typeInfo, const std::wstring& fieldName)
 {
-
     AutoRestorePyState  pystate;
 
     for (size_t i = 0; i < typeInfo->getElementCount(); ++i)
     {
         std::wstring  name = typeInfo->getElementName(i);
+        if (name == fieldName)
+            return true;
+    }
+
+    for (size_t i = 0; i < typeInfo->getMethodsCount(); ++i)
+    {
+        std::wstring  name = typeInfo->getMethodName(i);
+        if (name == fieldName)
+            return true;
+    }
+
+    return false;
+}
+
+bool TypeInfoAdapter::hasField(kdlib::TypeInfoPtr &typeInfo, const std::wstring &fieldName)
+{
+    AutoRestorePyState  pystate;
+
+    for (size_t i = 0; i < typeInfo->getElementCount(); ++i)
+    {
+        std::wstring  name = typeInfo->getElementName(i);
+        if (name == fieldName)
+            return true;
+    }
+
+    return false;
+}
+
+bool TypeInfoAdapter::hasMethod(kdlib::TypeInfoPtr &typeInfo, const std::wstring &fieldName)
+{
+    AutoRestorePyState  pystate;
+
+    for (size_t i = 0; i < typeInfo->getMethodsCount(); ++i)
+    {
+        std::wstring  name = typeInfo->getMethodName(i);
         if (name == fieldName)
             return true;
     }

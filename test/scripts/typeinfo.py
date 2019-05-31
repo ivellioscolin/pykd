@@ -40,11 +40,9 @@ class TypeInfoTest( unittest.TestCase ):
         """ get field of the complex type """
         ti1 = target.module.type( "structTest" )
         self.assertTrue( "UInt4B", ti1.m_field0.name() )
-        #self.assertTrue( "UInt4B", ti1["m_field0"].name() )
-        self.assertTrue( hasattr( ti1, "m_field0" ) )
-        self.assertFalse( hasattr( ti1, "not_exists" ) )
+        self.assertTrue( "m_field0" in ti1 )
+        self.assertFalse( "not_exist" in ti1) # non-exsisting field
         self.assertRaises( pykd.SymbolException, lambda t: t.not_exists, ti1) # non-exsisting field
-        #self.assertRaises( KeyError, lambda t: t["not_exists"], ti1) # non-exsisting field
 
 
     def testBaseTypes( self ):
@@ -171,14 +169,14 @@ class TypeInfoTest( unittest.TestCase ):
 
     def testNestedStruct( self ):
         ti = target.module.type("structWithNested")
-        self.assertTrue( hasattr( ti, "m_field" ) )
-        self.assertTrue( hasattr( ti, "m_field3" ) )
-        self.assertTrue( hasattr( ti, "m_unnameStruct" ) )
-        self.assertTrue( hasattr( ti.m_unnameStruct, "m_field2" ) )
-        self.assertFalse( hasattr( ti, "m_field2" ) )
-        self.assertFalse( hasattr( ti, "m_nestedFiled" ) )
+        self.assertTrue( ti.hasField("m_field"))
+        self.assertTrue( ti.hasField("m_field3"))
+        self.assertTrue( ti.hasField("m_unnameStruct"))
+        self.assertTrue( ti.m_unnameStruct.hasField("m_field2"))
+        self.assertFalse( ti.hasField( "m_field2" ) )
+        self.assertFalse( ti.hasField( "m_nestedFiled" ) )
         ti = target.module.type("structWithNested::Nested")
-        self.assertTrue( hasattr( ti, "m_nestedFiled" ) )
+        self.assertTrue( ti.hasField( "m_nestedFiled" ) )
 
     def testPrint(self):
         self.assertTrue( str(target.module.type( "ucharVar" ) ) )
