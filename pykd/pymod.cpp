@@ -886,6 +886,8 @@ void pykd_init()
             "Return tuple of the module's file version")
         .def("getFixedFileInfo", ModuleAdapter::getFixedFileInfo,
             "Return FixedFileInfo" )
+        .def("hasSymbol", ModuleAdapter::isContainedSymbol,
+            "Check if module has the specified symbol")
         .def("__getattr__", ModuleAdapter::getAttrByName,
             "Return symbol offset or type as attribute" )
         .def("__getitem__", ModuleAdapter::getItemByKey,
