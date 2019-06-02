@@ -143,6 +143,10 @@ struct TypedVarAdapter {
     
     static void setField(kdlib::TypedVar& typedVar, const std::wstring &name, python::object&  object);
 
+    static bool hasField(kdlib::TypedVarPtr& typedVar, const std::wstring &name);
+
+    static bool hasMethod(kdlib::TypedVarPtr& typedVar, const std::wstring &name);
+
     static kdlib::TypedVarPtr getFieldAttr(kdlib::TypedVar& typedVar, const std::wstring &name);
     
     static void setFieldAttr(kdlib::TypedVar& typedVar, const std::wstring &name, python::object&  object);
@@ -229,7 +233,6 @@ struct TypedVarAdapter {
         return new TypedVarIterator(typedVar);
     }
 
-    static bool isContainedField(kdlib::TypedVarPtr& typedVar, const std::wstring& fieldName);
 };
 
 kdlib::TypedValue  getTypdedValueFromPyObj(const python::object& value);

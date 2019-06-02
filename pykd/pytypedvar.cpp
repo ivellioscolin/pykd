@@ -138,7 +138,7 @@ python::list TypedVarAdapter::getFields( kdlib::TypedVar& typedVar )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool TypedVarAdapter::isContainedField(kdlib::TypedVarPtr& typedVar, const std::wstring& fieldName)
+bool TypedVarAdapter::hasField(kdlib::TypedVarPtr& typedVar, const std::wstring &fieldName)
 {
     AutoRestorePyState  pystate;
 
@@ -147,6 +147,23 @@ bool TypedVarAdapter::isContainedField(kdlib::TypedVarPtr& typedVar, const std::
         std::wstring  name = typedVar->getElementName(i);
         if (name == fieldName)
             return true;
+    }
+
+    return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool TypedVarAdapter::hasMethod(kdlib::TypedVarPtr& typedVar, const std::wstring &name)
+{
+    AutoRestorePyState  pystate;
+
+    try {
+        typedVar->getMethod(name);
+        return true;
+    }
+    catch (kdlib::DbgException&)
+    {
     }
 
     return false;
@@ -197,31 +214,7 @@ kdlib::TypedVarPtr TypedVarAdapter::getFieldAttr(kdlib::TypedVar& typedVar, cons
     {}
 
     return typedVar.getMethod(name);
-
-    //{
-
-    //    AutoRestorePyState  pystate;
-
-    //    try
-    //    {
-    //        return typedVar.getElement( name );
-    //    }
-    //    catch (kdlib::TypeException&)
-    //    {}
-
-    //    try
-    //    {
-    //        return typedVar.getMethod( name );
-    //    }
-    //    catch (kdlib::TypeException&)
-    //    {}
-    //}
-
-    //std::wstringstream sstr;
-    //sstr << L"typed var has no field " << L'\'' << name << L'\'';
-    //throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -291,7 +284,6 @@ void TypedVarAdapter::setFieldAttr(kdlib::TypedVar& typedVar, const std::wstring
 kdlib::TypedVarPtr TypedVarAdapter::getFieldByKey(kdlib::TypedVar& typedVar, const std::wstring &name)
 {
     {
-
         AutoRestorePyState  pystate;
 
         try

@@ -887,7 +887,7 @@ void pykd_init()
         .def("getFixedFileInfo", ModuleAdapter::getFixedFileInfo,
             "Return FixedFileInfo" )
         .def("hasSymbol", ModuleAdapter::isContainedSymbol,
-            "Check if module has the specified symbol")
+            "Check if a module has the specified symbol")
         .def("__getattr__", ModuleAdapter::getAttrByName,
             "Return symbol offset or type as attribute" )
         .def("__getitem__", ModuleAdapter::getItemByKey,
@@ -1037,13 +1037,17 @@ void pykd_init()
             "Set field of structure")
         .def("setField", TypedVarAdapter::setElementByIndex,
             "Set field of a structire or an element od array")
+        .def("hasField", TypedVarAdapter::hasField,
+            "Check if a typedVar object has the specified field")
         .def( "fields", TypedVarAdapter::getFields,
             "Return list of tuple ( filedName, fieldOffset, fieldValue )" )
         .def( "fieldName", TypedVarAdapter::getElementName,
             "Return name of struct field by index" )
         .def("method", TypedVarAdapter::getMethodByName, ( python::arg("name"), python::arg("prototype") = "" ),
             "Return method of class as an object attribute" )
-         .def("deref",TypedVarAdapter::deref,
+        .def("hasMethod", TypedVarAdapter::hasMethod,
+            "Check if a typedVar object has the specified method")
+        .def("deref",TypedVarAdapter::deref,
             "Return value by pointer" )
         .def("rawBytes", TypedVarAdapter::getRawBytes,
             "Return list of bytes" )
@@ -1066,7 +1070,7 @@ void pykd_init()
         .def("__dir__", TypedVarAdapter::getElementsDir)
         .def("__call__", python::raw_function(pykd::callFunctionByVar, 0) )
         .def("__iter__", TypedVarAdapter::getArrayIter, python::return_value_policy<python::manage_new_object>())
-        .def("__contains__", TypedVarAdapter::isContainedField)
+        .def("__contains__", TypedVarAdapter::hasField)
 #if PY_VERSION_HEX >= 0x03000000
         .def("__bool__", TypedVarAdapter::isNotZero)
 #else

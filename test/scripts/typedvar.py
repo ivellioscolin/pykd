@@ -437,11 +437,8 @@ class TypedVarTest( unittest.TestCase ):
       
     def testAttr(self):
         var = target.module.typedVar("structTest", [0x55] * 20 )
-        self.assertTrue(hasattr(var, "m_field3"))
         setattr(var, "m_field1", 11)
         self.assertEqual(11, getattr(var, "m_field1"))
-        
-        self.assertFalse(hasattr(var, "noexisit"))
         self.assertRaises(pykd.SymbolException, lambda x: getattr(x, "noexists"), var)
 
     def testEvalPyScope(self):
@@ -465,8 +462,8 @@ class TypedVarTest( unittest.TestCase ):
         v1 = 100
         v2 = -500
         scope = { "v1" : v1, "v2" : v2 }
-        self.assertEqual( v1 + v2, pykd.evalExpr("v1 + v2", scope) )
-        self.assertEqual( v1 * v2, pykd.evalExpr("v1 * v2", locals()) )
+        self.assertEqual( v1 + v2, pykd.evalExpr("v1 + v2", scope))
+        self.assertEqual( v1 * v2, pykd.evalExpr("v1 * v2", locals()))
 
     def testEvalExprScopeStruct(self):
         var = pykd.typedVar("g_structTest1")
@@ -485,4 +482,15 @@ class TypedVarTest( unittest.TestCase ):
         self.assertFalse("NotExist" in var)
         self.assertRaises(Exception, lambda var : 2 in var, var)
 
+    def testHasField(self):
+        var = pykd.typedVar("g_structTest")
+        self.assertTrue(var.hasField("m_field1"))
+        self.assertFalse(var.hasField("NotExist"))
 
+    def testHasMethod(self):
+        var = pykd.typedVar("g_classChild")
+        self.assertTrue(var.hasMethod("childMethod"))
+        self.assertTrue(var.hasMethod("staticMethod"))
+        self.assertTrue(var.hasMethod("virtMethod1"))
+        self.assertFalse(var.hasMethod("notExist"))
+        
