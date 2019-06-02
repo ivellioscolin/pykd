@@ -10,7 +10,8 @@ If you want to automate the debugger but dislike the WinDbg built-in script mach
 Use it to run pykd within windbg. [link](https://githomelab.ru/pykd/pykd-ext)
 
 ## Releases:
-[Last Release](/../wikis/0.3.4.5)    
+[Last Release](/../wikis/0.3.4.6)    
+[PyPi](https://pypi.org/project/pykd)
 
 ## Documentation
 [User Manual](/../wikis/User Manual rus)    
