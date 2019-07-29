@@ -118,6 +118,9 @@ python::list TypedVarAdapter::getFields( kdlib::TypedVar& typedVar )
             std::wstring  name = typedVar.getElementName(i);
             kdlib::MEMOFFSET_32  offset = 0;
 
+            if (typedVar.getType()->isConstMember(i))
+                continue;
+
             if (!typedVar.getType()->isStaticMember(i) )
                 offset = typedVar.getElementOffset(i);
 

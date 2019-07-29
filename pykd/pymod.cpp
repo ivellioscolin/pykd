@@ -191,6 +191,8 @@ void pykd_init()
         "Create memory dump file" );
     python::def( "getLocalProcesses", pykd::getLocalProcesses,
         "Return list of runnng processes on the host system" );
+    python::def("getHostProcessPath", pykd::getHostProcessPath,
+        "Return image path of the process running python interpreter with a pykd");
     python::def( "getDebugOptions", pykd::getDebugOptions,
         "Return debug options" );
     python::def( "changeDebugOptions", pykd::changeDebugOptions,
@@ -931,7 +933,7 @@ void pykd_init()
             "Return method's type by name")
         .def( "method", TypeInfoAdapter::getMethodByIndex,
             "Return method's by index")
-        .def("hasMethod", TypeInfoAdapter::hasMethod,
+        .def( "hasMethod", TypeInfoAdapter::hasMethod,
             "Return True if type has a method with the specified name")
         .def( "methodName", TypeInfoAdapter::getMethodName,
             "Return method's name")
@@ -949,6 +951,8 @@ void pykd_init()
             "Return a base class offset by index")
         .def("baseClasses", TypeInfoAdapter::getBaseClasses,
             "Return list of tuples ( baseClassName, baseClassOffset, baseClassType)")
+        .def( "getTemplateArgs", TypeInfoAdapter::getTemplateArgs,
+            "Return list if template arguments" )
         .def( "deref", TypeInfoAdapter::deref,
             "Return type of pointer" )
         .def( "append", TypeInfoAdapter::appendField,
@@ -979,6 +983,8 @@ void pykd_init()
             "Return true if no type is specified" )
         .def( "isNoType", TypeInfoAdapter::isNoType,
             "Return true if type is virtual table" )
+        .def( "isTemplate", TypeInfoAdapter::isTemplate,
+            "Return true if type is template" )
         .def( "getCallingConvention", TypeInfoAdapter::getCallingConvention,
             "Returns an indicator of a methods calling convention: callingConvention" )
         .def( "getClassParent", TypeInfoAdapter::getClassParent,

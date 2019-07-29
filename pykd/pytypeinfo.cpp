@@ -211,6 +211,29 @@ python::list TypeInfoAdapter::getBaseClasses(kdlib::TypeInfo &typeInfo)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+python::list TypeInfoAdapter::getTemplateArgs(const kdlib::TypeInfoPtr &typeInfo)
+{
+    std::list<std::wstring>  templateArgs;
+
+    {
+        AutoRestorePyState  pystate;
+
+        for (size_t i = 0; i < typeInfo->getTemplateArgsCount(); ++i)
+        {
+            templateArgs.push_back(typeInfo->getTemplateArg(i));
+        }
+    }
+    
+    python::list pylst;
+
+    for (const auto& arg : templateArgs)
+        pylst.append(arg);
+
+    return pylst;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 kdlib::TypeInfoPtr TypeInfoAdapter::getElementAttr(kdlib::TypeInfo &typeInfo, const std::wstring &name)
 {
     AutoRestorePyState  pystate;

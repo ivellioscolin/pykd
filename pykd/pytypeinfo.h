@@ -302,6 +302,12 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo.isNoType();
     }
 
+    static bool isTemplate(const kdlib::TypeInfoPtr &typeInfo)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo->isTemplate();
+    }
+
     static void appendField( kdlib::TypeInfo &typeInfo, const std::wstring &fieldName, kdlib::TypeInfoPtr &fieldType )
     {
         AutoRestorePyState  pystate;
@@ -333,6 +339,8 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
     static python::list getElementDir(kdlib::TypeInfo &typeInfo);
 
     static python::list getBaseClasses(kdlib::TypeInfo &typeInfo);
+
+    static python::list getTemplateArgs(const kdlib::TypeInfoPtr &typeInfo);
 
     static bool isZero(kdlib::TypeInfo &typeInfo) {
         return false;
