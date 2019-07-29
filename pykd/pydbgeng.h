@@ -293,6 +293,7 @@ inline void setImplicitProcess(kdlib::MEMOFFSET_64 offset)
     AutoRestorePyState  pystate;
     kdlib::setImplicitProcess(offset);
 }
+
 inline kdlib::MEMOFFSET_64 getImplicitProcessOffset()
 {
     AutoRestorePyState  pystate;
@@ -303,6 +304,8 @@ inline kdlib::MEMOFFSET_64 getImplicitProcessOffset()
 python::list getProcessThreads();
 python::list getTargetProcesses();
 python::list getLocalProcesses();
+
+std::wstring getHostProcessPath();
 
 ///////////////////////////////////////////////////////////////////////////////
 

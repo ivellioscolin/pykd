@@ -163,6 +163,19 @@ python::list getLocalProcesses()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+std::wstring getHostProcessPath()
+{
+    AutoRestorePyState  pystate;
+
+    std::vector<WCHAR>  fileNameBuffer(0x1000);
+
+    DWORD fileNameSize = GetModuleFileNameW(NULL, &fileNameBuffer.front(), fileNameBuffer.size() );
+
+    return std::wstring(&fileNameBuffer.front(), fileNameSize);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 python::tuple getBugCheckData()
 {
     kdlib::SystemCrashInfo  crashInfo = {};
