@@ -354,7 +354,7 @@ class TypeInfoTest( unittest.TestCase ):
         typeProvider = pykd.getTypeInfoProviderFromPdb(pdb)
         self.assertEqual("structTest", typeProvider.getTypeByName("structTest").name())
         self.assertEqual("structTest", typeProvider.structTest.name())
-        self.assertEqual(13, len(list(typeProvider.typeIterator("*struct*"))))
+        self.assertEqual(16, len(list(typeProvider.typeIterator("*struct*"))))
 
     def testScopeName(self):
         self.assertEqual( target.module.name(), pykd.typeInfo( "structTest" ).scopeName() )
@@ -365,3 +365,9 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertTrue("m_field1" in ti)
         self.assertFalse("NotExist" in ti)
         self.assertRaises(Exception, lambda t : 2 in t, ti)
+
+    def testTemplateType(self):
+        ti = target.module.type("g_testTemplateTwoTypes")
+        self.assertTrue(ti.isTemplate)
+        self.assertEqual(['int', 'TestClassTemplate<int>'], ti.getTemplateArgs() )
+
