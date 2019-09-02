@@ -49,6 +49,12 @@ inline void dinput(const std::wstring &str)
     kdlib::dinput(str);
 }
 
+inline void setStatusMessage(const std::wstring &str)
+{
+    AutoRestorePyState  pystate;
+    kdlib::setStatusMessage(str);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 class DbgOut : public  kdlib::windbg::WindbgOut

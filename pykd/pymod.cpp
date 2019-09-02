@@ -230,6 +230,8 @@ void pykd_init()
         "Print out string and insert end of line symbol. If dml = True string is printed with dml highlighting ( only for windbg )" ) );
     python::def("dinput", &pykd::dinput,
         "Provide input for debugger");
+    python::def("setStatusMessage", &pykd::setStatusMessage,
+        "Set message at a windbg status bar");
 
 
     // Python debug output console helper classes
