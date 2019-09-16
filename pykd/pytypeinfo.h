@@ -143,6 +143,17 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo.getElementVa( name );
     }
 
+    static bool isStaticField(const kdlib::TypeInfoPtr &typeInfo, const std::wstring &name)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo->isStaticMember(name);
+    }
+
+    static bool isStaticFieldByIndex(const kdlib::TypeInfoPtr &typeInfo, size_t index)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo->isStaticMember(index);
+    }
 
     static kdlib::TypeInfoPtr getElementByName( kdlib::TypeInfo &typeInfo, const std::wstring &name ) 
     {
@@ -332,7 +343,9 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo.str();
     }
 
-    static python::list getFields( kdlib::TypeInfo &typeInfo );
+    static python::list getFields( const kdlib::TypeInfoPtr &typeInfo );
+
+    static python::list getMembers(const kdlib::TypeInfoPtr &typeInfo);
 
     static python::list getMethods(kdlib::TypeInfo &typeInfo);
 

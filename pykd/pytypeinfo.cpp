@@ -75,7 +75,7 @@ python::tuple findSymbolAndDisp( ULONG64 offset )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-python::list TypeInfoAdapter::getFields( kdlib::TypeInfo &typeInfo )
+python::list TypeInfoAdapter::getFields( const kdlib::TypeInfoPtr &typeInfo )
 {
     typedef boost::tuple<std::wstring,kdlib::TypeInfoPtr> FieldTuple;
 
@@ -85,10 +85,10 @@ python::list TypeInfoAdapter::getFields( kdlib::TypeInfo &typeInfo )
 
         AutoRestorePyState  pystate;
 
-        for ( size_t i = 0; i < typeInfo.getElementCount(); ++i )
+        for ( size_t i = 0; i < typeInfo->getElementCount(); ++i )
         {
-            std::wstring  name = typeInfo.getElementName(i);
-            kdlib::TypeInfoPtr  val = typeInfo.getElement(i);
+            std::wstring  name = typeInfo->getElementName(i);
+            kdlib::TypeInfoPtr  val = typeInfo->getElement(i);
 
             lst.push_back( FieldTuple( name, val ) );
         }
@@ -99,6 +99,35 @@ python::list TypeInfoAdapter::getFields( kdlib::TypeInfo &typeInfo )
     
     for ( std::list<FieldTuple>::const_iterator it = lst.begin(); it != lst.end(); ++it)
         pylst.append( python::make_tuple( it->get<0>(), it->get<1>() ) );
+
+    return pylst;
+}
+
+python::list TypeInfoAdapter::getMembers(const kdlib::TypeInfoPtr &typeInfo)
+{
+    typedef boost::tuple<std::wstring, kdlib::TypeInfoPtr> FieldTuple;
+
+    std::list<FieldTuple>  lst;
+
+    do {
+
+        AutoRestorePyState  pystate;
+
+        for (size_t i = 0; i < typeInfo->getElementCount(); ++i)
+        {
+            std::wstring  name = typeInfo->getElementName(i);
+            kdlib::TypeInfoPtr  val = typeInfo->getElement(i);
+
+            if (!typeInfo->isInheritedMember(i))
+                lst.push_back(FieldTuple(name, val));
+        }
+
+    } while (false);
+
+    python::list pylst;
+
+    for (std::list<FieldTuple>::const_iterator it = lst.begin(); it != lst.end(); ++it)
+        pylst.append(python::make_tuple(it->get<0>(), it->get<1>()));
 
     return pylst;
 }

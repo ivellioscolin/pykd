@@ -913,6 +913,10 @@ void pykd_init()
             "Return offset of the nonstatic field")
         .def("fieldOffset", TypeInfoAdapter::getElementOffsetByIndex,
             "Return offset of the nonstatic field by index")
+        .def("isStaticField", TypeInfoAdapter::isStaticField,
+            "Return True if a field is a static field by field name")
+        .def("isStaticField", TypeInfoAdapter::isStaticFieldByIndex,
+            "Return True if a field is a static field by field name")
         .def("bitOffset", TypeInfoAdapter::getBitOffset,
             "Return bit field's offset")
         .def("bitWidth", TypeInfoAdapter::getBitWidth,
@@ -929,6 +933,8 @@ void pykd_init()
             "Return name of struct field by index" )
         .def( "fields", TypeInfoAdapter::getFields,
             "Return list of tuple ( filedName, fieldType )" )
+        .def( "members", TypeInfoAdapter::getMembers,
+            "Return list of tuple ( memberName, fieldType ). Only defined member, not inherited from base class")
         .def( "getNumberMethods", TypeInfoAdapter::getMethodsCount,
             "Return number of methods" )
         .def( "method", TypeInfoAdapter::getMethodByName,
@@ -1049,6 +1055,8 @@ void pykd_init()
             "Check if a typedVar object has the specified field")
         .def( "fields", TypedVarAdapter::getFields,
             "Return list of tuple ( filedName, fieldOffset, fieldValue )" )
+        .def ("members", TypedVarAdapter::getMembers,
+            "Return list of tuple ( filedName, fieldOffset, fieldValue )")
         .def( "fieldName", TypedVarAdapter::getElementName,
             "Return name of struct field by index" )
         .def("method", TypedVarAdapter::getMethodByName, ( python::arg("name"), python::arg("prototype") = "" ),

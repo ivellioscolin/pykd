@@ -371,3 +371,13 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertTrue(ti.isTemplate)
         self.assertEqual(['int', 'TestClassTemplate<int>'], ti.getTemplateArgs() )
 
+    def testMembers(self):
+        self.assertEqual(
+           ['__VFN_table', '__VFN_table', 'm_staticConst', 'm_staticField', 'm_childField',
+           'm_childField2', 'm_childField3', 'm_enumField'],
+           [ member[0] for member in pykd.typeInfo( "classChild" ).members() ])
+
+    def testIsStaticField(self):
+        ti = pykd.typeInfo("classChild")
+        self.assertTrue(ti.isStaticField("m_staticField"))
+        self.assertFalse(ti.isStaticField("m_baseField"))
