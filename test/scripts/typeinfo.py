@@ -381,3 +381,8 @@ class TypeInfoTest( unittest.TestCase ):
         ti = pykd.typeInfo("classChild")
         self.assertTrue(ti.isStaticField("m_staticField"))
         self.assertFalse(ti.isStaticField("m_baseField"))
+
+    def testIsConstField(self):
+        ti = pykd.typeInfo("classChild")
+        self.assertTrue(ti.isStaticField("m_staticConst"))
+        self.assertFalse(ti.isConstField("m_staticConst"))

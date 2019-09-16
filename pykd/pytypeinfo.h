@@ -155,6 +155,19 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return typeInfo->isStaticMember(index);
     }
 
+
+    static bool isConstField(const kdlib::TypeInfoPtr &typeInfo, const std::wstring &name)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo->isConstMember(name);
+    }
+
+    static bool isConstFieldByIndex(const kdlib::TypeInfoPtr &typeInfo, size_t index)
+    {
+        AutoRestorePyState  pystate;
+        return typeInfo->isConstMember(index);
+    }
+
     static kdlib::TypeInfoPtr getElementByName( kdlib::TypeInfo &typeInfo, const std::wstring &name ) 
     {
         AutoRestorePyState  pystate;
