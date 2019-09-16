@@ -187,7 +187,9 @@ struct TypedVarAdapter {
         return typedVar.str();
     }
 
-    static python::list getFields( kdlib::TypedVar& typedVar );
+    static python::list getFields(const kdlib::TypedVarPtr& typedVar);
+
+    static python::list getMembers(const kdlib::TypedVarPtr& typedVar);
 
     static kdlib::TypeInfoPtr getType( kdlib::TypedVar& typedVar )
     {

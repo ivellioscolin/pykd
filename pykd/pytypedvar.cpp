@@ -103,7 +103,7 @@ python::list getTypedVarArrayByType( kdlib::MEMOFFSET_64 offset, kdlib::TypeInfo
 
 ///////////////////////////////////////////////////////////////////////////////
 
-python::list TypedVarAdapter::getFields( kdlib::TypedVar& typedVar )
+python::list TypedVarAdapter::getFields(const kdlib::TypedVarPtr& typedVar)
 {
     typedef boost::tuple<std::wstring,kdlib::MEMOFFSET_32,kdlib::TypedVarPtr> FieldTuple;
 
@@ -113,18 +113,18 @@ python::list TypedVarAdapter::getFields( kdlib::TypedVar& typedVar )
 
         AutoRestorePyState  pystate;
 
-        for ( size_t i = 0; i < typedVar.getElementCount(); ++i )
+        for ( size_t i = 0; i < typedVar->getElementCount(); ++i )
         {
-            std::wstring  name = typedVar.getElementName(i);
+            std::wstring  name = typedVar->getElementName(i);
             kdlib::MEMOFFSET_32  offset = 0;
 
-            if (typedVar.getType()->isConstMember(i))
+            if (typedVar->getType()->isConstMember(i))
                 continue;
 
-            if (!typedVar.getType()->isStaticMember(i) )
-                offset = typedVar.getElementOffset(i);
+            if (!typedVar->getType()->isStaticMember(i) )
+                offset = typedVar->getElementOffset(i);
 
-            kdlib::TypedVarPtr  val = typedVar.getElement(i);
+            kdlib::TypedVarPtr  val = typedVar->getElement(i);
 
             lst.push_back( FieldTuple( name, offset, val ) );
         }
@@ -135,6 +135,44 @@ python::list TypedVarAdapter::getFields( kdlib::TypedVar& typedVar )
     
     for ( std::list<FieldTuple>::const_iterator it = lst.begin(); it != lst.end(); ++it)
         pylst.append( python::make_tuple( it->get<0>(), it->get<1>(), it->get<2>() ) );
+
+    return pylst;
+}
+
+python::list TypedVarAdapter::getMembers(const kdlib::TypedVarPtr& typedVar)
+{
+    typedef boost::tuple<std::wstring, kdlib::MEMOFFSET_32, kdlib::TypedVarPtr> FieldTuple;
+
+    std::list<FieldTuple>  lst;
+
+    do {
+
+        AutoRestorePyState  pystate;
+
+        auto varType = typedVar->getType();
+
+        for (size_t i = 0; i < typedVar->getElementCount(); ++i)
+        {
+            if (varType->isConstMember(i) || varType->isInheritedMember(i))
+                continue;                     
+
+            std::wstring  name = typedVar->getElementName(i);
+            kdlib::MEMOFFSET_32  offset = 0;
+
+            if (!varType->isStaticMember(i))
+                offset = typedVar->getElementOffset(i);
+
+            kdlib::TypedVarPtr  val = typedVar->getElement(i);
+
+            lst.push_back(FieldTuple(name, offset, val));
+        }
+
+    } while (false);
+
+    python::list pylst;
+
+    for (std::list<FieldTuple>::const_iterator it = lst.begin(); it != lst.end(); ++it)
+        pylst.append(python::make_tuple(it->get<0>(), it->get<1>(), it->get<2>()));
 
     return pylst;
 }
