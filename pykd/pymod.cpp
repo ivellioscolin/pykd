@@ -106,6 +106,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( TypeInfo_ptrTo, TypeInfoAdapter::ptrTo, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getTypeFromSource_, pykd::getTypeFromSource, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getTypeInfoProviderFromPdb_, pykd::getTypeInfoProviderFromPdb, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getTypeInfoProviderFromSource_, pykd::getTypeInfoProviderFromSource, 1, 2);
+BOOST_PYTHON_FUNCTION_OVERLOADS( getSymbolEnumeratorFromSource_, pykd::getSymbolEnumeratorFromSource, 1, 2);
 BOOST_PYTHON_FUNCTION_OVERLOADS(evalExpr_, pykd::evalExpr, 1, 3);
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( addSyntheticModule_, pykd::addSyntheticModule, 3, 4 );
@@ -444,6 +445,8 @@ void pykd_init()
         "Create typeInfo provider from  C/C++ source code") );
     python::def( "getTypeInfoProviderFromPdb", &pykd::getTypeInfoProviderFromPdb, getTypeInfoProviderFromPdb_( python::args("filePath", "baseOffset"),
         "Create typeInfo provider from  pdb file") );
+    python::def("getSymbolEnumeratorFromSource", &pykd::getSymbolEnumeratorFromSource, getSymbolEnumeratorFromSource_(python::args("sourceCode", "compileOptions"),
+        "Create symbol enumerator for source code"));
     python::def("evalExpr", &pykd::evalExpr, evalExpr_(python::args("expression", "scope", "typeProvider"),
         "Evaluate C++ expression with typed information"));
 
@@ -1319,6 +1322,18 @@ void pykd_init()
         .def("__iter__", TypeInfoProviderAdapter::getTypeIter, python::return_value_policy<python::manage_new_object>())
         .def( "__getattr__", TypeInfoProviderAdapter::getTypeAsAttr )
          ;
+
+    python::class_<kdlib::SymbolEnumerator, kdlib::SymbolEnumeratorPtr, boost::noncopyable>("symbolEnumerator",
+        "Get symbol enumerator", python::no_init)
+        .def("__iter__", SymbolEnumeratorAdapter::getIter)
+#if PY_VERSION_HEX < 0x03000000
+        .def("next", &SymbolEnumeratorAdapter::next)
+#else
+        .def("__next__", SymbolEnumeratorAdapter::next)
+#endif
+        ;
+
+
 
     python::enum_<kdlib::DebugCallbackResult>("eventResult", "Return value of event handler")
         .value("Proceed", kdlib::DebugCallbackProceed)

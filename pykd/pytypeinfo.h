@@ -69,6 +69,12 @@ inline kdlib::TypeInfoProviderPtr getTypeInfoProviderFromSource(const std::wstri
     return kdlib::getTypeInfoProviderFromSource(sourceCode, compileOptions);
 }
 
+inline kdlib::SymbolEnumeratorPtr getSymbolEnumeratorFromSource(const std::wstring& sourceCode, const std::wstring& compileOptions = L"")
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getSymbolEnumeratorFromSource(sourceCode, compileOptions);
+}
+
 inline kdlib::TypeInfoProviderPtr getTypeInfoProviderFromPdb(const std::wstring&  fileName, kdlib::MEMOFFSET_64 offset = 0UL)
 {
     AutoRestorePyState  pystate;
@@ -430,6 +436,25 @@ struct TypeInfoProviderAdapter : public kdlib::TypeInfoProvider
 
     static kdlib::TypeInfoPtr getTypeAsAttr(kdlib::TypeInfoProvider &typeInfoProvider, const std::wstring& name);
 
+};
+
+struct SymbolEnumeratorAdapter
+{
+
+    static kdlib::SymbolEnumeratorPtr getIter(kdlib::SymbolEnumeratorPtr& symEnum)
+    {
+        return symEnum;
+    }
+
+    static std::wstring next(kdlib::SymbolEnumeratorPtr& symEnum)
+    {
+        auto symName = symEnum->Next();
+
+        if (symName.empty())
+            throw StopIteration("No more data.");
+
+        return symName;
+    }
 };
 
 struct BaseTypesEnum {
