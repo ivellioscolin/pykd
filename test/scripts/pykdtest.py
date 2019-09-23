@@ -66,6 +66,7 @@ def getTestSuite( singleName = "" ):
 
                 unittest.TestLoader().loadTestsFromTestCase( breakpoint.BreakpointTest ),
                 unittest.TestLoader().loadTestsFromTestCase( stacktest.StackTest ),
+                unittest.TestLoader().loadTestsFromTestCase( stacktest.InlineStackTest ),
                 unittest.TestLoader().loadTestsFromTestCase( mspdbtest.MsPdbTest ),
                 unittest.TestLoader().loadTestsFromTestCase( targetprocess.ProcessTest ),
                 unittest.TestLoader().loadTestsFromTestCase( ehloadtest.EhLoadTest ),

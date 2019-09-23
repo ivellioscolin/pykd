@@ -8,18 +8,18 @@
     <StartupFile>pykdtest.py</StartupFile>
     <SearchPath>
     </SearchPath>
-    <WorkingDirectory>..\..\out\x64\Debug_2.7</WorkingDirectory>
+    <WorkingDirectory>C:\Users\User\Documents\projects\pykd2017\out\x64\Debug_3.7</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>pykdtest</Name>
     <RootNamespace>pykdtest</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>C:\proj\pykd-dev\out\x64\Debug\targetapp.exe</CommandLineArguments>
+    <CommandLineArguments>C:\Users\User\Documents\projects\pykd2017\out\x64\Debug_2.7\targetapp.exe</CommandLineArguments>
     <InterpreterPath />
     <InterpreterArguments>
     </InterpreterArguments>
     <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>
     <IsWindowsApplication>False</IsWindowsApplication>
-    <InterpreterId>Global|PythonCore|2.7</InterpreterId>
+    <InterpreterId>Global|PythonCore|3.7</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -63,6 +63,8 @@
     <InterpreterReference Include="Global|PythonCore|2.7-32" />
     <InterpreterReference Include="Global|PythonCore|2.7" />
     <InterpreterReference Include="Global|PythonCore|3.6" />
+    <InterpreterReference Include="Global|PythonCore|3.7" />
+    <InterpreterReference Include="Global|PythonCore|3.7-32" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
