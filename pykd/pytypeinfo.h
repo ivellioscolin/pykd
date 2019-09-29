@@ -69,10 +69,10 @@ inline kdlib::TypeInfoProviderPtr getTypeInfoProviderFromSource(const std::wstri
     return kdlib::getTypeInfoProviderFromSource(sourceCode, compileOptions);
 }
 
-inline kdlib::SymbolEnumeratorPtr getSymbolEnumeratorFromSource(const std::wstring& sourceCode, const std::wstring& compileOptions = L"")
+inline kdlib::SymbolProviderPtr getSymbolProviderFromSource(const std::wstring& sourceCode, const std::wstring& compileOptions = L"")
 {
     AutoRestorePyState  pystate;
-    return kdlib::getSymbolEnumeratorFromSource(sourceCode, compileOptions);
+    return kdlib::getSymbolProviderFromSource(sourceCode, compileOptions);
 }
 
 inline kdlib::TypeInfoProviderPtr getTypeInfoProviderFromPdb(const std::wstring&  fileName, kdlib::MEMOFFSET_64 offset = 0UL)
@@ -440,20 +440,41 @@ struct TypeInfoProviderAdapter : public kdlib::TypeInfoProvider
 
 struct SymbolEnumeratorAdapter
 {
+    SymbolEnumeratorAdapter(const kdlib::SymbolEnumeratorPtr&  symEnum)
+        : m_symEnum(symEnum)
+    {}
 
-    static kdlib::SymbolEnumeratorPtr getIter(kdlib::SymbolEnumeratorPtr& symEnum)
+
+    static python::object getIter(const python::object& obj)
     {
-        return symEnum;
+        return obj;
     }
 
-    static std::wstring next(kdlib::SymbolEnumeratorPtr& symEnum)
+    std::wstring next()
     {
-        auto symName = symEnum->Next();
+        auto symName = m_symEnum->Next();
 
         if (symName.empty())
             throw StopIteration("No more data.");
 
         return symName;
+    }
+
+private:
+
+    kdlib::SymbolEnumeratorPtr  m_symEnum;
+};
+
+struct SymbolProviderAdapter
+{
+    static SymbolEnumeratorAdapter* getIter(const kdlib::SymbolProviderPtr &symProvider)
+    {
+        return new SymbolEnumeratorAdapter(symProvider->getSymbolEnumerator());
+    };
+
+    static SymbolEnumeratorAdapter* getIterWithMask(const kdlib::SymbolProviderPtr &symProvider, const std::wstring& mask)
+    {
+        return new SymbolEnumeratorAdapter(symProvider->getSymbolEnumerator(mask));
     }
 };
 

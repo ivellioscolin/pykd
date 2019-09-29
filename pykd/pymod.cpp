@@ -106,7 +106,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( TypeInfo_ptrTo, TypeInfoAdapter::ptrTo, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getTypeFromSource_, pykd::getTypeFromSource, 2, 3 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getTypeInfoProviderFromPdb_, pykd::getTypeInfoProviderFromPdb, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( getTypeInfoProviderFromSource_, pykd::getTypeInfoProviderFromSource, 1, 2);
-BOOST_PYTHON_FUNCTION_OVERLOADS( getSymbolEnumeratorFromSource_, pykd::getSymbolEnumeratorFromSource, 1, 2);
+BOOST_PYTHON_FUNCTION_OVERLOADS( getSymbolProviderFromSource_, pykd::getSymbolProviderFromSource, 1, 2);
 BOOST_PYTHON_FUNCTION_OVERLOADS(evalExpr_, pykd::evalExpr, 1, 3);
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( addSyntheticModule_, pykd::addSyntheticModule, 3, 4 );
@@ -445,8 +445,8 @@ void pykd_init()
         "Create typeInfo provider from  C/C++ source code") );
     python::def( "getTypeInfoProviderFromPdb", &pykd::getTypeInfoProviderFromPdb, getTypeInfoProviderFromPdb_( python::args("filePath", "baseOffset"),
         "Create typeInfo provider from  pdb file") );
-    python::def("getSymbolEnumeratorFromSource", &pykd::getSymbolEnumeratorFromSource, getSymbolEnumeratorFromSource_(python::args("sourceCode", "compileOptions"),
-        "Create symbol enumerator for source code"));
+    python::def("getSymbolProviderFromSource", &pykd::getSymbolProviderFromSource, getSymbolProviderFromSource_(python::args("sourceCode", "compileOptions"),
+        "Create symbol provider for source code"));
     python::def("evalExpr", &pykd::evalExpr, evalExpr_(python::args("expression", "scope", "typeProvider"),
         "Evaluate C++ expression with typed information"));
 
@@ -1312,7 +1312,6 @@ void pykd_init()
 #endif
         ;
 
-
     python::class_<kdlib::TypeInfoProvider, kdlib::TypeInfoProviderPtr, boost::noncopyable>("typeInfoProvider",
         "Get abstaract access to different type info sources", python::no_init)
         .def( "getTypeByName", TypeInfoProviderAdapter::getTypeByName,
@@ -1323,17 +1322,21 @@ void pykd_init()
         .def( "__getattr__", TypeInfoProviderAdapter::getTypeAsAttr )
          ;
 
-    python::class_<kdlib::SymbolEnumerator, kdlib::SymbolEnumeratorPtr, boost::noncopyable>("symbolEnumerator",
-        "Get symbol enumerator", python::no_init)
+    python::class_<SymbolEnumeratorAdapter>("symbolIterator", "Iterator for symbols", python::no_init)
         .def("__iter__", SymbolEnumeratorAdapter::getIter)
 #if PY_VERSION_HEX < 0x03000000
         .def("next", &SymbolEnumeratorAdapter::next)
 #else
-        .def("__next__", SymbolEnumeratorAdapter::next)
+        .def("__next__", &SymbolEnumeratorAdapter::next)
 #endif
         ;
 
-
+    python::class_<kdlib::SymbolProvider, kdlib::SymbolProviderPtr, boost::noncopyable>("symbolProvider",
+        "Get abstaract access to different type info sources", python::no_init)
+        .def("iter", SymbolProviderAdapter::getIterWithMask, python::return_value_policy<python::manage_new_object>(),
+            "Return type iterator with specified mask")
+        .def("__iter__", SymbolProviderAdapter::getIter, python::return_value_policy<python::manage_new_object>())
+        ;
 
     python::enum_<kdlib::DebugCallbackResult>("eventResult", "Return value of event handler")
         .value("Proceed", kdlib::DebugCallbackProceed)

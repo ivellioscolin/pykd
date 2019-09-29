@@ -390,6 +390,6 @@ class TypeInfoTest( unittest.TestCase ):
     def testClangCompile(self):
         src = "#include <windows.h>\r\n";
         opt =  "-I\"C:/Program Files (x86)/Windows Kits/8.1/Include/um\" -I\"C:/Program Files (x86)/Windows Kits/8.1/Include/shared\" -w";
-        symEnum = pykd.getSymbolEnumeratorFromSource(src, opt)
+        symEnum = pykd.getSymbolProviderFromSource(src, opt)
         for sym in symEnum:
             print(sym)
