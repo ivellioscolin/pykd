@@ -387,9 +387,9 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertTrue(ti.isStaticField("m_staticConst"))
         self.assertFalse(ti.isConstField("m_staticConst"))
 
-    def testClangCompile(self):
-        src = "#include <windows.h>\r\n";
-        opt =  "-I\"C:/Program Files (x86)/Windows Kits/8.1/Include/um\" -I\"C:/Program Files (x86)/Windows Kits/8.1/Include/shared\" -w";
-        symEnum = pykd.getSymbolProviderFromSource(src, opt)
-        for sym in symEnum:
-            print(sym)
+    #def testClangCompile(self):
+    #    src = "#include <windows.h>\r\n";
+    #    opt =  "-I\"C:/Program Files (x86)/Windows Kits/8.1/Include/um\" -I\"C:/Program Files (x86)/Windows Kits/8.1/Include/shared\" -w";
+    #    symEnum = pykd.getSymbolProviderFromSource(src, opt)
+    #    for sym, _, _ in symEnum:
+    #        print(sym)

@@ -450,14 +450,24 @@ struct SymbolEnumeratorAdapter
         return obj;
     }
 
-    std::wstring next()
+    python::tuple next()
     {
-        auto symName = m_symEnum->Next();
+        std::wstring name;
+        kdlib::MEMOFFSET_64  offset;
+        kdlib::TypeInfoPtr  typeInfo;
 
-        if (symName.empty())
-            throw StopIteration("No more data.");
+        {
+            AutoRestorePyState  pystate;
 
-        return symName;
+             if (!m_symEnum->Next())
+                throw StopIteration("No more data.");
+
+             name = m_symEnum->getName();
+             offset = m_symEnum->getOffset();
+             typeInfo = m_symEnum->getType();
+        }
+
+        return python::make_tuple(name, offset, typeInfo);
     }
 
 private:
