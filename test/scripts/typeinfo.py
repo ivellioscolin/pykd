@@ -388,8 +388,9 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertFalse(ti.isConstField("m_staticConst"))
 
     #def testClangCompile(self):
-    #    src = "#include <windows.h>\r\n";
-    #    opt =  "-I\"C:/Program Files (x86)/Windows Kits/8.1/Include/um\" -I\"C:/Program Files (x86)/Windows Kits/8.1/Include/shared\" -w";
-    #    symEnum = pykd.getSymbolProviderFromSource(src, opt)
-    #    for sym, _, _ in symEnum:
-    #        print(sym)
+    #    src_code = '#include <windows.h>\r\n'
+    #    include_path = '"C:/Program Files (x86)/Windows Kits/8.1/Include/um";"C:/Program Files (x86)/Windows Kits/8.1/Include/shared'
+    #    compile_opts = '-I%s -w' % include_path
+    #    symbolEnum = pykd.getSymbolProviderFromSource(src_code, compile_opts)
+    #    for symName, _, symType in symbolEnum :
+    #        print( symName, symType.name() )

@@ -6,7 +6,7 @@ import sys
 
 
 def usage():
-    print "python pytowiki.py module_name output_file"
+    print("python pytowiki.py module_name output_file")
 
 
 class CodeplexFormatter:
@@ -99,7 +99,7 @@ def buildDoc( ioStream, formatter, apiInfo ):
     for func in apiInfo.funcs:
         ioStream.write( formatter.bulletItem( formatter.link( func.__name__, func.__name__ ) ) )
         
-    ioStream.write( formatter.endl() )     
+    ioStream.write( formatter.endl() )
 
     ioStream.write( formatter.header2( "Classes" ) )
 
@@ -134,7 +134,7 @@ def buildDoc( ioStream, formatter, apiInfo ):
                 ioStream.write( formatter.bulletItem( formatter.link( p[0],  cls.__name__ + "." + p[0]) ) )
             ioStream.write( formatter.endl() )
 
-        methods = filter( lambda m: m.__doc__ != None, cls.methods )
+        methods = list(filter( lambda m: m.__doc__ != None, cls.methods ) )
             
         if methods:
             ioStream.write( formatter.header4( "Methods:") )
@@ -174,7 +174,7 @@ def main():
 
         module = __import__( moduleName )
 
-        with file( fileName, "w" ) as wikiIo:
+        with open( fileName, "w" ) as wikiIo:
 
             apiInfo = ModuleInfo( module )
 
@@ -185,7 +185,7 @@ def main():
 
     except ImportWarning:
 
-        print "failed to import module " + moduleName
+        print("failed to import module ", moduleName)
 
 
 if __name__ == "__main__":
