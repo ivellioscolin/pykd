@@ -12,6 +12,8 @@ namespace python = boost::python;
 #include "dbgexcept.h"
 #include "pydbgio.h"
 
+#include <python.h>
+
 using namespace kdlib::windbg;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -228,16 +230,16 @@ KDLIB_EXT_COMMAND_METHOD_IMPL(PykdExt, py)
     {
         PyInterpreterState  *interpreter = localState->interp;
 
-        while( interpreter->tstate_head != NULL )
-        {
-            PyThreadState   *threadState = (PyThreadState*)(interpreter->tstate_head);
+        //while( interpreter->tstate_head != NULL )
+        //{
+        //    PyThreadState   *threadState = (PyThreadState*)(interpreter->tstate_head);
 
-            PyThreadState_Clear(threadState);
+        //    PyThreadState_Clear(threadState);
 
-            PyThreadState_Swap( NULL );
+        //    PyThreadState_Swap( NULL );
 
-            PyThreadState_Delete(threadState);
-        }
+        //    PyThreadState_Delete(threadState);
+        //}
     
         PyInterpreterState_Clear(interpreter);
 
