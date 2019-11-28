@@ -103,4 +103,36 @@ class InlineStackTest(unittest.TestCase):
  
         self.assertEqual( expectedStack, realStack)
 
+class DiaRegToRegRelativeI386Test(unittest.TestCase):
+    def setUp(self):
+        dumpDir = os.path.join( os.path.dirname(sys.argv[0]), r"..\..\kdlibcpp\kdlib\tests\dumps\targetapp_test_cv_allreg_i386")
+        dump_file = os.path.join( dumpDir, "targetapp_test_cv_allreg_i386.cab" )
+        self.symbolPath = pykd.getSymbolPath()
+        symbolPath = self.symbolPath + ";" + dumpDir
+        pykd.setSymbolPath(symbolPath)
+        self.dump_id = pykd.loadDump( dump_file )
 
+    def tearDown(self):
+        pykd.closeDump( self.dump_id )
+        pykd.setSymbolPath(self.symbolPath)
+
+    def testParams(self):
+        params = pykd.getFrame().getParams()
+        self.assertNotEqual(0, len(params))
+
+class DiaRegToRegRelativeAmd64Test(unittest.TestCase):
+    def setUp(self):
+        dumpDir = os.path.join( os.path.dirname(sys.argv[0]), r"..\..\kdlibcpp\kdlib\tests\dumps\targetapp_test_cv_allreg_amd64")
+        dump_file = os.path.join( dumpDir, "targetapp_test_cv_allreg_amd64.cab" )
+        self.symbolPath = pykd.getSymbolPath()
+        symbolPath = self.symbolPath + ";" + dumpDir
+        pykd.setSymbolPath(symbolPath)
+        self.dump_id = pykd.loadDump( dump_file )
+
+    def tearDown(self):
+        pykd.closeDump( self.dump_id )
+        pykd.setSymbolPath(self.symbolPath)
+
+    def testLocals(self):
+        locals = pykd.getFrame().getLocals()
+        self.assertNotEqual(0, len(locals))
