@@ -919,11 +919,11 @@ void pykd_init()
         .def("isStaticField", TypeInfoAdapter::isStaticField,
             "Return True if a field is a static field by field name")
         .def("isStaticField", TypeInfoAdapter::isStaticFieldByIndex,
-            "Return True if a field is a static field by field name")
+            "Return True if a field is a static field by field index")
         .def("isConstField", TypeInfoAdapter::isConstField,
             "Return True if a field is a const field by field name")
         .def("isConstField", TypeInfoAdapter::isConstFieldByIndex,
-            "Return True if a field is a const field by field name")
+            "Return True if a field is a const field by field index")
         .def("bitOffset", TypeInfoAdapter::getBitOffset,
             "Return bit field's offset")
         .def("bitWidth", TypeInfoAdapter::getBitWidth,
