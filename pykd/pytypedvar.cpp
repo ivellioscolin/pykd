@@ -254,7 +254,19 @@ kdlib::TypedVarPtr TypedVarAdapter::getFieldAttr(kdlib::TypedVar& typedVar, cons
     catch (kdlib::TypeException&)
     {}
 
-    return typedVar.getMethod(name);
+
+    try
+    {
+        return typedVar.getMethod(name);
+    }
+    catch (kdlib::TypeException&)
+    {
+    }
+
+
+    std::stringstream sstr;
+    sstr << "typed var has no field " << '\'' << _bstr_t(name.c_str()) << '\'';
+    throw AttributeException(sstr.str().c_str());
 }
 
 ///////////////////////////////////////////////////////////////////////////////

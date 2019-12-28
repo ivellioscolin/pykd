@@ -42,7 +42,7 @@ class TypeInfoTest( unittest.TestCase ):
         self.assertTrue( "UInt4B", ti1.m_field0.name() )
         self.assertTrue( "m_field0" in ti1 )
         self.assertFalse( "not_exist" in ti1) # non-exsisting field
-        self.assertRaises( pykd.SymbolException, lambda t: t.not_exists, ti1) # non-exsisting field
+        self.assertRaises( AttributeError, lambda t: t.not_exists, ti1) # non-exsisting field
 
 
     def testBaseTypes( self ):
@@ -354,7 +354,7 @@ class TypeInfoTest( unittest.TestCase ):
         typeProvider = pykd.getTypeInfoProviderFromPdb(pdb)
         self.assertEqual("structTest", typeProvider.getTypeByName("structTest").name())
         self.assertEqual("structTest", typeProvider.structTest.name())
-        self.assertEqual(16, len(list(typeProvider.typeIterator("*struct*"))))
+        self.assertEqual(15, len(list(typeProvider.typeIterator("*struct*"))))
 
     def testScopeName(self):
         self.assertEqual( target.module.name(), pykd.typeInfo( "structTest" ).scopeName() )

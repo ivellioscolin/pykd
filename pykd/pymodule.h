@@ -91,7 +91,16 @@ struct ModuleAdapter : public kdlib::Module
         catch (kdlib::DbgException&)
         { }
 
-        return python::object(module.getTypeByName(symbolName));
+
+        try {
+            return python::object(module.getTypeByName(symbolName));
+        }
+        catch (kdlib::DbgException&)
+        { }
+
+        std::wstringstream sstr;
+        sstr << L'\'' << module.getName() << L'\'' << L" module has not a symbol " << L'\'' << symbolName << L'\'';
+        throw AttributeException(std::string(_bstr_t(sstr.str().c_str())).c_str());
     }
 
     static python::object getItemByKey(kdlib::Module& module, const std::wstring &symbolName)
@@ -113,7 +122,7 @@ struct ModuleAdapter : public kdlib::Module
         }
 
         std::wstringstream sstr;
-        sstr << L"module hase symbol " << L'\'' << symbolName << L'\'';
+        sstr << L"module has not a symbol " << L'\'' << symbolName << L'\'';
         throw KeyException(std::string(_bstr_t(sstr.str().c_str())).c_str());
     }
     

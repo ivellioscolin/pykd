@@ -273,7 +273,19 @@ kdlib::TypeInfoPtr TypeInfoAdapter::getElementAttr(kdlib::TypeInfo &typeInfo, co
     catch (kdlib::TypeException&)
     {}
 
-    return typeInfo.getMethod(name);
+    try
+    {
+        return typeInfo.getMethod(name);
+    }
+    catch (kdlib::TypeException&)
+    {
+    }
+
+    std::stringstream sstr;
+    sstr << '\'' << _bstr_t(typeInfo.getName().c_str()) << '\''
+        << " type has no field " << '\'' << _bstr_t(name.c_str()) << '\'';
+    throw AttributeException(sstr.str().c_str());
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
