@@ -21,6 +21,14 @@ class TypedVarTest( unittest.TestCase ):
         tv = pykd.typedVar( "g_structTest" )
         tv = pykd.typedVar( target.moduleName + "!g_structTest" )
 
+                
+    def testCompareWithNone(self):
+        tv = target.module.typedVar( "ucharVar" )
+        self.assertFalse(tv == None)
+        self.assertTrue(tv != None)
+        self.assertFalse(not tv)
+        self.assertTrue(tv)
+
     def testBaseTypes(self):
         self.assertEqual( 10, target.module.typedVar( "ucharVar" ) )
         self.assertEqual( 1020, target.module.typedVar( "ushortVar" ) )

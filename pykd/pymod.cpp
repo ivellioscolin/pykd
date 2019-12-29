@@ -1015,7 +1015,7 @@ void pykd_init()
         .def( "__dir__", TypeInfoAdapter::getElementDir )
         .def("__contains__", TypeInfoAdapter::hasFieldOrMethod)
 #if PY_VERSION_HEX >= 0x03000000
-        .def("__bool__", TypeInfoAdapter::isZero )
+        .def("__bool__", TypeInfoAdapter::isNotZero )
 #else
         .def("__iszero__", TypeInfoAdapter::isZero )
 #endif

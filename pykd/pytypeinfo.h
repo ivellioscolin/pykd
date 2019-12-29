@@ -378,6 +378,10 @@ struct TypeInfoAdapter : public kdlib::TypeInfo {
         return false;
     }
 
+    static bool isNotZero(kdlib::TypeInfo &typeInfo) {
+        return true;
+    }
+
     static bool hasFieldOrMethod(kdlib::TypeInfoPtr& typedVar, const std::wstring& name);
 
 };

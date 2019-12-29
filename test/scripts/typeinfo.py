@@ -242,16 +242,12 @@ class TypeInfoTest( unittest.TestCase ):
         ti = pykd.typeInfo("UInt8B").arrayOf(10)
         self.assertTrue( "UInt8B[10]", ti.name() )
         
-    def testCompareWihNone(self):
+    def testCompareWithNone(self):
         ti = pykd.typeInfo("UInt8B")
-        if ti == None:
-            pass
-        if ti != None:
-            pass
-        if not ti:
-            pass
-        if ti:
-            pass
+        self.assertFalse(ti == None)
+        self.assertTrue(ti != None)
+        self.assertFalse(not ti)
+        self.assertTrue(ti)
 
     def testFunction(self):
         functype = target.module.typedVar( "CdeclFuncPtr" ).type().deref()
