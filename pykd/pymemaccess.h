@@ -266,8 +266,32 @@ inline kdlib::MemoryProtect getVaProtect( kdlib::MEMOFFSET_64 offset )
     return kdlib::getVaProtect(offset);
 }
 
+inline kdlib::MemoryState getVaState(kdlib::MEMOFFSET_64 offset)
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getVaState(offset);
+}
 
+inline kdlib::MemoryType getVaType(kdlib::MEMOFFSET_64 offset)
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getVaType(offset);
+}
 
+inline python::tuple getVaAttributes(kdlib::MEMOFFSET_64 offset)
+{
+    kdlib::MemoryProtect  memProtect;
+    kdlib::MemoryState  memState;
+    kdlib::MemoryType  memType;
+    {
+        AutoRestorePyState  pystate;
+        memProtect = kdlib::getVaProtect(offset);
+        memState = kdlib::getVaState(offset);
+        memType = kdlib::getVaType(offset);
+    }
+
+    return python::make_tuple(memProtect, memState, memType);
+}
 
 } // end namespace pykd
 

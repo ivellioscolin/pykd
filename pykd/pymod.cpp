@@ -282,7 +282,13 @@ void pykd_init()
     python::def( "findMemoryRegion", pykd::findMemoryRegion,
         "Return address of begining valid memory region nearest to offset" );
     python::def( "getVaProtect", pykd::getVaProtect,
-        "Return memory attributes" );
+        "Return memory protect" );
+    python::def( "getVaType", pykd::getVaType,
+        "Return memory type");
+    python::def( "getVaState", pykd::getVaProtect,
+        "Return memory state");
+    python::def("getVaAttributes", pykd::getVaAttributes,
+        "Return memory attributes");
 
     python::def( "ptrByte", pykd::ptrByte,
         "Read an unsigned 1-byte integer from the target memory" );
@@ -1051,7 +1057,7 @@ void pykd_init()
         .def("getNumberFields", TypedVarAdapter::getElementCount,
             "Return number of fields")
         .def("field", TypedVarAdapter::getField,
-            "Return field of structure")
+            "Return fielged of structure")
         .def("field", TypedVarAdapter::getElementByIndex,
             "Return field of structure or array" )
         .def("setField", TypedVarAdapter::setField,
@@ -1399,6 +1405,18 @@ void pykd_init()
         .value("PageExecuteRead", kdlib::PageExecuteRead)
         .value("PageExecuteReadWrite", kdlib::PageExecuteReadWrite)
         .value("PageExecuteWriteCopy", kdlib::PageExecuteWriteCopy)
+        ;
+
+    python::enum_<kdlib::MemoryState>("memoryState", "Memory state")
+        .value("Commit", kdlib::MemCommit)
+        .value("Reserve", kdlib::MemReserve)
+        .value("Free", kdlib::MemFree)
+        ;
+
+    python::enum_<kdlib::MemoryType>("memoryType", "Memory type")
+        .value("Mapped", kdlib::MemMapped)
+        .value("Image", kdlib::MemImage)
+        .value("Private", kdlib::MemPrivate)
         ;
 
     python::enum_<kdlib::ProcessDebugOptions>("ProcessDebugOptions", "Process debug option")

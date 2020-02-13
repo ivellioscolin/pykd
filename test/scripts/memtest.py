@@ -182,6 +182,12 @@ class MemoryTest( unittest.TestCase ):
         self.assertTrue( pykd.isValid( target.module.begin() ) )
         self.assertFalse( pykd.isValid( 0 ) )
         self.assertFalse( pykd.isValid( 0xDEADBEAF ) )
+
+    def testVaAttrib(self):
+        self.assertEqual( \
+           (pykd.memoryProtect.PageWriteCopy, pykd.memoryState.Commit, pykd.memoryType.Image), \
+           pykd.getVaAttributes(target.module.begin()) \
+           )
         
     def testPtrList( self ):
         lst = pykd.loadPtrList( target.module.g_listHead )
