@@ -7,14 +7,19 @@ This project can help to automate debugging and crash dump analysis using Python
 If you want to automate the debugger but dislike the WinDbg built-in script machine syntax it's time to try again using the handy and powerful Python language. Even if you don't want to create your own script, maybe some existing scripts will be of interest to you?
 
 ## Getting started
-* You should have installed python. Supported python: 2.7, 3.5, 3.6 and 3.7
+* You should have installed python. Supported python: 2.7, 3.5, 3.6, 3.7 or 3.8
 * Install pykd with command: 'pip install pykd'
-* Use pykd bootstrapper to run pykd with windbg
+* Use windbg extension (bootstrapper) to run pykd with windbg
 
-## Pykd bootstrapper
+## Windbg extension (bootstarpper)
 Use it to run pykd within windbg.     
 [Home Page](https://githomelab.ru/pykd/pykd-ext)     
 [Download](https://githomelab.ru/pykd/pykd-ext/wikis/Downloads)   
+
+## Releases
+Just run 'pip install pykd' to install or 'pip install pykd --upgrade' to upgrade to the last version   
+[PyPi](https://pypi.org/project/pykd)   
+[All Releases](/../wikis/All Releases)  
 
 ## Documentation
 [Wiki Home](/../wikis/Home)    
@@ -31,10 +36,6 @@ A library with auxiliary modules for writing small pykd scripts and daily use.
 [windbg-kernel](https://githomelab.ru/pykd/windbg-kernel)    
 Set of pykd script for kernel debugging
 
-## Releases
-[All Releases](/../wikis/All Releases)      
-[PyPi](https://pypi.org/project/pykd)    
-Just run 'pip install pykd' to install or 'pip install pykd --upgrade' to upgrade to the last version   
 
 ## How to build ?
 * install VS 2017     
