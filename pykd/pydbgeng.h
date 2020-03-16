@@ -104,13 +104,13 @@ bool isKernelDebugging()
 
 
 inline
-python::object debugCommand( const std::wstring &command,  bool suppressOutput = true)
+python::object debugCommand( const std::wstring &command,  bool suppressOutput = true, const kdlib::OutputFlagsSet& captureFlags = kdlib::OutputFlag::Normal)
 {
     std::wstring  debugResult;
 
     {
         AutoRestorePyState  pystate;
-        debugResult = kdlib::debugCommand(command, suppressOutput);
+        debugResult = kdlib::debugCommand(command, suppressOutput, captureFlags);
     }
 
     if (debugResult.size() > 0 )
