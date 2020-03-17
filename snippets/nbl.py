@@ -227,7 +227,7 @@ class IpPacket:
             s += "\tflags: %x\n" % self.flags    
             s += "\toffset: %x" % ( self.offset * 8) 
             if ( self.offset == 0 ) and ( self.flags & 0x4 == 0 ):
-                s += " (not fargmented)\n"
+                s += " (not fragmented)\n"
             elif  self.offset == 0 :
                 s += " (first fragment)\n"
             elif not ( self.flags & 0x4 == 0 ):
@@ -480,7 +480,7 @@ def getPacketsFromNbl( nblAddr ):
         
     except TypeException:      
 
-        dprintln( "the symbols ar wrong" )  
+        dprintln( "the symbols are wrong" )  
 
 def printNblStruct( nblAddr, showNdisStruct = False, beginProtocol="eth", beginOffset=0 ):
 
@@ -525,7 +525,7 @@ def printNblStruct( nblAddr, showNdisStruct = False, beginProtocol="eth", beginO
 
     except TypeException:      
 
-        dprintln( "the symbols ar wrong" )
+        dprintln( "the symbols are wrong" )
 
 def main():
 
@@ -536,7 +536,7 @@ def main():
     parser = OptionParser(usage="usage: !py nbl [options] address")
     parser.add_option("-s", "--struct", action="store_true",  dest="showNdisStruct", default=False, help="Show NDIS structures" )  
     parser.add_option("-p", "--proto", action="store", type="string", dest="startProtocol", default="eth", help="Packet protocol. Can be eth, ip4, ip6, tcp, udp. By default - eth." )
-    parser.add_option("-o", "--offset", action="store", type="long", dest="beginOffset", default=0, help="Bytes offset from packet begining" )
+    parser.add_option("-o", "--offset", action="store", type="long", dest="beginOffset", default=0, help="Bytes offset from packet beginning" )
     parser.add_option("-r", "--raw", action="store_true", dest="rawBuffer", default=False, help="Show raw buffer")
    
     (options, args) = parser.parse_args()
