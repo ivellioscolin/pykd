@@ -164,7 +164,7 @@ void pykd_init()
     python::def( "startProcess", pykd::startProcess, startProcess_( boost::python::args( "commandline", "debugOptions"), 
         "Start process for debugging" ) ); 
     python::def("attachProcess", pykd::attachProcess, attachProcess_(boost::python::args("pid", "debugOptions"),
-        "Attach debugger to a exsisting process"));
+        "Attach debugger to a existing process"));
     python::def( "detachProcess", pykd::detachProcess, detachProcess_( boost::python::args( "id" ),
         "Stop process debugging") ); 
     python::def( "detachAllProcesses", pykd::detachAllProcesses, 
@@ -191,7 +191,7 @@ void pykd_init()
     python::def( "writeDump", pykd::writeDump,
         "Create memory dump file" );
     python::def( "getLocalProcesses", pykd::getLocalProcesses,
-        "Return list of runnng processes on the host system" );
+        "Return list of running processes on the host system" );
     python::def("getHostProcessPath", pykd::getHostProcessPath,
         "Return image path of the process running python interpreter with a pykd");
     python::def( "getDebugOptions", pykd::getDebugOptions,
@@ -216,7 +216,7 @@ void pykd_init()
     python::def( "trace", pykd::targetStepIn,
         "The target is executing a single instruction" );
     python::def("stepout", pykd::targetStepOut,
-        "The traget is executing while not returned from the current subroutine");
+        "The target is executing while not returned from the current subroutine");
     python::def("sourceStep", pykd::sourceStep,
         "The target is executing a single source line");
     python::def("sourceStepOver", pykd::sourceStepOver,
@@ -272,7 +272,7 @@ void pykd_init()
     python::def( "isValid", pykd::isVaValid,
         "Check if the virtual address is valid" );
     python::def("isVaRegionValid", pykd::isVaRegionValid,
-        "Check if the virtaul addresses region is valid");
+        "Check if the virtual addresses region is valid");
     python::def( "compareMemory", pykd::compareMemory, compareMemory_( python::args( "offset1", "offset2", "length", "phyAddr" ),
         "Compare two memory buffers by virtual or physical addresses" ) );
     python::def( "searchMemory", pykd::searchMemoryLst, 
@@ -280,7 +280,7 @@ void pykd_init()
     python::def( "searchMemory", pykd::searchMemoryStr, 
         "Search in virtual memory" );
     python::def( "findMemoryRegion", pykd::findMemoryRegion,
-        "Return address of begining valid memory region nearest to offset" );
+        "Return address of beginning valid memory region nearest to offset" );
     python::def( "getVaProtect", pykd::getVaProtect,
         "Return memory protect" );
     python::def( "getVaType", pykd::getVaType,
@@ -361,9 +361,9 @@ void pykd_init()
     python::def( "loadWStr", pykd::loadWStr,
         "Load string from the target buffer containing 0-terminated unicode-string" );
     python::def( "loadUnicodeString", pykd::loadUnicodeStr,
-        "Return string represention of windows UNICODE_STRING type" );
+        "Return string representation of windows UNICODE_STRING type" );
     python::def( "loadAnsiString", pykd::loadAnsiStr,
-        "Return string represention of windows ANSI_STRING type" );
+        "Return string representation of windows ANSI_STRING type" );
     python::def( "loadFloats", pykd::loadFloats, loadFloats_( python::args( "offset", "count", "phyAddr" ),
         "Read the block of the target's memory and return it as list of floats" ) );
     python::def( "loadDoubles", pykd::loadDoubles, loadDoubles_( python::args( "offset", "count", "phyAddr" ),
@@ -405,7 +405,7 @@ void pykd_init()
     python::def( "setPtr", pykd::setPtr,
         "Write an pointer value to the target memory" );
 
-    // types and vaiables
+    // types and variables
     python::def( "getSourceFile", pykd::getSourceFile, getSourceFile_( python::args( "offset"),
         "Return source file by the specified offset" ) );
     python::def("getSourceFileFromSrcSrv", pykd::getSourceFileFromSrcSrv, getSourceFileFromSrcSrv_(python::args("offset"),
@@ -414,7 +414,7 @@ void pykd_init()
         "Return source file name, line and displacement by the specified offset" ) );
 
     python::def( "getOffset", pykd::getSymbolOffset,
-        "Return traget virtual address for specified symbol" );
+        "Return target virtual address for specified symbol" );
     python::def( "findSymbol", pykd::findSymbol, findSymbol_( python::args( "offset", "showDisplacement"),
         "Find symbol by the target virtual memory offset" ) );
     python::def("findSymbolAndDisp", pykd::findSymbolAndDisp,
@@ -448,9 +448,9 @@ void pykd_init()
     python::def( "getTypeFromSource", &pykd::getTypeFromSource, getTypeFromSource_( python::args("sourceCode", "typeName", "compileOptions"),
         "Create typeInfo class from C/C++ source code") );
     python::def( "getTypeInfoProviderFromSource", &pykd::getTypeInfoProviderFromSource, getTypeInfoProviderFromSource_( python::args("sourceCode", "compileOptions"),
-        "Create typeInfo provider from  C/C++ source code") );
+        "Create typeInfo provider from C/C++ source code") );
     python::def( "getTypeInfoProviderFromPdb", &pykd::getTypeInfoProviderFromPdb, getTypeInfoProviderFromPdb_( python::args("filePath", "baseOffset"),
-        "Create typeInfo provider from  pdb file") );
+        "Create typeInfo provider from pdb file") );
     python::def("getSymbolProviderFromSource", &pykd::getSymbolProviderFromSource, getSymbolProviderFromSource_(python::args("sourceCode", "compileOptions"),
         "Create symbol provider for source code"));
     python::def("evalExpr", &pykd::evalExpr, evalExpr_(python::args("expression", "scope", "typeProvider"),
@@ -459,7 +459,7 @@ void pykd_init()
 
     // CPU registers
     python::def( "reg", pykd::getRegisterByName,
-        "Return a CPU regsiter value by the register's name" );
+        "Return a CPU register value by the register's name" );
     python::def( "reg", pykd::getRegisterByIndex,
         "Return a CPU register value by the register's number");
     python::def( "setReg", pykd::setRegisterByName,
@@ -527,7 +527,7 @@ void pykd_init()
 
     // breakpoints
     python::def( "setBp", &Breakpoint::setSoftwareBreakpoint,
-        setSoftwareBreakpoint_( python::args( "offset", "callback" ),"Set software breakpoint on executiont" )[python::return_value_policy<python::manage_new_object>()]);
+        setSoftwareBreakpoint_( python::args( "offset", "callback" ),"Set software breakpoint on execution" )[python::return_value_policy<python::manage_new_object>()]);
     python::def( "setBp", &Breakpoint::setHardwareBreakpoint, 
         setHardwareBreakpoint_( python::args( "offset", "size", "accsessType", "callback" ),"Set hardware breakpoint")[python::return_value_policy<python::manage_new_object>()]);
     python::def("getNumberBreakpoints", &Breakpoint::getNumberBreakpoints,
@@ -578,7 +578,7 @@ void pykd_init()
     python::def( "getThreadSystemID", pykd::getThreadSystemId, getThreadSystemId_( python::args("Id"),
         "Return system thread ID ( TID )" ) );
     python::def( "getThreadIdByOffset", pykd::getThreadIdByOffset,
-        "Return thread ID by the location in the targ et's memory of the thread structure" );
+        "Return thread ID by the location in the target's memory of the thread structure" );
     python::def( "getThreadIdBySystemID", pykd::getThreadIdBySystemId, getThreadIdBySystemId_( python::args("Tid"),
         "Return thread ID by the system's thread ID ( TID )" ) );
     python::def( "getCurrentThread", pykd::getCurrentThread,
@@ -602,7 +602,7 @@ void pykd_init()
     python::def("getLastEvent", pykd::getLastEvent,
         "Get last debug event information");
     python::def("getLastException", pykd::getLastException,
-        "Get last exception  information");
+        "Get last exception information");
 
     // symbol path
     python::def("getSymbolPath", pykd::getSymbolPath,
@@ -624,7 +624,7 @@ void pykd_init()
         "The addSyntheticSymbol function adds a synthetic symbol to a module in the current process\n"
         "Note: reloading the symbols for the module deletes all synthetic symbols associated with that module.");
     python::def( "removeSyntheticSymbol", pykd::removeSyntheticSymbol,
-        "The removeSyntheticSymbol function removes a synthetic symbol from a module in the current proces" );
+        "The removeSyntheticSymbol function removes a synthetic symbol from a module in the current process" );
 
     // synthetic module
     python::def("addSyntheticModule", pykd::addSyntheticModule, addSyntheticModule_(python::args("base", "size", "name", "path"),
@@ -708,7 +708,7 @@ void pykd_init()
         .def("isDumpAnalyzing", TargetSystemAdapter::isDumpAnalyzing,
             "Check if it is a dump analyzing ( not living debuggee )")
         .def("isKernelDebugging", TargetSystemAdapter::isKernelDebugging,
-            "Check if kernel dubugging is running")
+            "Check if kernel debugging is running")
         .def("is64bitSystem", TargetSystemAdapter::is64bitSystem,
             "Check if 64 bit system running" )
         .def("isCurrent", TargetSystemAdapter::isCurrent,
@@ -738,7 +738,7 @@ void pykd_init()
         .def("getProcessById", TargetProcessAdapter::getProcessById,
             "Return process by id").staticmethod("getProcessById")
         .add_property("systemID", TargetProcessAdapter::getSystemId,
-            "Retrun system process ID ( PID )" )
+            "Return system process ID ( PID )" )
         .add_property("id", TargetProcessAdapter::getId,
             "Return process id")
         .add_property("peb", TargetProcessAdapter::getPebOffset,
@@ -748,7 +748,7 @@ void pykd_init()
         .def("isCurrent", TargetProcessAdapter::isCurrent,
             "Check if the target is current")
         .def("isManaged", TargetProcessAdapter::isManaged,
-            "Check if the taget process is managed")
+            "Check if the target process is managed")
         .def("getNumberThreads", TargetProcessAdapter::getNumberThreads,
             "Return number of threads for this process" )
         .def("getThread", TargetProcessAdapter::getThreadByIndex,
@@ -798,7 +798,7 @@ void pykd_init()
         .add_property("id", TargetThreadAdapter::getId,
             "Return thread's id")
         .add_property("systemID", TargetThreadAdapter::getSystemId,
-            "Retrun system thread ID ( TID )" )
+            "Return system thread ID ( TID )" )
         .add_property("teb", TargetThreadAdapter::getTebOffset,
             "Return TEB address" )
         .add_property( "ip", TargetThreadAdapter::getIP, 
@@ -818,7 +818,7 @@ void pykd_init()
         .def("isCurrent", TargetThreadAdapter::isCurrent,
             "Check if this thread is current")
         .def("stack", TargetThreadAdapter::getStack,
-            "Get thread's stack tarce")
+            "Get thread's stack trace")
         .def("__str__", TargetThreadAdapter::print)
         ;
 
@@ -1043,7 +1043,7 @@ void pykd_init()
         .def("__init__", python::make_constructor(pykd::getTypedVarByTypeInfo) )
         .def("__init__", python::make_constructor(pykd::getTypedVarWithPrototype) )
         .def("getLocation", TypedVarAdapter::getLocation,
-            "Return location of the varibale")
+            "Return location of the variable")
         .def("getAddress", TypedVarAdapter::getAddress, 
             "Return virtual address" )
         .def("getDebugStart", TypedVarAdapter::getDebugStart, 
@@ -1057,13 +1057,13 @@ void pykd_init()
         .def("getNumberFields", TypedVarAdapter::getElementCount,
             "Return number of fields")
         .def("field", TypedVarAdapter::getField,
-            "Return fielged of structure")
+            "Return field of structure")
         .def("field", TypedVarAdapter::getElementByIndex,
             "Return field of structure or array" )
         .def("setField", TypedVarAdapter::setField,
             "Set field of structure")
         .def("setField", TypedVarAdapter::setElementByIndex,
-            "Set field of a structire or an element od array")
+            "Set field of a stricture or an element of array")
         .def("hasField", TypedVarAdapter::hasField,
             "Check if a typedVar object has the specified field")
         .def( "fields", TypedVarAdapter::getFields,
@@ -1145,17 +1145,17 @@ void pykd_init()
         .add_property( "stackOffset", StackFrameAdapter::getSP,
             "Return a frame's stack offset" )
         .def( "getParams", StackFrameAdapter::getParamsList, 
-            "return set of function's parameters  as a  list of tuple (name, value ) ")
+            "return set of function's parameters as a list of tuple (name, value)")
         .add_property( "params", StackFrameAdapter::getParamsDict,
             "return set of function's parameters as a dict (name : value)")
         .def( "getParam", StackFrameAdapter::getParam,
             "return function param by it's name")
         .def( "getLocals", StackFrameAdapter::getLocalsList,
-            "return set of function's local variables  as a  list of tuple (name, value ) ")
+            "return set of function's local variables as a list of tuple (name, value)")
         .add_property("locals", StackFrameAdapter::getLocalsDict,
-            "return a set of  function's local variables as a dict ( name : value)")
+            "return a set of function's local variables as a dict (name : value)")
         .def( "getLocal", StackFrameAdapter::getLocal,
-            "return the function's local variable  by it's name")
+            "return the function's local variable by it's name")
         .def( "switchTo", StackFrameAdapter::switchTo,
             "Make this frame a current")
         .def( "isInline", StackFrameAdapter::isInline,
@@ -1269,7 +1269,7 @@ void pykd_init()
         .value("ChangeSymbolState", kdlib::EventTypeChangeSymbolState)
         ;
 
-    python::class_<pykd::DebugEvent>("debugEvent", "Debug evemt descriptions", python::no_init)
+    python::class_<pykd::DebugEvent>("debugEvent", "Debug event descriptions", python::no_init)
         .def_readonly("type", &DebugEvent::eventType)
         .def_readonly("process", &DebugEvent::process)
         .def_readonly("thread", &DebugEvent::thread)
@@ -1283,7 +1283,7 @@ void pykd_init()
         .def( "disasm", DisasmAdapter::jump, 
             "Disassemble from the specified offset" )
         .def( "asm", DisasmAdapter::assembly,
-            "Insert assemblied instuction to current offset" )
+            "Insert assembled instruction to current offset" )
         .def( "begin", DisasmAdapter::begin,
             "Return begin offset" )
         .def( "current", DisasmAdapter::current, 
@@ -1319,7 +1319,7 @@ void pykd_init()
         ;
 
     python::class_<kdlib::TypeInfoProvider, kdlib::TypeInfoProviderPtr, boost::noncopyable>("typeInfoProvider",
-        "Get abstaract access to different type info sources", python::no_init)
+        "Get abstract access to different type info sources", python::no_init)
         .def( "getTypeByName", TypeInfoProviderAdapter::getTypeByName,
             "Get type info by it's name" )
         .def( "typeIterator", TypeInfoProviderAdapter::getTypeIterWithMask, python::return_value_policy<python::manage_new_object>(),
@@ -1338,7 +1338,7 @@ void pykd_init()
         ;
 
     python::class_<kdlib::SymbolProvider, kdlib::SymbolProviderPtr, boost::noncopyable>("symbolProvider",
-        "Get abstaract access to different type info sources", python::no_init)
+        "Get abstract access to different type info sources", python::no_init)
         .def("iter", SymbolProviderAdapter::getIterWithMask, python::return_value_policy<python::manage_new_object>(),
             "Return type iterator with specified mask")
         .def("__iter__", SymbolProviderAdapter::getIter, python::return_value_policy<python::manage_new_object>())
@@ -1372,7 +1372,7 @@ void pykd_init()
         .value("ThisCall", kdlib::CallConv_ThisCall )
         .value("MipsCall", kdlib::CallConv_MipsCall )
         .value("Generic", kdlib::CallConv_Generic )
-        .value("AlphaCall ", kdlib::CallConv_AlphaCall  )
+        .value("AlphaCall ", kdlib::CallConv_AlphaCall )
         .value("PpcCall", kdlib::CallConv_PpcCall )
         .value("ShCall", kdlib::CallConv_ShCall )
         .value("ArmCall", kdlib::CallConv_ArmCall )
@@ -1391,12 +1391,12 @@ void pykd_init()
         .value("ARM", kdlib::CPU_ARM )
         ;
 
-    python::enum_<kdlib::VarStorage>("Location", "Location of a varibale")
+    python::enum_<kdlib::VarStorage>("Location", "Location of a variable")
         .value("Reg", kdlib::RegisterVar)
         .value("Memory", kdlib::MemoryVar)
         ;
 
-    python::enum_<kdlib::MemoryProtect>("memoryProtect", "Memory protection attribiuties")
+    python::enum_<kdlib::MemoryProtect>("memoryProtect", "Memory protection attributes")
         .value("PageNoAccess", kdlib::PageNoAccess)
         .value("PageReadOnly", kdlib::PageReadOnly)
         .value("PageReadWrite", kdlib::PageReadWrite)
@@ -1424,7 +1424,7 @@ void pykd_init()
         .value("BreakOnStop", kdlib::ProcessBreakOnStop)
         .value("DebugChildren", kdlib::ProcessDebugChildren)
         .value("NoDebugHeap", kdlib::ProcessNoDebugHeap)
-        .value("Deafult", kdlib::ProcessDebugDefault)
+        .value("Default", kdlib::ProcessDebugDefault)
         ;
 
     python::class_<EventHandler, boost::noncopyable>(
@@ -1436,7 +1436,7 @@ void pykd_init()
             "Triggered module load event. Parameter are long: module base, string: module name\n"
             "For ignore event method must return eventResult.noChange" )
         .def( "onUnloadModule", &EventHandler::onModuleUnload,
-            "Triggered module unload event. Parameter are  long: module base, string: module name\n"
+            "Triggered module unload event. Parameter are long: module base, string: module name\n"
             "For ignore event method must return eventResult.noChange" )
         .def( "onException", &EventHandler::onException,
             "Triggered exception event. Parameter - exceptionInfo\n"
