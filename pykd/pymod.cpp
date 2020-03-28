@@ -42,7 +42,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( terminateProcess_,  pykd::terminateProcess, 0, 
 BOOST_PYTHON_FUNCTION_OVERLOADS(closeDump_, pykd::closeDump, 0, 1);
 BOOST_PYTHON_FUNCTION_OVERLOADS( attachKernel_,  pykd::attachKernel, 0, 1 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( evaluate_, pykd::evaluate, 1, 2 );
-BOOST_PYTHON_FUNCTION_OVERLOADS( debugCommand_, pykd::debugCommand, 1, 2 );
+BOOST_PYTHON_FUNCTION_OVERLOADS( debugCommand_, pykd::debugCommand, 1, 3 );
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprint_, pykd::dprint, 1, 2 );
 BOOST_PYTHON_FUNCTION_OVERLOADS( dprintln_, pykd::dprintln, 1, 2 );
@@ -207,8 +207,10 @@ void pykd_init()
         "Break into debugger" );
     python::def( "expr", pykd::evaluate, evaluate_( python::args( "expression", "cplusplus" ),
         "Evaluate windbg expression" ) );
-    python::def( "dbgCommand", &pykd::debugCommand, 
-        debugCommand_( python::args( "command", "suppressOutput"), "Run a debugger's command and return it's result as a string" ) );
+    python::def( "dbgCommand", &pykd::debugCommand, debugCommand_( python::args(
+        "command", "suppressOutput", "outputMask"), 
+        "Run a debugger's command and return it's result as a string. You can set additional outputMask" \
+        "if you want to get also error messages" ) );
     python::def( "go", pykd::targetGo,
         "Go debugging"  );
     python::def( "step", pykd::targetStep,
