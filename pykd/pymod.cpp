@@ -287,7 +287,7 @@ void pykd_init()
         "Return memory protect" );
     python::def( "getVaType", pykd::getVaType,
         "Return memory type");
-    python::def( "getVaState", pykd::getVaProtect,
+    python::def( "getVaState", pykd::getVaState,
         "Return memory state");
     python::def("getVaAttributes", pykd::getVaAttributes,
         "Return memory attributes");
