@@ -154,6 +154,13 @@ kdlib::DumpType getDumpType()
     return kdlib::getDumpType();
 }
 
+inline
+kdlib::DumpFormatFlagsSet getDumpFormat()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getDumpFormat();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 // processes end threads

@@ -203,7 +203,9 @@ void pykd_init()
     python::def("setOutputMask", pykd::setOutputMask,
         "Set output mask");
     python::def("getDumpType", pykd::getDumpType,
-        "Return type of dump");
+        "Return type of the dump");
+    python::def("getDumpFormat", pykd::getDumpFormat,
+        "Return format the dump");
 
     python::def( "breakin", pykd::targetBreak,
         "Break into debugger" );
@@ -1542,6 +1544,29 @@ void pykd_init()
         .value("KernelSmall", kdlib::KernelSmall)
         .value("Kernel", kdlib::Kernel)
         .value("KernelFull", kdlib::KernelFull)
+        ;
+
+    python::enum_<kdlib::DumpFormat>("dumpFormat", "Dump format")
+        .value("UserSmallFullMemory", kdlib::UserSmallFullMemory)
+        .value("UserSmallHandleData", kdlib::UserSmallHandleData)
+        .value("UserSmallUnloadedModules", kdlib::UserSmallUnloadedModules)
+        .value("UserSmallIndirectMemory", kdlib::UserSmallIndirectMemory)
+        .value("UserSmallDataSegments", kdlib::UserSmallDataSegments)
+        .value("UserSmallFilterMemory", kdlib::UserSmallFilterMemory)
+        .value("UserSmallFilterPaths", kdlib::UserSmallFilterPaths)
+        .value("UserSmallProcessThreadData", kdlib::UserSmallProcessThreadData)
+        .value("UserSmallPrivateReadWriteMemory", kdlib::UserSmallPrivateReadWriteMemory)
+        .value("UserSmallNoOptionalData", kdlib::UserSmallNoOptionalData)
+        .value("UserSmallFullMemoryInfo", kdlib::UserSmallFullMemoryInfo)
+        .value("UserSmallThreadInfo", kdlib::UserSmallThreadInfo)
+        .value("UserSmallCodeSegments", kdlib::UserSmallCodeSegments)
+        .value("UserSmallNoAuxiliaryState", kdlib::UserSmallNoAuxiliaryState)
+        .value("UserSmallFullAuxiliaryState", kdlib::UserSmallFullAuxiliaryState)
+        .value("UserSmallModuleHeaders", kdlib::UserSmallModuleHeaders)
+        .value("UserSmallFilterTriage", kdlib::UserSmallFilterTriage)
+        .value("UserSmallAddAvxXStateContext", kdlib::UserSmallAddAvxXStateContext)
+        .value("UserSmallIptTrace", kdlib::UserSmallIptTrace)
+        .value("UserSmallIgnoreInaccessibleMem", kdlib::UserSmallIgnoreInaccessibleMem)
         ;
 
     // C++ exception translation to python
