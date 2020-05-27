@@ -147,6 +147,13 @@ void setOutputMask(const kdlib::OutputFlagsSet& outputMask)
     kdlib::setOutputFlags(outputMask);
 }
 
+inline
+kdlib::DumpType getDumpType()
+{
+    AutoRestorePyState  pystate;
+    return kdlib::getDumpType();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 // processes end threads

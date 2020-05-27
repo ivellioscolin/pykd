@@ -202,6 +202,8 @@ void pykd_init()
         "Get output mask");
     python::def("setOutputMask", pykd::setOutputMask,
         "Set output mask");
+    python::def("getDumpType", pykd::getDumpType,
+        "Return type of dump");
 
     python::def( "breakin", pykd::targetBreak,
         "Break into debugger" );
@@ -1530,6 +1532,16 @@ void pykd_init()
         .value("Symbols", kdlib::Symbols)
         .value("Status", kdlib::Status)
         .value("All", kdlib::All)
+        ;
+
+    python::enum_<kdlib::DumpType>("dumpType", "Dump type")
+        .value("Small", kdlib::Small)
+        .value("Default", kdlib::Default)
+        .value("Full", kdlib::Full)
+        .value("Image", kdlib::Image)
+        .value("KernelSmall", kdlib::KernelSmall)
+        .value("Kernel", kdlib::Kernel)
+        .value("KernelFull", kdlib::KernelFull)
         ;
 
     // C++ exception translation to python
