@@ -9,7 +9,7 @@ import itertools
 
 _name = "pykd"
 _desc = "python windbg extension"
-_version = '0.3.4.10'
+_version = '0.3.4.15'
 
 def getReleaseSrc():
     return 'Release_%d.%d' % sys.version_info[0:2]
@@ -110,7 +110,7 @@ elif "bdist_zip" in sys.argv:
 elif "bdist_pdb" in sys.argv:
 
     #make pdb archive
-    pyVersion = ('2.7', '3.5', '3.6', '3.7', '3.8')
+    pyVersion = ('2.7', '3.5', '3.6', '3.7', '3.8', '3.9')
     platform = ('Win32', 'x64')
     
     pdbFiles = [ os.path.join( platform, 'Release_' + version, 'pykd.pdb') for version, platform in itertools.product( pyVersion, platform ) ]

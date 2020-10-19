@@ -23,4 +23,9 @@ py -3.8 setup.py bdist_zip --plat-name=win-amd64
 py -3.8 setup.py bdist_wheel --plat-name=win32 --python-tag=cp38
 py -3.8 setup.py bdist_wheel --plat-name=win-amd64  --python-tag=cp38
 
+py -3.9 setup.py bdist_zip --plat-name=win32
+py -3.9 setup.py bdist_zip --plat-name=win-amd64
+py -3.9 setup.py bdist_wheel --plat-name=win32 --python-tag=cp39
+py -3.9 setup.py bdist_wheel --plat-name=win-amd64  --python-tag=cp39
+
 py setup.py bdist_pdb
