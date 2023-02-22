@@ -93,7 +93,11 @@ PyObject* make_nurse_and_patient(PyObject* nurse, PyObject* patient)
     
     if (Py_TYPE(&life_support_type) == 0)
     {
+#if PY_VERSION_HEX >= 0x030b0000
+        Py_SET_TYPE(&life_support_type, &PyType_Type);
+#else
         Py_TYPE(&life_support_type) = &PyType_Type;
+#endif
         PyType_Ready(&life_support_type);
     }
     

@@ -153,7 +153,11 @@ namespace
   {
       if (enum_type_object.tp_dict == 0)
       {
+#if PY_VERSION_HEX >= 0x030b0000
+          Py_SET_TYPE(&enum_type_object, incref(&PyType_Type));
+#else
           Py_TYPE(&enum_type_object) = incref(&PyType_Type);
+#endif
 #if PY_VERSION_HEX >= 0x03000000
           enum_type_object.tp_base = &PyLong_Type;
 #else

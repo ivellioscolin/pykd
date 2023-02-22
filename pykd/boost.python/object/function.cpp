@@ -107,7 +107,11 @@ function::function(
     PyObject* p = this;
     if (Py_TYPE(&function_type) == 0)
     {
+#if PY_VERSION_HEX >= 0x030b0000
+        Py_SET_TYPE(&function_type, &PyType_Type);
+#else
         Py_TYPE(&function_type) = &PyType_Type;
+#endif
         ::PyType_Ready(&function_type);
     }
     
