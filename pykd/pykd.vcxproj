@@ -145,7 +145,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>2.7</PythonVersion>
+    <PythonVersion>2.7.18</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'" Label="Configuration">
@@ -153,7 +153,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.5</PythonVersion>
+    <PythonVersion>3.5.4</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'" Label="Configuration">
@@ -161,7 +161,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.6</PythonVersion>
+    <PythonVersion>3.6.8</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.7|Win32'" Label="Configuration">
@@ -169,7 +169,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.7</PythonVersion>
+    <PythonVersion>3.7.9</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.8|Win32'" Label="Configuration">
@@ -177,7 +177,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.8</PythonVersion>
+    <PythonVersion>3.8.10</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.9|Win32'" Label="Configuration">
@@ -185,7 +185,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.9</PythonVersion>
+    <PythonVersion>3.9.13</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.10|Win32'" Label="Configuration">
@@ -193,7 +193,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.10</PythonVersion>
+    <PythonVersion>3.10.10</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.11|Win32'" Label="Configuration">
@@ -201,8 +201,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.11</PythonVersion>
-    <PythonVersionFull>3.11.2</PythonVersionFull>
+    <PythonVersion>3.11.2</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'" Label="Configuration">
@@ -210,7 +209,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>2.7</PythonVersion>
+    <PythonVersion>2.7.18</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'" Label="Configuration">
@@ -218,7 +217,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.5</PythonVersion>
+    <PythonVersion>3.5.4</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'" Label="Configuration">
@@ -226,7 +225,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.6</PythonVersion>
+    <PythonVersion>3.6.8</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.7|x64'" Label="Configuration">
@@ -234,7 +233,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.7</PythonVersion>
+    <PythonVersion>3.7.9</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.8|x64'" Label="Configuration">
@@ -242,7 +241,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.8</PythonVersion>
+    <PythonVersion>3.8.10</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.9|x64'" Label="Configuration">
@@ -250,7 +249,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.9</PythonVersion>
+    <PythonVersion>3.9.13</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.10|x64'" Label="Configuration">
@@ -258,7 +257,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.10</PythonVersion>
+    <PythonVersion>3.10.10</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.11|x64'" Label="Configuration">
@@ -266,8 +265,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.11</PythonVersion>
-    <PythonVersionFull>3.11.2</PythonVersionFull>
+    <PythonVersion>3.11.2</PythonVersion>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'" Label="Configuration">
@@ -276,7 +274,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>2.7</PythonVersion>
+    <PythonVersion>2.7.18</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'" Label="Configuration">
@@ -285,7 +283,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.5</PythonVersion>
+    <PythonVersion>3.5.4</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'" Label="Configuration">
@@ -294,7 +292,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.6</PythonVersion>
+    <PythonVersion>3.6.8</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.7|Win32'" Label="Configuration">
@@ -303,7 +301,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.7</PythonVersion>
+    <PythonVersion>3.7.9</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.8|Win32'" Label="Configuration">
@@ -312,7 +310,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.8</PythonVersion>
+    <PythonVersion>3.8.10</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.9|Win32'" Label="Configuration">
@@ -321,7 +319,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.9</PythonVersion>
+    <PythonVersion>3.9.13</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.10|Win32'" Label="Configuration">
@@ -330,7 +328,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.10</PythonVersion>
+    <PythonVersion>3.10.10</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.11|Win32'" Label="Configuration">
@@ -339,8 +337,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.11</PythonVersion>
-    <PythonVersionFull>3.11.2</PythonVersionFull>
+    <PythonVersion>3.11.2</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'" Label="Configuration">
@@ -349,7 +346,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>2.7</PythonVersion>
+    <PythonVersion>2.7.18</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'" Label="Configuration">
@@ -358,7 +355,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.5</PythonVersion>
+    <PythonVersion>3.5.4</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'" Label="Configuration">
@@ -367,7 +364,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.6</PythonVersion>
+    <PythonVersion>3.6.8</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.7|x64'" Label="Configuration">
@@ -376,7 +373,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.7</PythonVersion>
+    <PythonVersion>3.7.9</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.8|x64'" Label="Configuration">
@@ -385,7 +382,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.8</PythonVersion>
+    <PythonVersion>3.8.10</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.9|x64'" Label="Configuration">
@@ -394,7 +391,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.9</PythonVersion>
+    <PythonVersion>3.9.13</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.10|x64'" Label="Configuration">
@@ -403,7 +400,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.10</PythonVersion>
+    <PythonVersion>3.10.10</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.11|x64'" Label="Configuration">
@@ -412,8 +409,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <PythonVersion>3.11</PythonVersion>
-    <PythonVersionFull>3.11.2</PythonVersionFull>
+    <PythonVersion>3.11.2</PythonVersion>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -768,14 +764,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -784,6 +780,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python2x86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'">
     <ClCompile>
@@ -791,13 +790,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -806,6 +805,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'">
     <ClCompile>
@@ -813,13 +815,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -828,6 +830,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.7|Win32'">
     <ClCompile>
@@ -835,13 +840,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -850,6 +855,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.8|Win32'">
     <ClCompile>
@@ -857,13 +865,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -872,6 +880,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.9|Win32'">
     <ClCompile>
@@ -879,13 +890,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -894,6 +905,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.10|Win32'">
     <ClCompile>
@@ -901,13 +915,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.3.10.10\tools\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.3.10.10\tools\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -916,6 +930,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.11|Win32'">
     <ClCompile>
@@ -923,13 +940,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersionFull)\tools\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersionFull)\tools\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -938,6 +955,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'">
     <ClCompile>
@@ -945,13 +965,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python2.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python2.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -960,6 +980,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python2 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'">
     <ClCompile>
@@ -967,13 +990,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -982,6 +1005,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'">
     <ClCompile>
@@ -989,13 +1015,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -1004,6 +1030,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.7|x64'">
     <ClCompile>
@@ -1011,13 +1040,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -1026,6 +1055,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.8|x64'">
     <ClCompile>
@@ -1033,13 +1065,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -1048,6 +1080,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.9|x64'">
     <ClCompile>
@@ -1055,13 +1090,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -1070,6 +1105,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.10|x64'">
     <ClCompile>
@@ -1077,13 +1115,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.3.10.10\tools\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.3.10.10\tools\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -1092,6 +1130,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.11|x64'">
     <ClCompile>
@@ -1099,13 +1140,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersionFull)\tools\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersionFull)\tools\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
@@ -1114,6 +1155,9 @@
       <Command>
       </Command>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">
     <ClCompile>
@@ -1123,7 +1167,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1132,11 +1176,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python2x86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'">
     <ClCompile>
@@ -1146,7 +1193,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1155,11 +1202,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'">
     <ClCompile>
@@ -1169,7 +1219,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1178,11 +1228,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.7|Win32'">
     <ClCompile>
@@ -1192,7 +1245,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1201,11 +1254,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.8|Win32'">
     <ClCompile>
@@ -1215,7 +1271,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1224,11 +1280,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.9|Win32'">
     <ClCompile>
@@ -1238,7 +1297,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1247,11 +1306,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.10|Win32'">
     <ClCompile>
@@ -1261,7 +1323,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.3.10.10\tools\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1270,11 +1332,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.3.10.10\tools\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.11|Win32'">
     <ClCompile>
@@ -1284,7 +1349,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersionFull)\tools\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1293,11 +1358,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersionFull)\tools\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">
     <ClCompile>
@@ -1307,7 +1375,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python2.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1316,11 +1384,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python2.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python2 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'">
     <ClCompile>
@@ -1330,7 +1401,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1339,11 +1410,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'">
     <ClCompile>
@@ -1353,7 +1427,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1362,11 +1436,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.7|x64'">
     <ClCompile>
@@ -1376,7 +1453,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1385,11 +1462,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.8|x64'">
     <ClCompile>
@@ -1399,7 +1479,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1408,11 +1488,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.9|x64'">
     <ClCompile>
@@ -1422,7 +1505,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1431,11 +1514,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.10|x64'">
     <ClCompile>
@@ -1445,7 +1531,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.3.10.10\tools\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1454,11 +1540,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.3.10.10\tools\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.11|x64'">
     <ClCompile>
@@ -1468,7 +1557,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersionFull)\tools\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1477,11 +1566,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersionFull)\tools\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="dbgexcept.h" />
@@ -1632,12 +1724,6 @@
     <Import Project="$(SolutionDir)\packages\boost_regex-src.1.67.0.0\build\boost_regex-src.targets" Condition="Exists('$(SolutionDir)\packages\boost_regex-src.1.67.0.0\build\boost_regex-src.targets')" />
     <Import Project="$(SolutionDir)\packages\boost_system-src.1.67.0.0\build\boost_system-src.targets" Condition="Exists('$(SolutionDir)\packages\boost_system-src.1.67.0.0\build\boost_system-src.targets')" />
     <Import Project="$(SolutionDir)\packages\boost_thread-src.1.67.0.0\build\boost_thread-src.targets" Condition="Exists('$(SolutionDir)\packages\boost_thread-src.1.67.0.0\build\boost_thread-src.targets')" />
-    <Import Project="$(SolutionDir)\packages\Python27.2.7.6\build\python27.targets" Condition="'$(PythonVersion)'=='2.7' AND Exists('$(SolutionDir)\packages\Python27.2.7.6\build\python27.targets')" />
-    <Import Project="$(SolutionDir)\packages\Python35.3.5.1.1\build\python35.targets" Condition="'$(PythonVersion)'=='3.5' AND Exists('$(SolutionDir)\packages\Python35.3.5.1.1\build\python35.targets')" />
-    <Import Project="$(SolutionDir)\packages\Python36.3.6.0\build\python36.targets" Condition="'$(PythonVersion)'=='3.6' AND Exists('$(SolutionDir)\packages\Python36.3.6.0\build\python36.targets')" />
-    <Import Project="$(SolutionDir)\packages\Python37.1.0.0.1\build\python37.targets" Condition="'$(PythonVersion)'=='3.7' AND Exists('$(SolutionDir)\packages\Python37.1.0.0.1\build\python37.targets')" />
-    <Import Project="$(SolutionDir)\packages\Python38.3.8.0\build\python38.targets" Condition="'$(PythonVersion)'=='3.8' AND Exists('$(SolutionDir)\packages\Python38.3.8.0\build\python38.targets')" />
-    <Import Project="$(SolutionDir)\packages\Python39.3.9.0\build\python39.targets" Condition="'$(PythonVersion)'=='3.9' AND Exists('$(SolutionDir)\packages\Python39.3.9.0\build\python39.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -1652,11 +1738,5 @@
     <Error Condition="!Exists('$(SolutionDir)\packages\boost_regex-src.1.67.0.0\build\boost_regex-src.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\boost_regex-src.1.67.0.0\build\boost_regex-src.targets'))" />
     <Error Condition="!Exists('$(SolutionDir)\packages\boost_system-src.1.67.0.0\build\boost_system-src.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\boost_system-src.1.67.0.0\build\boost_system-src.targets'))" />
     <Error Condition="!Exists('$(SolutionDir)\packages\boost_thread-src.1.67.0.0\build\boost_thread-src.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\boost_thread-src.1.67.0.0\build\boost_thread-src.targets'))" />
-    <Error Condition="!Exists('$(SolutionDir)\packages\Python27.2.7.6\build\python27.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\Python27.2.7.6\build\python27.targets'))" />
-    <Error Condition="!Exists('$(SolutionDir)\packages\Python35.3.5.1.1\build\python35.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\Python35.3.5.1\build\python35.targets'))" />
-    <Error Condition="!Exists('$(SolutionDir)\packages\Python36.3.6.0\build\python36.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\Python36.3.6.0\build\python36.targets')" />
-    <Error Condition="!Exists('$(SolutionDir)\packages\Python37.1.0.0.1\build\python37.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\Python37.1.0.0.1\build\python37.targets')" />
-    <Error Condition="!Exists('$(SolutionDir)\packages\Python38.3.8.0\build\python38.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\Python38.3.8.0\build\python38.targets')" />
-    <Error Condition="!Exists('$(SolutionDir)\packages\Python39.3.9.0\build\python39.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\Python39.3.9.0\build\python39.targets')" />
   </Target>
 </Project>
