@@ -1,2 +1,6 @@
-*.pyc
 .vs
+Out/
+Obj/
+cmake/
+packages/
+*.vcxproj.user
