@@ -1,131 +1,174 @@
-﻿from setuptools import setup
-from wheel.bdist_wheel import bdist_wheel
-
-import os
+﻿import os
 import shutil
 import zipfile
 import sys
-import itertools
+import argparse
+import re
+import setuptools
+import git
+
+if sys.version_info.major == 2:
+    import pathlib2
 
 _name = "pykd"
 _desc = "python windbg extension"
-_version = '0.3.4.15'
 
-def getReleaseSrc():
-    return 'Release_%d.%d' % sys.version_info[0:2]
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--plat-name', choices = ['win32', 'win-amd64', 'x86', 'x64'], required = True, type = str.lower)
+    parser.add_argument('--build-base', type = str, required = False)
+    parser.add_argument('--dist-dir', type = str, required = False)
+    parser.add_argument('--egg-base', type = str, required = False)
+    args, unkonwn_args = parser.parse_known_args()
 
-if "bdist_wheel" in sys.argv:
-
-    # remove build catalog
-    build_dir = os.path.join(os.path.curdir, 'build' )
-    if os.path.exists(build_dir):
-        shutil.rmtree(build_dir)
-
-    # make package catalog
-    package_dir = os.path.join(os.path.curdir, _name )
-    if os.path.exists(package_dir):
-        shutil.rmtree(package_dir)
-    os.mkdir(package_dir)
-
-    shutil.copy("__init__.py", package_dir)
-
-    bin_dir = os.path.join( os.path.curdir, '..', 'kdlibcpp/bin')
-    pykd_dir =  os.path.join( os.path.curdir, '..', 'out')
-    if "--plat-name=win32" in sys.argv:
-        bin_dir = os.path.join( bin_dir, 'x86')
-        pykd_dir = os.path.join(pykd_dir, 'Win32', getReleaseSrc())
-    elif "--plat-name=win-amd64" in sys.argv:
-        bin_dir = os.path.join( bin_dir, 'x64')
-        pykd_dir = os.path.join(pykd_dir, 'X64', getReleaseSrc())
+    platform = ''
+    platform_alt = ''
+    configuration = 'Release'
+    if (args.plat_name == 'win32') or (args.plat_name == 'x86'):
+        args.plat_name = 'win32'
+        platform = 'win32'
+        platform_alt = 'x86'
+    elif (args.plat_name == 'win-amd64') or (args.plat_name == 'x64'):
+        args.plat_name = 'win-amd64'
+        platform = 'x64'
+        platform_alt = 'x64'
     else:
-        assert(0)
+        print("Unsupported platform %s" %(args.plat_name))
+        exit
 
-    assert(os.path.isdir(bin_dir))
+    python_tag = "cp%d%d" %(sys.version_info.major, sys.version_info.minor)
 
-    for binFile in  [ f for f in os.listdir(bin_dir) if not os.path.isdir(f) ]:
-        shutil.copy( os.path.join(bin_dir, binFile), os.path.join(package_dir, binFile) )
+    dir_solution = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    shutil.copy( os.path.join(pykd_dir, 'pykd.pyd'), os.path.join(package_dir, 'pykd.pyd') )
+    _version = ''
 
-    setup(
-        name = _name,
-        version = _version,
-        description = _desc,
-       # cmdclass = { 'bdist_wheel' : bdist_wheel },
-        packages = ['pykd'],
-        package_dir = {'pykd': package_dir},
-        package_data = { 'pykd' :["*.pyd", "*.dll"]},
-        include_package_data=True,
-        zip_safe = False
+    # Using VERSION file on releaase branch
+    if os.path.isfile(os.path.join(os.path.dirname(__file__), 'VERSION')):
+        with open(os.path.join(os.path.dirname(__file__), 'VERSION'), 'r') as verf:
+            _version = verf.readline()
+
+    # Using versions from pykdver.h and branch HEAD
+    if _version == '':
+        versions = ['', '', '', '']
+        if os.path.isfile(os.path.join(dir_solution, 'pykd', 'pykdver.h')):
+            with open(os.path.join(os.path.join(dir_solution, 'pykd', 'pykdver.h')), 'r') as verf:
+                lines = verf.readlines()
+                for line in lines:
+                    ver_raw_match = re.findall(r"^#define\s*PYKD_VERSION_MAJOR\s*(.*)$", line)
+                    if (len(ver_raw_match)):
+                        versions[0] = ver_raw_match[0]
+                        continue
+                    ver_raw_match = re.findall(r"^#define\s*PYKD_VERSION_MINOR\s*(.*)$", line)
+                    if (len(ver_raw_match)):
+                        versions[1] = ver_raw_match[0]
+                        continue
+                    ver_raw_match = re.findall(r"^#define\s*PYKD_VERSION_SUBVERSION\s*(.*)$", line)
+                    if (len(ver_raw_match)):
+                        versions[2] = ver_raw_match[0]
+                        continue
+                    ver_raw_match = re.findall(r"^#define\s*PYKD_VERSION_BUILDNO\s*(.*)$", line)
+                    if (len(ver_raw_match)):
+                        versions[3] = ver_raw_match[0]
+                        continue
+
+        _version = "%s.%s.%s.%s+g" % (versions[0], versions[1], versions[2], versions[3])
+
+        try:
+            repo = git.Repo(dir_solution)
+            _version = "%s%s" % (_version, repo.git.rev_parse(repo.head, short = True))
+        except:
+            print("Skip using HEAD SHA as non git repo")
+
+    dir_dbgsdk_bin = os.path.join(dir_solution, 'kdlibcpp', 'bin', platform_alt)
+    if not os.path.exists(dir_dbgsdk_bin):
+        print("DbgSDK bin path %s doesn't exist" %(dir_dbgsdk_bin))
+        sys.exit()
+
+    dir_pykd_bin = os.path.join(dir_solution, 'Out', platform, "%s_%d.%d" %(configuration, sys.version_info.major, sys.version_info.minor))
+    if not os.path.exists(os.path.join(dir_pykd_bin, 'pykd.pyd')):
+        print("pykd.pyd doesn't exist in %s" %(dir_pykd_bin))
+        sys.exit()
+
+    if args.build_base is not None:
+        dir_build_base = args.build_base
+    else:
+        dir_build_base = os.path.join(dir_solution, 'Obj', 'Wheel', platform, "%s_%d.%d" %(configuration, sys.version_info.major, sys.version_info.minor), 'setuptools')
+
+    if args.dist_dir is not None:
+        dir_dist_wheel = args.dist_dir
+    else:
+        dir_dist_wheel = dir_pykd_bin
+
+    if args.egg_base is not None:
+        dir_egg_base = args.egg_base
+    else:
+        dir_egg_base = dir_build_base
+
+    dir_wheel_package = os.path.join(dir_build_base, _name)
+
+    if os.path.exists(dir_build_base):
+        shutil.rmtree(dir_build_base)
+    if sys.version_info.major == 2:
+        pathlib2.Path(dir_build_base).mkdir(exist_ok = True, parents = True)
+    else:
+        os.makedirs(dir_build_base, exist_ok = True)
+
+    if os.path.exists(dir_wheel_package):
+        shutil.rmtree(dir_wheel_package)
+    if sys.version_info.major == 2:
+        pathlib2.Path(dir_wheel_package).mkdir(exist_ok = True, parents = True)
+    else:
+        os.makedirs(dir_wheel_package, exist_ok = True)
+
+    print("Using DbgSDK from %s" %(dir_dbgsdk_bin))
+    print("Using pykd binary from %s" %(dir_pykd_bin))
+    print("Using build directory as %s" %(dir_build_base))
+    print("Using egg info directory as %s" %(dir_egg_base))
+    print("Using Wheel output directory as %s" %(dir_dist_wheel))
+
+    shutil.copy2(os.path.join(dir_solution, 'setup', '__init__.py'), dir_wheel_package)
+    shutil.copy2(os.path.join(dir_pykd_bin, 'pykd.pyd'), dir_wheel_package)
+    for dbgSdkBin in  [ f for f in os.listdir(dir_dbgsdk_bin) if not os.path.isdir(f) ]:
+        shutil.copy2(os.path.join(dir_dbgsdk_bin, dbgSdkBin), dir_wheel_package)
+
+    if 'bdist_wheel' in unkonwn_args:
+        print("Building bdist_wheel ...")
+        sys.argv = ['setup.py']
+        sys.argv.append("build")
+        sys.argv.append("--build-base=%s" %(dir_build_base))
+        sys.argv.append("--plat-name=%s" %(args.plat_name))
+        sys.argv.append("bdist_wheel")
+        sys.argv.append("--dist-dir=%s" %(dir_dist_wheel))
+        sys.argv.append("--plat-name=%s" %(args.plat_name))
+        sys.argv.append("--python-tag=%s" %(python_tag))
+        sys.argv.append("egg_info")
+        sys.argv.append("--egg-base=%s" %(dir_egg_base))
+
+        setuptools.setup(
+            name = _name,
+            version = _version,
+            description = _desc,
+            packages = ['pykd'],
+            package_dir = {'pykd': os.path.relpath(dir_wheel_package)},
+            package_data = { 'pykd' :["*.pyd", "*.dll"]},
+            include_package_data=True,
+            zip_safe = False
         )
 
-elif "bdist_zip" in sys.argv:
+    if 'bdist_zip' in unkonwn_args:
+        zip_name = "pykd-%s-%s-%s.zip" %(_version, python_tag, args.plat_name)
+        print("Building bdist_zip %s ..." %(zip_name))
+        with zipfile.ZipFile(os.path.join(dir_dist_wheel, zip_name), mode='w') as archive:
+            for dbgSdkBin in  [ f for f in os.listdir(dir_dbgsdk_bin) if not os.path.isdir(f) ]:
+                print("zipped %s" %(dbgSdkBin))
+                archive.write(os.path.join(dir_dbgsdk_bin, dbgSdkBin), arcname = dbgSdkBin, compress_type = zipfile.ZIP_DEFLATED)
+            print("zipped pykd.pyd")
+            archive.write(os.path.join(dir_pykd_bin, 'pykd.pyd'), arcname = 'pykd.pyd', compress_type = zipfile.ZIP_DEFLATED)
+            print("zipped pykd.pdb")
+            archive.write(os.path.join(dir_pykd_bin, 'pykd.pdb'), arcname = 'pykd.pdb', compress_type = zipfile.ZIP_DEFLATED)
 
-    #make package catalog
-
-    if "--plat-name=win32" in sys.argv:
-        plat_name="win32"
-    elif "--plat-name=win-amd64" in sys.argv:
-        plat_name="win-amd64"
-
-    package_dir = os.path.join(os.path.curdir, _name )
-    if os.path.exists(package_dir):
-        shutil.rmtree(package_dir)
-    os.mkdir(package_dir)
-
-    bin_dir = os.path.join( os.path.curdir, '..', 'kdlibcpp/bin')
-    pykd_dir =  os.path.join( os.path.curdir, '..', 'out')
-    if plat_name=="win32":
-        bin_dir = os.path.join( bin_dir, 'x86')
-        pykd_dir = os.path.join(pykd_dir, 'Win32', getReleaseSrc())
-    elif plat_name=="win-amd64":
-        bin_dir = os.path.join( bin_dir, 'x64')
-        pykd_dir = os.path.join(pykd_dir, 'X64', getReleaseSrc())
-    else:
-        assert(0)
-
-    pyver="%d%d" % sys.version_info[0:2]
-
-    zip_str = "pykd-%s-cp%s-%s" % ( _version, pyver, plat_name )
-    zip_name = zip_str + ".zip"
-
-    assert(os.path.isdir(bin_dir))
-
-    for binFile in  [ f for f in os.listdir(bin_dir) if not os.path.isdir(f) ]:
-        shutil.copy( os.path.join(bin_dir, binFile), os.path.join(package_dir, binFile) )
-
-    shutil.copy( os.path.join(pykd_dir, 'pykd.pyd'), os.path.join(package_dir, 'pykd.pyd') )
-
-    dist_dir = os.path.join(os.path.curdir, 'dist')
-    if not os.path.exists(dist_dir):
-        os.mkdir(dist_dir)
-
-    with zipfile.ZipFile(os.path.join(os.path.curdir, 'dist', zip_name), mode='w' ) as archive:
-        for srcFile in os.listdir(package_dir):
-            print( "zipped %s" % (srcFile) )
-            archive.write( os.path.join(package_dir, srcFile), compress_type = zipfile.ZIP_DEFLATED)
-
-    print("OK")
-    
-elif "bdist_pdb" in sys.argv:
-
-    #make pdb archive
-    pyVersion = ('2.7', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10', '3.11')
-    platform = ('Win32', 'x64')
-    
-    pdbFiles = [ os.path.join( platform, 'Release_' + version, 'pykd.pdb') for version, platform in itertools.product( pyVersion, platform ) ]
-    
-    zip_name = "pykd-%s-symbols.zip" %  _version
-    
-    with zipfile.ZipFile(os.path.join(os.path.curdir, 'dist', zip_name), mode='w' ) as archive:
-        for pdbFile in pdbFiles:
-            print( "zipped %s" % (pdbFile) )
-            archive.write( os.path.join(os.path.curdir, '..', 'out', pdbFile), pdbFile, compress_type = zipfile.ZIP_DEFLATED)
-    
-    #pdbFileList = [ os.path.join( os.path.curdir, '..', 'out', fileName) for fileName in (
-    
-
-    pass
+if __name__ == '__main__':
+    main()
 
 
 
