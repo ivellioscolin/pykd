@@ -1179,7 +1179,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python2x86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
@@ -1205,7 +1205,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
@@ -1231,7 +1231,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
@@ -1257,7 +1257,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
@@ -1283,7 +1283,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
@@ -1309,7 +1309,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
@@ -1387,7 +1387,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)packages\python2.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python2 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
@@ -1413,7 +1413,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
@@ -1439,7 +1439,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
@@ -1465,7 +1465,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
@@ -1491,7 +1491,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)</Command>
