@@ -858,7 +858,7 @@ echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 setlocal ENABLEDELAYEDEXPANSION
-set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\python.$(PythonVersion)\tools" ; 
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools" ; 
 set str=%str:\=\\%
 echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 set str=
@@ -900,7 +900,7 @@ echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 setlocal ENABLEDELAYEDEXPANSION
-set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\python.$(PythonVersion)\tools" ; 
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools" ; 
 set str=%str:\=\\%
 echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 set str=
@@ -942,7 +942,7 @@ echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 setlocal ENABLEDELAYEDEXPANSION
-set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\python.$(PythonVersion)\tools" ; 
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools" ; 
 set str=%str:\=\\%
 echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 set str=
@@ -984,7 +984,7 @@ echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 setlocal ENABLEDELAYEDEXPANSION
-set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\python.$(PythonVersion)\tools" ; 
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools" ; 
 set str=%str:\=\\%
 echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 set str=
@@ -1026,7 +1026,7 @@ echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 setlocal ENABLEDELAYEDEXPANSION
-set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\python.$(PythonVersion)\tools" ; 
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools" ; 
 set str=%str:\=\\%
 echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 set str=
@@ -1068,7 +1068,7 @@ echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 setlocal ENABLEDELAYEDEXPANSION
-set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\python.$(PythonVersion)\tools" ; 
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools" ; 
 set str=%str:\=\\%
 echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 set str=
@@ -1110,7 +1110,7 @@ echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 setlocal ENABLEDELAYEDEXPANSION
-set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\python.$(PythonVersion)\tools" ; 
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools" ; 
 set str=%str:\=\\%
 echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
 set str=
@@ -1479,7 +1479,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python2x86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1520,7 +1521,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1561,7 +1563,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1602,7 +1605,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1643,7 +1647,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1684,7 +1689,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1725,7 +1731,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1766,7 +1773,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1807,7 +1815,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\python2.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\python2.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python2 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1848,7 +1857,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1889,7 +1899,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1930,7 +1941,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1971,7 +1983,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -2012,7 +2025,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -2053,7 +2067,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -2094,7 +2109,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
