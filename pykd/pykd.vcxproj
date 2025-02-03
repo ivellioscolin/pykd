@@ -199,7 +199,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
-    <PythonVersion>3.10.10</PythonVersion>
+    <PythonVersion>3.10.11</PythonVersion>
     <PythonVersionLight>3.10</PythonVersionLight>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
@@ -208,7 +208,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
-    <PythonVersion>3.11.2</PythonVersion>
+    <PythonVersion>3.11.9</PythonVersion>
     <PythonVersionLight>3.11</PythonVersionLight>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
@@ -271,7 +271,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
-    <PythonVersion>3.10.10</PythonVersion>
+    <PythonVersion>3.10.11</PythonVersion>
     <PythonVersionLight>3.10</PythonVersionLight>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
@@ -280,7 +280,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
-    <PythonVersion>3.11.2</PythonVersion>
+    <PythonVersion>3.11.9</PythonVersion>
     <PythonVersionLight>3.11</PythonVersionLight>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
@@ -350,7 +350,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
-    <PythonVersion>3.10.10</PythonVersion>
+    <PythonVersion>3.10.11</PythonVersion>
     <PythonVersionLight>3.10</PythonVersionLight>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
@@ -360,7 +360,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
-    <PythonVersion>3.11.2</PythonVersion>
+    <PythonVersion>3.11.9</PythonVersion>
     <PythonVersionLight>3.11</PythonVersionLight>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
@@ -430,7 +430,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
-    <PythonVersion>3.10.10</PythonVersion>
+    <PythonVersion>3.10.11</PythonVersion>
     <PythonVersionLight>3.10</PythonVersionLight>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
@@ -440,7 +440,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
-    <PythonVersion>3.11.2</PythonVersion>
+    <PythonVersion>3.11.9</PythonVersion>
     <PythonVersionLight>3.11</PythonVersionLight>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
