@@ -792,7 +792,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -803,7 +803,8 @@
       <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -833,7 +834,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -844,7 +845,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -874,7 +876,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -885,7 +887,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -915,7 +918,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -926,7 +929,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -956,7 +960,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -967,7 +971,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -997,7 +1002,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1008,7 +1013,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -1038,7 +1044,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1049,7 +1055,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -1079,7 +1086,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1090,7 +1097,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -1120,7 +1128,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python2.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python2.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1131,7 +1139,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -1161,7 +1170,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1172,7 +1181,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -1202,7 +1212,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1213,7 +1223,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -1243,7 +1254,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1254,7 +1265,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -1284,7 +1296,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1295,7 +1307,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -1325,7 +1338,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1336,7 +1349,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -1366,7 +1380,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1377,7 +1391,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -1407,7 +1422,7 @@ popd</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1418,7 +1433,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Debug\targetapp.exe $(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -1450,7 +1466,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1463,8 +1479,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python2x86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1492,7 +1507,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1505,8 +1520,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1534,7 +1548,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1547,8 +1561,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1576,7 +1589,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1589,8 +1602,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1618,7 +1630,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1631,8 +1643,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1660,7 +1671,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1673,8 +1684,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1702,7 +1712,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1715,8 +1725,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1744,7 +1753,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1757,8 +1766,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1786,7 +1794,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python2.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python2.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1799,8 +1807,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python2 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1828,7 +1835,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1841,8 +1848,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1870,7 +1876,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1883,8 +1889,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1912,7 +1917,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1925,8 +1930,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1954,7 +1958,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -1967,8 +1971,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -1996,7 +1999,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -2009,8 +2012,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -2038,7 +2040,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -2051,8 +2053,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
@@ -2080,7 +2081,7 @@ popd</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)\numpy\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -2093,8 +2094,7 @@ popd</Command>
       <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)..\Release\targetapp.exe $(OutDir)
-$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+      <Command>$(SystemRoot)\py.exe -$(PythonVersionLight) $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
