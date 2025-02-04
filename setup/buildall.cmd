@@ -1,7 +1,7 @@
 @ECHO OFF
 SETLOCAL EnableDelayedExpansion
 
-set py_list=2.7 3.5 3.6 3.7 3.8 3.9 3.10 3.11
+set py_list=2.7 3.5 3.6 3.7 3.8 3.9 3.10 3.11 3.12 3.13
 set plat_list=win32 x64
 
 REM Build wheel and zip
@@ -12,6 +12,7 @@ for %%a in (%py_list%) do (
     for %%b in (%plat_list%) do (
         set py_ver=%%a
         set plat=%%b
+        py -!py_ver! -m pip install --user gitpython setuptools wheel
         py -!py_ver! setup.py bdist_wheel --plat-name=!plat! bdist_zip
     )
 )
