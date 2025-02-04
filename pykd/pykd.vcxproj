@@ -25,6 +25,22 @@
       <Configuration>Debug_3.11</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_3.12|Win32">
+      <Configuration>Debug_3.12</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_3.12|x64">
+      <Configuration>Debug_3.12</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_3.13|Win32">
+      <Configuration>Debug_3.13</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_3.13|x64">
+      <Configuration>Debug_3.13</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug_3.5|Win32">
       <Configuration>Debug_3.5</Configuration>
       <Platform>Win32</Platform>
@@ -87,6 +103,22 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release_3.11|x64">
       <Configuration>Release_3.11</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_3.12|Win32">
+      <Configuration>Release_3.12</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_3.12|x64">
+      <Configuration>Release_3.12</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_3.13|Win32">
+      <Configuration>Release_3.13</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_3.13|x64">
+      <Configuration>Release_3.13</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release_3.5|Win32">
@@ -212,6 +244,24 @@
     <PythonVersionLight>3.11</PythonVersionLight>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.12|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+    <PythonVersion>3.12.8</PythonVersion>
+    <PythonVersionLight>3.12</PythonVersionLight>
+    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.13|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+    <PythonVersion>3.13.1</PythonVersion>
+    <PythonVersionLight>3.13</PythonVersionLight>
+    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -282,6 +332,24 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.11.9</PythonVersion>
     <PythonVersionLight>3.11</PythonVersionLight>
+    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.12|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+    <PythonVersion>3.12.8</PythonVersion>
+    <PythonVersionLight>3.12</PythonVersionLight>
+    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.13|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+    <PythonVersion>3.13.1</PythonVersion>
+    <PythonVersionLight>3.13</PythonVersionLight>
     <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'" Label="Configuration">
@@ -364,6 +432,26 @@
     <PythonVersionLight>3.11</PythonVersionLight>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.12|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+    <PythonVersion>3.12.8</PythonVersion>
+    <PythonVersionLight>3.12</PythonVersionLight>
+    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.13|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+    <PythonVersion>3.13.1</PythonVersion>
+    <PythonVersionLight>3.13</PythonVersionLight>
+    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -444,6 +532,26 @@
     <PythonVersionLight>3.11</PythonVersionLight>
     <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.12|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+    <PythonVersion>3.12.8</PythonVersion>
+    <PythonVersionLight>3.12</PythonVersionLight>
+    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.13|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+    <PythonVersion>3.13.1</PythonVersion>
+    <PythonVersionLight>3.13</PythonVersionLight>
+    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -471,6 +579,12 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.11|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.12|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.13|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -493,6 +607,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.11|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.12|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.13|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'" Label="PropertySheets">
@@ -520,6 +640,12 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.11|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.12|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.13|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -543,6 +669,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.11|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.12|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.13|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -603,6 +735,22 @@
     <OutDir>$(SolutionDir)Out\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.11|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <TargetName>$(ProjectName)</TargetName>
+    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Out\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.12|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <TargetName>$(ProjectName)</TargetName>
+    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Out\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.13|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <TargetExt>.pyd</TargetExt>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
@@ -674,6 +822,22 @@
     <OutDir>$(SolutionDir)Out\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.12|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <TargetName>$(ProjectName)</TargetName>
+    <OutDir>$(SolutionDir)Out\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.13|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <TargetName>$(ProjectName)</TargetName>
+    <OutDir>$(SolutionDir)Out\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetExt>.pyd</TargetExt>
@@ -730,6 +894,20 @@
     <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)Out\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.12|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
+    <TargetName>$(ProjectName)</TargetName>
+    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Out\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.13|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
+    <TargetName>$(ProjectName)</TargetName>
+    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Out\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetExt>.pyd</TargetExt>
@@ -780,6 +958,20 @@
     <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.11|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
+    <TargetName>$(ProjectName)</TargetName>
+    <OutDir>$(SolutionDir)Out\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.12|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
+    <TargetName>$(ProjectName)</TargetName>
+    <OutDir>$(SolutionDir)Out\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.13|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetExt>.pyd</TargetExt>
     <TargetName>$(ProjectName)</TargetName>
@@ -1095,6 +1287,90 @@ popd</Command>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
+echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+setlocal ENABLEDELAYEDEXPANSION
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools" ; 
+set str=%str:\=\\%
+echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+set str=
+setlocal DISABLEDELAYEDEXPANSION
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+pushd $(SolutionDir)\kdlibcpp\boost\
+call $(SolutionDir)\kdlibcpp\boost\bootstrap.bat
+$(SolutionDir)\kdlibcpp\boost\b2.exe --user-config="$(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam" --with-python python=$(PythonVersionLight) link=static runtime-link=static,shared address-model=32 runtime-debugging=on variant=debug
+popd</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.12|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
+echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+setlocal ENABLEDELAYEDEXPANSION
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools" ; 
+set str=%str:\=\\%
+echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+set str=
+setlocal DISABLEDELAYEDEXPANSION
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+pushd $(SolutionDir)\kdlibcpp\boost\
+call $(SolutionDir)\kdlibcpp\boost\bootstrap.bat
+$(SolutionDir)\kdlibcpp\boost\b2.exe --user-config="$(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam" --with-python python=$(PythonVersionLight) link=static runtime-link=static,shared address-model=32 runtime-debugging=on variant=debug
+popd</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.13|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1458,6 +1734,90 @@ $(SolutionDir)\kdlibcpp\boost\b2.exe --user-config="$(IntDir)\boost-user-config-
 popd</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.12|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
+echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+setlocal ENABLEDELAYEDEXPANSION
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\python.$(PythonVersion)\tools" ; 
+set str=%str:\=\\%
+echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+set str=
+setlocal DISABLEDELAYEDEXPANSION
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+pushd $(SolutionDir)\kdlibcpp\boost\
+call $(SolutionDir)\kdlibcpp\boost\bootstrap.bat
+$(SolutionDir)\kdlibcpp\boost\b2.exe --user-config="$(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam" --with-python python=$(PythonVersionLight) link=static runtime-link=static,shared address-model=64 runtime-debugging=on variant=debug
+popd</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.13|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;_DEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);BOOST_PYTHON_NUMPY_INTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
+echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+setlocal ENABLEDELAYEDEXPANSION
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\python.$(PythonVersion)\tools" ; 
+set str=%str:\=\\%
+echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+set str=
+setlocal DISABLEDELAYEDEXPANSION
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+pushd $(SolutionDir)\kdlibcpp\boost\
+call $(SolutionDir)\kdlibcpp\boost\bootstrap.bat
+$(SolutionDir)\kdlibcpp\boost\b2.exe --user-config="$(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam" --with-python python=$(PythonVersionLight) link=static runtime-link=static,shared address-model=64 runtime-debugging=on variant=debug
+popd</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -1794,6 +2154,90 @@ $(SolutionDir)\kdlibcpp\boost\b2.exe --user-config="$(IntDir)\boost-user-config-
 popd</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.12|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
+echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+setlocal ENABLEDELAYEDEXPANSION
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools" ; 
+set str=%str:\=\\%
+echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+set str=
+setlocal DISABLEDELAYEDEXPANSION
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+pushd $(SolutionDir)\kdlibcpp\boost\
+call $(SolutionDir)\kdlibcpp\boost\bootstrap.bat
+$(SolutionDir)\kdlibcpp\boost\b2.exe --user-config="$(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam" --with-python python=$(PythonVersionLight) link=static runtime-link=static,shared address-model=32 runtime-debugging=off variant=release
+popd</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.13|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install pythonx86 -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
+echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+setlocal ENABLEDELAYEDEXPANSION
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools" ; 
+set str=%str:\=\\%
+echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+set str=
+setlocal DISABLEDELAYEDEXPANSION
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+pushd $(SolutionDir)\kdlibcpp\boost\
+call $(SolutionDir)\kdlibcpp\boost\bootstrap.bat
+$(SolutionDir)\kdlibcpp\boost\b2.exe --user-config="$(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam" --with-python python=$(PythonVersionLight) link=static runtime-link=static,shared address-model=32 runtime-debugging=off variant=release
+popd</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -2107,6 +2551,90 @@ popd</Command>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
+echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+setlocal ENABLEDELAYEDEXPANSION
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\python.$(PythonVersion)\tools" ; 
+set str=%str:\=\\%
+echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+set str=
+setlocal DISABLEDELAYEDEXPANSION
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+pushd $(SolutionDir)\kdlibcpp\boost\
+call $(SolutionDir)\kdlibcpp\boost\bootstrap.bat
+$(SolutionDir)\kdlibcpp\boost\b2.exe --user-config="$(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam" --with-python python=$(PythonVersionLight) link=static runtime-link=static,shared address-model=64 runtime-debugging=off variant=release
+popd</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.12|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir).nuget\nuget.exe install python -OutputDirectory $(SolutionDir)packages -Version $(PythonVersion)
+echo.&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo import python ; &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+setlocal ENABLEDELAYEDEXPANSION
+set str=using python : $(PythonVersionLight) : "$(SolutionDir)packages\python.$(PythonVersion)\tools" ; 
+set str=%str:\=\\%
+echo %str% &gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+set str=
+setlocal DISABLEDELAYEDEXPANSION
+echo.&gt;&gt; $(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam
+pushd $(SolutionDir)\kdlibcpp\boost\
+call $(SolutionDir)\kdlibcpp\boost\bootstrap.bat
+$(SolutionDir)\kdlibcpp\boost\b2.exe --user-config="$(IntDir)\boost-user-config-$(Platform)-$(Configuration).jam" --with-python python=$(PythonVersionLight) link=static runtime-link=static,shared address-model=64 runtime-debugging=off variant=release
+popd</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.13|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;BOOST_PYTHON_STATIC_LIB;BOOST_PYTHON_NO_LIB;NDEBUG;_WINDOWS;_USRDLL;PYKD_EXPORTS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\kdlibcpp\kdlib\include;$(SolutionDir)packages\python.$(PythonVersion)\tools\include;$(SolutionDir)\kdlibcpp\boost</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
