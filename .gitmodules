@@ -1,3 +1,6 @@
 [submodule "kdlibcpp"]
 	path = kdlibcpp
 	url = https://github.com/ivellioscolin/kdlibcpp.git
+[submodule "pykd_ext"]
+	path = pykd_ext
+	url = git@github.com:ivellioscolin/pykd-ext.git
