@@ -179,7 +179,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>2.7.18</PythonVersion>
     <PythonVersionLight>2.7</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -188,7 +187,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.5.4</PythonVersion>
     <PythonVersionLight>3.5</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -197,7 +195,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.6.8</PythonVersion>
     <PythonVersionLight>3.6</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.7|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -206,7 +203,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.7.9</PythonVersion>
     <PythonVersionLight>3.7</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.8|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -215,7 +211,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.8.10</PythonVersion>
     <PythonVersionLight>3.8</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.9|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -224,7 +219,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.9.13</PythonVersion>
     <PythonVersionLight>3.9</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.10|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -233,7 +227,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.10.11</PythonVersion>
     <PythonVersionLight>3.10</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.11|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -242,7 +235,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.11.9</PythonVersion>
     <PythonVersionLight>3.11</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.12|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -251,7 +243,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.12.8</PythonVersion>
     <PythonVersionLight>3.12</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.13|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -260,7 +251,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.13.1</PythonVersion>
     <PythonVersionLight>3.13</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_2.7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -269,7 +259,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>2.7.18</PythonVersion>
     <PythonVersionLight>2.7</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.5|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -278,7 +267,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.5.4</PythonVersion>
     <PythonVersionLight>3.5</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.6|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -287,7 +275,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.6.8</PythonVersion>
     <PythonVersionLight>3.6</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -296,7 +283,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.7.9</PythonVersion>
     <PythonVersionLight>3.7</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.8|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -305,7 +291,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.8.10</PythonVersion>
     <PythonVersionLight>3.8</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.9|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -314,7 +299,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.9.13</PythonVersion>
     <PythonVersionLight>3.9</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.10|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -323,7 +307,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.10.11</PythonVersion>
     <PythonVersionLight>3.10</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.11|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -332,7 +315,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.11.9</PythonVersion>
     <PythonVersionLight>3.11</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.12|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -341,7 +323,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.12.8</PythonVersion>
     <PythonVersionLight>3.12</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_3.13|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -350,7 +331,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.13.1</PythonVersion>
     <PythonVersionLight>3.13</PythonVersionLight>
-    <LLVM_USE_CRT_DEBUG>MDd</LLVM_USE_CRT_DEBUG>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -360,7 +340,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>2.7.18</PythonVersion>
     <PythonVersionLight>2.7</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -370,7 +349,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.5.4</PythonVersion>
     <PythonVersionLight>3.5</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.6|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -380,7 +358,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.6.8</PythonVersion>
     <PythonVersionLight>3.6</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.7|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -390,7 +367,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.7.9</PythonVersion>
     <PythonVersionLight>3.7</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.8|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -400,7 +376,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.8.10</PythonVersion>
     <PythonVersionLight>3.8</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.9|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -410,7 +385,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.9.13</PythonVersion>
     <PythonVersionLight>3.9</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.10|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -420,7 +394,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.10.11</PythonVersion>
     <PythonVersionLight>3.10</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.11|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -430,7 +403,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.11.9</PythonVersion>
     <PythonVersionLight>3.11</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.12|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -440,7 +412,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.12.8</PythonVersion>
     <PythonVersionLight>3.12</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.13|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -450,7 +421,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.13.1</PythonVersion>
     <PythonVersionLight>3.13</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_2.7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -460,7 +430,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>2.7.18</PythonVersion>
     <PythonVersionLight>2.7</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.5|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -470,7 +439,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.5.4</PythonVersion>
     <PythonVersionLight>3.5</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.6|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -480,7 +448,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.6.8</PythonVersion>
     <PythonVersionLight>3.6</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.7|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -490,7 +457,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.7.9</PythonVersion>
     <PythonVersionLight>3.7</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.8|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -500,7 +466,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.8.10</PythonVersion>
     <PythonVersionLight>3.8</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.9|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -510,7 +475,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.9.13</PythonVersion>
     <PythonVersionLight>3.9</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.10|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -520,7 +484,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.10.11</PythonVersion>
     <PythonVersionLight>3.10</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.11|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -530,7 +493,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.11.9</PythonVersion>
     <PythonVersionLight>3.11</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.12|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -540,7 +502,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.12.8</PythonVersion>
     <PythonVersionLight>3.12</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_3.13|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -550,7 +511,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <PythonVersion>3.13.1</PythonVersion>
     <PythonVersionLight>3.13</PythonVersionLight>
-    <LLVM_USE_CRT_RELEASE>MT</LLVM_USE_CRT_RELEASE>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -991,8 +951,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1033,8 +993,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1075,8 +1035,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1117,8 +1077,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1159,8 +1119,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1201,8 +1161,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1243,8 +1203,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1285,8 +1245,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1327,8 +1287,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1369,8 +1329,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-sgd-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1411,8 +1371,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python2.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python2.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1453,8 +1413,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1495,8 +1455,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1537,8 +1497,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1579,8 +1539,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1621,8 +1581,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1663,8 +1623,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1705,8 +1665,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1747,8 +1707,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1789,8 +1749,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Debug_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-sgd-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -1835,8 +1795,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -1877,8 +1837,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -1919,8 +1879,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -1961,8 +1921,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2003,8 +1963,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2045,8 +2005,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2087,8 +2047,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2129,8 +2089,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2171,8 +2131,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2213,8 +2173,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2255,8 +2215,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python2.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python2.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\python2.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2297,8 +2257,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2339,8 +2299,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2381,8 +2341,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2423,8 +2383,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2465,8 +2425,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2507,8 +2467,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2549,8 +2509,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2591,8 +2551,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2633,8 +2593,8 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>pykd.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\python.$(PythonVersion)\tools\libs;$(SolutionDir)\kdlibcpp\boost\stage\lib;$(SolutionDir)\kdlibcpp\llvm-project\install\$(Platform)\Release_Static\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
@@ -2717,14 +2677,10 @@ popd</Command>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(SolutionDir)\packages\llvm-cmake.6.0.0.1\build\native\llvm-cmake.targets" Condition="Exists('$(SolutionDir)\packages\llvm-cmake.6.0.0.1\build\native\llvm-cmake.targets')" />
-    <Import Project="$(SolutionDir)\packages\clang-cmake.6.0.0.1\build\native\clang-cmake.targets" Condition="Exists('$(SolutionDir)\packages\clang-cmake.6.0.0.1\build\native\clang-cmake.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\packages\llvm-cmake.6.0.0.1\build\native\llvm-cmake.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\llvm-cmake.6.0.0.1\build\native\llvm-cmake.targets'))" />
-    <Error Condition="!Exists('$(SolutionDir)\packages\clang-cmake.6.0.0.1\build\native\clang-cmake.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\clang-cmake.6.0.0.1\build\native\clang-cmake.targets'))" />
   </Target>
 </Project>
