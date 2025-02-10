@@ -79,7 +79,7 @@ def main():
         except:
             print("Skip using HEAD SHA as non git repo")
 
-    dir_dbgsdk_bin = os.path.join(dir_solution, 'kdlibcpp', 'bin', platform_alt)
+    dir_dbgsdk_bin = os.path.join(dir_solution, 'kdlibcpp', 'WinDbgExt', 'bin', platform_alt)
     if not os.path.exists(dir_dbgsdk_bin):
         print("DbgSDK bin path %s doesn't exist" %(dir_dbgsdk_bin))
         sys.exit()
@@ -128,6 +128,7 @@ def main():
 
     shutil.copy2(os.path.join(dir_solution, 'setup', '__init__.py'), dir_wheel_package)
     shutil.copy2(os.path.join(dir_pykd_bin, 'pykd.pyd'), dir_wheel_package)
+    shutil.copy2(os.path.join(dir_solution, 'Obj', 'pykd', platform, "%s_%d.%d" %(configuration, sys.version_info.major, sys.version_info.minor), 'msdia140.dll'), dir_wheel_package)
     for dbgSdkBin in  [ f for f in os.listdir(dir_dbgsdk_bin) if not os.path.isdir(f) ]:
         shutil.copy2(os.path.join(dir_dbgsdk_bin, dbgSdkBin), dir_wheel_package)
 
@@ -159,6 +160,8 @@ def main():
         zip_name = "pykd-%s-%s-%s.zip" %(_version, python_tag, args.plat_name)
         print("Building bdist_zip %s ..." %(zip_name))
         with zipfile.ZipFile(os.path.join(dir_dist_wheel, zip_name), mode='w') as archive:
+            print("zipped msdia140.dll")
+            archive.write(os.path.join(dir_solution, 'Obj', 'pykd', platform, "%s_%d.%d" %(configuration, sys.version_info.major, sys.version_info.minor), 'msdia140.dll'), arcname = 'msdia140.dll', compress_type = zipfile.ZIP_DEFLATED)
             for dbgSdkBin in  [ f for f in os.listdir(dir_dbgsdk_bin) if not os.path.isdir(f) ]:
                 print("zipped %s" %(dbgSdkBin))
                 archive.write(os.path.join(dir_dbgsdk_bin, dbgSdkBin), arcname = dbgSdkBin, compress_type = zipfile.ZIP_DEFLATED)

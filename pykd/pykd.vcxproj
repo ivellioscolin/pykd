@@ -1799,7 +1799,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\python2x86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\python2x86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -1841,7 +1842,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -1883,7 +1885,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -1925,7 +1928,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -1967,7 +1971,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2009,7 +2014,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2051,7 +2057,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2093,7 +2100,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2135,7 +2143,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2177,7 +2186,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-s-x32-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\pythonx86.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2219,7 +2229,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python27-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\python2.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\amd64\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\python2.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\python2.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2261,7 +2272,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python35-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\amd64\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2303,7 +2315,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python36-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\amd64\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2345,7 +2358,9 @@ popd</Command>
       <AdditionalDependencies>libboost_python37-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>
+xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\amd64\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2387,7 +2402,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python38-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\amd64\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2429,7 +2445,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python39-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\amd64\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2471,7 +2488,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python310-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\amd64\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2513,7 +2531,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python311-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\amd64\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2555,7 +2574,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python312-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\amd64\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -2597,7 +2617,8 @@ popd</Command>
       <AdditionalDependencies>libboost_python313-vc$(PlatformToolsetVersion)-mt-s-x64-1_87.lib;ntdll.lib;Version.lib;clangAnalysis.lib;clangAPINotes.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangDriver.lib;clangEdit.lib;clangFrontend.lib;clangLex.lib;clangParse.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangTooling.lib;LLVMAnalysis.lib;LLVMAsmParser.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMCore.lib;LLVMDebugInfoDWARF.lib;LLVMDemangle.lib;LLVMFrontendAtomic.lib;LLVMFrontendOffloading.lib;LLVMFrontendOpenMP.lib;LLVMIRReader.lib;LLVMMC.lib;LLVMMCParser.lib;LLVMObject.lib;LLVMOption.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMScalarOpts.lib;LLVMSupport.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMWindowsDriver.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
+      <Command>xcopy /Y "$(VCInstallDir)..\DIA SDK\bin\amd64\msdia140.dll" "$(IntDir)"
+$(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe -m pip install --user gitpython setuptools wheel
 $(SolutionDir)packages\python.$(PythonVersion)\tools\python.exe $(SolutionDir)setup\setup.py bdist_wheel --plat-name=$(Platform) --build-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools --dist-dir=$(SolutionDir)Out\$(Platform)\$(Configuration) --egg-base=$(SolutionDir)Obj\Wheel\$(Platform)\$(Configuration)\setuptools bdist_zip</Command>
     </PostBuildEvent>
     <PreBuildEvent>
